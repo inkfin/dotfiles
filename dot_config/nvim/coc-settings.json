@@ -1,0 +1,8 @@
+{
+    "explorer.icon.enableNerdfont": true,
+    "clangd.compilationDatabasePath": ".vscode",
+    "suggest.noselect": true,
+    "snippets.ultisnips.pythonPrompt": false,
+    "python.venvPath": "/opt/anaconda3/envs",
+    "python.pythonPath": "/Users/inkfin/.config/nvim/execute_python.sh"
+}
