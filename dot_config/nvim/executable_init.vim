@@ -110,10 +110,16 @@ let g:terminal_color_12 = '#CAA9FA'
 let g:terminal_color_13 = '#FF92D0'
 let g:terminal_color_14 = '#9AEDFE'
 
-" specify the python parser path
+
+" === Platform Specific Settings ===
 if has('mac')
+    " specify the python parser path
     let g:python3_host_prog = '/opt/homebrew/bin/python3.11'
 endif
+
+" Run chezmoi apply whenever a dotfile is saved
+autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
+
 
  
 " ===
