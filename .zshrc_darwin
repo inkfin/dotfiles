@@ -119,7 +119,7 @@ fi
 
 alias ee="exit"
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc_darwin"
+alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_darwin"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
 alias sourcezsh="source ~/.zshrc"
 alias vim="nvim"
@@ -180,24 +180,49 @@ export PATH="$PATH:$JAVA_HOME/bin"
 export PATH="$PATH:$M2_HOME/bin"
 
 
-# Anaconda
-# export PATH="/opt/anaconda3/bin:$PATH"  # commented out by conda initialize
-export PATH="/Users/inkfin/Library/Python/3.9/bin:$PATH"
+
+# =======================
+# ===== Conda Start =====
+
+#export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"  # commented out by conda initialize
+#export PATH="/Users/inkfin/Library/Python/3.9/bin:$PATH"
+
 
 # >>> conda initialize >>>
+
+# Anaconda
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+#__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+#if [ $? -eq 0 ]; then
+    #eval "$__conda_setup"
+#else
+    #if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        #. "/opt/anaconda3/etc/profile.d/conda.sh"
+    #else
+        #export PATH="/opt/anaconda3/bin:$PATH"
+    #fi
+#fi
+#unset __conda_setup
+
+
+# Miniforge
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
     else
-        export PATH="/opt/anaconda3/bin:$PATH"
+        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+
+# ===== Conda End =====
+# =====================
+
 
 
 # Rust/Cargo
