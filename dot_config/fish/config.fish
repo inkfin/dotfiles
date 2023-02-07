@@ -83,6 +83,13 @@ set -x THEFUCK_OVERRIDDEN_ALIASES 'gsed,git'
 [ -f /opt/homebrew/share/autojump/autojump.fish ]; and source /opt/homebrew/share/autojump/autojump.fish
 
 
+# homebrew/command-not-found
+set HB_CNF_HANDLER (brew --repository)"/Library/Taps/homebrew/homebrew-command-not-found/handler.fish"
+if test -f $HB_CNF_HANDLER
+   source $HB_CNF_HANDLER
+end
+
+
 # anaconda3
 
 
@@ -153,6 +160,10 @@ alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
 alias vimfish "vim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh "vim ~/.local/share/chezmoi/dot_zshrc_darwin"
 alias sourcefish "source ~/.config/fish/config.fish"
+
+alias cz "chezmoi"
+alias cze "chezmoid edit"
+
 
 # git
 alias gst "git status"

@@ -43,8 +43,8 @@ alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
 alias sourcezsh="source ~/.zshrc"
 
 alias ra="ranger"
-alias chm="chezmoi"
-alias chme="chezmoi edit "
+alias cz="chezmoi"
+alias cze="chezmoi edit "
 export EDITOR=nvim
 
 # >>> conda initialize >>>

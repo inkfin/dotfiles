@@ -124,8 +124,8 @@ alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
 alias sourcezsh="source ~/.zshrc"
 alias vim="nvim"
 alias ra="ranger"
-alias chm="chezmoi"
-alias chme="chezmoi edit "
+alias cz="chezmoi"
+alias cze="chezmoi edit "
 
 # Proxy
 alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"
@@ -140,6 +140,12 @@ eval $(thefuck --alias)
 
 # autojump
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+
+# homebrew/command-not-found
+HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
+if [ -f "$HB_CNF_HANDLER" ]; then
+source "$HB_CNF_HANDLER";
+fi
 
 
 # ==================================================
