@@ -120,6 +120,8 @@ endif
 " Run chezmoi apply whenever a dotfile is saved
 autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 
+" Define prefix dictionary
+let g:which_key_map =  {}
 
  
 " ===
@@ -138,9 +140,6 @@ vnoremap Y "+y
 
 " make Y to copy till the end of the line
 "nnoremap Y y$
-
-" Folding
-noremap <silent><LEADER>\ za
 
 " Open up lazygit
 noremap \g :Git 
@@ -237,8 +236,10 @@ nnoremap \t :tabe<CR>:-tabmove<CR>:term sh -c 'st'<CR><C-\><C-N>:q<CR>
 " Opening a terminal window
 noremap <LEADER>/ :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
 
-" Press space twice to jump to the next '<++>' and edit it
-noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
+let g:which_key_map["/"] = "open-term-below"
+
+" Press n twice to jump to the next '<++>' and edit it
+noremap next <Esc>/<++><CR>:nohlsearch<CR>c4l
 
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
@@ -480,6 +481,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'scrooloose/nerdcommenter' " in <space>cc to comment a line
     Plug 'voldikss/vim-translator' " Neovim English to Chinese translator, support Youdao, Ciba, Bing and Google
     Plug 'easymotion/vim-easymotion' " Easy Motion! to navigate
+    Plug 'liuchengxu/vim-which-key' " which-key in space-vim
 
 
     " Dependencies
@@ -657,12 +659,17 @@ function! Show_documentation()
     endif
 endfunction
 
+let g:which_key_map["h"] = "show-documentation"
 
 " diagnostic info
 nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
 nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
 nnoremap <c-c> :CocCommand<CR>
+
+let g:which_key_map.d = "show-diagonostics"
+let g:which_key_map["-"] = "diagnostic-prev"
+let g:which_key_map["="] = "diagnostic-next"
 
 " Text Objects
 xmap kf <Plug>(coc-funcobj-i)
@@ -677,6 +684,7 @@ omap ac <Plug>(coc-classobj-a)
 " Useful commands
 " yank
 nnoremap <silent> <space>y :<C-u>CocList -A --normal yank<cr>
+let g:which_key_map.y = "yank-list"
 " GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gD :tab sp<CR><Plug>(coc-definition)
@@ -685,31 +693,35 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 " Rename
 nmap <leader>rn <Plug>(coc-rename)
+let g:which_key_map.r = {"name": "+refactor", "n": "rename"}
 " Coc explorer
 nmap <leader>e :CocCommand explorer<CR>
+let g:which_key_map.e = "explorer"
+
+
 
 " coc-translator
 "nmap ts <Plug>(coc-translator-p)
 " 重新映射 for do codeAction of selected region
-function! s:cocActionsOpenFromSelected(type) abort
-  execute 'CocCommand actions.open ' . a:type
-endfunction
-xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
-nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+" function! s:cocActionsOpenFromSelected(type) abort
+  " execute 'CocCommand actions.open ' . a:type
+" endfunction
+" xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+" nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 " coctodolist
-"nnoremap <leader>tn :CocCommand todolist.create<CR>
-"nnoremap <leader>tl :CocList todolist<CR>
-"nnoremap <leader>tu :CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
+" nnoremap <leader>tn :CocCommand todolist.create<CR>
+" nnoremap <leader>tl :CocList todolist<CR>
+" nnoremap <leader>tu :CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
 " coc-tasks
-"noremap <silent> <leader>ts :CocList tasks<CR>
+" noremap <silent> <leader>tt :CocList tasks<CR>
 " coc-snippets
-imap <C-l> <Plug>(coc-snippets-expand)
-vmap <C-e> <Plug>(coc-snippets-select)
-"let g:coc_snippet_next = '<c-e>'
-"let g:coc_snippet_prev = '<c-n>'
+" imap <C-l> <Plug>(coc-snippets-expand)
+" vmap <C-e> <Plug>(coc-snippets-select)
+" let g:coc_snippet_next = '<c-e>'
+" let g:coc_snippet_prev = '<c-n>'
 "imap <C-e> <Plug>(coc-snippets-expand-jump)
-let g:snips_author = 'Inkfin'
-autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
+" let g:snips_author = 'Inkfin'
+" autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
 
 
 
@@ -783,7 +795,6 @@ let g:Lf_WildIgnore = {
 let g:Lf_ShortcutF = "<leader>ff"
 noremap <leader>fg :LeaderfFunction<CR>
 noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
-noremap <leader>fv :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
 noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
 noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
 noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
@@ -792,7 +803,7 @@ noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
 "noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
 " search visually selected text literally
 xnoremap <leader>fs :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
-noremap <leader>go :<C-U>Leaderf! rg --recall<CR>
+noremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
 
 " should use `Leaderf gtags --update` first
 "let g:Lf_GtagsAutoGenerate = 0
@@ -802,6 +813,17 @@ noremap <leader>go :<C-U>Leaderf! rg --recall<CR>
 "noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
 "noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
 "noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
+let g:which_key_map.f = {
+    \ "name": "+navigate",
+    \ "g": "function",
+    \ "t": "bufTag",
+    \ "l": "line",
+    \ "b": "buffer",
+    \ "m": "mru",
+    \ "s": "vis-select",
+    \ "o": "recall-vis-select"
+    \ }
 
 
 
@@ -881,25 +903,52 @@ autocmd WinEnter * silent! unmap <LEADER>ig
 
 
 " ===
+" === nerdcommenter
+" ===
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+let g:which_key_map.c = {
+    \ "name": "+comment",
+    \ "c": "comment",
+    \ "n": "nesting",
+    \ "s": "pretty-block-formatted",
+    \ "m": "multipart-delimiters",
+    \ "i": "individually",
+    \ " ": "toggle-state(top-line)",
+    \ "y": "yanked-first",
+    \ "$": "comment-to-EOL",
+    \ "A": "append-to-EOF",
+    \ "u": "uncomment"
+    \ }
+
+
+" ===
 " === Easy Motion
 " ===
 
-map , <Plug>(easymotion-prefix)
+map <Leader> <Plug>(easymotion-prefix)
 
 " <Leader>f{char} to move to {char}
-"map  ,f <Plug>(easymotion-bd-f)
-nmap ,f <Plug>(easymotion-overwin-f)
+map  <Leader>m <Plug>(easymotion-bd-f)
+nmap <Leader>m <Plug>(easymotion-overwin-f)
+
+let g:which_key_map.m = "move-to-{char}"
 
 " s{char}{char} to move to {char}{char}
-nmap ,s <Plug>(easymotion-overwin-f2)
+nmap s <Plug>(easymotion-overwin-f2)
 
 " Move to line
-"map  ,l <Plug>(easymotion-bd-jk)
-nmap ,l <Plug>(easymotion-overwin-line)
+map  <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+let g:which_key_map.L = "move-to-line"
 
 " Move to word
-map  ,w <Plug>(easymotion-bd-w)
-nmap ,w <Plug>(easymotion-overwin-w)
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+let g:which_key_map.w = "move-to-word"
 
 
 
@@ -1000,6 +1049,75 @@ nnoremap <silent><expr> <C-w><C-b> translator#window#float#has_scroll() ?
 "index dependences (echodoc)
 set noshowmode
 let g:echodoc_enable_at_startup = 1
+
+
+
+" ===
+" === vim-which-key
+" ===
+set timeoutlen=500
+
+let g:mapleader = "\<Space>"
+let g:maplocalleader = ","
+
+nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
+vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
+
+
+" Second level dictionaries:
+" 'name' is a special field. It will define the name of the group, e.g., leader-f is the "+file" group.
+" Unnamed groups will show a default empty string.
+
+" =======================================================
+" Create menus based on existing mappings
+" =======================================================
+" You can pass a descriptive text to an existing mapping.
+
+
+nnoremap <silent> <leader>fv :e $MYVIMRC<CR>
+let g:which_key_map.f.v = 'open-vimrc'
+
+nnoremap <silent> <leader>oq  :copen<CR>
+nnoremap <silent> <leader>ol  :lopen<CR>
+let g:which_key_map.o = {
+      \ 'name' : '+open',
+      \ 'q' : 'open-quickfix'    ,
+      \ 'l' : 'open-locationlist',
+      \ }
+
+let g:which_key_map.t = {
+    \ "name": "+table/trans"
+    \ }
+
+let g:which_key_map.s = {
+    \ "name": "+set",
+    \ "w": "wrap",
+    \ "c": "spell-check"
+    \ }
+
+
+" =======================================================
+" Create menus not based on existing mappings:
+" =======================================================
+" Provide commands(ex-command, <Plug>/<C-W>/<C-d> mapping, etc.)
+" and descriptions for the existing mappings.
+"
+" Note:
+" Some complicated ex-cmd may not work as expected since they'll be
+" feed into `feedkeys()`, in which case you have to define a decicated
+" Command or function wrapper to make it work with vim-which-key.
+" Ref issue #126, #133 etc.
+
+
+call which_key#register('<Space>', "g:which_key_map", 'n')
+call which_key#register('<Space>', "g:which_key_map_visual", 'v')
+
+autocmd! FileType which_key
+autocmd  FileType which_key set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+
+
+
 
 
 """"" Platform Specific """""
