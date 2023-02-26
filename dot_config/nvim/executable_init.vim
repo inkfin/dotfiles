@@ -162,11 +162,11 @@ noremap W 5w
 noremap B 5b
 
 "Emacs like navigation keys
-inoremap <C-f> <C-O>h
-inoremap <C-b> <C-O>l
+inoremap <C-f> <C-O>l
+inoremap <C-b> <C-O>h
 inoremap <M-f> <C-O>w
 inoremap <M-b> <C-O>b
-inoremap <C-P> <C-O>k
+inoremap <C-p> <C-O>k
 inoremap <C-n> <C-O>j
 
 inoremap <C-a> <C-O>^
@@ -429,6 +429,9 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
+    " vim-surround
+    Plug 'tpope/vim-surround'
+
     " Searching
     Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
@@ -520,9 +523,11 @@ let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩�
 
 
 " === jiangmiao/auto-pairs ===
-let g:AutoPairsFlyMode = 0
-let g:AutoPairsShortcutBackInsert = '' "default <M-b> conflict
-let g:AutoPairsShortcutFastWrap = '<M-e>'
+""default-settings
+"let g:AutoPairsShortcutBackInsert = '<M-b>'
+"let g:AutoPairsShortcutToggle = '<M-p>'
+"let g:AutoPairsShortcutFastWrap = '<M-e>'
+"let g:AutoPairsShortcutJump = '<M-n>'
 "Fast wrap the word. all pairs will be consider as a block (include <>).
 "(|)'hello' after fast wrap at |, the word will be ('hello')
 "(|)<hello> after fast wrap at |, the word will be (<hello>)
@@ -576,6 +581,7 @@ set updatetime=300
 set shortmess+=c
 let g:coc_global_extensions = [
     \ 'coc-actions',
+    \ 'coc-marketplace',
     \ 'coc-clangd',
     \ 'coc-cmake',
     \ 'coc-rust-analyzer',
