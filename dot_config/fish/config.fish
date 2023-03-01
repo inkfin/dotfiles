@@ -168,7 +168,11 @@ alias cze "chezmoid edit"
 # git
 alias gst "git status"
 alias gcl "git clone"
-alias gad "git add"
+alias ga "git add"
+alias gc "git commit"
+alias gp "git pull"
+alias gP "git push"
+alias lg "lazygit"
 
 # SQL
 # alias sqlstart "pg_ctl -D /usr/local/var/postgres start"

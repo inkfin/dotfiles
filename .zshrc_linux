@@ -33,6 +33,13 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 alias l="ls"
 alias ll="ls -l"
 alias la="ls -al"
+alias gst="git status"
+alias gcl="git clone"
+alias ga="git add"
+alias gc="git commit"
+alias gp="git pull"
+alias gP="git push"
+alias lg="lazygit"
 alias vim="nvim"
 
 alias ee="exit"
