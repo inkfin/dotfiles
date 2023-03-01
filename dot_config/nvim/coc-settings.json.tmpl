@@ -6,5 +6,12 @@
     "python.venvPath":
     {{- if eq .chezmoi.os "darwin" }} "/opt/anaconda3/envs"{{ end }}
     {{- if eq .chezmoi.os "linux" }} ""{{ end }},
-    "python.pythonPath": "$HOME/.config/nvim/execute_python.sh"
+    "python.pythonPath": "$HOME/.config/nvim/execute_python.sh",
+    "leetcode.enabled": true,
+    "leetcode.language": "cpp",
+    "webview.openCommand": "open -a Safari \"%u\"",
+    "markdown-preview-enhanced.mathRenderingOption": "MathJax",
+    "markdown-preview-enhanced.previewTheme": "one-dark.css",
+    "markdown-preview-enhanced.mermaidTheme": "default"
+
 }

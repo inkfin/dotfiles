@@ -112,18 +112,47 @@ let g:terminal_color_14 = '#9AEDFE'
 
 
 " === Platform Specific Settings ===
+"" --- MacOS ---
 if has('mac')
     " specify the python parser path
     let g:python3_host_prog = '/opt/homebrew/bin/python3.11'
+
+    " === ybian/smartim ===
+    "    some people reported that it is slow while editing with vim-multiple-cursors, to fix this, put this in .vimrc:
+    let g:smartim_default = 'com.apple.keylayout.ABC'
+    function! Multiple_cursors_before()
+      let g:smartim_disable = 1
+    endfunction
+    function! Multiple_cursors_after()
+      unlet g:smartim_disable
+    endfunction
+
 endif
+
 
 " Run chezmoi apply whenever a dotfile is saved
 autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 
-" Define prefix dictionary
-let g:which_key_map =  {}
 
- 
+" -------which-key-prefix------
+" which_key_prefix dictionary
+" Second level dictionaries:
+" 'name' is a special field. It will define the name of the group, e.g., leader-f is the "+file" group.
+" Unnamed groups will show a default empty string.
+
+" =======================================================
+" Create menus based on existing mappings
+" =======================================================
+" You can pass a descriptive text to an existing mapping.
+let g:which_key_map =  {}
+let g:which_key_map.t = {"name": "+table/trans"}
+let g:which_key_map.o = {'name' : '+open'}
+let g:which_key_map.s = {"name": "+set"}
+let g:which_key_map.p = {"name": "+plugins"}
+let g:which_key_map.r = {"name": "+refactor"}
+
+
+
 " ===
 " === Basic Mappings
 " ===
@@ -142,9 +171,7 @@ vnoremap Y "+y
 "nnoremap Y y$
 
 " Open up lazygit
-noremap \g :Git 
 noremap <c-g> :tabe<CR>:-tabmove<CR>:term lazygit<CR>
-" nnoremap <c-n> :tabe<CR>:-tabmove<CR>:term lazynpm<CR>
 
 noremap sk :set nosplitbelow<CR>:split<CR>
 noremap sj :set splitbelow<CR>:split<CR>
@@ -165,8 +192,6 @@ inoremap <C-f> <C-O>l
 inoremap <C-b> <C-O>h
 inoremap <M-f> <C-O>w
 inoremap <M-b> <C-O>b
-inoremap <C-p> <C-O>k
-inoremap <C-n> <C-O>j
 
 inoremap <C-a> <C-O>^
 inoremap <C-e> <C-O>$
@@ -234,34 +259,36 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 nnoremap \t :tabe<CR>:-tabmove<CR>:term sh -c 'st'<CR><C-\><C-N>:q<CR>
 
 " Opening a terminal window
-noremap <LEADER>/ :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
+noremap <LEADER>` :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
 
-let g:which_key_map["/"] = "open-term-below"
+let g:which_key_map['`'] = "open-term-below"
 
 " Press n twice to jump to the next '<++>' and edit it
 noremap next <Esc>/<++><CR>:nohlsearch<CR>c4l
 
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
-
-noremap <c-c> zz
+let g:which_key_map.s.c = "spell-check"
 
 " Auto change directory to current dir
 "autocmd BufEnter * silent! lcd %:p:h
 
 " Call figlet
-noremap tx :r !figlet
+noremap <LEADER>pf :r !figlet 
+let g:which_key_map.p.f = "figlet-{msgs}"
 
 " find and replace
-noremap \s :%s//g<left><left>
+noremap <LEADER>rr :%s//g<left><left>
+let g:which_key_map.r.r = "find&replace"
 
 " set wrap
 noremap <LEADER>sw :set wrap<CR>
+let g:which_key_map.s.w = "wrap"
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 
 " typewriter mode
-noremap Tw :call ToggleTypeWriterMode()<CR>
+noremap <LEADER>st :call ToggleTypeWriterMode()<CR>
 func! ToggleTypeWriterMode()
     exec "w"
     if &scrolloff <= 5
@@ -270,12 +297,21 @@ func! ToggleTypeWriterMode()
         :set scrolloff=5
     endif
 endfunc
+let g:which_key_map.s.t = "type-writter-mode"
+
+" open files
+nnoremap <silent> <leader>oq  :copen<CR>
+nnoremap <silent> <leader>ol  :lopen<CR>
+nnoremap <silent> <leader>ov :e $MYVIMRC<CR>
+let g:which_key_map.o.q = 'quickfix'
+let g:which_key_map.o.l = 'locationlist'
+let g:which_key_map.o.v = 'vimrc'
 
 
 " press f7 to show hlgroup
-"map <F7> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-"\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-"\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+" map <F7> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+" \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " ctrl + q to back to normal mode in terminal
 tnoremap <c-q> <c-\><c-n>
@@ -407,13 +443,16 @@ autocmd BufNewFile CMakeLists.txt 0r ~/.config/nvim/template/CMakeLists.txt
 " ==========================================
 " ================ Plugins =================
 "
-call plug#begin('~/.config/nvim/plugged')
-"call plug#begin('~/.vim/plugged')
+if has("nvim")
+    call plug#begin('~/.config/nvim/plugged')
+else
+    call plug#begin('~/.vim/plugged')
+endif
 
 
     " Apperance
     Plug 'vim-airline/vim-airline'
-    "Plug 'cateduo/vsdark.nvim'
+    Plug 'vim-airline/vim-airline-themes'
     Plug 'tomasr/molokai'
     Plug 'Yggdroot/indentLine'
     "Plug 'connorholyday/vim-snazzy'
@@ -425,10 +464,6 @@ call plug#begin('~/.config/nvim/plugged')
 
     " General Highlighter
     Plug 'rrethy/vim-illuminate'
-
-    " File navigation
-    Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-    Plug 'Xuyuanp/nerdtree-git-plugin'
 
     " vim-surround
     Plug 'tpope/vim-surround'
@@ -461,7 +496,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " Markdown
-    Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+    " Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
     Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle' }
     Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
     Plug 'dkarter/bullets.vim'
@@ -475,7 +510,6 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " Other useful utilities
-    Plug 'terryma/vim-multiple-cursors'
     "Plug 'junegunn/goyo.vim' " distraction free writing mode
     "Plug 'gcmt/wildfire.vim' " in Visual mode, type i' to select all text in '', or type i) i] i} ip
     Plug 'scrooloose/nerdcommenter' " in <space>cc to comment a line
@@ -509,12 +543,14 @@ call plug#end()
 
 
 
+" === airline ===
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline_theme='molokai'
 
 
-" === cateduo/vsdark.nvim ===
+" === colorscheme ===
 set termguicolors
-"let g:vsdark_style = "dark"
-"colorscheme vsdark
 colorscheme molokai
 let g:molokai_original = 1
 let g:rehash256 = 1
@@ -522,7 +558,6 @@ let g:rehash256 = 1
 " === Yggdroot/indentLine ===
 let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
 let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩进
-
 
 " === jiangmiao/auto-pairs ===
 ""default-settings
@@ -535,43 +570,8 @@ let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩�
 "(|)<hello> after fast wrap at |, the word will be (<hello>)
 
 
-" === vim-autoformat ===
 
 
-
-
-" ===
-" === NERDTree
-" ===
-map tt :NERDTreeToggle<CR>
-let NERDTreeMapOpenExpl = ""
-let NERDTreeMapUpdir = ""
-let NERDTreeMapUpdirKeepOpen = "l"
-let NERDTreeMapOpenSplit = ""
-let NERDTreeOpenVSplit = ""
-let NERDTreeMapActivateNode = "i"
-let NERDTreeMapOpenInTab = "o"
-let NERDTreeMapPreview = ""
-let NERDTreeMapCloseDir = "n"
-let NERDTreeMapChangeRoot = "y"
-
-
-" ==
-" == NERDTree-git
-" ==
-let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ "Unknown"   : "?"
-    \ }
-let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
-let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
 
 
 
@@ -586,6 +586,7 @@ let g:coc_global_extensions = [
     \ 'coc-marketplace',
     \ 'coc-clangd',
     \ 'coc-cmake',
+    \ 'coc-xmake',
     \ 'coc-rust-analyzer',
     \ 'coc-css',
     \ 'coc-diagnostic',
@@ -595,6 +596,7 @@ let g:coc_global_extensions = [
     \ 'coc-html',
     \ 'coc-json',
     \ 'coc-lists',
+    \ 'coc-webview',
     \ 'coc-prettier',
     \ 'coc-pyright',
     \ 'coc-snippets',
@@ -611,14 +613,16 @@ let g:coc_global_extensions = [
     \ '@yaegassy/coc-volar-tools',
     \ 'coc-vimlsp',
     \ 'coc-yaml',
-    \ 'coc-yank']
+    \ 'coc-yank',
+    \ 'coc-leetcode'
+    \]
 
 
     "\ 'coc-vetur', "vetur for vue2, use volar-tools for vue3
 
-""""""""""""""""""""
-" Vital Settings!!!
-""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Basic Settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Use <tab> and <S-tab> to navigate completion list: >
 
@@ -643,8 +647,6 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-
-
 " <LEADER>h to show documentation
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <c-o> coc#refresh()
@@ -661,15 +663,16 @@ endfunction
 
 let g:which_key_map["h"] = "show-documentation"
 
-" diagnostic info
-nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
-nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
-nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
-nnoremap <c-c> :CocCommand<CR>
+" <ctrl>+(shift)+p vscode like shortcuts to open command prompt
+nnoremap <c-p> :CocList<CR>
+nnoremap <c-s-p> :CocCommand<CR>
 
-let g:which_key_map.d = "show-diagonostics"
-let g:which_key_map["-"] = "diagnostic-prev"
-let g:which_key_map["="] = "diagnostic-next"
+" GoTo code navigation
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gD :tab sp<CR><Plug>(coc-definition)
+nmap <silent> gt <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 " Text Objects
 xmap kf <Plug>(coc-funcobj-i)
@@ -681,26 +684,58 @@ omap kc <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Useful commands
-" yank
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" === coc-diagnostic
+nnoremap <silent> <LEADER>dt :call CocAction('diagnosticToggle')<cr>
+nnoremap <silent> <LEADER>dd :CocList diagnostics<cr>
+nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
+nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
+
+let g:which_key_map.d = {"name": "+diagnostics", "d": "show-diagnostics", "t": "toggle-diagnostics"}
+let g:which_key_map["-"] = "diagnostic-prev"
+let g:which_key_map["="] = "diagnostic-next"
+
+" === coc-rename
+nmap <leader>rn <Plug>(coc-rename)
+" create a refactor window
+xmap <leader>rf <Plug>(coc-refactor)
+let g:which_key_map.r.n = "rename"
+let g:which_key_map.r.f = "refactor-window"
+
+
+" === coc-yank
 nnoremap <silent> <space>y :<C-u>CocList -A --normal yank<cr>
 let g:which_key_map.y = "yank-list"
-" GoTo code navigation
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gD :tab sp<CR><Plug>(coc-definition)
-nmap <silent> gt <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-" Rename
-nmap <leader>rn <Plug>(coc-rename)
-let g:which_key_map.r = {"name": "+refactor", "n": "rename"}
-" Coc explorer
+
+" === coc-explorer
 nmap <leader>e :CocCommand explorer<CR>
 let g:which_key_map.e = "explorer"
 
+" === coc-multiple-cursors
+nmap <silent> <C-c> <Plug>(coc-cursors-position)
+nmap <silent> <C-d> <Plug>(coc-cursors-word)
+xmap <silent> <C-d> <Plug>(coc-cursors-range)
 
 
-" coc-translator
+" === coc-prettier
+vmap <leader>rp  <Plug>(coc-format-selected)
+nmap <leader>rp  <Plug>(coc-format-selected)
+
+let g:which_key_map.r.p = "format-selected"
+
+" custom command :Prettier to force format current document
+command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
+
+xmap <leader>rP  :Prettier<CR>
+let g:which_key_map.r.P = "force-format-file"
+
+nmap <leader>rc :CocCommand prettier.createConfigFile<CR>
+
+let g:which_key_map.r.c = "create-prettier-config"
+
+" === coc-translator
 "nmap ts <Plug>(coc-translator-p)
 " 重新映射 for do codeAction of selected region
 " function! s:cocActionsOpenFromSelected(type) abort
@@ -708,12 +743,19 @@ let g:which_key_map.e = "explorer"
 " endfunction
 " xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
 " nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
-" coctodolist
-" nnoremap <leader>tn :CocCommand todolist.create<CR>
-" nnoremap <leader>tl :CocList todolist<CR>
-" nnoremap <leader>tu :CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
-" coc-tasks
-" noremap <silent> <leader>tt :CocList tasks<CR>
+
+" === coctodolist
+nnoremap <leader>tn :CocCommand todolist.create<CR>
+nnoremap <leader>tl :CocList todolist<CR>
+nnoremap <leader>tu :CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
+let g:which_key_map.t.n = "Todo-create"
+let g:which_key_map.t.l = "Todo-list"
+let g:which_key_map.t.u = "Todo-update"
+
+" === coc-tasks
+noremap <silent> <leader>tt :CocList tasks<CR>
+let g:which_key_map.t.t = "Tasks-list"
+
 " coc-snippets
 " imap <C-l> <Plug>(coc-snippets-expand)
 " vmap <C-e> <Plug>(coc-snippets-select)
@@ -723,11 +765,34 @@ let g:which_key_map.e = "explorer"
 " let g:snips_author = 'Inkfin'
 " autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
 
+" === coc-markdown-preview-enhanced
+nnoremap <leader>op :CocCommand markdown-preview-enhanced.openPreview<CR>
+let g:which_key_map.o.p = "mardown-preview"
+
+" === coc-webview
+let g:which_key_map.p.w = {"name": "+webview"}
+nnoremap <leader>pwl :CocList webview<CR>
+let g:which_key_map.p.w.l = "list"
+
+
+" === coc-leetcode
+let g:which_key_map.p.l = {
+    \ "name": "+leetcode",
+    \ "l": [":CocCommand leetcode.login"        , "login"],
+    \ "p": [":CocList LeetcodeProblems"         , "list-problems"],
+    \ "r": [":CocCommand leetcode.run"          , "run"],
+    \ "s": [":CocCommand leetcode.submit"       , "submit"],
+    \ "c": [":CocCommand leetcode.comments"     , "comments"]
+    \ }
+
+
+
 
 
 " ===
 " === vimspector
 " ===
+" debugger for vim
 let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 "=========================================================================================================================
 "|      _Key_      |                _Mapping_                |                         _Function_                        |
@@ -750,6 +815,23 @@ let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 "-------------------------------------------------------------------------------------------------------------------------
 "| 'Shift F11'     | '<Plug>VimspectorStepOut'               | Step out of current function scope                        |
 "-------------------------------------------------------------------------------------------------------------------------
+let g:which_key_map_fn = {
+    \ "name":           "+fn_keys",
+    \ "<F5>":           "vimsp-continue",
+    \ "<S-F5>":         "vimsp-stop",
+    \ "<C-S-F5>":       "vimsp-restart",
+    \ "<F6>":           "vimsp-pause",
+    \ "<F9>":           "vimsp-toggle-breakpoint",
+    \ "<S-F9>":         "vimsp-addfunc-breakpoint",
+    \ "<F10>":          "vimsp-step-over",
+    \ "<F11>":          "vimsp-vimsp-step-into",
+    \ "<S-F11>":        "vimsp-vimsp-step-out"
+    \ }
+
+let g:which_key_map.p.v = {"name": "+vimspector"}
+nnoremap <Leader>pvc :<c-u>WhichKey  'vimspector-cheat-sheet'<CR>
+call which_key#register('vimspector-cheat-sheet', "g:which_key_map_fn")
+let g:which_key_map.p.v.c = "show-cheat-sheet"
 
 function! s:generate_vimspector_conf()
   if empty(glob( '.vimspector.json' ))
@@ -765,9 +847,13 @@ function! s:generate_vimspector_conf()
 endfunction
 
 command! -nargs=0 Gvimspector :call s:generate_vimspector_conf()
+nnoremap <Leader>pvg :Gvimspector<CR>
+let g:which_key_map.p.v.g = "generate-vimsp-conf"
 
-nmap <Leader>v <Plug>VimspectorBalloonEval
-xmap <Leader>v <Plug>vimspectorBalloonEval
+
+nmap <Leader>pve <Plug>VimspectorBalloonEval
+xmap <Leader>pve <Plug>vimspectorBalloonEval
+let g:which_key_map.p.v.e = "balloon-eval"
 
 
 
@@ -815,7 +901,7 @@ noremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
 "noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
 
 let g:which_key_map.f = {
-    \ "name": "+navigate",
+    \ "name": "+find",
     \ "g": "function",
     \ "t": "bufTag",
     \ "l": "line",
@@ -824,35 +910,6 @@ let g:which_key_map.f = {
     \ "s": "vis-select",
     \ "o": "recall-vis-select"
     \ }
-
-
-
-" ===
-" === iamcco/markdown-preview.vim
-" ===
-
-"let g:mkdp_auto_start = 0
-"let g:mkdp_auto_close = 1
-"let g:mkdp_refresh_slow = 0
-"let g:mkdp_command_for_global = 0
-"let g:mkdp_open_to_the_world = 0
-"let g:mkdp_open_ip = ''
-"let g:mkdp_browser = 'chromium'
-"let g:mkdp_echo_preview_url = 0
-"let g:mkdp_browserfunc = ''
-"let g:mkdp_preview_options = {
-    "\ 'mkit': {},
-    "\ 'katex': {},
-    "\ 'uml': {},
-    "\ 'maid': {},
-    "\ 'disable_sync_scroll': 0,
-    "\ 'sync_scroll_type': 'middle',
-    "\ 'hide_yaml_meta': 1
-    "\ }
-"let g:mkdp_markdown_css = ''
-"let g:mkdp_highlight_css = ''
-"let g:mkdp_port = ''
-"let g:mkdp_page_title = '「${name}」'
 
 
 
@@ -1052,6 +1109,7 @@ let g:echodoc_enable_at_startup = 1
 
 
 
+
 " ===
 " === vim-which-key
 " ===
@@ -1064,36 +1122,11 @@ nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
 
-" Second level dictionaries:
-" 'name' is a special field. It will define the name of the group, e.g., leader-f is the "+file" group.
-" Unnamed groups will show a default empty string.
-
-" =======================================================
-" Create menus based on existing mappings
-" =======================================================
-" You can pass a descriptive text to an existing mapping.
 
 
-nnoremap <silent> <leader>fv :e $MYVIMRC<CR>
-let g:which_key_map.f.v = 'open-vimrc'
 
-nnoremap <silent> <leader>oq  :copen<CR>
-nnoremap <silent> <leader>ol  :lopen<CR>
-let g:which_key_map.o = {
-      \ 'name' : '+open',
-      \ 'q' : 'open-quickfix'    ,
-      \ 'l' : 'open-locationlist',
-      \ }
 
-let g:which_key_map.t = {
-    \ "name": "+table/trans"
-    \ }
 
-let g:which_key_map.s = {
-    \ "name": "+set",
-    \ "w": "wrap",
-    \ "c": "spell-check"
-    \ }
 
 
 " =======================================================
@@ -1112,27 +1145,5 @@ let g:which_key_map.s = {
 call which_key#register('<Space>', "g:which_key_map", 'n')
 call which_key#register('<Space>', "g:which_key_map_visual", 'v')
 
-autocmd! FileType which_key
-autocmd  FileType which_key set laststatus=0 noshowmode noruler
-  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 
-
-
-
-
-""""" Platform Specific """""
-"" --- MacOS ---
-if has('mac')
-
-    " === ybian/smartim ===
-    "    some people reported that it is slow while editing with vim-multiple-cursors, to fix this, put this in .vimrc:
-    let g:smartim_default = 'com.apple.keylayout.ABC'
-    function! Multiple_cursors_before()
-      let g:smartim_disable = 1
-    endfunction
-    function! Multiple_cursors_after()
-      unlet g:smartim_disable
-    endfunction
-
-endif
 
