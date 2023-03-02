@@ -3,15 +3,17 @@
     "clangd.compilationDatabasePath": ".vscode",
     "suggest.noselect": true,
     "snippets.ultisnips.pythonPrompt": false,
-    "python.venvPath":
-    {{- if eq .chezmoi.os "darwin" }} "/opt/anaconda3/envs"{{ end }}
-    {{- if eq .chezmoi.os "linux" }} ""{{ end }},
     "python.pythonPath": "$HOME/.config/nvim/execute_python.sh",
+    {{if eq .chezmoi.os "darwin" -}}
+    "python.venvPath": "/opt/anaconda3/envs",
+    "webview.openCommand": "open -a Safari \"%u\"",
+    {{- end }}
+    {{- if eq .chezmoi.os "linux" -}}
+    "webview.openCommand": "open \"%u\"",
+    {{- end }}
     "leetcode.enabled": true,
     "leetcode.language": "cpp",
-    "webview.openCommand": "open -a Safari \"%u\"",
     "markdown-preview-enhanced.mathRenderingOption": "MathJax",
     "markdown-preview-enhanced.previewTheme": "one-dark.css",
     "markdown-preview-enhanced.mermaidTheme": "default"
-
 }

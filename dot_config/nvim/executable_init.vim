@@ -360,7 +360,7 @@ func! CompileRunGcc()
     elseif &filetype == 'html'
         silent! exec "!".g:mkdp_browser." % &"
     elseif &filetype == 'markdown'
-        exec "InstantMarkdownPreview"
+        exec "CocCommand markdown-preview-enhanced.openPreview"
     elseif &filetype == 'tex'
         silent! exec "VimtexStop"
         silent! exec "VimtexCompile"
@@ -554,6 +554,7 @@ set termguicolors
 colorscheme molokai
 let g:molokai_original = 1
 let g:rehash256 = 1
+
 
 " === Yggdroot/indentLine ===
 let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
@@ -1144,6 +1145,5 @@ vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
 call which_key#register('<Space>', "g:which_key_map", 'n')
 call which_key#register('<Space>', "g:which_key_map_visual", 'v')
-
 
 
