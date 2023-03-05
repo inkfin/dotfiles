@@ -2,7 +2,7 @@
   "title": "My Custom Key Modifiers",
   "rules": [
     {
-      "description": "caps_lock 短按 esc , 长按 Ctrl, ctrl - caps_lock 切换大小写",
+      "description": "caps_lock 短按 esc , 长按 Ctrl, control-escape 切换大小写",
       "manipulators": [
         {
           "from": {
@@ -29,15 +29,15 @@
         {
           "type": "basic",
           "from": {
-            "key_code": "caps_lock",
+            "key_code": "escape",
             "modifiers": {
               "mandatory": [
-                "left_control"
+                "control"
               ],
               "optional": [
                 "caps_lock",
-                "option",
                 "command",
+                "option",
                 "shift"
               ]
             }
