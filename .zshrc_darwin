@@ -133,6 +133,7 @@ alias gc="git commit"
 alias gp="git pull"
 alias gP="git push"
 alias lg="lazygit"
+alias tnew="tnux new -s "
 
 # Proxy
 alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"

@@ -173,6 +173,7 @@ alias gc "git commit"
 alias gp "git pull"
 alias gP "git push"
 alias lg "lazygit"
+alias tnew "tmux new -s "
 
 # SQL
 # alias sqlstart "pg_ctl -D /usr/local/var/postgres start"

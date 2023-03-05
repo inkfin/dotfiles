@@ -488,13 +488,6 @@ endif
     Plug 'mbbill/undotree/'
 
 
-    " Git
-    "Plug 'rhysd/conflict-marker.vim'
-    "Plug 'tpope/vim-fugitive'
-    "Plug 'mhinz/vim-signify'
-    "Plug 'gisphm/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
-
-
     " Markdown
     " Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
     Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle' }
@@ -598,6 +591,7 @@ let g:coc_global_extensions = [
     \ 'coc-json',
     \ 'coc-lists',
     \ 'coc-webview',
+    \ 'coc-highlight',
     \ 'coc-prettier',
     \ 'coc-pyright',
     \ 'coc-snippets',
@@ -687,6 +681,9 @@ omap ac <Plug>(coc-classobj-a)
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" === coc-highlight
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
 
 " === coc-diagnostic
 nnoremap <silent> <LEADER>dt :call CocAction('diagnosticToggle')<cr>
@@ -719,6 +716,9 @@ nmap <silent> <C-c> <Plug>(coc-cursors-position)
 nmap <silent> <C-d> <Plug>(coc-cursors-word)
 xmap <silent> <C-d> <Plug>(coc-cursors-range)
 
+" === coc-ci
+nmap <silent> w <Plug>(coc-ci-w)
+nmap <silent> b <Plug>(coc-ci-b)
 
 " === coc-prettier
 vmap <leader>rp  <Plug>(coc-format-selected)

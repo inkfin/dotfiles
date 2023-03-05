@@ -2,6 +2,55 @@
   "title": "My Custom Key Modifiers",
   "rules": [
     {
+      "description": "caps_lock 短按 esc , 长按 Ctrl, ctrl - caps_lock 切换大小写",
+      "manipulators": [
+        {
+          "from": {
+            "key_code": "caps_lock",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "left_control",
+              "lazy": true
+            }
+          ],
+          "to_if_alone": [
+            {
+              "key_code": "escape"
+            }
+          ],
+          "type": "basic"
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "caps_lock",
+            "modifiers": {
+              "mandatory": [
+                "left_control"
+              ],
+              "optional": [
+                "caps_lock",
+                "option",
+                "command",
+                "shift"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "caps_lock"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "description": "caps_lock 短按 esc , 长按 fn; Ctrl-Caps 切换大小写",
       "manipulators": [
         {
@@ -281,7 +330,7 @@
           "to": [
             {
               "select_input_source": {
-                "input_source_id": "com.sogou.inputmethod.sogou.pinyin"
+                "input_source_id": "com.apple.inputmethod.SCIM.ITABC"
               }
             }
           ]
