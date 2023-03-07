@@ -295,6 +295,9 @@ alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
 
+# notmuch python site-package
+export PYTHONPATH="$PYTHONPATH:/opt/homebrew/opt/notmuch/libexec/lib/python3.11/site-packages"
+
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

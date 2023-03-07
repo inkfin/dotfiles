@@ -158,7 +158,7 @@ alias matrix "cmatrix -sna"
 
 alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
 alias vimfish "vim ~/.local/share/chezmoi/dot_config/fish/config.fish"
-alias vimzsh "vim ~/.local/share/chezmoi/dot_zshrc_darwin"
+alias vimzsh "vim ~/.local/share/chezmoi/.zshrc_darwin"
 alias sourcefish "source ~/.config/fish/config.fish"
 
 alias cz "chezmoi"
@@ -234,3 +234,5 @@ alias Safari "open -a Safari.app"
 # Vim
 alias toeflnotes "vim /Users/inkfin/Documents/学习资料/English\ Learning/TOEFL/Tofel练习/useful_notes.md"
 
+# notmuch
+set -x PYTHONPATH "/opt/homebrew/opt/notmuch/libexec/lib/python3.11/site-packages" $PYTHONPATH
