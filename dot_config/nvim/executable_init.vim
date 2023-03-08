@@ -213,6 +213,8 @@ noremap th :tabp<CR>
 noremap tw :tabc<CR>
 noremap tmh :tabm -<CR>
 noremap tml :tabm +<CR>
+noremap Tl :bn<CR>
+noremap Th :bp<CR>
 
 " Place the two screens up and down
 "noremap sc <C-w>t<C-w>S
@@ -436,6 +438,42 @@ autocmd BufNewFile *.cpp 0r ~/.config/nvim/template/template.cpp
 autocmd BufNewFile CMakeLists.txt 0r ~/.config/nvim/template/CMakeLists.txt
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+""" Neovide Configurations
+if exists("g:neovide")
+
+set guifont=FiraCode\ Nerd\ Font\ Mono:h18
+set linespace=0
+let g:neovide_scale_factor = 1.0
+
+"" Background Color (Currently macOS only)
+if has('mac')
+" g:neovide_transparency should be 0 if you want to unify transparency of content and title bar.
+let g:neovide_transparency = 0.0
+let g:transparency = 0.8
+let g:neovide_background_color = '#0f1117'.printf('%x', float2nr(255 * g:transparency))
+else
+let g:neovide_transparency = 0.8
+endif
+
+" Floating Blur Amount
+let g:neovide_floating_blur_amount_x = 2.0
+let g:neovide_floating_blur_amount_y = 2.0
+
+let g:neovide_hide_mouse_when_typing = v:true
+let g:neovide_underline_automatic_scaling = v:true
+let g:neovide_confirm_quit = v:true
+let g:neovide_fullscreen = v:false
+let g:neovide_input_macos_alt_is_meta = v:true
+
+" Animations
+let g:neovide_cursor_animation_length = 0.13
+let g:neovide_scroll_animation_length = 0.3
+let g:neovide_cursor_vfx_mode = "sonicboom"
+
+
+endif
 
 
 

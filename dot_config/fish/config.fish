@@ -150,6 +150,7 @@ alias ibrew 'arch -x86_64 /usr/local/bin/brew' # X86 Homebrew
 
 alias vim nvim
 alias v nvim
+alias nv neovide
 alias ra ranger
 alias ee exit
 alias cd.. "cd .."
