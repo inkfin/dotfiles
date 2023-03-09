@@ -20,8 +20,8 @@
 (defconst *is-windows* (memq system-type '(ms-dos windows-nt cygwin)))
 
 (when *is-mac*
-  (setq mac-command-modifier 'super)
-  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'super)
   (setq mac-right-control-modifier 'alt))
 
 
@@ -58,6 +58,7 @@
 (add-to-list 'default-frame-alist '(height . 50)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 (xterm-mouse-mode t)
 (setq custom-enabled-themes '(tango-dark))
+(set-frame-font "JetBrainsMono Nerd Font Mono-18")
 
 (require 'keybindings-config)
 
