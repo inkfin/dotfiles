@@ -151,6 +151,8 @@ let g:which_key_map.s = {"name": "+set"}
 let g:which_key_map.p = {"name": "+plugins"}
 let g:which_key_map.r = {"name": "+refactor"}
 
+let g:which_key_map_visual = {}
+
 
 
 " ===
@@ -196,15 +198,16 @@ inoremap <M-b> <C-O>b
 inoremap <C-a> <C-O>^
 inoremap <C-e> <C-O>$
 
-
+" <C-y> move window up, <C-e> move window down
+" zz move cursor line to center, zt to top, zb to bottom
 " Ctrl + J or K will move down/up the view port without moving the cursor
-" noremap <C-> 5<C-y>
-" noremap <C-> 5<C-e>
+noremap <C-j> 5<C-e>
+noremap <C-k> 5<C-y>
 
-nnoremap <C-K> :res -5<CR>
-nnoremap <C-J> :res +5<CR>
-nnoremap <C-L> :vertical resize+5<CR>
-nnoremap <C-H> :vertical resize-5<CR>
+nnoremap <C-S-k> :res -5<CR>
+nnoremap <C-S-j> :res +5<CR>
+nnoremap <C-S-l> :vertical resize+5<CR>
+nnoremap <C-S-h> :vertical resize-5<CR>
 
 " Tab Controll
 noremap ti :tabe<CR>
@@ -215,6 +218,7 @@ noremap tmh :tabm -<CR>
 noremap tml :tabm +<CR>
 noremap Tl :bn<CR>
 noremap Th :bp<CR>
+noremap Tw :bd<CR>
 
 " Place the two screens up and down
 "noremap sc <C-w>t<C-w>S
@@ -515,6 +519,7 @@ endif
     " Auto Complete
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     "Plug 'wellle/tmux-complete.vim'
+    Plug 'honza/vim-snippets' " snippets libraries
 
     " Autoformat
     Plug 'vim-autoformat/vim-autoformat'
@@ -524,7 +529,6 @@ endif
 
     " Undo Tree
     Plug 'mbbill/undotree/'
-
 
     " Markdown
     " Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
@@ -616,9 +620,13 @@ set shortmess+=c
 let g:coc_global_extensions = [
     \ 'coc-actions',
     \ 'coc-marketplace',
+    \ 'coc-dictionary',
+    \ 'coc-tag',
+    \ 'coc-word',
+    \ 'coc-emoji',
+    \ 'coc-snippets',
     \ 'coc-clangd',
     \ 'coc-cmake',
-    \ 'coc-xmake',
     \ 'coc-rust-analyzer',
     \ 'coc-css',
     \ 'coc-diagnostic',
@@ -632,7 +640,6 @@ let g:coc_global_extensions = [
     \ 'coc-highlight',
     \ 'coc-prettier',
     \ 'coc-pyright',
-    \ 'coc-snippets',
     \ 'coc-sourcekit',
     \ 'coc-stylelint',
     \ 'coc-syntax',
@@ -647,7 +654,8 @@ let g:coc_global_extensions = [
     \ 'coc-vimlsp',
     \ 'coc-yaml',
     \ 'coc-yank',
-    \ 'coc-leetcode'
+    \ 'coc-leetcode',
+    \ 'coc-tabnine'
     \]
 
 
@@ -665,7 +673,6 @@ let g:coc_global_extensions = [
     endfunction
 
 " Insert <tab> when previous text is space, refresh completion if not.
-let g:coc_snippet_next = '<tab>'
 inoremap <silent><expr> <TAB>
     \ coc#pum#visible() ?
     \   coc#pum#next(1) :
@@ -721,6 +728,27 @@ omap ac <Plug>(coc-classobj-a)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " === coc-highlight
 autocmd CursorHold * silent call CocActionAsync('highlight')
+
+
+" === coc-snippets
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+let g:which_key_map_visual.x = "convert-snippet"
 
 
 " === coc-diagnostic
@@ -794,15 +822,6 @@ let g:which_key_map.t.u = "Todo-update"
 " === coc-tasks
 noremap <silent> <leader>tt :CocList tasks<CR>
 let g:which_key_map.t.t = "Tasks-list"
-
-" coc-snippets
-" imap <C-l> <Plug>(coc-snippets-expand)
-" vmap <C-e> <Plug>(coc-snippets-select)
-" let g:coc_snippet_next = '<c-e>'
-" let g:coc_snippet_prev = '<c-n>'
-"imap <C-e> <Plug>(coc-snippets-expand-jump)
-" let g:snips_author = 'Inkfin'
-" autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
 
 " === coc-markdown-preview-enhanced
 nnoremap <leader>op :CocCommand markdown-preview-enhanced.openPreview<CR>
@@ -901,6 +920,7 @@ let g:which_key_map.p.v.e = "balloon-eval"
 " ===
 let g:Lf_HideHelp = 0
 let g:Lf_UseCache = 0
+let g:LF_ShowHidden = 1
 let g:Lf_IgnoreCurrentBufferName = 1
 " popup mode
 let g:Lf_WindowPosition = 'popup'
@@ -914,7 +934,7 @@ let g:Lf_DefaultExternalTool = 'rg'
 " ignore
 let g:Lf_WildIgnore = {
     \ 'dir': ['.svn', '.git', '.hg', '.vscode', '.ideas', 'CMakeFiles', 'node_modules'],
-    \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]']
+    \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]', '.DS_Store']
     \}
 
 let g:Lf_ShortcutF = "<leader>ff"
@@ -1028,8 +1048,8 @@ map <Leader> <Plug>(easymotion-prefix)
 " <Leader>f{char} to move to {char}
 map  <Leader>m <Plug>(easymotion-bd-f)
 nmap <Leader>m <Plug>(easymotion-overwin-f)
-
 let g:which_key_map.m = "move-to-{char}"
+let g:which_key_map_visual.m = "move-to-{char}"
 
 " s{char}{char} to move to {char}{char}
 nmap s <Plug>(easymotion-overwin-f2)
@@ -1037,14 +1057,14 @@ nmap s <Plug>(easymotion-overwin-f2)
 " Move to line
 map  <Leader>L <Plug>(easymotion-bd-jk)
 nmap <Leader>L <Plug>(easymotion-overwin-line)
-
 let g:which_key_map.L = "move-to-line"
+let g:which_key_map_visual.L = "move-to-line"
 
 " Move to word
 map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
-
 let g:which_key_map.w = "move-to-word"
+let g:which_key_map_visual.w = "move-to-word"
 
 
 
