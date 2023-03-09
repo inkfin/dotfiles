@@ -71,24 +71,9 @@
 
 (setq org-pretty-table-charset "╒╕╘╛╤╡╧╞╪═│")
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(tango-dark))
- '(custom-safe-themes
-   '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
- '(org-pretty-table-charset "╒╕╘╛╤╡╧╞╪═│")
- '(package-selected-packages '(flycheck ivy use-package))
- '(smtpmail-smtp-server "smtp.qq.com" t)
- '(smtpmail-smtp-service 25 t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#2e3436" :foreground "#eeeeec" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 181 :width normal :foundry "nil" :family "JetBrainsMono Nerd Font Mono")))))
+
+(setq custom-file "~/.config/emacs/custom.el")
+(load custom-file)
 
 (provide 'init)
 
