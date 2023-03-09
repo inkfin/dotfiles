@@ -58,7 +58,8 @@
 (add-to-list 'default-frame-alist '(height . 50)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 (xterm-mouse-mode t)
 (setq custom-enabled-themes '(tango-dark))
-(set-frame-font "JetBrainsMono Nerd Font Mono-18")
+(add-to-list 'default-frame-alist 
+             '(font . "JetBrainsMono Nerd Font Mono-18:weight=medium"))
 
 (require 'keybindings-config)
 

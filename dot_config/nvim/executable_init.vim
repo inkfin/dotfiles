@@ -618,6 +618,7 @@ set hidden
 set updatetime=300
 set shortmess+=c
 let g:coc_global_extensions = [
+    \ 'coc-lists',
     \ 'coc-actions',
     \ 'coc-marketplace',
     \ 'coc-dictionary',
@@ -635,7 +636,6 @@ let g:coc_global_extensions = [
     \ 'coc-gitignore',
     \ 'coc-html',
     \ 'coc-json',
-    \ 'coc-lists',
     \ 'coc-webview',
     \ 'coc-highlight',
     \ 'coc-prettier',
@@ -654,6 +654,7 @@ let g:coc_global_extensions = [
     \ 'coc-vimlsp',
     \ 'coc-yaml',
     \ 'coc-yank',
+    \ 'coc-ci',
     \ 'coc-leetcode',
     \ 'coc-tabnine'
     \]
