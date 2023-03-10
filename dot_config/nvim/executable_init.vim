@@ -61,7 +61,8 @@ if has('persistent_undo')
     set undodir=~/.config/nvim/tmp/undo,.
 endif
 set colorcolumn=100
-set updatetime=100
+set signcolumn=yes
+set updatetime=300
 set virtualedit=block
 
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -146,12 +147,15 @@ autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 " You can pass a descriptive text to an existing mapping.
 let g:which_key_map =  {}
 let g:which_key_map.t = {"name": "+table/trans"}
-let g:which_key_map.o = {'name' : '+open'}
+let g:which_key_map.o = {"name" : "+open"}
 let g:which_key_map.s = {"name": "+set"}
 let g:which_key_map.p = {"name": "+plugins"}
 let g:which_key_map.r = {"name": "+refactor"}
+let g:which_key_map.d = {"name": "+diagnostics"}
 
 let g:which_key_map_visual = {}
+let g:which_key_map_visual.r = {"name": "+refactor"}
+let g:which_key_map_visual.a = {"name": "+apply-code-actions"}
 
 
 
@@ -184,30 +188,35 @@ noremap \k <C-w>k
 noremap \j <C-w>j
 noremap \h <C-w>h
 noremap \l <C-w>l
+"" EXAMPLES:
+""  <C-w>hjkl (or<arrows>) move around windows
+""  <C-w>w toggle focus window (emacs like)
+""  <C-w>o fullscreen focus window
+""  <C-w>c close current window
 noremap J 5j
 noremap K 5k
 noremap W 5w
 noremap B 5b
 
-"Emacs like navigation keys
-inoremap <C-f> <C-O>l
-inoremap <C-b> <C-O>h
-inoremap <M-f> <C-O>w
-inoremap <M-b> <C-O>b
+vnoremap H ^
+vnoremap L $
 
+"Emacs like navigation keys
 inoremap <C-a> <C-O>^
 inoremap <C-e> <C-O>$
 
 " <C-y> move window up, <C-e> move window down
 " zz move cursor line to center, zt to top, zb to bottom
 " Ctrl + J or K will move down/up the view port without moving the cursor
-noremap <C-j> 5<C-e>
-noremap <C-k> 5<C-y>
+" noremap <C-j> 5<C-e>
+" noremap <C-k> 5<C-y>
+noremap <C-e> 10<C-e>
+noremap <C-y> 10<C-y>
 
-nnoremap <C-S-k> :res -5<CR>
-nnoremap <C-S-j> :res +5<CR>
-nnoremap <C-S-l> :vertical resize+5<CR>
-nnoremap <C-S-h> :vertical resize-5<CR>
+noremap <C-S-k> :res -5<CR>
+noremap <C-S-j> :res +5<CR>
+noremap <C-S-l> :vertical resize+5<CR>
+noremap <C-S-h> :vertical resize-5<CR>
 
 " Tab Controll
 noremap ti :tabe<CR>
@@ -614,6 +623,7 @@ let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩�
 " ===
 " === coc.nvim
 " ===
+
 set hidden
 set updatetime=300
 set shortmess+=c
@@ -621,6 +631,7 @@ let g:coc_global_extensions = [
     \ 'coc-lists',
     \ 'coc-actions',
     \ 'coc-marketplace',
+    \ 'coc-project',
     \ 'coc-dictionary',
     \ 'coc-tag',
     \ 'coc-word',
@@ -681,6 +692,12 @@ inoremap <silent><expr> <TAB>
     \     "\<C-r >=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
     \     CheckBackSpace() ? "\<Tab>" : coc#refresh()
 
+" Add `:Format` command to format current buffer
+command! -nargs=0 Format :call CocActionAsync('format')
+" Add `:Fold` command to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+" Add `:OR` command for organize imports of the current buffer
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
@@ -704,9 +721,17 @@ endfunction
 
 let g:which_key_map["h"] = "show-documentation"
 
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s)
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
 " <ctrl>+(shift)+p vscode like shortcuts to open command prompt
-nnoremap <c-p> :CocList<CR>
-nnoremap <c-s-p> :CocCommand<CR>
+nnoremap <C-l> :CocList<CR>
+nnoremap <C-s-p> :CocCommand<CR>
 
 " GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
@@ -715,35 +740,95 @@ nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Text Objects
-xmap kf <Plug>(coc-funcobj-i)
+" Search workspace symbols
+nnoremap <silent><nowait> <space>os  :<C-u>CocList -I symbols<cr>
+let g:which_key_map.o.s = "workspace-symbols"
+
+
+" Applying code actions to the selected code block
+" Example: `<leader>aap` for current paragraph
+xmap <silent> <leader>a <Plug>(coc-codeaction-selected)
+nmap <silent> <leader>a <Plug>(coc-codeaction-selected)
+let g:which_key_map.a = "codeaction+{range}"
+
+" Remap keys for applying code actions at the cursor position
+nmap <silent> <leader>ac  <Plug>(coc-codeaction-cursor)
+" Remap keys for apply code actions affect whole buffer
+nmap <silent> <leader>ab  <Plug>(coc-codeaction-source)
+let g:which_key_map.ac = "codeaction-under-cursor"
+let g:which_key_map.ab = "codeaction-whole-buffer"
+
+" Run the Code Lens action on the current line
+nmap <silent> <leader>l  <Plug>(coc-codelens-action)
+let g:which_key_map.l = "codelens-action"
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server
+" ======================
+" Select inside function.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+" Select around function.
 xmap af <Plug>(coc-funcobj-a)
-omap kf <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
-xmap kc <Plug>(coc-classobj-i)
-omap kc <Plug>(coc-classobj-i)
+" Select inside class/struct/interface.
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+" Select around class/struct/interface.
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
+" EXAMPLES: vim has implemented many ranges as follows
+" [w]'word', [W]'WORD', [s]'sentence', [p]'paragraph', [t]'tags', [b]'()'
+"
+" Use CTRL-S for selections ranges
+" NOTE: Requires 'textDocument/selectionRange' support of language server
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+
+" Remap <C-f> and <C-b> to scroll float windows/popups
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Jump into first float window
+nmap <silent> <C-w><C-p> <Plug>(coc-float-jump)
+
+" Add (Neo)Vim's native statusline support
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Coc-extensions
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+" Manage extensions
+nnoremap <silent><nowait> <space>pm  :<C-u>CocList extensions<cr>
+let g:which_key_map.p.m = "manage-extensions"
+
 " === coc-highlight
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 
 " === coc-snippets
 " Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
-
+" imap <C-l> <Plug>(coc-snippets-expand)
 " Use <C-j> for select text for visual placeholder of snippet.
 vmap <C-j> <Plug>(coc-snippets-select)
-
 " Use <C-k> for jump to previous placeholder, it's default of coc.nvim
 let g:coc_snippet_prev = '<c-k>'
-
 " Use <C-j> for jump to next placeholder, it's default of coc.nvim
 let g:coc_snippet_next = '<c-j>'
-
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 
@@ -755,19 +840,34 @@ let g:which_key_map_visual.x = "convert-snippet"
 " === coc-diagnostic
 nnoremap <silent> <LEADER>dt :call CocAction('diagnosticToggle')<cr>
 nnoremap <silent> <LEADER>dd :CocList diagnostics<cr>
-nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
-nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
+nnoremap <silent> <LEADER>da :CocList diagnostics<cr>
+" Apply the most preferred quickfix action to fix diagnostic on the current line
+nnoremap <leader>df  <Plug>(coc-fix-current)
+nmap <silent> g[ <Plug>(coc-diagnostic-prev)
+nmap <silent> g] <Plug>(coc-diagnostic-next)
 
-let g:which_key_map.d = {"name": "+diagnostics", "d": "show-diagnostics", "t": "toggle-diagnostics"}
+let g:which_key_map.d.d = "show-diagnostics"
+let g:which_key_map.d.t = "toggle-diagnostics"
+let g:which_key_map.d.f = "quick-fix"
 let g:which_key_map["-"] = "diagnostic-prev"
 let g:which_key_map["="] = "diagnostic-next"
 
 " === coc-rename
 nmap <leader>rn <Plug>(coc-rename)
 " create a refactor window
-xmap <leader>rf <Plug>(coc-refactor)
+nmap <leader>rf <Plug>(coc-refactor)
 let g:which_key_map.r.n = "rename"
-let g:which_key_map.r.f = "refactor-window"
+let g:which_key_map.r.f = "open-refactor-window"
+" Change all word in the buffer
+nmap <leader>rw :CocCommand document.renameCurrentWord<CR>
+let g:which_key_map.r.w = "all-current-word"
+" Remap keys for applying refactor code actions
+nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>rs <Plug>(coc-codeaction-refactor-selected)
+nmap <silent> <leader>rs <Plug>(coc-codeaction-refactor-selected)
+let g:which_key_map.r.e = "refactor"
+let g:which_key_map.r.s = "refactor-selected"
+let g:which_key_map_visual.r.s = "refactor-selected"
 
 
 " === coc-yank
@@ -792,6 +892,7 @@ vmap <leader>rp  <Plug>(coc-format-selected)
 nmap <leader>rp  <Plug>(coc-format-selected)
 
 let g:which_key_map.r.p = "format-selected"
+let g:which_key_map_visual.r.p ="format-selected"
 
 " custom command :Prettier to force format current document
 command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
@@ -825,8 +926,8 @@ noremap <silent> <leader>tt :CocList tasks<CR>
 let g:which_key_map.t.t = "Tasks-list"
 
 " === coc-markdown-preview-enhanced
-nnoremap <leader>op :CocCommand markdown-preview-enhanced.openPreview<CR>
-let g:which_key_map.o.p = "mardown-preview"
+nnoremap <leader>om :CocCommand markdown-preview-enhanced.openPreview<CR>
+let g:which_key_map.o.m = "mardown-preview"
 
 " === coc-webview
 let g:which_key_map.p.w = {"name": "+webview"}
@@ -874,8 +975,7 @@ let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 "-------------------------------------------------------------------------------------------------------------------------
 "| 'Shift F11'     | '<Plug>VimspectorStepOut'               | Step out of current function scope                        |
 "-------------------------------------------------------------------------------------------------------------------------
-let g:which_key_map_fn = {
-    \ "name":           "+fn_keys",
+let g:which_key_map_vimspector = {
     \ "<F5>":           "vimsp-continue",
     \ "<S-F5>":         "vimsp-stop",
     \ "<C-S-F5>":       "vimsp-restart",
@@ -888,8 +988,8 @@ let g:which_key_map_fn = {
     \ }
 
 let g:which_key_map.p.v = {"name": "+vimspector"}
-nnoremap <Leader>pvc :<c-u>WhichKey  'vimspector-cheat-sheet'<CR>
-call which_key#register('vimspector-cheat-sheet', "g:which_key_map_fn")
+nnoremap <Leader>pvc :WhichKey 'vimspector-cheat-sheet'<CR>
+call which_key#register('vimspector-cheat-sheet', "g:which_key_map_vimspector")
 let g:which_key_map.p.v.c = "show-cheat-sheet"
 
 function! s:generate_vimspector_conf()
@@ -930,7 +1030,7 @@ let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu S
 let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
 " set the working directory
 let g:Lf_WorkingDirectoryMode = 'Ac'
-let g:Lf_RootMarkers = ['.git', '.svn', '.hg', '.vscode', '.project', '.root', '.idea', '.vim']
+let g:Lf_RootMarkers = ['.git', '.svn', '.hg', '.vscode', '.project', '.root', '.idea', '.vim', '.cargo']
 let g:Lf_DefaultExternalTool = 'rg'
 " ignore
 let g:Lf_WildIgnore = {
@@ -1107,7 +1207,7 @@ let g:SignatureMap = {
 " === Undotree
 " ===
 let g:undotree_DiffAutoOpen = 0
-map L :UndotreeToggle<CR>
+nnoremap L :UndotreeToggle<CR>
 
 
 " ===
@@ -1132,10 +1232,12 @@ vmap <silent> <Leader>tw <Plug>TranslateWV
 
 "Once the translation window is opened, type <C-w>p to jump into it and again to jump back
 "Beside, there is a function which can be used to scroll window, only works in neovim.
-nnoremap <silent><expr> <C-w><C-f> translator#window#float#has_scroll() ?
-                            \ translator#window#float#scroll(1) : "\<M-f>"
-nnoremap <silent><expr> <C-w><C-b> translator#window#float#has_scroll() ?
-                            \ translator#window#float#scroll(0) : "\<M-f>"
+" if has('nvim')
+" nnoremap <silent><expr> <C-w><C-f> translator#window#float#has_scroll() ?
+                            " \ translator#window#float#scroll(1) : "\<M-f>"
+" nnoremap <silent><expr> <C-w><C-b> translator#window#float#has_scroll() ?
+                            " \ translator#window#float#scroll(0) : "\<M-f>"
+" endif
 
 
 
@@ -1177,6 +1279,14 @@ set timeoutlen=500
 
 let g:mapleader = "\<Space>"
 let g:maplocalleader = ","
+let g:which_key_use_floating_win = 1
+let g:which_key_floating_relative_win = 1
+let g:which_key_floating_opts = { 'col': '-3', 'row': '-1' }
+let g:which_key_fallback_to_native_key=1
+let g:which_key_run_map_on_popup = 1
+let g:which_key_display_names = {'<CR>': '↵', '<TAB>': '⇆'}
+autocmd FileType which_key highlight WhichKeyFloating ctermfg=252 ctermbg=none
+
 
 nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
