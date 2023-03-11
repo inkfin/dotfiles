@@ -43,6 +43,7 @@ fish_add_path /usr/local/sbin
 fish_add_path -m /opt/homebrew/bin
 set -gx CPPFLAGS "-I/opt/homebrew/include " $CPPFLAGS
 set -gx LDFLAGS "-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib " $LDFLAGS
+set -gx PATH "/opt/homebrew/sbin" $PATH
 set -gx HOMEBREW_NO_AUTO_UPDATE 1
 
 # homebrew acceleration

@@ -146,6 +146,8 @@ autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 " =======================================================
 " You can pass a descriptive text to an existing mapping.
 let g:which_key_map =  {}
+let g:which_key_map.b = {"name": "+build"}
+let g:which_key_map.f = {"name" : "+find"}
 let g:which_key_map.t = {"name": "+table/trans"}
 let g:which_key_map.o = {"name" : "+open"}
 let g:which_key_map.s = {"name": "+set"}
@@ -156,6 +158,7 @@ let g:which_key_map.d = {"name": "+diagnostics"}
 let g:which_key_map_visual = {}
 let g:which_key_map_visual.r = {"name": "+refactor"}
 let g:which_key_map_visual.a = {"name": "+apply-code-actions"}
+let g:which_key_map_visual.f = {"name" : "+find"}
 
 
 
@@ -165,7 +168,11 @@ let g:which_key_map_visual.a = {"name": "+apply-code-actions"}
 noremap <LEADER><CR> :nohlsearch<CR>
 
 noremap S :w<CR>
-noremap <C-S> :w<CR>
+noremap <D-c> "+y
+vnoremap <D-c> "+y
+noremap <D-v> "+p
+inoremap <D-v> <c-r>+
+cnoremap <D-v> <c-r>+
 noremap Q :q<CR>
 noremap R :source $MYVIMRC<CR>
 noremap ; :
@@ -278,8 +285,8 @@ noremap <LEADER>` :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
 
 let g:which_key_map['`'] = "open-term-below"
 
-" Press n twice to jump to the next '<++>' and edit it
-noremap next <Esc>/<++><CR>:nohlsearch<CR>c4l
+" Jump to the next '<++>' and edit it
+noremap g= <Esc>/<++><CR>:nohlsearch<CR>c4l
 
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
@@ -535,6 +542,10 @@ endif
 
     " Debug
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
+
+    " Async run tasks
+    Plug 'skywind3000/asynctasks.vim'
+    Plug 'skywind3000/asyncrun.vim'
 
     " Undo Tree
     Plug 'mbbill/undotree/'
@@ -849,8 +860,6 @@ nmap <silent> g] <Plug>(coc-diagnostic-next)
 let g:which_key_map.d.d = "show-diagnostics"
 let g:which_key_map.d.t = "toggle-diagnostics"
 let g:which_key_map.d.f = "quick-fix"
-let g:which_key_map["-"] = "diagnostic-prev"
-let g:which_key_map["="] = "diagnostic-next"
 
 " === coc-rename
 nmap <leader>rn <Plug>(coc-rename)
@@ -877,6 +886,10 @@ let g:which_key_map.y = "yank-list"
 " === coc-explorer
 nmap <leader>e :CocCommand explorer<CR>
 let g:which_key_map.e = "explorer"
+
+" === coc-project
+nnoremap <silent> <leader>op :<C-u>CocList project<CR>
+let g:which_key_map.o.p = "projects"
 
 " === coc-multiple-cursors
 nmap <silent> <C-c> <Plug>(coc-cursors-position)
@@ -1026,8 +1039,9 @@ let g:Lf_IgnoreCurrentBufferName = 1
 " popup mode
 let g:Lf_WindowPosition = 'popup'
 let g:Lf_PreviewInPopup = 1
+let g:Lf_PopupPreviewPosition = 'bottom'
 let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
-let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+let g:Lf_PreviewResult = {'File': 1, 'Buffer': 1, 'Mru': 1, 'BufTag': 1, 'Function': 1, 'Gtags': 1, 'Rg': 1}
 " set the working directory
 let g:Lf_WorkingDirectoryMode = 'Ac'
 let g:Lf_RootMarkers = ['.git', '.svn', '.hg', '.vscode', '.project', '.root', '.idea', '.vim', '.cargo']
@@ -1037,19 +1051,38 @@ let g:Lf_WildIgnore = {
     \ 'dir': ['.svn', '.git', '.hg', '.vscode', '.ideas', 'CMakeFiles', 'node_modules'],
     \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]', '.DS_Store']
     \}
+let g:Lf_CommandMap = {'<C-J>': ['<C-J>','<Down>'], '<C-K>': ['<Up>','<C-K>'], '<Down>': ['<C-Down>'], '<Up>': ['<C-Up>'], '<C-Down>': ['<M-Down>','<C-S-Down>'], '<C-Up>': ['<M-Up>','<C-S-Up>']}
+" <C-J/K>,<Down/Up>: select down/up
+" <C-Up/Down>: history search
+" <M-Down/Up>,<C-S-Down/Up>,<C-S-J/K>: scroll preview window
+
 
 let g:Lf_ShortcutF = "<leader>ff"
-noremap <leader>fg :LeaderfFunction<CR>
-noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
-noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
-noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
-noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+let g:Lf_ShortcutB = "<leader>fb"
+nnoremap <silent> <leader>fg :LeaderfFunction<CR>
+nnoremap <silent> <leader>ft :LeaderfBufTag<CR>
+nnoremap <silent> <leader>fl :LeaderfLine<CR>
+nnoremap <silent> <leader>fm :LeaderfMru<CR>
+nnoremap <silent> <leader>fc :LeaderfHistoryCmd<CR>
+nnoremap <silent> <leader>fx :LeaderfCommand<CR>
+nnoremap <silent> <leader>fw :LeaderfWindow<CR>
+nnoremap <silent> <leader>fh :LeaderfHelp<CR>
 
-"noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR><CR>
-"noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
+" take advantage of rg
+let g:Lf_RgConfig = [
+        \ "--max-columns=150",
+        \ "--type-add 'web:*.{html,css,js}*'",
+        \ "--glob=!git/*",
+        \ "--hidden"
+    \ ]
+" search word under cursor, the pattern is treated as regex, and enter normal mode directly
+nnoremap <silent> <leader>fs :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR><CR>
+nnoremap <silent> <leader>fS :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
 " search visually selected text literally
 xnoremap <leader>fs :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
-noremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
+nnoremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
+
+nnoremap <silent> <leader>fi :<C-U><C-R>=printf("Leaderf rg --current-buffer -e %s ", "")<CR><CR>
 
 " should use `Leaderf gtags --update` first
 "let g:Lf_GtagsAutoGenerate = 0
@@ -1060,16 +1093,20 @@ noremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
 "noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
 "noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
 
-let g:which_key_map.f = {
-    \ "name": "+find",
-    \ "g": "function",
-    \ "t": "bufTag",
-    \ "l": "line",
-    \ "b": "buffer",
-    \ "m": "mru",
-    \ "s": "vis-select",
-    \ "o": "recall-vis-select"
-    \ }
+let g:which_key_map.f.g = "function"
+let g:which_key_map.f.t = "bufTag"
+let g:which_key_map.f.m = "mru-files"
+let g:which_key_map.f.l = "lines"
+let g:which_key_map.f.b = "buffer"
+let g:which_key_map.f.c = "history-commands"
+let g:which_key_map.f.x = "commands"
+let g:which_key_map.f.h = "helps"
+let g:which_key_map.f.s = "current-word-buf"
+let g:which_key_map.f.S = "current-word-glob"
+let g:which_key_map.f.w = "windows"
+let g:which_key_map.f.o = "recent-search"
+
+let g:which_key_map_visual.f.s = "current-word"
 
 
 
@@ -1207,6 +1244,7 @@ let g:SignatureMap = {
 " === Undotree
 " ===
 let g:undotree_DiffAutoOpen = 0
+let g:undotree_SetFocusWhenToggle = 1
 nnoremap L :UndotreeToggle<CR>
 
 
@@ -1241,27 +1279,27 @@ vmap <silent> <Leader>tw <Plug>TranslateWV
 
 
 
-"" ==== skywind3000 (compile && run) asyncrun ====
-"" ==== https://github.com/skywind3000/asyncrun.vim/blob/master/README-cn.md ====
-""
-"" 自动打开 quickfix window ，高度为 6
-"let g:asyncrun_open = 6
+" ==== skywind3000 (compile && run) asyncrun ====
+" ==== https://github.com/skywind3000/asyncrun.vim/blob/master/README-cn.md ====
 "
-"" 任务结束时候响铃提醒
-"let g:asyncrun_bell = 1
-"
-"" 设置 F10 打开/关闭 Quickfix 窗口
-"nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
-"
-""nnoremap <silent> <F9> :AsyncRun clang++ -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
-"nnoremap <silent> <F8> :AsyncRun -cwd=<root>/src/ cmake -B "../build/" <cr>
-"nnoremap <silent> <F9> :AsyncRun -cwd=<root>/build/ make <cr>
-"
-"" 按F10以term运行编译好的程序，显示在新建tab中
-"nnoremap <silent> <F5> :AsyncRun -raw -cwd=<root> -mode=term -pos=tab -rows=10 ./a <cr>
-"
-"" 设置识别项目目录
-"let g:asyncrun_rootmarks = ['.svn', '.git', '.root', '_darcs', 'build.xml'] 
+" 自动打开 quickfix window ，高度为 6
+let g:asyncrun_open = 6
+
+" 任务结束时候响铃提醒
+let g:asyncrun_bell = 1
+
+" 设置 F10 打开/关闭 Quickfix 窗口
+" nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
+
+"nnoremap <silent> <F9> :AsyncRun clang++ -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+" nnoremap <silent> <F8> :AsyncRun -cwd=<root>/src/ cmake -B "../build/" <cr>
+" nnoremap <silent> <F9> :AsyncRun -cwd=<root>/build/ make <cr>
+
+" 按F10以term运行编译好的程序，显示在新建tab中
+" nnoremap <silent> <F5> :AsyncRun -raw -cwd=<root> -mode=term -pos=tab -rows=10 ./a <cr>
+
+" 设置识别项目目录
+let g:asyncrun_rootmarks = ['.svn', '.git', '.root', '_darcs', 'build.xml', '.vscode', '.cargo', 'package.json'] 
 
 
 
@@ -1285,7 +1323,7 @@ let g:which_key_floating_opts = { 'col': '-3', 'row': '-1' }
 let g:which_key_fallback_to_native_key=1
 let g:which_key_run_map_on_popup = 1
 let g:which_key_display_names = {'<CR>': '↵', '<TAB>': '⇆'}
-autocmd FileType which_key highlight WhichKeyFloating ctermfg=252 ctermbg=none
+autocmd FileType which_key highlight WhichKeyFloating ctermfg=252 ctermbg=252
 
 
 nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
