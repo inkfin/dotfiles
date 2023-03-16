@@ -6,6 +6,7 @@
 
 (require 'auth-source)
 (setq auth-sources '("~/.config/emacs/config/authinfo"))
+;; (customize-variable 'auth-sources) ;; need to do it once
 
 (setq message-send-mail-function 'smtpmail-send-it)
 (setq user-full-name "inkfin")

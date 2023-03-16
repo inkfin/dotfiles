@@ -174,7 +174,7 @@ export HOMEBREW_NO_AUTO_UPDATE=0
 #---apple-silicon---
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 export LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib $LDFLAGS"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include $CPPFLAGS"
 #---intel---
 #export PATH="/usr/local/opt/llvm/bin:$PATH"
 #export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib $LDFLAGS"
@@ -300,6 +300,12 @@ alias sublime='open -a Sublime\ Text.app'
 
 # notmuch python site-package
 export PYTHONPATH="$PYTHONPATH:/opt/homebrew/opt/notmuch/libexec/lib/python3.11/site-packages"
+
+# mailutils
+alias rmail="movemail -v 'imaps://inkfinite:XRLSPBHUMXAURLNW@imap.126.com:993' ~/RMAIL"
+
+
+
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

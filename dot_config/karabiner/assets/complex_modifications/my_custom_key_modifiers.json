@@ -330,7 +330,7 @@
           "to": [
             {
               "select_input_source": {
-                "input_source_id": "com.apple.inputmethod.SCIM.ITABC"
+                "input_source_id": "com.sogou.inputmethod.sogou.pinyin"
               }
             }
           ]
@@ -342,6 +342,57 @@
             "modifiers": {
               "mandatory": [
                 "fn"
+              ],
+              "optional": [
+                "caps_lock",
+                "option",
+                "command",
+                "left_shift",
+                "control"
+              ]
+            }
+          },
+          "to": [
+            {
+              "select_input_source": {
+                "input_source_id": "com.apple.keylayout.ABC"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Caps-< change input to Chinese, Caps-> change input to English (Emacs-Mode)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "comma",
+            "modifiers": {
+              "mandatory": [
+                "left_control"
+              ],
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "select_input_source": {
+                "input_source_id": "com.sogou.inputmethod.sogou.pinyin"
+              }
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "period",
+            "modifiers": {
+              "mandatory": [
+                "left_control"
               ],
               "optional": [
                 "caps_lock",
