@@ -1,114 +1,363 @@
 tap "1password/tap"
+tap "daipeihust/tap"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-fonts"
+tap "homebrew/command-not-found"
 tap "homebrew/core"
 tap "homebrew/services"
 tap "railwaycat/emacsmacport"
+# Library for manipulating PNG images
 brew "libpng"
+# TIFF library and utilities
 brew "libtiff"
+# Extremely Fast Compression algorithm
 brew "lz4"
-brew "openexr"
+# Zstandard is a real-time compression algorithm
 brew "zstd"
+# High dynamic-range image file format
+brew "openexr"
+# Mozilla CA certificate store
 brew "ca-certificates"
+# Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# Cross-platform C++ Library for asynchronous programming
 brew "asio"
+# Portable library for importing many well-known 3D model formats
 brew "assimp"
+# Archival front-end
 brew "atool"
+# Shell extension to jump to frequently used directories
 brew "autojump"
+# Collection of portable C++ source libraries
 brew "boost"
+# C++ library for C++/Python3 interoperability
 brew "boost-python3"
+# Software library to render fonts
 brew "freetype"
+# Manage compile and link flags for libraries
 brew "pkg-config"
+# Modern, C++-native, header-only, test framework
 brew "catch2"
+# C++ template library for linear algebra
 brew "eigen"
+# GNU compiler collection
+brew "gcc"
+# Manage your dotfiles across multiple diverse machines, securely
+brew "chezmoi"
+# Cross-platform make
 brew "cmake"
-brew "cmake-docs"
+# Console Matrix
 brew "cmatrix"
+# Generate a Clang compilation database for Make-based build systems
 brew "compiledb"
+# Reimplementation of ctags(1)
 brew "ctags"
+# Generate documentation for several programming languages
 brew "doxygen"
+# Text mode web browser
 brew "elinks"
+# Perl lib for reading and writing EXIF metadata
 brew "exiftool"
+# Image manipulation library
 brew "jpeg", link: true
+# High-performance, asynchronous messaging library
 brew "zeromq"
+# Play, record, convert, and stream audio and video
 brew "ffmpeg"
+# Banner-like program prints strings as ASCII art
 brew "figlet"
+# User-friendly command-line shell for UNIX-like operating systems
 brew "fish"
+# Infamous electronic fortune-cookie generator
 brew "fortune"
+# Open-source alternative to the OpenGL Utility Toolkit (GLUT) library
 brew "freeglut"
+# Tcl/Tk UI for the git revision control system
 brew "git-gui"
+# Git extension for versioning large files
 brew "git-lfs"
+# OpenGL Extension Wrangler Library
 brew "glew"
+# Multi-platform library for OpenGL applications
 brew "glfw"
+# C++ mathematics library for graphics software
 brew "glm"
+# GNU Pretty Good Privacy (PGP) package
+brew "gnupg"
+# Convert source code to formatted text with syntax highlighting
 brew "highlight"
+# Simple terminal UI for git commands
 brew "lazygit"
+# Convert pixel information into colored ASCII art
 brew "libcaca"
+# Next-gen compiler infrastructure
 brew "llvm"
+# Text-based web browser
 brew "lynx"
+# Swiss Army knife of email handling
+brew "mailutils"
+# Mac App Store command-line interface
+brew "mas"
+# Unified display of technical and tag data for audio/video
 brew "media-info"
+# Implementation of the MPI Message Passing Interface standard
 brew "mpich"
+# UNIX movie player
 brew "mplayer"
+# Tool for searching e-mail messages stored in the maildir-format
+brew "mu"
+# Fast, highly customisable system info script
 brew "neofetch"
+# Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Small build system for use with gyp or CMake
 brew "ninja"
+# Platform built on V8 to build network applications
 brew "node"
+# Thread-based email index, search, and tagging
+brew "notmuch"
+# Synchronizes emails between two repositories
+brew "offlineimap"
+# Toolkit for 3D computer graphics, image processing, and visualization
 brew "vtk"
+# Open source computer vision library
 brew "opencv"
+# Development kit for the Java programming language
 brew "openjdk@11"
+# ISO-C API and CLI for generating UUIDs
 brew "ossp-uuid"
+# Swiss-army knife of markup format conversion
 brew "pandoc"
+# Library for 2D/3D image and point cloud processing
 brew "pcl"
+# Perl compatible regular expressions library
 brew "pcre"
+# C++ class libraries for building network and internet-based applications
 brew "poco"
+# PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Object-relational database system
 brew "postgresql@14"
+# Seamless operability between C++11 and Python
+brew "pybind11"
+# Cross-platform application and UI framework
 brew "qt"
+# File browser
 brew "ranger"
+# Reattach process (e.g., tmux) to background
+brew "reattach-to-user-namespace"
+# Persistent key-value database, with built-in net interface
 brew "redis", restart_service: true
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Powerful, clean, object-oriented scripting language
 brew "ruby"
+# Experimental Rust compiler front-end for IDEs
 brew "rust-analyzer"
+# Rust toolchain installer
 brew "rustup-init"
+# User interface to the TELNET protocol
 brew "telnet"
+# CLI tool for termius.com (aka serverauditor.com)
+brew "termius"
+# Programmatically correct mistyped console commands
 brew "thefuck"
+# Text interface for Git repositories
 brew "tig"
+# XML parser
 brew "tinyxml"
+# Improved tinyxml (in memory efficiency and size)
 brew "tinyxml2"
+# Simplified and community-driven man pages
+brew "tldr"
+# Terminal multiplexer
+brew "tmux"
+# Lightweight BitTorrent client
 brew "transmission-cli"
+# Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Build, bundle & ship your Rust WASM application to the web
 brew "trunk"
+# Pager/text based browser
 brew "w3m"
+# Internet file retriever
 brew "wget"
+# Access X11 clipboards from the command-line
+brew "xclip"
+# Cross-platform build utility based on Lua
 brew "xmake"
+# Yet Another Dotfiles Manager
 brew "yadm"
+# Download YouTube videos from the command-line
 brew "youtube-dl"
-brew "railwaycat/emacsmacport/emacs-mac"
+# Switch your input method through terminal
+brew "daipeihust/tap/im-select"
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line helper for the 1Password password manager
 cask "1password-cli"
+# Stand alone ad blocker
+cask "adguard"
+# Menu bar tool to limit maximum charging percentage
+cask "aldente"
+# Enable Windows-like alt-tab
 cask "alt-tab"
+# iOS App Store alternative
+cask "altserver"
+# Transfer files from and to an Android smartphone
 cask "android-file-transfer"
+# Cloud storage service
+cask "baidunetdisk"
+# Online gaming platform
+cask "battle-net"
+# Virtual Audio Driver
+cask "blackhole-2ch"
+# 3D creation suite
+cask "blender"
+# Translation application for text, pictures, and manual input
 cask "bob"
+# Nintendo DS emulator
+cask "desmume"
+# Voice and text chat software
+cask "discord"
+# Downloads videos from different websites
 cask "downie"
+# YAMAMOTO Mitsuharu's Mac port of GNU Emacs
+cask "emacs-mac"
+# Launcher for *Epic Games* games
+cask "epic-games"
+# Reimagine your terminal
 cask "fig"
+# Developer targeted fonts with a high number of glyphs
+cask "font-3270-nerd-font"
+# Developer targeted fonts with a high number of glyphs
+cask "font-bigblue-terminal-nerd-font"
+# Developer targeted fonts with a high number of glyphs
+cask "font-fira-code-nerd-font"
+# Developer targeted fonts with a high number of glyphs
+cask "font-fira-mono-nerd-font"
+# Developer targeted fonts with a high number of glyphs
+cask "font-jetbrains-mono-nerd-font"
+# Open-source Chinese font derived from Fontworks' Klee One
+cask "font-lxgw-wenkai"
 cask "font-source-code-pro"
+# Grammarly for desktop
+cask "grammarly-desktop"
+# Utility to hide menu bar items
+cask "hiddenbar"
+# Free and open-source media player
+cask "iina"
+# System monitoring app
+cask "istat-menus"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2"
+# JetBrains tools manager
+cask "jetbrains-toolbox"
+# Keyboard customizer
 cask "karabiner-elements"
+# Blocks all Keyboard and TouchBar input
+cask "keyboardcleantool"
+# Customize mouse behavior
 cask "linearmouse"
+# Lyrics for iTunes, Spotify, Vox and Audirvana Plus
+cask "lyricsx"
+# E-reader
+cask "marginnote"
 cask "mdimagesizemdimporter"
+# Web browser
+cask "microsoft-edge"
+# Remote desktop client
+cask "microsoft-remote-desktop"
+# Minimal installer for conda specific to conda-forge
+cask "miniforge"
+# Tool to control external monitor brightness & volume
+cask "monitorcontrol"
+# Neovim Client
+cask "neovide"
+# Music streaming platform
+cask "neteasemusic"
+# App to write, plan, collaborate, and get organized
 cask "notion"
+# Open-source software for live streaming and screen recording
 cask "obs"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# System and utility switches
 cask "only-switch"
+# Verify system files structure, run miscellaneous maintenance and more
+cask "onyx"
+# Remote desktop
+cask "parsec"
+# Tool for uploading images
+cask "picgo"
+# QuickLook plug-in that renders source code with syntax highlighting
 cask "qlcolorcode"
+# Display image info and preview unsupported formats in QuickLook
 cask "qlimagesize"
+# QuickLook generator for Markdown files
 cask "qlmarkdown"
+# QuickLook plugin for plaintext files without an extension
 cask "qlstephen"
+# Thumbnails, static previews, cover art and metadata for video files
 cask "qlvideo"
+# Instant messaging tool
+cask "qq"
+# QuickLook plugin for JSON files
 cask "quicklook-json"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"
+# Tool to reverse the direction of scrolling
 cask "scroll-reverser"
+# Screenshot measurement and annotation tool
 cask "shottr"
+# Displays all open files and sockets in use by all running processes
+cask "sloth"
+# Code source explorer
 cask "sourcetrail"
+# Graphical client for Git version control
 cask "sourcetree"
+# Video game digital distribution service
 cask "steam"
+# Steam helper tools
+cask "steam-plus-plus"
+# App to switch hosts
 cask "switchhosts"
+# Desktop client for Telegram messenger
+cask "telegram-desktop"
+# Cleanup and system status tool
+cask "tencent-lemon"
+# Cloud video conferencing
+cask "tencent-meeting"
+# Utility for producing audio feedback when typing
+cask "tickeys"
+# To-do & task list manager
+cask "ticktick"
+# Remote control software
+cask "todesk"
+# Configurable document editor that supports Markdown
+cask "typora"
+# Management tool for Unity
+cask "unity-hub"
+# Plug-in productivity tool set
+cask "utools"
+# Network accelerator
+cask "uu-booster"
+# Collection of tools to build a dedicated basic communication network
 cask "v2rayu"
+# Open-source code editor
 cask "visual-studio-code"
+# Multimedia player
+cask "vlc"
+# Remote desktop application focusing on security
+cask "vnc-viewer"
+# Rust-based terminal
+cask "warp"
+# Free messaging and calling application
+cask "wechat"
+# Network protocol analyzer
+cask "wireshark"
+# Video communication and virtual meeting platform
+cask "zoom"
+# Collect, organize, cite, and share research sources
+cask "zotero"
