@@ -719,7 +719,7 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#_select_confirm()
 " <LEADER>h to show documentation
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <c-o> coc#refresh()
-nnoremap <LEADER>h :call Show_documentation()<CR>
+nnoremap <silent><LEADER>h :call Show_documentation()<CR>
 " Show hover when provider exists, fallback to vim's builtin behavior.
 function! Show_documentation()
     call CocActionAsync('highlight')

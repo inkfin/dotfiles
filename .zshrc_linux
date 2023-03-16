@@ -73,6 +73,8 @@ unset __conda_setup
 # === User Config ===
 
 # PATH
+export PATH="$HOME/.local/bin":$PATH
+
 # CUDA
 export PATH="/usr/local/cuda-11.6/bin":$PATH
 export LD_LIBRARY_PATH="/usr/local/cuda-11.6/lib64":$LD_LIBRARY_PATH
@@ -84,3 +86,9 @@ alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mjpro150/bin
 
+# PythonPath
+export PYTHONPATH=:"/opt/miniconda3/envs/boost/lib/python3.8/site-packages"$PYTHONPATH
+
+# Boost
+export CMAKE_INCLUDE_PATH="/opt/boost/include":"/opt/miniconda3/envs/boost/include/python3.8":$CPLUS_INCLUDE_PATH
+export CMAKE_LIBRARY_PATH="/opt/boost/lib":"/opt/miniconda3/envs/boost/lib/python3.8/config-3.8-x86_64-linux-gnu":"/opt/miniconda3/envs/boost/lib":$LIBRARY_PATH
