@@ -40,6 +40,11 @@ if [ ${system_type} = "Darwin" ]; then
         install_command brew zsh
     fi
 
+    # tmux
+    if ! is_command zsh; then
+        install_command brew zsh
+    fi
+
     # Utilities
     if ! is_command ranger; then
         install_command brew ranger
@@ -47,6 +52,38 @@ if [ ${system_type} = "Darwin" ]; then
     # Vim init
     if ! is_command nvim; then
         install_command brew neovim
+    fi
+    if is_command nvim; then
+        echo "Bootstraping NeoVim"
+        nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
+    fi
+
+fi
+
+
+# Linux
+if [ ${system_type} = "Linux" ]; then
+    installer="sudo apt-get"
+
+    sudo apt-get update
+
+    # zsh
+    if ! is_command zsh; then
+        install_command ${installer} zsh
+    fi
+
+    if ! is_command tmux; then
+        echo "Installing tmux..."
+        install_command ${installer} tmux
+    fi
+
+    # Utilities
+    if ! is_command ranger; then
+        install_command ${installer} ranger
+    fi
+    # Vim init
+    if ! is_command nvim; then
+        install_command ${installer} neovim
     fi
     if is_command nvim; then
         echo "Bootstraping NeoVim"
