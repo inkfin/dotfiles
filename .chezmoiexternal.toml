@@ -3,6 +3,11 @@
     url = "https://github.com/ohmyzsh/ohmyzsh.git"
     exact = true
     refreshPeriod = "72h"
+[".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+    type = "git-repo"
+    url = "https://github.com/zsh-users/zsh-autosuggestions.git"
+    exact = true
+    refreshPeriod = "168h"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "git-repo"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
