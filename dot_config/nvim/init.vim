@@ -35,6 +35,7 @@ set autochdir
 set nocompatible
 hi Normal ctermfg=252 ctermbg=none
 let mapleader=" "
+let maplocalleader=","
 syntax on
 set hlsearch
 exec "nohlsearch"
@@ -160,21 +161,22 @@ let g:which_key_map_visual.r = {"name": "+refactor"}
 let g:which_key_map_visual.a = {"name": "+apply-code-actions"}
 let g:which_key_map_visual.f = {"name" : "+find"}
 
+let g:which_key_map_local = {}
 
 
 " ===
 " === Basic Mappings
 " ===
-noremap <LEADER><CR> :nohlsearch<CR>
+noremap <LEADER><CR> <Cmd>nohlsearch<CR>
 
-noremap S :w<CR>
+noremap S <Cmd>w<CR>
 noremap <D-c> "+y
 vnoremap <D-c> "+y
 noremap <D-v> "+p
 inoremap <D-v> <c-r>+
 cnoremap <D-v> <c-r>+
-noremap Q :q<CR>
-noremap R :source $MYVIMRC<CR>
+noremap Q <Cmd>q<CR>
+noremap R <Cmd>source $MYVIMRC<CR>
 noremap ; :
 
 " Copy to system clipboard
@@ -184,12 +186,12 @@ vnoremap Y "+y
 "nnoremap Y y$
 
 " Open up lazygit
-noremap <c-g> :tabe<CR>:-tabmove<CR>:term lazygit<CR>
+nnoremap <c-g> <Cmd>tabe<CR>:-tabmove<CR>:term lazygit<CR>
 
-noremap sk :set nosplitbelow<CR>:split<CR>
-noremap sj :set splitbelow<CR>:split<CR>
-noremap sh :set nosplitright<CR>:vsplit<CR>
-noremap sl :set splitright<CR>:vsplit<CR>
+noremap sk <Cmd>set nosplitbelow<CR>:split<CR>
+noremap sj <Cmd>set splitbelow<CR>:split<CR>
+noremap sh <Cmd>set nosplitright<CR>:vsplit<CR>
+noremap sl <Cmd>set splitright<CR>:vsplit<CR>
 
 noremap \k <C-w>k
 noremap \j <C-w>j
@@ -209,8 +211,8 @@ vnoremap H ^
 vnoremap L $
 
 "Emacs like navigation keys
-inoremap <C-a> <C-O>^
-inoremap <C-e> <C-O>$
+inoremap <C-a> <C-o>^
+inoremap <C-e> <C-o>$
 
 " <C-y> move window up, <C-e> move window down
 " zz move cursor line to center, zt to top, zb to bottom
@@ -220,21 +222,21 @@ inoremap <C-e> <C-O>$
 noremap <C-e> 10<C-e>
 noremap <C-y> 10<C-y>
 
-noremap <C-S-k> :res -5<CR>
-noremap <C-S-j> :res +5<CR>
-noremap <C-S-l> :vertical resize+5<CR>
-noremap <C-S-h> :vertical resize-5<CR>
+noremap <C-S-k> <Cmd>res -5<CR>
+noremap <C-S-j> <Cmd>res +5<CR>
+noremap <C-S-l> <Cmd>vertical resize+5<CR>
+noremap <C-S-h> <Cmd>vertical resize-5<CR>
 
 " Tab Controll
-noremap ti :tabe<CR>
-noremap tl :tabn<CR>
-noremap th :tabp<CR>
-noremap tw :tabc<CR>
-noremap tmh :tabm -<CR>
-noremap tml :tabm +<CR>
-noremap Tl :bn<CR>
-noremap Th :bp<CR>
-noremap Tw :bd<CR>
+noremap ti <Cmd>tabe<CR>
+noremap tl <Cmd>tabn<CR>
+noremap th <Cmd>tabp<CR>
+noremap tw <Cmd>tabc<CR>
+noremap tmh <Cmd>tabm -<CR>
+noremap tml <Cmd>tabm +<CR>
+noremap Tl <Cmd>bn<CR>
+noremap Th <Cmd>bp<CR>
+noremap Tw <Cmd>bd<CR>
 
 " Place the two screens up and down
 "noremap sc <C-w>t<C-w>S
@@ -278,10 +280,10 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " === Other useful stuff
 " ===
 " Open a new instance of st with the cwd
-nnoremap \t :tabe<CR>:-tabmove<CR>:term sh -c 'st'<CR><C-\><C-N>:q<CR>
+nnoremap \t <Cmd>tabe<CR>:-tabmove<CR>:term sh -c 'st'<CR><C-\><C-N>:q<CR>
 
 " Opening a terminal window
-noremap <LEADER>` :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
+noremap <LEADER>` <Cmd>set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
 
 let g:which_key_map['`'] = "open-term-below"
 
@@ -289,28 +291,28 @@ let g:which_key_map['`'] = "open-term-below"
 noremap g= <Esc>/<++><CR>:nohlsearch<CR>c4l
 
 " Spelling Check with <space>sc
-noremap <LEADER>sc :set spell!<CR>
+noremap <LEADER>sc <Cmd>set spell!<CR>
 let g:which_key_map.s.c = "spell-check"
 
 " Auto change directory to current dir
 "autocmd BufEnter * silent! lcd %:p:h
 
 " Call figlet
-noremap <LEADER>pf :r !figlet 
+noremap <LEADER>pf <Cmd>r !figlet 
 let g:which_key_map.p.f = "figlet-{msgs}"
 
 " find and replace
-noremap <LEADER>rr :%s//g<left><left>
+noremap <LEADER>rr <Cmd>%s//g<left><left>
 let g:which_key_map.r.r = "find&replace"
 
 " set wrap
-noremap <LEADER>sw :set wrap<CR>
+noremap <LEADER>sw <Cmd>set wrap<CR>
 let g:which_key_map.s.w = "wrap"
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 
 " typewriter mode
-noremap <LEADER>st :call ToggleTypeWriterMode()<CR>
+noremap <LEADER>st <Cmd>call ToggleTypeWriterMode()<CR>
 func! ToggleTypeWriterMode()
     exec "w"
     if &scrolloff <= 5
@@ -319,19 +321,26 @@ func! ToggleTypeWriterMode()
         :set scrolloff=5
     endif
 endfunc
-let g:which_key_map.s.t = "type-writter-mode"
+let g:which_key_map.s.t = "type-writer-mode"
+
+" Correcting spelling mistakes on the fly
+setlocal spell
+setlocal spellfile=~/.config/nvim/spell/en.utf-8.add
+set spelllang=en_us,cjk
+inoremap <C-h> <c-g>u<Esc>[s1z=`]a<c-g>u
+" use <C-x><C-s> to correct spell in insert mode
 
 " open files
-nnoremap <silent> <leader>oq  :copen<CR>
-nnoremap <silent> <leader>ol  :lopen<CR>
-nnoremap <silent> <leader>ov :e $MYVIMRC<CR>
+nnoremap <silent> <leader>oq  <Cmd>copen<CR>
+nnoremap <silent> <leader>ol  <Cmd>lopen<CR>
+nnoremap <silent> <leader>ov <Cmd>e $MYVIMRC<CR>
 let g:which_key_map.o.q = 'quickfix'
 let g:which_key_map.o.l = 'locationlist'
 let g:which_key_map.o.v = 'vimrc'
 
 
 " press f7 to show hlgroup
-" map <F7> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+" map <F7> <Cmd>echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 " \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 " \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
@@ -343,16 +352,16 @@ tnoremap <c-q> <c-\><c-n>
 " User Defined Functions & Commands
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-command! -nargs=0 OpenVimrc :e ~/.config/nvim/init.vim
-command! -nargs=0 OpenZshrc :e ~/.zshrc
-command! -nargs=0 OpenFishrc :e ~/.config/fish/config.fish
+command! -nargs=0 OpenVimrc <Cmd>e ~/.config/nvim/init.vim
+command! -nargs=0 OpenZshrc <Cmd>e ~/.zshrc
+command! -nargs=0 OpenFishrc <Cmd>e ~/.config/fish/config.fish
 
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Quickly Run
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-noremap cr :call CompileRunGcc()<CR>
+noremap cr <Cmd>call CompileRunGcc()<CR>
 func! CompileRunGcc()
     exec "w"
     if &filetype == 'c'
@@ -414,7 +423,7 @@ func! CompileDebugGcc()
         :term ./%<
     endif
 endfunc
-noremap cd :call CompileDebugGcc()<CR>
+noremap cd <Cmd>call CompileDebugGcc()<CR>
 
 " generate compile commands
 function! s:generate_compile_commands()
@@ -428,22 +437,22 @@ function! s:generate_compile_commands()
     execute '!cmake -DCMAKE_BUILD_TYPE=debug
         \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .vscode'
 endfunction
-command! -nargs=0 Gcmake :call s:generate_compile_commands()
+command! -nargs=0 Gcmake <Cmd>call s:generate_compile_commands()
 
 " ====================
 "     MakeMyProject
 " ====================
-"noremap <F6> :call RunCmakeUpperDIR()<CR>
+"noremap <F6> <Cmd>call RunCmakeUpperDIR()<CR>
 "func! RunCmakeUpperDIR()
     "exec "!cmake -S . -B ../build/"
 "endfunc
 
-"noremap <F7> :call RunMakeUpperDIR()<CR>
+"noremap <F7> <Cmd>call RunMakeUpperDIR()<CR>
 "func! RunMakeUpperDIR()
     "exec "!make -C ../build/"
 "endfunc
 
-"noremap <F5> :call RunAUpperDir()<CR>
+"noremap <F5> <Cmd>call RunAUpperDir()<CR>
 "func! RunAUpperDir()
     "exec "!../a"
 "endfunc
@@ -556,6 +565,8 @@ endif
     Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
     Plug 'dkarter/bullets.vim'
 
+    " LaTex
+    Plug 'lervag/vimtex'
 
     " Bookmarks
     Plug 'kshenoy/vim-signature'
@@ -621,10 +632,11 @@ let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩�
 "let g:AutoPairsShortcutToggle = '<M-p>'
 "let g:AutoPairsShortcutFastWrap = '<M-e>'
 "let g:AutoPairsShortcutJump = '<M-n>'
-"Fast wrap the word. all pairs will be consider as a block (include <>).
+let g:AutoPairsMapCh = 0
+"Fast wrap the word. All pairs will be consider as a block (include <>).
 "(|)'hello' after fast wrap at |, the word will be ('hello')
 "(|)<hello> after fast wrap at |, the word will be (<hello>)
-
+let g:AutoPairs= {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
 
 
 
@@ -704,11 +716,11 @@ inoremap <silent><expr> <TAB>
     \     CheckBackSpace() ? "\<Tab>" : coc#refresh()
 
 " Add `:Format` command to format current buffer
-command! -nargs=0 Format :call CocActionAsync('format')
+command! -nargs=0 Format <Cmd>call CocActionAsync('format')
 " Add `:Fold` command to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! -nargs=? Fold <Cmd>call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 OR   <Cmd>call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
@@ -717,9 +729,7 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " <LEADER>h to show documentation
-inoremap <silent><expr> <c-space> coc#refresh()
-inoremap <silent><expr> <c-o> coc#refresh()
-nnoremap <silent><LEADER>h :call Show_documentation()<CR>
+nnoremap <silent> <LEADER>h <Cmd>call Show_documentation()<CR>
 " Show hover when provider exists, fallback to vim's builtin behavior.
 function! Show_documentation()
     call CocActionAsync('highlight')
@@ -741,18 +751,18 @@ augroup mygroup
 augroup end
 
 " <ctrl>+(shift)+p vscode like shortcuts to open command prompt
-nnoremap <C-l> :CocList<CR>
-nnoremap <C-s-p> :CocCommand<CR>
+nnoremap <C-l> <Cmd>CocList<CR>
+nnoremap <C-s-p> <Cmd>CocCommand<CR>
 
 " GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gD :tab sp<CR><Plug>(coc-definition)
+nmap <silent> gD <Cmd>tab sp<CR><Plug>(coc-definition)
 nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Search workspace symbols
-nnoremap <silent><nowait> <space>os  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <space>os  <Cmd>CocList -I symbols<cr>
 let g:which_key_map.o.s = "workspace-symbols"
 
 
@@ -782,12 +792,12 @@ omap if <Plug>(coc-funcobj-i)
 " Select around function.
 xmap af <Plug>(coc-funcobj-a)
 omap af <Plug>(coc-funcobj-a)
-" Select inside class/struct/interface.
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-" Select around class/struct/interface.
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
+" " Select inside class/struct/interface.
+" xmap ic <Plug>(coc-classobj-i)
+" omap ic <Plug>(coc-classobj-i)
+" " Select around class/struct/interface.
+" xmap ac <Plug>(coc-classobj-a)
+" omap ac <Plug>(coc-classobj-a)
 
 " EXAMPLES: vim has implemented many ranges as follows
 " [w]'word', [W]'WORD', [s]'sentence', [p]'paragraph', [t]'tags', [b]'()'
@@ -824,7 +834,7 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 
 " Manage extensions
-nnoremap <silent><nowait> <space>pm  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <space>pm  <Cmd>CocList extensions<cr>
 let g:which_key_map.p.m = "manage-extensions"
 
 " === coc-highlight
@@ -849,9 +859,9 @@ let g:which_key_map_visual.x = "convert-snippet"
 
 
 " === coc-diagnostic
-nnoremap <silent> <LEADER>dt :call CocAction('diagnosticToggle')<cr>
-nnoremap <silent> <LEADER>dd :CocList diagnostics<cr>
-nnoremap <silent> <LEADER>da :CocList diagnostics<cr>
+nnoremap <silent> <LEADER>dt <Cmd>call CocAction('diagnosticToggle')<cr>
+nnoremap <silent> <LEADER>dd <Cmd>CocList diagnostics<cr>
+nnoremap <silent> <LEADER>da <Cmd>CocList diagnostics<cr>
 " Apply the most preferred quickfix action to fix diagnostic on the current line
 nnoremap <leader>df  <Plug>(coc-fix-current)
 nmap <silent> g[ <Plug>(coc-diagnostic-prev)
@@ -868,7 +878,7 @@ nmap <leader>rf <Plug>(coc-refactor)
 let g:which_key_map.r.n = "rename"
 let g:which_key_map.r.f = "open-refactor-window"
 " Change all word in the buffer
-nmap <leader>rw :CocCommand document.renameCurrentWord<CR>
+nmap <leader>rw <Cmd>CocCommand document.renameCurrentWord<CR>
 let g:which_key_map.r.w = "all-current-word"
 " Remap keys for applying refactor code actions
 nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
@@ -880,15 +890,15 @@ let g:which_key_map_visual.r.s = "refactor-selected"
 
 
 " === coc-yank
-nnoremap <silent> <space>y :<C-u>CocList -A --normal yank<cr>
+nnoremap <silent> <space>y <Cmd>CocList -A --normal yank<cr>
 let g:which_key_map.y = "yank-list"
 
 " === coc-explorer
-nmap <leader>e :CocCommand explorer<CR>
+nmap <leader>e <Cmd>CocCommand explorer<CR>
 let g:which_key_map.e = "explorer"
 
 " === coc-project
-nnoremap <silent> <leader>op :<C-u>CocList project<CR>
+nnoremap <silent> <leader>op <Cmd>CocList project<CR>
 let g:which_key_map.o.p = "projects"
 
 " === coc-multiple-cursors
@@ -908,12 +918,12 @@ let g:which_key_map.r.p = "format-selected"
 let g:which_key_map_visual.r.p ="format-selected"
 
 " custom command :Prettier to force format current document
-command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
+command! -nargs=0 Prettier <Cmd>CocCommand prettier.forceFormatDocument
 
-xmap <leader>rP  :Prettier<CR>
+xmap <leader>rP  <Cmd>Prettier<CR>
 let g:which_key_map.r.P = "force-format-file"
 
-nmap <leader>rc :CocCommand prettier.createConfigFile<CR>
+nmap <leader>rc <Cmd>CocCommand prettier.createConfigFile<CR>
 
 let g:which_key_map.r.c = "create-prettier-config"
 
@@ -923,28 +933,28 @@ let g:which_key_map.r.c = "create-prettier-config"
 " function! s:cocActionsOpenFromSelected(type) abort
   " execute 'CocCommand actions.open ' . a:type
 " endfunction
-" xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
-" nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+" xmap <silent> <leader>a <Cmd>execute 'CocCommand actions.open ' . visualmode()<CR>
+" nmap <silent> <leader>a <Cmd>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 
 " === coctodolist
-nnoremap <leader>tn :CocCommand todolist.create<CR>
-nnoremap <leader>tl :CocList todolist<CR>
-nnoremap <leader>tu :CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
+nnoremap <leader>tn <Cmd>CocCommand todolist.create<CR>
+nnoremap <leader>tl <Cmd>CocList todolist<CR>
+nnoremap <leader>tu <Cmd>CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
 let g:which_key_map.t.n = "Todo-create"
 let g:which_key_map.t.l = "Todo-list"
 let g:which_key_map.t.u = "Todo-update"
 
 " === coc-tasks
-noremap <silent> <leader>tt :CocList tasks<CR>
+noremap <silent> <leader>tt <Cmd>CocList tasks<CR>
 let g:which_key_map.t.t = "Tasks-list"
 
 " === coc-markdown-preview-enhanced
-nnoremap <leader>om :CocCommand markdown-preview-enhanced.openPreview<CR>
+nnoremap <leader>om <Cmd>CocCommand markdown-preview-enhanced.openPreview<CR>
 let g:which_key_map.o.m = "mardown-preview"
 
 " === coc-webview
 let g:which_key_map.p.w = {"name": "+webview"}
-nnoremap <leader>pwl :CocList webview<CR>
+nnoremap <leader>pwl <Cmd>CocList webview<CR>
 let g:which_key_map.p.w.l = "list"
 
 
@@ -1001,7 +1011,7 @@ let g:which_key_map_vimspector = {
     \ }
 
 let g:which_key_map.p.v = {"name": "+vimspector"}
-nnoremap <Leader>pvc :WhichKey 'vimspector-cheat-sheet'<CR>
+nnoremap <Leader>pvc <Cmd>WhichKey 'vimspector-cheat-sheet'<CR>
 call which_key#register('vimspector-cheat-sheet', "g:which_key_map_vimspector")
 let g:which_key_map.p.v.c = "show-cheat-sheet"
 
@@ -1018,8 +1028,8 @@ function! s:generate_vimspector_conf()
   e .vimspector.json
 endfunction
 
-command! -nargs=0 Gvimspector :call s:generate_vimspector_conf()
-nnoremap <Leader>pvg :Gvimspector<CR>
+command! -nargs=0 Gvimspector <Cmd>call s:generate_vimspector_conf()
+nnoremap <Leader>pvg <Cmd>Gvimspector<CR>
 let g:which_key_map.p.v.g = "generate-vimsp-conf"
 
 
@@ -1059,14 +1069,14 @@ let g:Lf_CommandMap = {'<C-J>': ['<C-J>','<Down>'], '<C-K>': ['<Up>','<C-K>'], '
 
 let g:Lf_ShortcutF = "<leader>ff"
 let g:Lf_ShortcutB = "<leader>fb"
-nnoremap <silent> <leader>fg :LeaderfFunction<CR>
-nnoremap <silent> <leader>ft :LeaderfBufTag<CR>
-nnoremap <silent> <leader>fl :LeaderfLine<CR>
-nnoremap <silent> <leader>fm :LeaderfMru<CR>
-nnoremap <silent> <leader>fc :LeaderfHistoryCmd<CR>
-nnoremap <silent> <leader>fx :LeaderfCommand<CR>
-nnoremap <silent> <leader>fw :LeaderfWindow<CR>
-nnoremap <silent> <leader>fh :LeaderfHelp<CR>
+nnoremap <silent> <leader>fg <Cmd>LeaderfFunction<CR>
+nnoremap <silent> <leader>ft <Cmd>LeaderfBufTag<CR>
+nnoremap <silent> <leader>fl <Cmd>LeaderfLine<CR>
+nnoremap <silent> <leader>fm <Cmd>LeaderfMru<CR>
+nnoremap <silent> <leader>fc <Cmd>LeaderfHistoryCmd<CR>
+nnoremap <silent> <leader>fx <Cmd>LeaderfCommand<CR>
+nnoremap <silent> <leader>fw <Cmd>LeaderfWindow<CR>
+nnoremap <silent> <leader>fh <Cmd>LeaderfHelp<CR>
 
 " take advantage of rg
 let g:Lf_RgConfig = [
@@ -1082,7 +1092,7 @@ nnoremap <silent> <leader>fS :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<c
 xnoremap <leader>fs :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
 nnoremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
 
-nnoremap <silent> <leader>fi :<C-U><C-R>=printf("Leaderf rg --current-buffer -e %s ", "")<CR><CR>
+" nnoremap <silent> <leader>fi :<C-U><C-R>=printf("Leaderf rg --current-buffer -e %s ", "")<CR><CR>
 
 " should use `Leaderf gtags --update` first
 "let g:Lf_GtagsAutoGenerate = 0
@@ -1135,7 +1145,7 @@ let g:instant_markdown_mermaid = 1
 " ===
 " === vim-table-mode
 " ===
-map <LEADER>tm :TableModeToggle<CR>
+map <LEADER>tm <Cmd>TableModeToggle<CR>
 
 
 " ===
@@ -1152,8 +1162,8 @@ let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 1
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_color_change_percent = 1
-silent! unmap <LEADER>ig
-autocmd WinEnter * silent! unmap <LEADER>ig
+" silent! unmap <LEADER>ig
+" autocmd WinEnter * silent! unmap <LEADER>ig
 
 
 " ===
@@ -1209,7 +1219,7 @@ let g:which_key_map_visual.w = "move-to-word"
 " ===
 " === Goyo
 " ===
-"map <LEADER>gy :Goyo<CR>
+"map <LEADER>gy <Cmd>Goyo<CR>
 
 
 " ===
@@ -1245,7 +1255,7 @@ let g:SignatureMap = {
 " ===
 let g:undotree_DiffAutoOpen = 0
 let g:undotree_SetFocusWhenToggle = 1
-nnoremap L :UndotreeToggle<CR>
+nnoremap L <Cmd>UndotreeToggle<CR>
 
 
 " ===
@@ -1289,14 +1299,14 @@ let g:asyncrun_open = 6
 let g:asyncrun_bell = 1
 
 " 设置 F10 打开/关闭 Quickfix 窗口
-" nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
+" nnoremap <F10> <Cmd>call asyncrun#quickfix_toggle(6)<cr>
 
-"nnoremap <silent> <F9> :AsyncRun clang++ -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
-" nnoremap <silent> <F8> :AsyncRun -cwd=<root>/src/ cmake -B "../build/" <cr>
-" nnoremap <silent> <F9> :AsyncRun -cwd=<root>/build/ make <cr>
+"nnoremap <silent> <F9> <Cmd>AsyncRun clang++ -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+" nnoremap <silent> <F8> <Cmd>AsyncRun -cwd=<root>/src/ cmake -B "../build/" <cr>
+" nnoremap <silent> <F9> <Cmd>AsyncRun -cwd=<root>/build/ make <cr>
 
 " 按F10以term运行编译好的程序，显示在新建tab中
-" nnoremap <silent> <F5> :AsyncRun -raw -cwd=<root> -mode=term -pos=tab -rows=10 ./a <cr>
+" nnoremap <silent> <F5> <Cmd>AsyncRun -raw -cwd=<root> -mode=term -pos=tab -rows=10 ./a <cr>
 
 " 设置识别项目目录
 let g:asyncrun_rootmarks = ['.svn', '.git', '.root', '_darcs', 'build.xml', '.vscode', '.cargo', 'package.json'] 
@@ -1315,8 +1325,6 @@ let g:echodoc_enable_at_startup = 1
 " ===
 set timeoutlen=500
 
-let g:mapleader = "\<Space>"
-let g:maplocalleader = ","
 let g:which_key_use_floating_win = 1
 let g:which_key_floating_relative_win = 1
 let g:which_key_floating_opts = { 'col': '-3', 'row': '-1' }
@@ -1326,8 +1334,10 @@ let g:which_key_display_names = {'<CR>': '↵', '<TAB>': '⇆'}
 autocmd FileType which_key highlight WhichKeyFloating ctermfg=252 ctermbg=252
 
 
-nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
-vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
+nnoremap <silent> <leader> <Cmd>WhichKey '<Space>'<CR>
+vnoremap <silent> <leader> <Cmd>WhichKeyVisual '<Space>'<CR>
+
+nnoremap <silent> <localleader> <Cmd>WhichKey ','<CR>
 
 
 
@@ -1352,5 +1362,6 @@ vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
 
 call which_key#register('<Space>', "g:which_key_map", 'n')
 call which_key#register('<Space>', "g:which_key_map_visual", 'v')
+call which_key#register(',', "g:which_key_map_local")
 
 

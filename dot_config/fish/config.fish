@@ -141,6 +141,10 @@ alias restartredis 'brew services restart redis'
 alias stopredis '/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf'
 
 
+# MacTex
+set -gx PATH $PATH "/usr/local/texlive/2022/bin/universal-darwin"
+
+
 # =========================================================
 # == Alias
 # =========================================================
@@ -158,7 +162,7 @@ alias cd.. "cd .."
 
 alias matrix "cmatrix -sna"
 
-alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
+alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/init.vim"
 alias vimfish "vim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh "vim ~/.local/share/chezmoi/.zshrc_darwin"
 alias sourcefish "source ~/.config/fish/config.fish"
