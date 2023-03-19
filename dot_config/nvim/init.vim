@@ -117,7 +117,7 @@ let g:terminal_color_14 = '#9AEDFE'
 "" --- MacOS ---
 if has('mac')
     " specify the python parser path
-    let g:python3_host_prog = '/opt/homebrew/bin/python3.11'
+    let g:python3_host_prog = '/opt/homebrew/Cellar/python@3.11/3.11.2_1/bin/python3'
 
     " === ybian/smartim ===
     "    some people reported that it is slow while editing with vim-multiple-cursors, to fix this, put this in .vimrc:
@@ -352,6 +352,14 @@ tnoremap <c-q> <c-\><c-n>
 " User Defined Functions & Commands
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+let g:global_rootmarks = [
+    \ '.svn', '.git', '.hg',
+    \ '.root', '.project',
+    \ 'build.xml', '.cargo',
+    \ '.vscode', '.vim', '.idea'
+    \ ]
+
+
 command! -nargs=0 OpenVimrc <Cmd>e ~/.config/nvim/init.vim
 command! -nargs=0 OpenZshrc <Cmd>e ~/.zshrc
 command! -nargs=0 OpenFishrc <Cmd>e ~/.config/fish/config.fish
@@ -431,7 +439,7 @@ function! s:generate_compile_commands()
         echo "Can't find CMakeLists.txt"
         return
     endif
-    if empty(glob('.vscode'))
+    if empty(glob('.vim'))
         execute 'silent !mkdir .vscode'
     endif
     execute '!cmake -DCMAKE_BUILD_TYPE=debug
@@ -1046,6 +1054,7 @@ let g:Lf_HideHelp = 0
 let g:Lf_UseCache = 0
 let g:LF_ShowHidden = 1
 let g:Lf_IgnoreCurrentBufferName = 1
+" let g:Lf_GtagsAutoUpdate = 1
 " popup mode
 let g:Lf_WindowPosition = 'popup'
 let g:Lf_PreviewInPopup = 1
@@ -1054,11 +1063,11 @@ let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu S
 let g:Lf_PreviewResult = {'File': 1, 'Buffer': 1, 'Mru': 1, 'BufTag': 1, 'Function': 1, 'Gtags': 1, 'Rg': 1}
 " set the working directory
 let g:Lf_WorkingDirectoryMode = 'Ac'
-let g:Lf_RootMarkers = ['.git', '.svn', '.hg', '.vscode', '.project', '.root', '.idea', '.vim', '.cargo']
+let g:Lf_RootMarkers = (g:global_rootmarks)
 let g:Lf_DefaultExternalTool = 'rg'
 " ignore
 let g:Lf_WildIgnore = {
-    \ 'dir': ['.svn', '.git', '.hg', '.vscode', '.ideas', 'CMakeFiles', 'node_modules'],
+    \ 'dir': ['.svn', '.git', '.hg', '.vscode', '.vim', '.ideas', 'CMakeFiles', 'node_modules'],
     \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]', '.DS_Store']
     \}
 let g:Lf_CommandMap = {'<C-J>': ['<C-J>','<Down>'], '<C-K>': ['<Up>','<C-K>'], '<Down>': ['<C-Down>'], '<Up>': ['<C-Up>'], '<C-Down>': ['<M-Down>','<C-S-Down>'], '<C-Up>': ['<M-Up>','<C-S-Up>']}
@@ -1309,7 +1318,7 @@ let g:asyncrun_bell = 1
 " nnoremap <silent> <F5> <Cmd>AsyncRun -raw -cwd=<root> -mode=term -pos=tab -rows=10 ./a <cr>
 
 " 设置识别项目目录
-let g:asyncrun_rootmarks = ['.svn', '.git', '.root', '_darcs', 'build.xml', '.vscode', '.cargo', 'package.json'] 
+let g:asyncrun_rootmarks = copy(g:global_rootmarks)
 
 
 

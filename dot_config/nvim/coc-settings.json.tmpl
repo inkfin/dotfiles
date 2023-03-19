@@ -8,7 +8,6 @@
     "suggest.floatConfig": {
         "border": true,
         "rounded": true,
-        "focusable": true,
         "winblend": 20,
         "shadow": true
     },
@@ -40,17 +39,16 @@
     "snippets.ultisnips.pythonPrompt": false,
     "python.pythonPath": "$HOME/.config/nvim/execute_python.sh",
     {{if eq .chezmoi.os "darwin" -}}
-    "python.venvPath": "/opt/anaconda3/envs",
+    "python.venvPath": "/opt/miniforge/envs",
     "webview.openCommand": "open -a Safari \"%u\"",
     {{- end }}
     {{- if eq .chezmoi.os "linux" -}}
     "webview.openCommand": "open \"%u\"",
     {{- end }}
-    "project.dbpath": "~/.config/coc/.coc-project",
-    "project.rootPatterns": [".git", ".svn", ".hg", ".vscode", ".project", ".root", ".idea", ".vim", ".cargo"],
     "leetcode.enabled": true,
     "leetcode.language": "cpp",
     "markdown-preview-enhanced.mathRenderingOption": "MathJax",
     "markdown-preview-enhanced.previewTheme": "one-dark.css",
-    "markdown-preview-enhanced.mermaidTheme": "default"
+    "markdown-preview-enhanced.mermaidTheme": "default",
+    "coc.source.vimtex.enable": true
 }

@@ -1,27 +1,49 @@
-"" tex.vim -- LaTex specific settings
-"" Commentary:
-"" LaTex in Vim using [VimTex](https://github.com/lervag/vimtex)
+""" tex.vim -- LaTex specific settings
+""" Commentary:
+""" LaTex in Vim using [VimTex](https://github.com/lervag/vimtex)
+""" |======|=========================|======|
+""" | LHS  |           RHS           | MODE |
+""" |======|=========================|======|
+""" | dse  | delete-surrounding-env  |  n   |
+""" | dsc  | delete-surrounding-cmd  |  n   |
+""" | dsm  | delete-surrounding-math |  n   |
+""" | cse  | change-surrounding-env  |  n   |
+""" | csc  | change-surrounding-cmd  |  n   |
+""" | csm  | change-surrounding-math |  n   |
+""" | tse  | toggle-surrounding-env  |  n   |
+""" | tsd  | toggle-delim-modifier   |  nx  |
+""" | <F7> | create-cmd-inplace      |  ni  |
+""" | ]]   | insert-close-delim      |  i   |
+""" |======|=========================|======|
+"""
+""" Code:
 
-"" Code:
-
-"" Config:
 let s:key_map = {}
 
 " ===
 " === lervag/vimtex
 " ===
-let g:tex_flavor='latex'
+" let g:tex_flavor='latex'
+" let g:tex_conceal='adbmg'
 let g:vimtex_compiler_progname='nvr'
-let g:vimtex_quickfix_mode=0 "disable quickfix auto pop up
 if has('mac')
-let g:vimtex_view_method='skim'
+    let g:vimtex_view_method='skim'
+    let g:vimtex_view_general_viewer='open -a /Applications/Skim.app '
+    let g:vimtex_view_skim_sync = 1
+    let g:vimtex_view_skim_activate = 1
+    let g:vimtex_view_skim_reading_bar = 1
 endif
-let g:vimtex_view_skim_reading_bar=1
-let g:vimtex_view_general_viewer=''
-let g:tex_conceal='adbmg'
+let g:vimtex_quickfix_mode = 1 "quickfix auto pop up
 
+" Disable imaps
+let g:vimtex_imaps_enabled = 0
+" let g:vimtex_view_automatic = 0
+
+imap <buffer> <f7> <plug>(vimtex-cmd-create)}<left>
 
 nnoremap dsm <Plug>(vimtex-env-delete-math)
+nnoremap csm <Plug>(vimtex-cmd-change-math)
+
 " Use `ai` and `ii` for the item text object
 xmap ii <Plug>(vimtex-im)
 omap ii <Plug>(vimtex-im)
@@ -38,13 +60,15 @@ omap am <Plug>(vimtex-a$)
 nnoremap <localleader>e <Plug>(vimtex-toc-toggle)
 let s:key_map.e = "toggle-TOC"
 
-nnoremap <localleader>2 <Plug>(vimtex-view)
-let s:key_map.2 = "sync-PDF"
-nnoremap <localleader>1 <Plug>(vimtex-reverse-search)
-let s:key_map.1 = "sync-VIM"
-
 nnoremap <localleader>c <Cmd>write<CR><Cmd>VimtexCompile<CR>
 let s:key_map.c = "compile"
+
+"" Performe forward-search
+nnoremap <localleader>f <Cmd>VimtexView<CR>
+let s:key_map.f = "sync-PDF"
+
+"" NOTE: To perform reverse-search, <cmd+S>+<LeftClick> in the PDF Reader
+
 
 nnoremap <localleader>r <Plug>(vim-reload)
 let s:key_map.r = "reload"
@@ -92,16 +116,35 @@ nnoremap <localleader>tm <Plug>(vimtex-toggle-main)
 let s:key_map.t.m = "main-tex-file"
 
 
-autocmd BufEnter *.tex call g:SetWhichKeyLocalBinding()
-autocmd BufLeave *.tex call g:UnsetWhichKeyLocalBinding()
 
-function! g:SetWhichKeyLocalBinding()
-    let s:keep_mapping = get(s:, 'keep_mapping', deepcopy(g:which_key_map_local))
+" augroup vimtex_buf_key_map
+    " au!
+    " au BufEnter *.tex call s:SetWhichKeyLocalBinding()
+    " au BufLeave *.tex call s:UnsetWhichKeyLocalBinding()
+" augroup END
+
+autocmd BufEnter *.tex call s:SetWhichKeyLocalBinding() | au! User vim-which-key call which_key#register(',', "g:which_key_map_local")
+autocmd BufLeave *.tex call s:UnsetWhichKeyLocalBinding() | au! User vim-which-key call which_key#register(',', "g:which_key_map_local")
+
+
+function! s:SetWhichKeyLocalBinding() abort
+    let g:keep_mapping = get(g:, 'keep_mapping', deepcopy(g:which_key_map_local))
     let g:which_key_map_local = s:key_map
 endfunction
 
-function! g:UnsetWhichKeyLocalBinding()
-    let g:which_key_map_local = s:keep_mapping
+function! s:UnsetWhichKeyLocalBinding() abort
+    let g:which_key_map_local = g:keep_mapping
 endfunction
 
-"" tex.vim ends here
+augroup vimtex_event_focus
+    au!
+    au User VimtexEventViewReverse call s:TexFocusVim()
+    au User VimtexEventView call s:TexFocusVim()
+augroup END
+
+function! s:TexFocusVim() abort
+    silent execute "!open -a iTerm"
+    redraw!
+endfunction
+
+""" tex.vim ends here

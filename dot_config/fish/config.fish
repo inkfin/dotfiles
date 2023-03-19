@@ -36,7 +36,9 @@ set -g -x RANGER_LOAD_DEFAULT_RC FALSE
 # =========================================================
 
 
+fish_add_path $HOME/bin
 fish_add_path /usr/local/sbin
+fish_add_path /usr/local/bin
 
 
 # homebrew
