@@ -85,11 +85,15 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many pluginsBreadcrumbsBreadcrumbs slow down shell startup.
-plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found vi-mode Z)
+plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found vi-mode Z zsh_codex)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+
+# OpenAI completion codex
+bindkey '^X' create_completion
+
 
 export MANPATH="/usr/local/man:$MANPATH"
 
@@ -142,6 +146,10 @@ eval $(thefuck --alias)
 
 # autojump
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+
+# Intel/ARM brew
+alias brew="/opt/homebrew/bin/brew"
+alias ibrew="/usr/local/bin/brew"
 
 # homebrew/command-not-found
 HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
