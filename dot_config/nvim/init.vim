@@ -298,7 +298,7 @@ let g:which_key_map.s.c = "spell-check"
 "autocmd BufEnter * silent! lcd %:p:h
 
 " Call figlet
-noremap <LEADER>pf <Cmd>r !figlet 
+noremap <LEADER>pf :r !figlet 
 let g:which_key_map.p.f = "figlet-{msgs}"
 
 " find and replace
@@ -566,6 +566,9 @@ endif
 
     " Undo Tree
     Plug 'mbbill/undotree/'
+
+    " Git
+    Plug 'tpope/vim-fugitive'
 
     " Markdown
     " Plug 'suan/vim-instant-markdown', {'for': 'markdown'}

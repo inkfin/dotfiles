@@ -34,6 +34,9 @@ if has('mac')
     let g:vimtex_view_skim_reading_bar = 1
 endif
 let g:vimtex_quickfix_mode = 1 "quickfix auto pop up
+let g:vimtex_quickfix_ignore_filters = [
+      \ 'does not contain requested Script',
+      \]
 
 " Disable imaps
 let g:vimtex_imaps_enabled = 0
@@ -57,8 +60,11 @@ xmap am <Plug>(vimtex-a$)
 omap am <Plug>(vimtex-a$)
 
 
-nnoremap <localleader>e <Plug>(vimtex-toc-toggle)
-let s:key_map.e = "toggle-TOC"
+nnoremap <localleader>t <Plug>(vimtex-toc-toggle)
+let s:key_map.t = "toggle-TOC"
+
+nnoremap <localleader>e <Plug>(vimtex-errors)
+let s:key_map.e = "show-errors"
 
 nnoremap <localleader>c <Cmd>write<CR><Cmd>VimtexCompile<CR>
 let s:key_map.c = "compile"
@@ -93,8 +99,6 @@ let s:key_map.o = {
 
 """ l: list
 let s:key_map.l = { "name" : "+list" }
-nnoremap <localleader>le <Plug>(vimtex-errors)
-let s:key_map.l.e = "errors"
 nnoremap <localleader>lm <Plug>(vimtex-imaps-list)
 let s:key_map.l.m = "imap-list"
 
@@ -109,11 +113,6 @@ nnoremap <localleader>pc <Plug>(vimtex-clean)
 let s:key_map.p.c = "clean-files"
 nnoremap <localleader>pC <Plug>(vimtex-clean-full)
 let s:key_map.p.C = "clean-files-full"
-
-""" t: toggle
-let s:key_map.t = { "name" : "+toggle" }
-nnoremap <localleader>tm <Plug>(vimtex-toggle-main)
-let s:key_map.t.m = "main-tex-file"
 
 
 
