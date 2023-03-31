@@ -131,7 +131,7 @@ alias ee="exit"
 
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_linux"
-alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/executable_init.vim"
+alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.vim"
 alias sourcezsh="source ~/.zshrc"
 
 alias ra="ranger"
@@ -165,7 +165,7 @@ export LD_LIBRARY_PATH="/usr/local/cuda-11.6/lib64":$LD_LIBRARY_PATH
 
 
 # Clash
-alias setproxy="export https_proxy=http://127.0.0.1:0;export http_proxy=http://127.0.0.1:0;export all_proxy=socks5://127.0.0.1:0"
+alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7891"
 alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mjpro150/bin
