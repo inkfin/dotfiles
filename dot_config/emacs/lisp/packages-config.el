@@ -2,14 +2,20 @@
 ;;; Commentary:
 ;;; Code:
 
+;; setup package and use-package
+
 ;; 腾讯源
 (require 'package)
 (setq package-archives '(("gnu"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
                          ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")))
 (package-initialize)
 
-
-;;; use-package sections
+;; Booststrap 'use-package
+(eval-after-load 'gnutls
+    '(add-to-list 'gnutls-trustfiles "/etc/ssl/cert.pem"))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (eval-when-compile
   (require 'use-package))
