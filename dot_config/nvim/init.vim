@@ -433,19 +433,26 @@ func! CompileDebugGcc()
 endfunc
 noremap cd <Cmd>call CompileDebugGcc()<CR>
 
-" generate compile commands
+
+"**
+"* Generate *compile_commands.json*
+"*   find the closest CMakeLists.txt in parent directory and generate
+"*   compile_commands.json in .vscode folder
 function! s:generate_compile_commands()
-    if empty(glob('CMakeLists.txt'))
-        echo "Can't find CMakeLists.txt"
-        return
+    let s:root_path = finddir('.vscode/..', expand('%:p:h').';') " find the closest .vscode path
+    echo '.vscode root_path is ' . s:root_path
+    if empty(findfile('CMakeLists.txt', s:root_path, -1)) " check it contains CMakeLists.txt
+        echo "Can't find CMakeLists.txt in project root (marked by .vscode)"
     endif
-    if empty(glob('.vscode'))
-        execute 'silent !mkdir .vscode'
-    endif
-    execute '!cmake -DCMAKE_BUILD_TYPE=debug
+    " if find CMakeLists.txt, create .vscode directly
+    let s:root_path = fnamemodify(findfile('CMakeLists.txt', '.;'), ':p:h')
+    echo 'CMakeLists.txt root_path is ' . s:root_path
+    execute '!cd ' .. s:root_path .. '; cmake -DCMAKE_BUILD_TYPE=debug
         \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .vscode'
 endfunction
 command! -nargs=0 Gcmake :call s:generate_compile_commands()
+
+
 
 " ====================
 "     MakeMyProject
