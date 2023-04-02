@@ -84,7 +84,7 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many pluginsBreadcrumbsBreadcrumbs slow down shell startup.
-plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found vi-mode z zsh_codex)
+plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found z zsh_codex)
 
 
 source $ZSH/oh-my-zsh.sh
@@ -93,23 +93,10 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 bindkey '^X' create_completion
 
-# The following lines were added by compinstall
-
-zstyle ':completion:*' completer _expand _complete _ignored _correct
-zstyle :compinstall filename '$HOME/.zshrc'
-
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
-#
 HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=5000
+SAVEHIST=5000
 bindkey -e
-
-source ~/powerlevel10k/powerlevel10k.zsh-theme
-source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 . /usr/share/autojump/autojump.sh
 
@@ -130,7 +117,7 @@ alias vim="nvim"
 alias ee="exit"
 
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
-alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_linux"
+alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_ubuntu"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.vim"
 alias sourcezsh="source ~/.zshrc"
 
