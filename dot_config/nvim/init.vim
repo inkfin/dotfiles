@@ -439,13 +439,13 @@ function! s:generate_compile_commands()
         echo "Can't find CMakeLists.txt"
         return
     endif
-    if empty(glob('.vim'))
+    if empty(glob('.vscode'))
         execute 'silent !mkdir .vscode'
     endif
     execute '!cmake -DCMAKE_BUILD_TYPE=debug
         \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .vscode'
 endfunction
-command! -nargs=0 Gcmake <Cmd>call s:generate_compile_commands()
+command! -nargs=0 Gcmake :call s:generate_compile_commands()
 
 " ====================
 "     MakeMyProject
@@ -898,6 +898,10 @@ nmap <silent> <leader>rs <Plug>(coc-codeaction-refactor-selected)
 let g:which_key_map.r.e = "refactor"
 let g:which_key_map.r.s = "refactor-selected"
 let g:which_key_map_visual.r.s = "refactor-selected"
+
+
+" === coc-clangd
+nnoremap <M-O> <Cmd>CocCommand clangd.switchSourceHeader<CR>
 
 
 " === coc-yank

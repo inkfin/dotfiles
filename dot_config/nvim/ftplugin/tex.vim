@@ -147,3 +147,4 @@ function! s:TexFocusVim() abort
 endfunction
 
 """ tex.vim ends here
+
