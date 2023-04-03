@@ -149,7 +149,7 @@ autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 let g:which_key_map =  {}
 let g:which_key_map.b = {"name": "+build"}
 let g:which_key_map.f = {"name" : "+find"}
-let g:which_key_map.t = {"name": "+table/trans"}
+let g:which_key_map.t = {"name": "+toggle/trans"}
 let g:which_key_map.o = {"name" : "+open"}
 let g:which_key_map.s = {"name": "+set"}
 let g:which_key_map.p = {"name": "+plugins"}
@@ -437,18 +437,17 @@ noremap cd <Cmd>call CompileDebugGcc()<CR>
 "**
 "* Generate *compile_commands.json*
 "*   find the closest CMakeLists.txt in parent directory and generate
-"*   compile_commands.json in .vscode folder
+"*   compile_commands.json in build folder
 function! s:generate_compile_commands()
-    let s:root_path = finddir('.vscode/..', expand('%:p:h').';') " find the closest .vscode path
-    echo '.vscode root_path is ' . s:root_path
+    let s:root_path = finddir('.vim/..', expand('%:p:h').';') " find the closest .vim path
     if empty(findfile('CMakeLists.txt', s:root_path, -1)) " check it contains CMakeLists.txt
-        echo "Can't find CMakeLists.txt in project root (marked by .vscode)"
+        echo "Can't find CMakeLists.txt in project root " .. s:root_path .. " (marked by .vim)"
+        let s:root_path = fnamemodify(findfile('CMakeLists.txt', '.;'), ':p:h') " search for CMakeLists.txt instead
     endif
-    " if find CMakeLists.txt, create .vscode directly
-    let s:root_path = fnamemodify(findfile('CMakeLists.txt', '.;'), ':p:h')
+    " if find CMakeLists.txt, create build/ directly
     echo 'CMakeLists.txt root_path is ' . s:root_path
     execute '!cd ' .. s:root_path .. '; cmake -DCMAKE_BUILD_TYPE=debug
-        \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .vscode'
+        \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B build'
 endfunction
 command! -nargs=0 Gcmake :call s:generate_compile_commands()
 
@@ -638,7 +637,9 @@ set termguicolors
 colorscheme molokai
 let g:molokai_original = 1
 let g:rehash256 = 1
-
+hi link IlluminatedWordText Visual
+hi link IlluminatedWordRead Visual
+hi link IlluminatedWordWrite Visual
 
 " === Yggdroot/indentLine ===
 let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
@@ -908,7 +909,8 @@ let g:which_key_map_visual.r.s = "refactor-selected"
 
 
 " === coc-clangd
-nnoremap <M-O> <Cmd>CocCommand clangd.switchSourceHeader<CR>
+nnoremap <leader>th <Cmd>CocCommand clangd.switchSourceHeader<CR>
+let g:which_key_map.t.h = "toggle-header-src"
 
 
 " === coc-yank
