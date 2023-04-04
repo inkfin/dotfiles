@@ -176,7 +176,7 @@ noremap <D-v> "+p
 inoremap <D-v> <c-r>+
 cnoremap <D-v> <c-r>+
 noremap Q <Cmd>q<CR>
-noremap R <Cmd>source $MYVIMRC<CR>
+" noremap R <Cmd>source $MYVIMRC<CR>
 noremap ; :
 
 " Copy to system clipboard
@@ -222,10 +222,10 @@ inoremap <C-e> <C-o>$
 noremap <C-e> 10<C-e>
 noremap <C-y> 10<C-y>
 
-noremap <C-S-k> <Cmd>res -5<CR>
-noremap <C-S-j> <Cmd>res +5<CR>
-noremap <C-S-l> <Cmd>vertical resize+5<CR>
-noremap <C-S-h> <Cmd>vertical resize-5<CR>
+noremap <C-Up> <Cmd>res -5<CR>
+noremap <C-Down> <Cmd>res +5<CR>
+noremap <C-Right> <Cmd>vertical resize+5<CR>
+noremap <C-Left> <Cmd>vertical resize-5<CR>
 
 " Tab Controll
 noremap ti <Cmd>tabe<CR>
@@ -274,6 +274,13 @@ set laststatus=2
 set autochdir
 "set showmatch"vims bracket pair function
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" === TMUX compatibility
+if &term =~ '^tmux'
+    echo "started with tmux mode"
+elseif &term =~ '^screen'
+    echo "started with screen mode"
+endif
 
 
 " ===
@@ -360,9 +367,9 @@ let g:global_rootmarks = [
     \ ]
 
 
-command! -nargs=0 OpenVimrc <Cmd>e ~/.config/nvim/init.vim
-command! -nargs=0 OpenZshrc <Cmd>e ~/.zshrc
-command! -nargs=0 OpenFishrc <Cmd>e ~/.config/fish/config.fish
+command! -nargs=0 OpenVimrc :e ~/.config/nvim/init.vim
+command! -nargs=0 OpenZshrc :e ~/.zshrc
+command! -nargs=0 OpenFishrc :e ~/.config/fish/config.fish
 
 
 
@@ -772,6 +779,7 @@ augroup end
 " <ctrl>+(shift)+p vscode like shortcuts to open command prompt
 nnoremap <C-l> <Cmd>CocList<CR>
 nnoremap <C-s-p> <Cmd>CocCommand<CR>
+nnoremap <M-x> <Cmd>CocCommand<CR>
 
 " GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
