@@ -1,0 +1,27 @@
+[user]
+	name = "inkfin"
+	email = "inkfinite@qq.com"
+[diff]
+    tool = nvimdiff
+[difftool "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE
+[difftool "code"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[merge]
+	tool = nvimdiff
+[mergetool "nvimdiff"]
+    cmd = nvim -d $REMOTE $LOCAL $BASE $MERGED -c '$wincmd w' -c 'wincmd J'
+[mergetool "code"]
+    cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[core]
+	autocrlf = input
+	excludesfile = ~/.gitignore_global
+[commit]
+	template = ~/.stCommitMsg
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[pull]
+	ff = true
