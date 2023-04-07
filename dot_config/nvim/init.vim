@@ -10,8 +10,15 @@
 " === Auto load for first time uses
 " ===
 " Install vim-plug if not found
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+if has('nvim')
+    let s:vim_plug_path = '~/.config/nvim/autoload/plug.vim'
+else
+    let s:vim_plug_path = '~/.vim/autoload/plug.vim'
+endif
+
+if empty(glob(s:vim_plug_path))
+    let $VIMPLUG_PATH = g:vim_config_path
+    silent !curl -fLo $VIMPLUG_PATH --create-dirs
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
@@ -305,7 +312,7 @@ let g:which_key_map.s.c = "spell-check"
 "autocmd BufEnter * silent! lcd %:p:h
 
 " Call figlet
-noremap <LEADER>pf :r !figlet 
+noremap <LEADER>pf :r !figlet
 let g:which_key_map.p.f = "figlet-{msgs}"
 
 " find and replace
@@ -541,7 +548,9 @@ endif
     " Apperance
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
-    Plug 'tomasr/molokai'
+    " Plug 'edkolev/tmuxline.vim'
+    " Plug 'tomasr/molokai'
+    Plug 'sainnhe/sonokai'
     Plug 'Yggdroot/indentLine'
     "Plug 'connorholyday/vim-snazzy'
     "Plug 'bling/vim-bufferline'
@@ -572,6 +581,10 @@ endif
 
     " Debug
     Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
+
+    " CMake
+    Plug 'cdelledonne/vim-cmake'
+    " Plug 'ilyachur/cmake4vim'
 
     " Async run tasks
     Plug 'skywind3000/asynctasks.vim'
@@ -636,14 +649,19 @@ call plug#end()
 " === airline ===
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline_theme='molokai'
-
+let g:airline_powerline_fonts = 1
+" let g:airline_theme='molokai'
+let g:airline_theme = 'sonokai'
 
 " === colorscheme ===
-set termguicolors
-colorscheme molokai
-let g:molokai_original = 1
-let g:rehash256 = 1
+if has('termguicolors')
+    set termguicolors
+endif
+" let g:molokai_original = 1
+" let g:rehash256 = 1
+let g:sonokai_style = 'andromeda'
+let g:sonokai_better_performance = 1
+colorscheme sonokai
 hi link IlluminatedWordText Visual
 hi link IlluminatedWordRead Visual
 hi link IlluminatedWordWrite Visual
@@ -1001,7 +1019,10 @@ let g:which_key_map.p.l = {
     \ }
 
 
-
+" === vim-cmake
+let g:cmake_build_dir_location = 'build'
+let g:cmake_root_markers = g:global_rootmarks
+let g:cmake_generate_options = ['-DCMAKE_EXPORT_COMPILE_COMMANDS=ON']
 
 
 " ===
