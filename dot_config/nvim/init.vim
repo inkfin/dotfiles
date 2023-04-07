@@ -174,7 +174,7 @@ let g:which_key_map_local = {}
 " ===
 " === Basic Mappings
 " ===
-noremap <LEADER><CR> <Cmd>nohlsearch<CR>
+noremap <LEADER><CR> <Cmd>nohlsearch<CR><Cmd>call minimap#vim#ClearColorSearch()<CR>
 
 noremap S <Cmd>w<CR>
 noremap <D-c> "+y
@@ -222,12 +222,8 @@ inoremap <C-a> <C-o>^
 inoremap <C-e> <C-o>$
 
 " <C-y> move window up, <C-e> move window down
+" <C-u> move half window up, <C-d> move half window down
 " zz move cursor line to center, zt to top, zb to bottom
-" Ctrl + J or K will move down/up the view port without moving the cursor
-" noremap <C-j> 5<C-e>
-" noremap <C-k> 5<C-y>
-noremap <C-e> 10<C-e>
-noremap <C-y> 10<C-y>
 
 noremap <C-Up> <Cmd>res -5<CR>
 noremap <C-Down> <Cmd>res +5<CR>
@@ -555,9 +551,7 @@ endif
     "Plug 'connorholyday/vim-snazzy'
     "Plug 'bling/vim-bufferline'
     "Plug 'bpietravalle/vim-bolt'
-
-    " Status line
-    Plug 'ojroques/vim-scrollstatus'
+    Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
 
     " General Highlighter
     Plug 'rrethy/vim-illuminate'
@@ -669,6 +663,14 @@ hi link IlluminatedWordWrite Visual
 " === Yggdroot/indentLine ===
 let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
 let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩进
+
+" === minimap.vim ===
+" requires code-minimap at https://github.com/wfxr/code-minimap
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+let g:minimap_highlight_search = 1
+let g:minimap_git_colors = 1
 
 " === jiangmiao/auto-pairs ===
 ""default-settings
@@ -953,8 +955,8 @@ let g:which_key_map.o.p = "projects"
 
 " === coc-multiple-cursors
 nmap <silent> <C-c> <Plug>(coc-cursors-position)
-nmap <silent> <C-d> <Plug>(coc-cursors-word)
-xmap <silent> <C-d> <Plug>(coc-cursors-range)
+nmap <silent> <C-x> <Plug>(coc-cursors-word)
+xmap <silent> <C-x> <Plug>(coc-cursors-range)
 
 " === coc-ci
 nmap <silent> w <Plug>(coc-ci-w)
