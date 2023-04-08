@@ -121,10 +121,19 @@ alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_ubuntu"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.vim"
 alias sourcezsh="source ~/.zshrc"
 
-alias ra="ranger"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 export EDITOR=nvim
+
+# ranger
+ra() {
+    if [ -z "$RANGER_LEVEL" ]
+    then
+        ranger
+    else
+        exit
+    fi
+}
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

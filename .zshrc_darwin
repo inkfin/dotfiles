@@ -128,7 +128,6 @@ alias sourcezsh="source ~/.zshrc"
 alias vim="nvim"
 alias v="vim"
 alias nv="neovide"
-alias ra="ranger"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 alias lg="lazygit"
@@ -143,6 +142,16 @@ alias unsetallproxy="unset ALL_PROXY=socks5://127.0.0.1:1080"
 
 # the fuck
 eval $(thefuck --alias)
+
+# ranger
+ra() {
+    if [ -z "$RANGER_LEVEL" ]
+    then
+        ranger
+    else
+        exit
+    fi
+}
 
 # autojump
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh

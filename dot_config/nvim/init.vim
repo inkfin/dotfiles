@@ -175,6 +175,7 @@ let g:which_key_map_local = {}
 " === Basic Mappings
 " ===
 noremap <LEADER><CR> <Cmd>nohlsearch<CR><Cmd>call minimap#vim#ClearColorSearch()<CR>
+let g:which_key_map['<CR>'] = 'nohlsearch'
 
 noremap S <Cmd>w<CR>
 noremap <D-c> "+y
@@ -663,14 +664,19 @@ hi link IlluminatedWordWrite Visual
 " === Yggdroot/indentLine ===
 let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
 let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩进
+let g:indentLine_fileTypeExclude = ['coc-explorer', 'which_key']
 
 " === minimap.vim ===
 " requires code-minimap at https://github.com/wfxr/code-minimap
 let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
+let g:minimap_auto_start = 0 " there are bugs when switching tabs
+let g:minimap_auto_start_win_enter = 0
 let g:minimap_highlight_search = 1
 let g:minimap_git_colors = 1
+let g:minimap_block_filetypes = [ 'fugitive', 'nerdtree', 'tagbar', 'leaderf', 'coc-explorer', 'which_key' ]
+let g:minimap_close_filetypes = [ 'help' ]
+nnoremap <Leader>' <cmd>MinimapToggle<CR>
+let g:which_key_map["'"] = "toggle-minimap"
 
 " === jiangmiao/auto-pairs ===
 ""default-settings
