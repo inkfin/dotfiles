@@ -124,7 +124,11 @@ let g:terminal_color_14 = '#9AEDFE'
 "" --- MacOS ---
 if has('mac')
     " specify the python parser path
-    let g:python3_host_prog = '/opt/homebrew/Cellar/python@3.11/3.11.2_1/bin/python3'
+    if empty(glob('/usr/local/Cellar/python@3.11/3.11.3/bin/python3'))
+        let g:python3_host_prog = '/opt/homebrew/Cellar/python@3.11/3.11.2_1/bin/python3'
+    else
+        let g:python3_host_prog = '/usr/local/Cellar/python@3.11/3.11.3/bin/python3'
+    endif
 
     " === ybian/smartim ===
     "    some people reported that it is slow while editing with vim-multiple-cursors, to fix this, put this in .vimrc:
@@ -706,7 +710,6 @@ let g:coc_global_extensions = [
     \ 'coc-lists',
     \ 'coc-actions',
     \ 'coc-marketplace',
-    \ 'coc-project',
     \ 'coc-dictionary',
     \ 'coc-tag',
     \ 'coc-word',
