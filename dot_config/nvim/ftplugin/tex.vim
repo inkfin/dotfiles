@@ -23,7 +23,7 @@ let s:key_map = {}
 " ===
 " === lervag/vimtex
 " ===
-" let g:tex_flavor='latex'
+let g:tex_flavor='latex'
 " let g:tex_conceal='adbmg'
 let g:vimtex_compiler_progname='nvr'
 if has('mac')
@@ -33,7 +33,7 @@ if has('mac')
     let g:vimtex_view_skim_activate = 1
     let g:vimtex_view_skim_reading_bar = 1
 endif
-let g:vimtex_quickfix_mode = 1 "quickfix auto pop up
+let g:vimtex_quickfix_mode = 0 "quickfix auto pop up
 let g:vimtex_quickfix_ignore_filters = [
       \ 'does not contain requested Script',
       \]
@@ -142,7 +142,11 @@ augroup vimtex_event_focus
 augroup END
 
 function! s:TexFocusVim() abort
-    silent execute "!open -a iTerm"
+    if exists("g:neovide")
+        silent execute "!open -a Neovide"
+    else
+        silent execute "!open -a iTerm"
+    endif
     redraw!
 endfunction
 
