@@ -124,10 +124,10 @@ let g:terminal_color_14 = '#9AEDFE'
 "" --- MacOS ---
 if has('mac')
     " specify the python parser path
-    if empty(glob('/usr/local/Cellar/python@3.11/3.11.3/bin/python3'))
-        let g:python3_host_prog = '/opt/homebrew/Cellar/python@3.11/3.11.2_1/bin/python3'
+    if empty(glob('/usr/local/bin/python3'))
+        let g:python3_host_prog = '/opt/homebrew/bin/python3'
     else
-        let g:python3_host_prog = '/usr/local/Cellar/python@3.11/3.11.3/bin/python3'
+        let g:python3_host_prog = '/usr/local/bin/python3'
     endif
 
     " === ybian/smartim ===
@@ -1150,6 +1150,9 @@ let g:Lf_RgConfig = [
         \ "--glob=!git/*",
         \ "--hidden"
     \ ]
+
+nnoremap <silent> <leader>fr :<C-U>Leaderf! rg --bottom<CR>
+nnoremap <silent> <leader>fR :<C-U><C-R>=printf("Leaderf! rg --bottom ")<CR>
 " search word under cursor, the pattern is treated as regex, and enter normal mode directly
 nnoremap <silent> <leader>fs :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR><CR>
 nnoremap <silent> <leader>fS :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
@@ -1157,7 +1160,6 @@ nnoremap <silent> <leader>fS :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<c
 xnoremap <leader>fs :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
 nnoremap <leader>fo :<C-U>Leaderf! rg --recall<CR>
 
-" nnoremap <silent> <leader>fi :<C-U><C-R>=printf("Leaderf rg --current-buffer -e %s ", "")<CR><CR>
 
 " should use `Leaderf gtags --update` first
 "let g:Lf_GtagsAutoGenerate = 0
@@ -1180,6 +1182,8 @@ let g:which_key_map.f.s = "current-word-buf"
 let g:which_key_map.f.S = "current-word-glob"
 let g:which_key_map.f.w = "windows"
 let g:which_key_map.f.o = "recent-search"
+let g:which_key_map.f.r = "rg"
+let g:which_key_map.f.R = "rg-{cmd}"
 
 let g:which_key_map_visual.f.s = "current-word"
 

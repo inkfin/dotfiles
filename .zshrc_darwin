@@ -131,6 +131,7 @@ alias nv="neovide"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 alias lg="lazygit"
+alias ra="ranger"
 
 # Proxy
 alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"
@@ -144,7 +145,7 @@ alias unsetallproxy="unset ALL_PROXY=socks5://127.0.0.1:1080"
 eval $(thefuck --alias)
 
 # ranger
-ra() {
+rag() {
     if [ -z "$RANGER_LEVEL" ]
     then
         ranger
@@ -196,15 +197,17 @@ export CMAKE_LIBRARY_PATH="/opt/homebrew/lib"
 
 
 # JAVA
-export JAVA_8_HOME=""
-export JAVA_11_HOME="/opt/homebrew/Cellar/openjdk@11/11.0.16.1_1/libexec/openjdk.jdk/Contents/Home"
+export JAVA_20_HOME="/opt/homebrew/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
+export JAVA_11_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
+export JAVA_8_HOME="/opt/homebrew/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home"
 
-export JAVA_HOME=$JAVA_11_HOME
-export CLASSPATH=".:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar"
-export M2_HOME="/Library/Java/apache-maven-3.8.5"
+export JAVA_HOME=$JAVA_20_HOME
+export CPPFLAGS="-I$JAVA_HOME/include"
 export PATH="$PATH:$JAVA_HOME/bin"
-export PATH="$PATH:$M2_HOME/bin"
 
+# Maven
+export M2_HOME="/opt/homebrew/opt/maven/libexec"
+export PATH="$PATH:$M2_HOME/bin"
 
 
 # =======================
