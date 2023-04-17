@@ -339,7 +339,7 @@ endfunc
 let g:which_key_map.s.t = "type-writer-mode"
 
 " Correcting spelling mistakes on the fly
-setlocal spell
+" setlocal spell
 setlocal spellfile=~/.config/nvim/spell/en.utf-8.add
 set spelllang=en_us,cjk
 inoremap <C-h> <c-g>u<Esc>[s1z=`]a<c-g>u
@@ -615,7 +615,6 @@ endif
     "Plug 'junegunn/goyo.vim' " distraction free writing mode
     "Plug 'gcmt/wildfire.vim' " in Visual mode, type i' to select all text in '', or type i) i] i} ip
     Plug 'scrooloose/nerdcommenter' " in <space>cc to comment a line
-    Plug 'voldikss/vim-translator' " Neovim English to Chinese translator, support Youdao, Ciba, Bing and Google
     Plug 'easymotion/vim-easymotion' " Easy Motion! to navigate
     Plug 'liuchengxu/vim-which-key' " which-key in space-vim
 
@@ -718,38 +717,43 @@ let g:coc_global_extensions = [
     \ 'coc-clangd',
     \ 'coc-cmake',
     \ 'coc-rust-analyzer',
-    \ 'coc-css',
+    \ 'coc-go',
     \ 'coc-diagnostic',
     \ 'coc-explorer',
     \ 'coc-flutter-tools',
     \ 'coc-gitignore',
-    \ 'coc-html',
     \ 'coc-json',
     \ 'coc-webview',
+    \ 'coc-markdown-preview-enhanced',
+    \ 'coc-flutter-tools',
     \ 'coc-highlight',
     \ 'coc-prettier',
     \ 'coc-pyright',
-    \ 'coc-sourcekit',
-    \ 'coc-stylelint',
     \ 'coc-syntax',
-    \ 'coc-tasks',
-    \ 'coc-todolist',
-    \ 'coc-eslint' ,
-    \ 'coc-translator',
-    \ 'coc-tslint-plugin',
+    \ 'coc-html',
+    \ 'coc-css',
+    \ 'coc-eslint',
     \ 'coc-tsserver',
     \ '@yaegassy/coc-volar',
     \ '@yaegassy/coc-volar-tools',
     \ 'coc-vimlsp',
     \ 'coc-yaml',
+    \ 'coc-toml',
     \ 'coc-yank',
+    \ 'coc-translator',
     \ 'coc-ci',
     \ 'coc-leetcode',
-    \ 'coc-tabnine'
+    \ 'coc-tabnine',
     \]
 
 
-    "\ 'coc-vetur', "vetur for vue2, use volar-tools for vue3
+    """ vetur for vue2, use volar-tools for vue3
+    "\ 'coc-vetur',
+    """ requires jdk to run
+    "\ 'coc-ltex',
+    """ not that useful
+    "\ 'coc-todolist',
+    "\ 'coc-tasks',
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Basic Settings
@@ -989,21 +993,18 @@ nmap <leader>rc <Cmd>CocCommand prettier.createConfigFile<CR>
 let g:which_key_map.r.c = "create-prettier-config"
 
 " === coc-translator
-"nmap ts <Plug>(coc-translator-p)
 " 重新映射 for do codeAction of selected region
-" function! s:cocActionsOpenFromSelected(type) abort
-  " execute 'CocCommand actions.open ' . a:type
-" endfunction
-" xmap <silent> <leader>a <Cmd>execute 'CocCommand actions.open ' . visualmode()<CR>
-" nmap <silent> <leader>a <Cmd>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
-
-" === coctodolist
-nnoremap <leader>tn <Cmd>CocCommand todolist.create<CR>
-nnoremap <leader>tl <Cmd>CocList todolist<CR>
-nnoremap <leader>tu <Cmd>CocCommand todolist.download<CR>:CocCommand todolist.upload<CR>
-let g:which_key_map.t.n = "Todo-create"
-let g:which_key_map.t.l = "Todo-list"
-let g:which_key_map.t.u = "Todo-update"
+function! s:cocActionsOpenFromSelected(type) abort
+  execute 'CocCommand actions.open ' . a:type
+endfunction
+xmap <silent> <leader>a <Cmd>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <leader>a <Cmd>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+" popup
+nmap <Leader>tw <Plug>(coc-translator-p)
+vmap <Leader>tw <Plug>(coc-translator-pv)
+" echo
+nmap <Leader>ts <Plug>(coc-translator-e)
+vmap <Leader>ts <Plug>(coc-translator-ev)
 
 " === coc-tasks
 noremap <silent> <leader>tt <Cmd>CocList tasks<CR>
@@ -1327,34 +1328,6 @@ let g:undotree_SetFocusWhenToggle = 1
 nnoremap L <Cmd>UndotreeToggle<CR>
 
 
-" ===
-" === vim-translator
-" ===
-let g:translator_target_lang = 'zh' " defult 'zh'
-let g:translator_source_lang = 'auto' " defult 'auto'
-let g:translator_default_engines = ['youdao', 'bing', 'haici'] " Available: 'baicizhan', 'bing', 'google', 'haici', 'iciba', 'sdcv', 'trans', 'youdao'
-" Default: If g:translator_target_lang is 'zh', ['baicizhan', 'bing', 'google', 'haici', 'youdao'], otherwise ['google']
-let g:translator_history_enable = 'true' "defult false
-let g:translator_window_type = 'popup' "defult popup; 'preview'
-let g:translator_window_max_width = 0.6 "Type int (number of columns) or float (between 0 and 1). If float, the height is relative to &lines. Default: 0.6
-" <Leader>t 翻译光标下的文本，在命令行回显
-nmap <silent> <Leader>ts <Plug>Translate
-vmap <silent> <Leader>ts <Plug>TranslateV
-" <Leader>w 翻译光标下的文本，在窗口中显示
-nmap <silent> <Leader>tw <Plug>TranslateW
-vmap <silent> <Leader>tw <Plug>TranslateWV
-" <Leader>r 替换光标下的文本为翻译内容
-"nmap <silent> <Leader>r <Plug>TranslateR
-"vmap <silent> <Leader>r <Plug>TranslateRV
-
-"Once the translation window is opened, type <C-w>p to jump into it and again to jump back
-"Beside, there is a function which can be used to scroll window, only works in neovim.
-" if has('nvim')
-" nnoremap <silent><expr> <C-w><C-f> translator#window#float#has_scroll() ?
-                            " \ translator#window#float#scroll(1) : "\<M-f>"
-" nnoremap <silent><expr> <C-w><C-b> translator#window#float#has_scroll() ?
-                            " \ translator#window#float#scroll(0) : "\<M-f>"
-" endif
 
 
 
