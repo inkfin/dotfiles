@@ -775,11 +775,11 @@ inoremap <silent><expr> <TAB>
     \     CheckBackSpace() ? "\<Tab>" : coc#refresh()
 
 " Add `:Format` command to format current buffer
-command! -nargs=0 Format <Cmd>call CocActionAsync('format')
+command! -nargs=0 Format :call CocActionAsync('format')
 " Add `:Fold` command to fold current buffer
-command! -nargs=? Fold <Cmd>call     CocAction('fold', <f-args>)
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer
-command! -nargs=0 OR   <Cmd>call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
@@ -983,7 +983,7 @@ let g:which_key_map.r.p = "format-selected"
 let g:which_key_map_visual.r.p ="format-selected"
 
 " custom command :Prettier to force format current document
-command! -nargs=0 Prettier <Cmd>CocCommand prettier.forceFormatDocument
+command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 
 xmap <leader>rP  <Cmd>Prettier<CR>
 let g:which_key_map.r.P = "force-format-file"
@@ -1093,7 +1093,7 @@ function! s:generate_vimspector_conf()
   e .vimspector.json
 endfunction
 
-command! -nargs=0 Gvimspector <Cmd>call s:generate_vimspector_conf()
+command! -nargs=0 Gvimspector :call s:generate_vimspector_conf()
 nnoremap <Leader>pvg <Cmd>Gvimspector<CR>
 let g:which_key_map.p.v.g = "generate-vimsp-conf"
 

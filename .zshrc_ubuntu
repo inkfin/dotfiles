@@ -121,6 +121,7 @@ alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_ubuntu"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.vim"
 alias sourcezsh="source ~/.zshrc"
+alias mok="~/modikeys.sh"
 
 alias cz="chezmoi"
 alias cze="chezmoi edit "
@@ -157,8 +158,8 @@ unset __conda_setup
 export PATH="$HOME/.local/bin":$PATH
 
 # CUDA
-export PATH="/usr/local/cuda-11.6/bin":$PATH
-export LD_LIBRARY_PATH="/usr/local/cuda-11.6/lib64":$LD_LIBRARY_PATH
+export PATH="/usr/local/cuda-11.7/bin":$PATH
+export LD_LIBRARY_PATH="/usr/local/cuda-11.7/lib64":$LD_LIBRARY_PATH
 
 
 # Clash
