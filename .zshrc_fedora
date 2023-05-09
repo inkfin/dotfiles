@@ -111,6 +111,7 @@ bindkey -e
 alias l="ls"
 alias ll="ls -l"
 alias la="ls -al"
+alias pac="sudo dnf"
 alias gst="git status"
 alias gcl="git clone"
 alias ga="git add"

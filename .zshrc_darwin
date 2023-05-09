@@ -120,6 +120,7 @@ fi
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
+alias pac="brew"
 alias ee="exit"
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_darwin"
