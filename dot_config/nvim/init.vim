@@ -601,6 +601,10 @@ endif
     Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
     Plug 'dkarter/bullets.vim'
 
+    " Org-mode
+    Plug 'jceb/vim-orgmode'
+    Plug 'mattn/calendar-vim'
+
     " LaTex
     Plug 'lervag/vimtex'
 
@@ -968,8 +972,8 @@ let g:which_key_map.o.p = "projects"
 
 " === coc-multiple-cursors
 nmap <silent> <C-c> <Plug>(coc-cursors-position)
-nmap <silent> <C-x> <Plug>(coc-cursors-word)
-xmap <silent> <C-x> <Plug>(coc-cursors-range)
+nmap <silent> <M-c> <Plug>(coc-cursors-word)
+xmap <silent> <M-c> <Plug>(coc-cursors-range)
 
 " === coc-ci
 nmap <silent> w <Plug>(coc-ci-w)
