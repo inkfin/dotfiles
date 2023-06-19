@@ -11,7 +11,11 @@
 " ===
 " Install vim-plug if not found
 if has('nvim')
-    let s:vim_plug_path = '~/.config/nvim/autoload/plug.vim'
+    if has('win32')
+        let s:vim_plug_path = 'C:/Users/Administrator/AppData/Local/nvim-data/site/autoload/plug.vim'
+    else
+        let s:vim_plug_path = '~/.config/nvim/autoload/plug.vim'
+    endif
 else
     let s:vim_plug_path = '~/.vim/autoload/plug.vim'
 endif
@@ -556,7 +560,7 @@ endif
     "Plug 'connorholyday/vim-snazzy'
     "Plug 'bling/vim-bufferline'
     "Plug 'bpietravalle/vim-bolt'
-    Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
+    " Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
 
     " General Highlighter
     Plug 'rrethy/vim-illuminate'
