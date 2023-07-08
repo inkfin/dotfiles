@@ -13,6 +13,7 @@ README.md
 # MacOS specific settings
 {{ if ne .chezmoi.os "darwin" }}
 .config/private_karabiner/
+.Brewfile
 {{ end }}
 
 # Linux specific settings
