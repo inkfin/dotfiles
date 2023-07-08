@@ -2,3 +2,4 @@
 .vim
 .vscode
 .DS_Store
+*.un~

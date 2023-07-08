@@ -1132,7 +1132,7 @@ let g:Lf_RootMarkers = (g:global_rootmarks)
 let g:Lf_DefaultExternalTool = 'rg'
 " ignore
 let g:Lf_WildIgnore = {
-    \ 'dir': ['.svn', '.git', '.hg', '.vscode', '.vim', '.idea', 'CMakeFiles', 'node_modules'],
+    \ 'dir': ['.svn', '.git', '.hg', '.vscode', '.vim', '.idea', 'CMakeFiles', 'node_modules', '*build*', 'target'],
     \ 'file': ['*.sw?','~$*','*.bak','*.exe','*.o','*.so','*.py[co]', '.DS_Store']
     \}
 let g:Lf_CommandMap = {'<C-J>': ['<C-J>','<Down>'], '<C-K>': ['<Up>','<C-K>'], '<Down>': ['<C-Down>'], '<Up>': ['<C-Up>'], '<C-Down>': ['<M-Down>','<C-S-Down>'], '<C-Up>': ['<M-Up>','<C-S-Up>']}
