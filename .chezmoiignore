@@ -25,7 +25,7 @@ modikeys.sh
 {{ if ne .chezmoi.os "windows" }}
 .config/AutoHotkey/
 Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
-run_once_install-packages.ps1
+install-packages.ps1
 {{ end }}
 {{ if eq .chezmoi.os "windows" }}
 install-packages.sh
