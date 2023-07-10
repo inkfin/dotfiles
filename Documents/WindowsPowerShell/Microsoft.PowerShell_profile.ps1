@@ -18,6 +18,10 @@ function gcm() {
 }
 function gst { git status }
 function lg { lazygit }
+function v() {
+    param([string] $fp)
+    nvim $fp
+}
 function vim() {
     param([string] $fp)
     nvim $fp
@@ -27,6 +31,8 @@ function cz() {
     chezmoi $par
 }
 function vimrc { nvim "C:\Users\Administrator\.local\share\chezmoi\dot_config\nvim\init.vim" }
+
+Import-Module ZLocation
 
 # oh-my-posh
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression
