@@ -4,6 +4,11 @@ function la() {
     Get-ChildItem -Force $fp
 }
 
+function open() {
+    param([string] $par)
+    Invoke-Item $par
+}
+
 function ee { exit }
 
 function gp { git pull }

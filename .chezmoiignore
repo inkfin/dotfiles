@@ -2,6 +2,8 @@ README.md
 
 .oh-my-zsh
 
+.config/nvim.old
+
 {{- if ne .profile "work" }}
 .work       # only manage .work on work-laptop
 {{- end }}

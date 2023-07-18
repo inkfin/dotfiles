@@ -42,6 +42,11 @@
     "workspace.rootPatterns": [".git", ".svn", ".hg", ".vscode", ".project", ".root", ".idea", ".vim", ".cargo"],
     "workspace.bottomUpFiletypes": ["*"],
     "workspace.ignoredFiletypes": [".DS_Store"],
+    "workspace.ignoredFolders": [
+        "$HOME",
+        "$HOME/.cargo/**",
+        "$HOME/.rustup/**"
+    ],
     "clangd.compilationDatabaseCandidates": ["${cwd}/.vscode", "${cwd}/build"],
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "coc.preferences.enableMessageDialog": true,

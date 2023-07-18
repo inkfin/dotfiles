@@ -726,6 +726,7 @@ let g:coc_global_extensions = [
     \ 'coc-cmake',
     \ 'coc-rust-analyzer',
     \ 'coc-go',
+    \ 'coc-lua',
     \ 'coc-diagnostic',
     \ 'coc-explorer',
     \ 'coc-flutter-tools',
