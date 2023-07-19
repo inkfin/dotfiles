@@ -67,7 +67,7 @@ opt.sidescrolloff = 8 -- Columns of context
 opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 opt.smartcase = true -- Don't ignore case with capitals
 opt.smartindent = true -- Insert indents automatically
-opt.spell = true -- Enable spell check
+opt.spell = true -- Spell check
 opt.spelllang = { "en", "cjk" } -- Set language: English and Chinese
 opt.spelloptions = "camel" -- Enable camel case
 opt.splitbelow = true -- Put new windows below current
@@ -89,3 +89,53 @@ end
 
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0
+
+vim.g.neoterm_autoscroll = 1
+vim.g.terminal_color_0 = "#000000"
+vim.g.terminal_color_1 = "#FF5555"
+vim.g.terminal_color_2 = "#50FA7B"
+vim.g.terminal_color_3 = "#F1FA8C"
+vim.g.terminal_color_4 = "#BD93F9"
+vim.g.terminal_color_5 = "#FF79C6"
+vim.g.terminal_color_6 = "#8BE9FD"
+vim.g.terminal_color_7 = "#BFBFBF"
+vim.g.terminal_color_8 = "#4D4D4D"
+vim.g.terminal_color_9 = "#FF6E67"
+vim.g.terminal_color_10 = "#5AF78E"
+vim.g.terminal_color_11 = "#F4F99D"
+vim.g.terminal_color_12 = "#CAA9FA"
+vim.g.terminal_color_13 = "#FF92D0"
+vim.g.terminal_color_14 = "#9AEDFE"
+
+-----------------------------
+-- Platform Specific Settings
+-----------------------------
+
+local function file_exists(name)
+    local f = io.open(name, "r")
+    return f ~= nil and io.close(f)
+end
+
+--- MacOS ---
+if vim.fn.has("mac") == 1 then
+    -- specify the python parser path
+    local intel_brew = "/usr/local/bin/python3"
+    local arm_brew = "/opt/homebrew/bin/python3"
+    if file_exists(arm_brew) then
+        vim.g.python3_host_prog = arm_brew
+    else
+        vim.g.python3_host_prog = intel_brew
+    end
+
+    -- " === ybian/smartim ===
+    -- "    some people reported that it is slow while editing with vim-multiple-cursors, to fix this, put this in .vimrc:
+    -- let g:smartim_default = 'com.apple.keylayout.ABC'
+    -- function! Multiple_cursors_before()
+    --   let g:smartim_disable = 1
+    -- endfunction
+    -- function! Multiple_cursors_after()
+    --   unlet g:smartim_disable
+    -- endfunction
+elseif vim.fn.has("win32") then
+    vim.g.python3_host_prog = ""
+end

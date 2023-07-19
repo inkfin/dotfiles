@@ -45,7 +45,7 @@ fish_add_path /usr/local/bin
 fish_add_path -m /opt/homebrew/bin
 set -gx CPPFLAGS "-I/opt/homebrew/include " $CPPFLAGS
 set -gx LDFLAGS "-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib " $LDFLAGS
-set -gx PATH "/opt/homebrew/sbin" $PATH
+set -gx PATH /opt/homebrew/sbin $PATH
 set -gx HOMEBREW_NO_AUTO_UPDATE 1
 
 # homebrew acceleration
@@ -53,8 +53,8 @@ set -x HOMEBREW_BOTTLE_DOMAIN https://mirrors.ustc.edu.cn/homebrew-bottles
 
 
 # CMake
-set -gx CMAKE_INCLUDE_PATH "/opt/homebrew/include"
-set -gx CMAKE_LIBRARY_PATH "/opt/homebrew/lib"
+set -gx CMAKE_INCLUDE_PATH /opt/homebrew/include
+set -gx CMAKE_LIBRARY_PATH /opt/homebrew/lib
 
 # Cargo
 fish_add_path -m /Users/inkfin/.cargo/bin
@@ -62,13 +62,13 @@ fish_add_path -m /Users/inkfin/.cargo/bin
 
 # -------------- LLVM -----------------
 # ------- llvm__arm64__version --------
-set -g fish_user_paths "/opt/homebrew/opt/llvm/bin" $fish_user_paths
+set -g fish_user_paths /opt/homebrew/opt/llvm/bin $fish_user_paths
 
 # To use the bundled libc++ please add the following LDFLAGS:
 set -gx LDFLAGS "-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib" $LDFLAGS
 
 # For compilers to find llvm you may need to set:
-set -gx CPPFLAGS "-I/opt/homebrew/opt/llvm/include" $CPPFLAGS
+set -gx CPPFLAGS -I/opt/homebrew/opt/llvm/include $CPPFLAGS
 
 #-------- llvm__intel__version --------
 #set -g fish_user_paths "/usr/local/opt/llvm/lib" $fish_user_paths
@@ -89,7 +89,7 @@ set -x THEFUCK_OVERRIDDEN_ALIASES 'gsed,git'
 # homebrew/command-not-found
 set HB_CNF_HANDLER (brew --repository)"/Library/Taps/homebrew/homebrew-command-not-found/handler.fish"
 if test -f $HB_CNF_HANDLER
-   source $HB_CNF_HANDLER
+    source $HB_CNF_HANDLER
 end
 
 
@@ -116,9 +116,9 @@ set -x PCL_PREFIX "/opt/homebrew/Cellar/pcl/1.12.0_1"
 
 # Ruby
 fish_add_path /opt/homebrew/opt/ruby/bin
-fish_add_path /opt/homebrew/lib/ruby/gems/3.1.0/bin  # gem bin path
-set -x LDFLAGS "-L/opt/homebrew/opt/ruby/lib" $LDFLAGS
-set -x CPPFLAGS "-I/opt/homebrew/opt/ruby/include" $CPPFLAGS
+fish_add_path /opt/homebrew/lib/ruby/gems/3.1.0/bin # gem bin path
+set -x LDFLAGS -L/opt/homebrew/opt/ruby/lib $LDFLAGS
+set -x CPPFLAGS -I/opt/homebrew/opt/ruby/include $CPPFLAGS
 
 
 # gnutls
@@ -132,8 +132,8 @@ set -x GUILE_SYSTEM_EXTENSIONS_PATH "/usr/local/lib/guile/3.0/extensions" $GUILE
 
 
 # translate-shell
-set -x HOME_LANG "zh-CN"
-set -x TARGET_LANG "zh-CN"
+set -x HOME_LANG zh-CN
+set -x TARGET_LANG zh-CN
 
 
 # Redis
@@ -144,7 +144,7 @@ alias stopredis '/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redi
 
 
 # MacTex
-set -gx PATH $PATH "/usr/local/texlive/2022/bin/universal-darwin"
+set -gx PATH $PATH /usr/local/texlive/2022/bin/universal-darwin
 
 
 # =========================================================
@@ -152,7 +152,7 @@ set -gx PATH $PATH "/usr/local/texlive/2022/bin/universal-darwin"
 # =========================================================
 
 # ---------- M1 Homebrew Versions ---------------
-alias abrew '/opt/homebrew/bin/brew' # ARM Homebrew
+alias abrew /opt/homebrew/bin/brew # ARM Homebrew
 alias ibrew 'arch -x86_64 /usr/local/bin/brew' # X86 Homebrew
 
 alias vim nvim
@@ -164,12 +164,12 @@ alias cd.. "cd .."
 
 alias matrix "cmatrix -sna"
 
-alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/init.vim"
+alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
 alias vimfish "vim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh "vim ~/.local/share/chezmoi/.zshrc_darwin"
 alias sourcefish "source ~/.config/fish/config.fish"
 
-alias cz "chezmoi"
+alias cz chezmoi
 alias cze "chezmoid edit"
 
 
@@ -180,15 +180,15 @@ alias ga "git add"
 alias gc "git commit"
 alias gp "git pull"
 alias gP "git push"
-alias lg "lazygit"
+alias lg lazygit
 alias tnew "tmux new -s "
 
 # SQL
 # alias sqlstart "pg_ctl -D /usr/local/var/postgres start"
 # alias sqlstop "pg_ctl -D /usr/local/var/postgres stop"
 alias sqlserver "/opt/homebrew/opt/postgresql/bin/postgres -D /opt/homebrew/var/postgres"
-alias sqlstart  "pg_ctl -D /opt/homebrew/var/postgres start"
-alias sqlstop   "pg_ctl -D /opt/homebrew/var/postgres stop"
+alias sqlstart "pg_ctl -D /opt/homebrew/var/postgres start"
+alias sqlstop "pg_ctl -D /opt/homebrew/var/postgres stop"
 
 set -x PATH "/usr/local/mysql-8.0.27-macos11-arm64/bin" $PATH
 
@@ -216,7 +216,7 @@ alias MACAccelerationOFF "defaults write -g com.apple.mouse.scaling -1"
 alias MACSecureInput "ioreg -l -d 1 -w 0 | grep SecureInput"
 
 
-test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
+test -e {$HOME}/.iterm2_shell_integration.fish; and source {$HOME}/.iterm2_shell_integration.fish
 
 set -gx EDITOR /opt/homebrew/bin/nvim
 

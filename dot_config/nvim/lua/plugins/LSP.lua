@@ -1,8 +1,12 @@
--- LSP customizations, see https://www.lazyvim.org/plugins/lsp#%EF%B8%8F-customizing-lsp-keymaps for more details.
+-- LSP basic configurations,
+-- see https://www.lazyvim.org/plugins/lsp#%EF%B8%8F-customizing-lsp-keymaps for more details.
+
 return {
     {
         "neovim/nvim-lspconfig",
         init = function()
+            -- lsp keymaps customization
+
             local keys = require("lazyvim.plugins.lsp.keymaps").get()
             -- cancel K from hover
             keys[#keys + 1] = { "K", false }
@@ -16,9 +20,16 @@ return {
             keys[#keys + 1] = { "<leader>cl", vim.lsp.codelens.run, desc = "codelens", mode = { "n" } }
         end,
     },
+
+    -- Use <tab> for completion and snippets (supertab)
+    -- first: disable default <tab> and <s-tab> behavior in LuaSnip
     {
         "L3MON4D3/LuaSnip",
+        keys = function()
+            return {}
+        end,
     },
+    -- then: setup supertab in cmp
     {
         "hrsh7th/nvim-cmp",
         version = false,
@@ -27,6 +38,7 @@ return {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
+            "hrsh7th/cmp-emoji",
             "saadparwaiz1/cmp_luasnip",
         },
         opts = function()
@@ -52,8 +64,8 @@ return {
                     end,
                 },
                 mapping = cmp.mapping.preset.insert({
-                    ["<C-b>"] = cmp.mapping.scroll_docs(-4), -- Up
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4), -- Down
+                    ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
+                    ["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
                     ["<C-e>"] = cmp.mapping.abort(),
                     ["<CR>"] = cmp.mapping.confirm({
                         behavior = cmp.ConfirmBehavior.Replace,

@@ -8,9 +8,11 @@ vim.api.nvim_create_autocmd("BufEnter", {
     command = "set fo-=c fo-=r fo-=o",
 })
 
---
-vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-        vim.keymap.set("n", "<leader>h", vim.lsp.buf.hover, { buffer = args.buf })
+-- Run chezmoi apply whenever a dotfile is saved
+-- autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+    pattern = vim.fn.expand("~") .. "/.local/share/chezmoi/*",
+    callback = function()
+        vim.cmd('!chezmoi apply --source-path "%"')
     end,
 })

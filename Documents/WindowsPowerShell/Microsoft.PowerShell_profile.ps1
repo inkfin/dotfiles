@@ -35,7 +35,7 @@ function cz() {
     param([string] $par)
     chezmoi $par
 }
-function vimrc { nvim "C:\Users\Administrator\.local\share\chezmoi\dot_config\nvim\init.vim" }
+function vimrc { nvim "C:\Users\Administrator\.local\share\chezmoi\dot_config\nvim\init.lua" }
 
 Import-Module ZLocation
 
