@@ -56,7 +56,7 @@ return {
 
             return {
                 completion = {
-                    completeopt = "menu,menuone,noinsert",
+                    completeopt = "menu,menuone,noinsert,noselect",
                 },
                 snippet = {
                     expand = function(args)
@@ -75,7 +75,6 @@ return {
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item()
-                            cmp.select_prev_item()
                         elseif luasnip.expand_or_jumpable() then
                             luasnip.expand_or_jump()
                         elseif has_words_before() then
