@@ -84,8 +84,8 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many pluginsBreadcrumbsBreadcrumbs slow down shell startup.
-plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found z zsh_codex)
-
+plugins=(git tmux colored-man-pages zsh-syntax-highlighting extract cp git-open safe-paste command-not-found z zsh_codex)
+# zsh-autosuggestions 
 
 source $ZSH/oh-my-zsh.sh
 
@@ -137,6 +137,11 @@ rag() {
         exit
     fi
 }
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source ~/.config/fzf/fzf_config.zsh
+
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

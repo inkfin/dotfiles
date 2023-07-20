@@ -33,5 +33,6 @@ install-packages.ps1
 install-packages.sh
 .tmux/
 .tmux.conf
+.config/fzf/
 {{ end }}
 

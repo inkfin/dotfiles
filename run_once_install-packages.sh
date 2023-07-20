@@ -4,90 +4,94 @@
 # be run from within $HOME (assuming this is the root of your dotfiles)
 cd "$HOME"
 
+# check for installed flag
+if [ -f $HOME/.init_flag ]; then
+    echo "Found init flag (~/.init_flag), skipping bootstrap script."
+	exit
+else
+	touch $HOME/.init_flag
+	echo "Running bootstrap script..."
+fi
+
 system_type=$(uname -s)
 
 # check if has command
 is_command() {
-    command -v "$1" > /dev/null 2>&1
+	command -v "$1" >/dev/null 2>&1
 }
 
 install_command() {
-    echo "Installing $2..."
-    $1 install $2
-    if [ $? -eq 0 ]; then
-        echo "$2 installed."
-    else
-        echo "Install $2 error."
-    fi
+	echo "Installing $2..."
+	$1 install $2
+	if [ $? -eq 0 ]; then
+		echo "$2 installed."
+	else
+		echo "Install $2 error."
+	fi
+}
+
+pkg_manager=pac
+
+install_if_not_exist() {
+	if ! is_command $1; then
+		install_command $pkg_manager $1
+	fi
 }
 
 
+# define command list
+command_list=(zsh tmux ranger fzf rg fd bat)
+
 # MacOS
 if [ ${system_type} = "Darwin" ]; then
-    # install homebrew
-    if ! is_command brew; then
-        echo "Installing homebrew"
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
+	pkg_manager=brew
 
-    if [ -f "$HOME/.Brewfile" ]; then
-        echo "Updating homebrew bundle"
-        brew bundle --global
-    fi
+	# install homebrew
+	if ! is_command brew; then
+		echo "Installing homebrew"
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	fi
 
-    # zsh
-    if ! is_command zsh; then
-        install_command brew zsh
-    fi
+	$pkg_manager update
 
-    # tmux
-    if ! is_command zsh; then
-        install_command brew zsh
-    fi
+	if [ -f "$HOME/.Brewfile" ]; then
+		echo "Updating homebrew bundle"
+		brew bundle --global
+	fi
 
-    # Utilities
-    if ! is_command ranger; then
-        install_command brew ranger
-    fi
-    # Vim init
-    if ! is_command nvim; then
-        install_command brew neovim
-    fi
-    if is_command nvim; then
-        echo "Bootstraping NeoVim"
-        nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
-    fi
+    # install basic command in list
+    for command in ${command_list[*]}; do
+        install_if_not_exist $command
+    done
+
+    # fzf init
+    /opt/homebrew/opt/fzf/install
+
+	# Vim init
+	install_if_not_exist neovim
+	# if is_command nvim; then
+	# 	echo "Bootstraping NeoVim"
+	# 	nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
+	# fi
 
 fi
 
-
 # Linux
 if [ ${system_type} = "Linux" ]; then
-    installer="sudo apt-get"
+	pkg_manager="sudo apt-get"
 
-    sudo apt-get update
+	$pkg_manager update
 
-    # zsh
-    if ! is_command zsh; then
-        install_command ${installer} zsh
-    fi
+    # install basic command in list
+    for command in ${command_list[*]}; do
+        install_if_not_exist $command
+    done
 
-    if ! is_command tmux; then
-        echo "Installing tmux..."
-        install_command ${installer} tmux
-    fi
-
-    # Utilities
-    if ! is_command ranger; then
-        install_command ${installer} ranger
-    fi
-    # Vim init
-    if ! is_command nvim; then
-        install_command ${installer} neovim
-    fi
-    if is_command nvim; then
-        echo "Bootstraping NeoVim"
-        nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
-    fi
+	# Vim init
+    install_if_not_exist neovim
+	# if is_command nvim; then
+	# 	echo "Bootstraping NeoVim"
+	# 	nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
+	# fi
 
 fi

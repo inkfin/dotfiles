@@ -90,8 +90,19 @@ plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting 
 source $ZSH/oh-my-zsh.sh
 
 
-# User configuration
-bindkey '^X' create_completion
+# ranger
+rag() {
+    if [ -z "$RANGER_LEVEL" ]
+    then
+        ranger
+    else
+        exit
+    fi
+}
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source ~/.config/fzf/fzf_config.zsh
 
 # The following lines were added by compinstall
 
@@ -106,6 +117,10 @@ HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 bindkey -e
+
+
+# User configuration
+bindkey '^X' create_completion
 
 # User Settings:
 alias l="ls"
@@ -142,3 +157,5 @@ export http_proxy=http://127.0.0.1:7890
 export https_proxy=http://127.0.0.1:7890
 alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7891"
 alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
+
+

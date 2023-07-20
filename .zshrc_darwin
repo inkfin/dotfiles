@@ -85,7 +85,7 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many pluginsBreadcrumbsBreadcrumbs slow down shell startup.
-plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found Z zsh_codex)
+plugins=(git git-open tmux colored-man-pages zsh-syntax-highlighting zsh-autosuggestions extract cp safe-paste command-not-found Z zsh_codex)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -154,6 +154,10 @@ rag() {
         exit
     fi
 }
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source ~/.config/fzf/fzf_config.zsh
 
 # autojump
 [ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
@@ -314,7 +318,6 @@ alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 # Applications
 alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
-
 
 
 
