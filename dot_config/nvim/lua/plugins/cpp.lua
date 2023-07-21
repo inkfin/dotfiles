@@ -1,0 +1,174 @@
+return {
+    -- Install code highlighter
+    {
+        "nvim-treesitter/nvim-treesitter",
+        opts = function(_, opts)
+            if type(opts.ensure_installed) == "table" then
+                vim.list_extend(opts.ensure_installed, {
+                    "c",
+                    "cpp",
+                    "cmake",
+                })
+            end
+        end,
+    },
+    -- Install lsp and dap
+    {
+        "williamboman/mason.nvim",
+        opts = function(_, opts)
+            if type(opts.ensure_installed) == "table" then
+                vim.list_extend(opts.ensure_installed, {
+                    "codelldb",
+                    "clang-format",
+                })
+            end
+        end,
+    },
+
+    -- Correctly setup lspconfig for clangd 🚀
+    {
+        "neovim/nvim-lspconfig",
+        opts = {
+            servers = {
+                -- Ensure mason installs the server
+                clangd = {
+                    keys = {
+                        { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+                    },
+                    root_dir = function(...)
+                        -- using a root .clang-format or .clang-tidy file messes up projects, so remove them
+                        return require("lspconfig.util").root_pattern(
+                            "compile_commands.json",
+                            "compile_flags.txt",
+                            "configure.ac",
+                            ".git",
+                            ".vscode",
+                            ".idea"
+                        )(...)
+                    end,
+                    capabilities = {
+                        offsetEncoding = { "utf-16" },
+                    },
+                    cmd = {
+                        "clangd",
+                        "--background-index",
+                        "--clang-tidy",
+                        "--header-insertion=iwyu",
+                        "--completion-style=detailed",
+                        "--function-arg-placeholders",
+                        "--fallback-style=llvm",
+                    },
+                    init_options = {
+                        usePlaceholders = true,
+                        completeUnimported = true,
+                        clangdFileStatus = true,
+                    },
+                },
+            },
+        },
+    },
+    {
+        "p00f/clangd_extensions.nvim",
+        opts = {
+            extensions = {
+                inlay_hints = {
+                    inline = vim.fn.has("nvim-0.10") == 1,
+                },
+            },
+            -- ast = {
+            --     -- These are unicode, should be available in any font
+            --     role_icons = {
+            --         type = "🄣",
+            --         declaration = "🄓",
+            --         expression = "🄔",
+            --         statement = ";",
+            --         specifier = "🄢",
+            --         ["template argument"] = "🆃",
+            --     },
+            --     kind_icons = {
+            --         Compound = "🄲",
+            --         Recovery = "🅁",
+            --         TranslationUnit = "🅄",
+            --         PackExpansion = "🄿",
+            --         TemplateTypeParm = "🅃",
+            --         TemplateTemplateParm = "🅃",
+            --         TemplateParamObject = "🅃",
+            --     },
+            -- },
+        },
+    },
+
+    -- Debugger settings
+    {
+        "mfussenegger/nvim-dap",
+        opts = function()
+            local dap = require("dap")
+            dap.set_log_level("debug")
+
+            if not dap.adapters["codelldb"] then
+                require("dap").adapters["codelldb"] = {
+                    type = "server",
+                    host = "localhost",
+                    port = "${port}",
+                    executable = {
+                        command = "codelldb",
+                        args = {
+                            "--port",
+                            "${port}",
+                        },
+                    },
+                }
+            end
+            -- CPP settings
+            dap.configurations.cpp = {
+                {
+                    type = "codelldb",
+                    request = "launch",
+                    name = "Launch executable file",
+                    program = function()
+                        ---@diagnostic disable-next-line: redundant-parameter
+                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+                    end,
+                    cwd = "${workspaceFolder}",
+                },
+                {
+                    type = "codelldb",
+                    request = "launch",
+                    name = "Rebuild and Launch",
+                    program = function()
+                        if vim.fn.confirm("Should I recompile first?", "&yes\n&no", 2) == 1 then
+                            vim.g.cmake_build_project()
+                        end
+                        return vim.g.cmake_get_exec_path()
+                    end,
+                    cwd = "${workspaceFolder}",
+                },
+                {
+                    type = "codelldb",
+                    request = "attach",
+                    name = "Attach to process",
+                    processId = require("dap.utils").pick_process,
+                    cwd = "${workspaceFolder}",
+                },
+            }
+            -- C settings
+            dap.configurations.c = dap.configurations.cpp
+
+            local code = require("dap.ext.vscode")
+            code.load_launchjs(nil, { codelldb = { "c", "cpp" } }) -- default path is ${workspaceFolder}/.vscode/launch.json
+        end,
+    },
+
+    -- formatter config
+    {
+        "jose-elias-alvarez/null-ls.nvim",
+        opts = function(_, opts)
+            if type(opts.sources) == "table" then
+                local nls = require("null-ls")
+                vim.list_extend(opts.sources, {
+                    nls.builtins.formatting.clang_format,
+                })
+            end
+        end,
+    },
+}

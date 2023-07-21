@@ -139,3 +139,5 @@ if vim.fn.has("mac") == 1 then
 elseif vim.fn.has("win32") then
     vim.g.python3_host_prog = ""
 end
+
+require("utils.func")

@@ -2,6 +2,25 @@
 
 return {
     "folke/noice.nvim",
+    config = {
+        views = {
+            cmdline_popup = {
+                position = {
+                    row = -2,
+                    col = "50%",
+                },
+            },
+            cmdline_popupmenu = {
+                position = {
+                    row = -5,
+                    col = "50%",
+                },
+            },
+        },
+        preset = {
+            cmdline_output_to_split = true,
+        },
+    },
     keys = {
         -- change scrolling keymap to <C-d/u> (can affect LSP)
         {
