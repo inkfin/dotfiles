@@ -16,7 +16,6 @@ return {
             local logo = [[
                    千里之行,始于足下                      
       ]]
-
             dashboard.section.header.val = vim.split(logo, "\n")
         end,
     },
