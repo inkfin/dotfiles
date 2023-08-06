@@ -2,6 +2,41 @@
 #InstallKeybdHook
 
 
+;===========CapsLock 改键==========o
+
+SetCapsLockState AlwaysOff
+
+; CapsLock 短按esc，长按ctrl
+; FIXME: This won't work
+*CapsLock::
+    KeyWait, CapsLock, T0.1
+    if (ErrorLevel = 1) {
+        ; Msgbox, long term pressing.
+        SendEvent {Ctrl down}
+        KeyWait, CapsLock
+        ; Msgbox, key up
+        SendEvent {Ctrl up}
+    }
+    else
+        ; Msgbox, short term pressing.
+        Send {Esc}
+return
+
+
+; Ctrl + CapsLock 切换大小写
+^CapsLock::
+If GetKeyState("CapsLock", "T") = 1
+    SetCapsLockState, AlwaysOff
+Else
+    SetCapsLockState, AlwaysOn
+Return
+
+CapsLock::Send {ESC}
+
+
+
+
+/*
 ; 像macOS一样的光标移动方式 
 ^Left::Send {Home}
 ^Right::Send {End}
@@ -10,26 +45,6 @@
 
 ^BackSpace::Send +{Home}{BackSpace}
 !BackSpace::Send ^{BackSpace}
-
-
-;===========CapsLock 改键==========o
-
-SetCapsLockState AlwaysOff
-
-; ; CapsLock 短按esc，长按ctrl
-; *CapsLock::
-;     KeyWait, CapsLock, T0.1
-;     if (ErrorLevel = 1) {
-;         ; Msgbox, long term pressing.
-;         SendEvent {Ctrl down}
-;         KeyWait, CapsLock
-;         ; Msgbox, key up
-;         SendEvent {Ctrl up}
-;     }
-;     else
-;         ; Msgbox, short term pressing.
-;         Send {Esc}
-; return
 
 
 ; 常用 Ctrl 组合键
@@ -57,15 +72,8 @@ CapsLock & r::r
 CapsLock & i::i 
 CapsLock & z::z
 
-; Ctrl + CapsLock 切换大小写
-^CapsLock::
-If GetKeyState("CapsLock", "T") = 1
-    SetCapsLockState, AlwaysOff
-Else
-    SetCapsLockState, AlwaysOn
-Return
+*/
 
-CapsLock::Send {ESC}
 
 
 /*
