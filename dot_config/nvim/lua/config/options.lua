@@ -137,7 +137,7 @@ if vim.fn.has("mac") == 1 then
     --   unlet g:smartim_disable
     -- endfunction
 elseif vim.fn.has("win32") then
-    vim.g.python3_host_prog = ""
+    vim.g.python3_host_prog = "$HOME/miniconda3/current/python"
 end
 
 require("utils.func")
