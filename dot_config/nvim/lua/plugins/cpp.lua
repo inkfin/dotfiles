@@ -35,16 +35,21 @@ return {
                     keys = {
                         { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
                     },
-                    root_dir = function(...)
+                    root_dir = function(fname)
                         -- using a root .clang-format or .clang-tidy file messes up projects, so remove them
                         return require("lspconfig.util").root_pattern(
-                            "compile_commands.json",
-                            "compile_flags.txt",
+                            "Makefile",
+                            "CMakeLists.txt",
                             "configure.ac",
-                            ".git",
-                            ".vscode",
-                            ".idea"
-                        )(...)
+                            "configure.in",
+                            "config.h.in",
+                            "meson.build",
+                            "meson_options.txt",
+                            "build.ninja"
+                        )(fname) or require("lspconfig.util").root_pattern(
+                            "compile_commands.json",
+                            "compile_flags.txt"
+                        )(fname) or require("lspconfig.util").find_git_ancestor(fname)
                     end,
                     capabilities = {
                         offsetEncoding = { "utf-16" },
@@ -65,36 +70,46 @@ return {
                     },
                 },
             },
+            -- FIXIT: Issue (https://github.com/LazyVim/LazyVim/pull/1308), merge appending
+            -- remove this after it get merged
+            setup = {
+                clangd = function(_, opts)
+                    local clangd_ext_opts = require("lazyvim.util").opts("clangd_extensions.nvim")
+                    require("clangd_extensions").setup(
+                        vim.tbl_deep_extend("force", clangd_ext_opts or {}, { server = opts })
+                    )
+                    return false -- change true to false
+                end,
+            },
         },
     },
     {
         "p00f/clangd_extensions.nvim",
         opts = {
-            extensions = {
-                inlay_hints = {
-                    inline = vim.fn.has("nvim-0.10") == 1,
+            inlay_hints = {
+                -- inline = vim.fn.has("nvim-0.10") == 1,
+                inline = false,
+            },
+            ast = {
+                -- These are unicode, should be available in any font
+                role_icons = {
+                    type = "🄣",
+                    declaration = "🄓",
+                    expression = "🄔",
+                    statement = ";",
+                    specifier = "🄢",
+                    ["template argument"] = "🆃",
+                },
+                kind_icons = {
+                    Compound = "🄲",
+                    Recovery = "🅁",
+                    TranslationUnit = "🅄",
+                    PackExpansion = "🄿",
+                    TemplateTypeParm = "🅃",
+                    TemplateTemplateParm = "🅃",
+                    TemplateParamObject = "🅃",
                 },
             },
-            -- ast = {
-            --     -- These are unicode, should be available in any font
-            --     role_icons = {
-            --         type = "🄣",
-            --         declaration = "🄓",
-            --         expression = "🄔",
-            --         statement = ";",
-            --         specifier = "🄢",
-            --         ["template argument"] = "🆃",
-            --     },
-            --     kind_icons = {
-            --         Compound = "🄲",
-            --         Recovery = "🅁",
-            --         TranslationUnit = "🅄",
-            --         PackExpansion = "🄿",
-            --         TemplateTypeParm = "🅃",
-            --         TemplateTemplateParm = "🅃",
-            --         TemplateParamObject = "🅃",
-            --     },
-            -- },
         },
     },
 
