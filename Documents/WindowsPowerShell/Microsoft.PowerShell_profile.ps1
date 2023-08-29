@@ -35,9 +35,8 @@ function cz() {
     param([string] $par)
     chezmoi $par
 }
-function vimrc { nvim "C:\Users\Administrator\.local\share\chezmoi\dot_config\nvim\init.lua" }
-
-Import-Module ZLocation
+function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 
 # oh-my-posh
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression
+

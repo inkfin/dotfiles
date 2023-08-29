@@ -16,4 +16,6 @@ if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {
     "mklink %USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 %USERPROFILE%\.config\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" | cmd
 }
 
+Install-Module ZLocation -Scope CurrentUser; Import-Module ZLocation;
+
 .$PROFILE
