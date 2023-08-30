@@ -19,12 +19,15 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 })
 
 -- Run chezmoi apply whenever a dotfile is saved
--- autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
-if not vim.fn.has("win32") then
-    vim.api.nvim_create_autocmd("BufWritePost", {
-        pattern = vim.fn.expand("~") .. "/.local/share/chezmoi/*",
-        callback = function()
-            vim.cmd('!chezmoi apply --source-path "%"')
-        end,
-    })
-end
+vim.cmd([[
+    autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+]])
+---- following not working, not sure why
+-- vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+--     pattern = { vim.fn.expand("~/.local/share/chezmoi/") .. "*" },
+--     callback = function()
+--         vim.cmd([[
+--             !chezmoi apply --source-path %
+--         ]])
+--     end,
+-- })
