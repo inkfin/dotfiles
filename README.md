@@ -25,6 +25,15 @@ Config current profiles in `$HOME/.config/chezmoi/chezmoi.toml`.
     email = "inkfinite@qq.com"
     name = "inkfin"
     profile = "personal"
+[git]
+    autoCommit = false
+    autoPush = false
+[diff]
+    command = "nvim"
+    args = ["-d", "{{ .Destination }}", "{{ .Target }}"]
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ .Destination }}", "{{ .Source }}"]
 
 # work
 [data]
