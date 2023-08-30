@@ -8,6 +8,16 @@ vim.api.nvim_create_autocmd("BufEnter", {
     command = "set fo-=c fo-=r fo-=o",
 })
 
+-- Copy template files
+vim.api.nvim_create_autocmd("BufNewFile", {
+    pattern = "*.cpp",
+    command = "0r $HOME/.config/nvim/template/template.cpp",
+})
+vim.api.nvim_create_autocmd("BufNewFile", {
+    pattern = "CMakeLists.txt",
+    command = "0r $HOME/.config/nvim/template/CMakeLists.txt",
+})
+
 -- Run chezmoi apply whenever a dotfile is saved
 -- autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 if not vim.fn.has("win32") then

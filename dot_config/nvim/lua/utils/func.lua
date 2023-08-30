@@ -71,6 +71,15 @@ local cmake_build_project = function()
     else
         print("\nBuild: ❌ (code: " .. f .. ")")
     end
+
+    local _cmd = "cp " .. path .. "build-debug/compile_commands.json " .. path
+    print(_cmd)
+    -- f = os.execute(_cmd)
+    -- if f == 0 then
+    --     print("\n'compile_command.json' copied to rootdir")
+    -- else
+    --     print("\nCan't copy 'compile_command.json' to rootdir!\n(code: " .. f .. ")")
+    -- end
 end
 
 vim.g.cmake_build_project = cmake_build_project
