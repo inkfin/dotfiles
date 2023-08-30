@@ -84,3 +84,6 @@ map("n", "Q", "<cmd>q<cr><esc>", { desc = "quit file" })
 wk.register({
     ["cs"] = { name = "+surrounds" },
 })
+
+-- Custom commands
+map("n", "<leader>cr", vim.g.compile_run, { desc = "Compile & Run" })

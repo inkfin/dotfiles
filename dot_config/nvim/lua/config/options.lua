@@ -138,6 +138,12 @@ if vim.fn.has("mac") == 1 then
     -- endfunction
 elseif vim.fn.has("win32") then
     vim.g.python3_host_prog = "$HOME/miniconda3/current/python"
+
+    -- change default shell to powershell
+    vim.go.shell = "powershell"
+    vim.go.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+    vim.go.shellquote = '"'
+    vim.go.shellxquote = ""
 end
 
 require("utils.func")

@@ -100,3 +100,91 @@ local cmake_get_exec_path = function()
 end
 
 vim.g.cmake_get_exec_path = cmake_get_exec_path
+
+-------------------------------------------------------------------
+-- Quickly Run
+-------------------------------------------------------------------
+
+vim.g.compile_run = function()
+    vim.fn.execute("w")
+    if vim.bo.filetype == "c" then
+        vim.cmd([[
+            " windows fix: can't execute file without '.exe' postfix
+            if has("win32")
+                exec "!clang % -o %<.exe"
+                exec "!time %<.exe"
+            else
+                exec "!clang % -o %<"
+                exec "!time %<"
+            endif
+        ]])
+    elseif vim.bo.filetype == "cpp" then
+        vim.cmd([[
+            set splitbelow
+            :sp
+            :res +10
+            if has("win32")
+                exec "!clang++ -std=c++17 % -Wall -o %<.exe"
+                :term time %<.exe
+            else
+                exec "!clang++ -std=c++17 % -Wall -o %<"
+                :term time %<
+            endif
+        ]])
+    elseif vim.bo.filetype == "rust" then
+        vim.cmd([[
+            set splitbelow
+            exec "!rustc %"
+            :sp
+            :res +5
+            if has("win32")
+                :term time %<.exe
+            else
+                :term time %<
+            endif
+        ]])
+    elseif vim.bo.filetype == "java" then
+        vim.cmd([[
+            exec "!javac %"
+            if has("win32")
+                exec "!time java %<.exe"
+            else
+                exec "!time java %<"
+            endif
+        ]])
+    elseif vim.bo.filetype == "sh" then
+        vim.cmd([[
+            :!time bash %
+        ]])
+    elseif vim.bo.filetype == "python" then
+        vim.cmd([[
+            set splitbelow
+            :sp
+            :term python3 %
+        ]])
+    elseif vim.bo.filetype == "html" then
+        vim.cmd([[
+            silent! exec "!".g:mkdp_browser." % &"
+        ]])
+    elseif vim.bo.filetype == "markdown" then
+        vim.cmd([[
+            :echo "Markdown not surpport yet"
+        ]])
+    elseif vim.bo.filetype == "tex" then
+        vim.cmd([[
+            :echo "Latex not surpport yet"
+        ]])
+    elseif vim.bo.filetype == "javascript" then
+        vim.cmd([[
+            set splitbelow
+            :sp
+            :term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .
+        ]])
+    elseif vim.bo.filetype == "go" then
+        vim.cmd([[
+            set splitbelow
+            :sp
+            :term go run .
+        ]])
+    end
+end
