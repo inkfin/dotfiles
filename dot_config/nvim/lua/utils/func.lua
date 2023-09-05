@@ -177,7 +177,7 @@ vim.g.compile_run = function()
         ]])
     elseif vim.bo.filetype == "markdown" then
         vim.cmd([[
-            :echo "Markdown not surpport yet"
+            :MarkdownPreviewToggle
         ]])
     elseif vim.bo.filetype == "tex" then
         vim.cmd([[

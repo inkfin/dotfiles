@@ -11,6 +11,9 @@ return {
                     preview_cutoff = 80,
                 },
             },
+            file_ignore_patterns = {
+                "node_modules",
+            },
         },
     },
 }
