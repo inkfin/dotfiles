@@ -76,7 +76,7 @@ let s:key_map.f = "sync-PDF"
 "" NOTE: To perform reverse-search, <cmd+S>+<LeftClick> in the PDF Reader
 
 
-nnoremap <localleader>r <Plug>(vim-reload)
+nnoremap <localleader>r <Plug>(vimtex-reload)
 let s:key_map.r = "reload"
 
 nnoremap <localleader>wc <Cmd>VimtexCountWords<CR>
