@@ -90,26 +90,26 @@ return {
                 -- inline = vim.fn.has("nvim-0.10") == 1,
                 inline = false,
             },
-            ast = {
-                -- These are unicode, should be available in any font
-                role_icons = {
-                    type = "🄣",
-                    declaration = "🄓",
-                    expression = "🄔",
-                    statement = ";",
-                    specifier = "🄢",
-                    ["template argument"] = "🆃",
-                },
-                kind_icons = {
-                    Compound = "🄲",
-                    Recovery = "🅁",
-                    TranslationUnit = "🅄",
-                    PackExpansion = "🄿",
-                    TemplateTypeParm = "🅃",
-                    TemplateTemplateParm = "🅃",
-                    TemplateParamObject = "🅃",
-                },
-            },
+            -- ast = {
+            --     -- These are unicode, should be available in any font
+            --     role_icons = {
+            --         type = "🄣",
+            --         declaration = "🄓",
+            --         expression = "🄔",
+            --         statement = ";",
+            --         specifier = "🄢",
+            --         ["template argument"] = "🆃",
+            --     },
+            --     kind_icons = {
+            --         Compound = "🄲",
+            --         Recovery = "🅁",
+            --         TranslationUnit = "🅄",
+            --         PackExpansion = "🄿",
+            --         TemplateTypeParm = "🅃",
+            --         TemplateTemplateParm = "🅃",
+            --         TemplateParamObject = "🅃",
+            --     },
+            -- },
         },
     },
 
@@ -141,8 +141,7 @@ return {
                     request = "launch",
                     name = "Launch executable file",
                     program = function()
-                        ---@diagnostic disable-next-line: redundant-parameter
-                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+                        return vim.g.cmake_get_exec_path()
                     end,
                     cwd = "${workspaceFolder}",
                 },

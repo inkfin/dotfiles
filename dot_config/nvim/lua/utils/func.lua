@@ -51,65 +51,6 @@ end
 
 vim.g.tprint = tprint
 
----Build cmake project according to getcwd() and user input
----referenced from https://github.com/mfussenegger/nvim-dap/wiki/Cookbook#making-debugging-net-easier
-local cmake_build_project = function()
-    local default_path = vim.fn.getcwd() .. "/"
-    if vim.g["cmake_last_proj_path"] ~= nil then
-        default_path = vim.g["cmake_last_proj_path"]
-    end
-    ---@diagnostic disable-next-line: redundant-parameter
-    local path = vim.fn.input("Path to your CMakeLists.txt ", default_path, "file")
-    vim.g["cmake_last_proj_path"] = path
-    local cmake_args = " -Bbuild-debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug "
-    local cmd = "cmake " .. path .. cmake_args .. " > /dev/null && cmake --build build-debug" .. " > /dev/null"
-    print("")
-    print("Cmd to execute: " .. cmd)
-    local f = os.execute(cmd)
-    if f == 0 then
-        print("\nBuild: ✔️ ")
-    else
-        print("\nBuild: ❌ (code: " .. f .. ")")
-    end
-
-    local _cmd = "cp " .. path .. "build-debug/compile_commands.json " .. path
-    print(_cmd)
-    -- f = os.execute(_cmd)
-    -- if f == 0 then
-    --     print("\n'compile_command.json' copied to rootdir")
-    -- else
-    --     print("\nCan't copy 'compile_command.json' to rootdir!\n(code: " .. f .. ")")
-    -- end
-end
-
-vim.g.cmake_build_project = cmake_build_project
-
----Return cmake project executable file path according to getcwd() and user input
-local cmake_get_exec_path = function()
-    local request = function()
-        ---@diagnostic disable-next-line: redundant-parameter
-        return vim.fn.input("Path to executable ", vim.fn.getcwd() .. "/build-debug/main", "file")
-    end
-
-    if vim.g["cmake_last_exec_path"] == nil then
-        vim.g["cmake_last_exec_path"] = request()
-    else
-        if
-            vim.fn.confirm(
-                "Do you want to change the path to executable?\n" .. vim.g["cmake_last_exec_path"],
-                "&yes\n&no",
-                2
-            ) == 1
-        then
-            vim.g["cmake_last_exec_path"] = request()
-        end
-    end
-
-    return vim.g["cmake_last_exec_path"]
-end
-
-vim.g.cmake_get_exec_path = cmake_get_exec_path
-
 -------------------------------------------------------------------
 -- Quickly Run
 -------------------------------------------------------------------
@@ -195,5 +136,121 @@ vim.g.compile_run = function()
             :sp
             :term go run .
         ]])
+    end
+end
+
+-------------------------------------------------------------------
+-- CMake
+-------------------------------------------------------------------
+
+---Build cmake project according to getcwd() and user input
+---referenced from https://github.com/mfussenegger/nvim-dap/wiki/Cookbook#making-debugging-net-easier
+vim.g.cmake_build_project = function()
+    vim.g.read_nvim_custom_config() -- reload config
+    local default_path = vim.fn.getcwd() .. "/"
+    if vim.g["cmake_last_proj_path"] ~= nil then
+        default_path = vim.g["cmake_last_proj_path"]
+    end
+    ---@diagnostic disable-next-line: redundant-parameter
+    local path = vim.fn.input("Path to your CMakeLists.txt ", default_path, "file")
+    vim.g["cmake_last_proj_path"] = path
+    -- vim.g.write_nvim_custom_config() -- update config
+    local cmake_args = " -Bbuild-debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug "
+    local cmd = "cmake " .. path .. cmake_args .. " > /dev/null && cmake --build build-debug" .. " > /dev/null"
+    print("")
+    print("Cmd to execute: " .. cmd)
+    local f = os.execute(cmd)
+    if f == 0 then
+        print("\nBuild: ✔️ ")
+    else
+        print("\nBuild: ❌ (code: " .. f .. ")")
+    end
+
+    -- local _cmd = "cp " .. path .. "build-debug/compile_commands.json " .. path
+    -- print(_cmd)
+    -- f = os.execute(_cmd)
+    -- if f == 0 then
+    --     print("\n'compile_command.json' copied to rootdir")
+    -- else
+    --     print("\nCan't copy 'compile_command.json' to rootdir!\n(code: " .. f .. ")")
+    -- end
+end
+
+---Return cmake project executable file path according to getcwd() and user input
+vim.g.cmake_get_exec_path = function()
+    local request = function()
+        local path = ""
+        if vim.g["cmake_last_exec_path"] ~= nil then
+            path = vim.g["cmake_last_exec_path"]
+        else
+            path = vim.fn.getcwd() .. "/build-debug/main"
+        end
+        ---@diagnostic disable-next-line: redundant-parameter
+        return vim.fn.input("Path to executable ", path, "file")
+    end
+
+    vim.g.read_nvim_custom_config() -- reload config
+    if vim.g["cmake_last_exec_path"] == nil then
+        vim.g["cmake_last_exec_path"] = request()
+    end
+    local choice = vim.fn.confirm(
+        "Do you want to change the path to executable?\n" .. vim.g["cmake_last_exec_path"],
+        "&yes\n&no",
+        2
+    )
+    if choice == 1 then
+        vim.g["cmake_last_exec_path"] = request()
+    elseif choice == 0 then
+        return nil
+    end
+
+    -- vim.g.write_nvim_custom_config() -- update config
+
+    return vim.g["cmake_last_exec_path"]
+end
+
+vim.g.nvim_config_variables = {
+    "cmake_last_exec_path",
+    "cmake_last_proj_path",
+}
+
+vim.g.read_nvim_custom_config = function()
+    local root_dir = vim.fn.getcwd()
+    if
+        vim.fn.isdirectory(root_dir .. "/.vscode") == 1
+        and vim.fn.filereadable(root_dir .. "/.vscode/nvim_config.toml") == 1
+    then
+        local toml = require("utils/toml")
+        local file = io.open(root_dir .. "/.vscode/nvim_config.toml", "r")
+        if file ~= nil then
+            out = toml.parse(file:read("*all"))
+            for key, value in pairs(out["variables"]) do
+                vim.g[key] = value
+            end
+        end
+    else
+        print("didn't find nvim_config.toml")
+        out = nil
+    end
+    return out
+end
+
+vim.g.write_nvim_custom_config = function()
+    local root_dir = vim.fn.getcwd()
+    -- lua check if .vscode folder exists
+    if vim.fn.isdirectory(root_dir .. "/.vscode") == 0 then
+        vim.fn.mkdir(root_dir .. "/.vscode")
+    end
+    local toml = require("utils/toml")
+    local file = io.open(".vscode/nvim_config.toml", "w+")
+    if file ~= nil then
+        local nvim_config = {}
+        for _, key in ipairs(vim.g.nvim_config_variables) do
+            nvim_config[key] = vim.g[key]
+        end
+        local out_config = { variables = nvim_config }
+        file:write(toml.encode(out_config))
+    else
+        print("can't open nvim_config.toml")
     end
 end

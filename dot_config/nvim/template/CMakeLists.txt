@@ -57,14 +57,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 # CMake Cache 默认值
 # option(WITH_TBB "set to ON to enable TBB, OFF to disable TBB." ON)
 # if (WITH_TBB)
-    # target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_TBB)
-    # find_package(TBB REQUIRED)
-    # target_link_libraries(${PROJECT_NAME} PUBLIC TBB:tbb)
+# target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_TBB)
+# find_package(TBB REQUIRED)
+# target_link_libraries(${PROJECT_NAME} PUBLIC TBB:tbb)
 # endif()
 
 
 # ADD_CUSTOM_COMMAND(
-          # TARGET ${PROJECT_NAME}
-          # POST_BUILD
-          # COMMAND cp ./${PROJECT_NAME}  ../
+#     TARGET ${PROJECT_NAME}
+#     POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#     ${CMAKE_BINARY_DIR}/compile_commands.json
+#     ${CMAKE_SOURCE_DIR}
 # )
