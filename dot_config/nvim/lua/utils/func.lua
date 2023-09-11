@@ -156,14 +156,25 @@ vim.g.cmake_build_project = function()
     vim.g["cmake_last_proj_path"] = path
     -- vim.g.write_nvim_custom_config() -- update config
     local cmake_args = " -Bbuild-debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug "
-    local cmd = "cmake " .. path .. cmake_args .. " > /dev/null && cmake --build build-debug" .. " > /dev/null"
-    print("")
-    print("Cmd to execute: " .. cmd)
-    local f = os.execute(cmd)
+    local cmd0 = "cmake " .. path .. cmake_args -- .. " > /dev/null"
+    local cmd1 = "cmake --build build-debug" -- .. " > /dev/null"
+    print("\n(0/2)Cmd to execute: " .. cmd0)
+    local f = os.execute(cmd0)
     if f == 0 then
-        print("\nBuild: ✔️ ")
+        print("\nGenerate build: ✔️ ")
+
+        print("\n(1/2)Cmd to execute: " .. cmd1)
+
+        f = os.execute(cmd1)
+        if f == 0 then
+            print("\n(2/2)Build: ✔️ ")
+        else
+            print("\nBuild: ❌ (code: " .. f .. ")")
+            return false
+        end
     else
-        print("\nBuild: ❌ (code: " .. f .. ")")
+        print("\nGenerate build: ❌ (code: " .. f .. ")")
+        return false
     end
 
     -- local _cmd = "cp " .. path .. "build-debug/compile_commands.json " .. path
@@ -174,6 +185,7 @@ vim.g.cmake_build_project = function()
     -- else
     --     print("\nCan't copy 'compile_command.json' to rootdir!\n(code: " .. f .. ")")
     -- end
+    return true
 end
 
 ---Return cmake project executable file path according to getcwd() and user input
@@ -189,19 +201,21 @@ vim.g.cmake_get_exec_path = function()
         return vim.fn.input("Path to executable ", path, "file")
     end
 
-    vim.g.read_nvim_custom_config() -- reload config
+    -- reload config
+    vim.g.read_nvim_custom_config()
     if vim.g["cmake_last_exec_path"] == nil then
         vim.g["cmake_last_exec_path"] = request()
-    end
-    local choice = vim.fn.confirm(
-        "Do you want to change the path to executable?\n" .. vim.g["cmake_last_exec_path"],
-        "&yes\n&no",
-        2
-    )
-    if choice == 1 then
-        vim.g["cmake_last_exec_path"] = request()
-    elseif choice == 0 then
-        return nil
+    else
+        local choice = vim.fn.confirm(
+            "Do you want to change the path to executable?\n" .. vim.g["cmake_last_exec_path"],
+            "&yes\n&no",
+            2
+        )
+        if choice == 1 then
+            vim.g["cmake_last_exec_path"] = request()
+        elseif choice == 0 then
+            return nil
+        end
     end
 
     -- vim.g.write_nvim_custom_config() -- update config

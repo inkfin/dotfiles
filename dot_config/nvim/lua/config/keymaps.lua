@@ -28,6 +28,7 @@ map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true
 map({ "n", "v", "o" }, "J", "5j", { silent = true })
 map({ "n", "v", "o" }, "K", "5k", { silent = true })
 map({ "n", "x" }, "W", "5w", { silent = true })
+map({ "n", "x" }, "E", "5e", { silent = true })
 map({ "n", "x" }, "B", "5b", { silent = true })
 map({ "v", "o" }, "H", "^", { desc = "Use 'H' as '^'" })
 map({ "v", "o" }, "L", "$", { desc = "Use 'L' as '$'" })

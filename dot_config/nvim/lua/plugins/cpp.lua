@@ -33,7 +33,7 @@ return {
                 -- Ensure mason installs the server
                 clangd = {
                     keys = {
-                        { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+                        { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
                     },
                     root_dir = function(fname)
                         -- using a root .clang-format or .clang-tidy file messes up projects, so remove them
@@ -87,8 +87,7 @@ return {
         "p00f/clangd_extensions.nvim",
         opts = {
             inlay_hints = {
-                -- inline = vim.fn.has("nvim-0.10") == 1,
-                inline = false,
+                inline = vim.fn.has("nvim-0.10") == 1,
             },
             -- ast = {
             --     -- These are unicode, should be available in any font

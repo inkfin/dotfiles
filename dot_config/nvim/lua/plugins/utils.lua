@@ -19,4 +19,18 @@ return {
             dashboard.section.header.val = vim.split(logo, "\n")
         end,
     },
+    {
+        "chentoast/marks.nvim",
+        version = false,
+        lazy = false,
+        config = true,
+        opts = {
+            force_write_shada = true,
+        },
+        -- stylua: ignore
+        -- keys = {
+        --     { "m]", mode = {"n"}, "<Plug>(Marks-next-bookmark)", desc = "next bookmark" },
+        --     { "m[", mode = {"n"}, "<Plug>(Marks-prev-bookmark)", desc = "prev bookmark" },
+        -- },
+    },
 }
