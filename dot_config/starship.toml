@@ -1,0 +1,156 @@
+# ~/.config/sharship.toml
+## Modified from https://starship.rs/presets/tokyo-night.html
+add_newline = false
+
+format = """
+$shell\
+[ $os ](bg:#a3aed2 fg:#090c0c)\
+[](bg:#769ff0 fg:#a3aed2)\
+$directory\
+[](fg:#769ff0 bg:#394260)\
+$git_branch\
+$git_state\
+$git_status\
+$git_commit\
+[](fg:#394260 bg:#212736)\
+$CMake\
+$c\
+$python\
+$nodejs\
+$rust\
+$golang\
+$php\
+$dotnet\
+$java\
+$lua\
+[](fg:#212736 bg:#1d2230)\
+$time\
+[ ](fg:#1d2230)\
+$container\
+$docker_context\
+$fill \
+$conda\
+$jobs\
+$localip\
+$cmd_duration\
+$sudo \
+\n\
+$username$hostname\
+$status\
+$character"""
+
+[fill]
+symbol = "─"
+
+[directory]
+style = "fg:#e3e5e5 bg:#769ff0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[status]
+disabled = false
+[username]
+format = "[$user]($style):"
+[hostname]
+ssh_symbol = "🌐"
+format = "[$hostname$ssh_symbol]($style)"
+
+[git_branch]
+symbol = ""
+style = "bg:#394260"
+format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+
+[git_status]
+style = "bg:#394260"
+format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[php]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[time]
+disabled = false
+time_format = "%R"                                      # Hour:Minute Format
+style = "bg:#1d2230"
+format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
+
+
+# Customization
+
+# languages
+[c]
+symbol = " "
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+detect_extensions = ["c", "h", "cpp", "hpp"]
+[lua]
+symbol = "󰢱 "
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+[python]
+style = "bg:#212736"
+symbol = "󰌠 "
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+# Prompt
+[memory_usage]
+disabled = false
+threshold = 50
+format = "using $symbol [${ram}( | ${swap})]($style) "
+symbol = "󰍛"
+
+[shlvl]
+disabled = false
+threshold = 1
+symbol = "↕️ "
+
+[shell]
+disabled = false
+bash_indicator = ""
+fish_indicator = '󰈺'
+powershell_indicator = ""
+cmd_indicator = ""
+
+[localip]
+disabled = false
+style = "yellow"
+format = '@[$localipv4]($style)'
+
+[os]
+disabled = false
+format = "$symbol"
+symbols.Ubuntu = ""
+symbols.Windows = ""
+
+[sudo]
+disabled = false
+symbol = "👑 "
+
+# Conda
+[conda]
+disabled = false
+ignore_base = false
+format = "via [$symbol$environment]($style) "
