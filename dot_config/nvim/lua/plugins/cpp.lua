@@ -133,6 +133,7 @@ return {
                     },
                 }
             end
+
             -- CPP settings
             dap.configurations.cpp = {
                 {
@@ -164,11 +165,12 @@ return {
                     cwd = "${workspaceFolder}",
                 },
             }
+
+            -- Add support for launch.json
+            require("dap.ext.vscode").load_launchjs(nil, { codelldb = { "c", "cpp" } }) -- default path is ${workspaceFolder}/.vscode/launch.json
+
             -- C settings
             dap.configurations.c = dap.configurations.cpp
-
-            local code = require("dap.ext.vscode")
-            code.load_launchjs(nil, { codelldb = { "c", "cpp" } }) -- default path is ${workspaceFolder}/.vscode/launch.json
         end,
     },
 

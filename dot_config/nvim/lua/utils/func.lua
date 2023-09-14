@@ -225,26 +225,28 @@ end
 
 vim.g.nvim_config_variables = {
     "cmake_last_exec_path",
+    "cmake_last_work_path",
     "cmake_last_proj_path",
 }
 
 vim.g.read_nvim_custom_config = function()
     local root_dir = vim.fn.getcwd()
+    local out = nil
+    local toml = require("utils/toml")
+    local f, err = io.open(root_dir .. "/.vscode/nvim_config.toml", "r")
     if
         vim.fn.isdirectory(root_dir .. "/.vscode") == 1
         and vim.fn.filereadable(root_dir .. "/.vscode/nvim_config.toml") == 1
     then
-        local toml = require("utils/toml")
-        local file = io.open(root_dir .. "/.vscode/nvim_config.toml", "r")
-        if file ~= nil then
-            out = toml.parse(file:read("*all"))
+        if f ~= nil then
+            out = toml.parse(f:read("*all"))
             for key, value in pairs(out["variables"]) do
                 vim.g[key] = value
             end
+            f:close()
         end
     else
-        print("didn't find nvim_config.toml")
-        out = nil
+        print("Didn't find nvim_config.toml, error: " .. err)
     end
     return out
 end
@@ -256,15 +258,17 @@ vim.g.write_nvim_custom_config = function()
         vim.fn.mkdir(root_dir .. "/.vscode")
     end
     local toml = require("utils/toml")
-    local file = io.open(".vscode/nvim_config.toml", "w+")
-    if file ~= nil then
+    local f, error = io.open(".vscode/nvim_config.toml", "w+")
+    if f ~= nil then
         local nvim_config = {}
         for _, key in ipairs(vim.g.nvim_config_variables) do
             nvim_config[key] = vim.g[key]
         end
         local out_config = { variables = nvim_config }
-        file:write(toml.encode(out_config))
+        f:write(toml.encode(out_config))
+        print("Write nvim custom config to `.vscode/nvim_config.toml`.")
+        f:close()
     else
-        print("can't open nvim_config.toml")
+        print("Can't open nvim_config.toml, error message: " .. error)
     end
 end
