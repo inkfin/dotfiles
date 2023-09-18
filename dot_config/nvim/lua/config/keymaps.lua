@@ -84,6 +84,8 @@ map("n", "Q", "<cmd>q<cr><esc>", { desc = "quit file" })
 
 wk.register({
     ["cs"] = { name = "+surrounds" },
+    ["<leader>t"] = { name = "+Translate" },
+    ["<leader>o"] = { name = "+open" },
 })
 
 -- Custom commands
