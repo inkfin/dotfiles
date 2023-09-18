@@ -28,7 +28,6 @@ $time\
 [ ](fg:#1d2230)\
 $container\
 $docker_context\
-$fill \
 $conda\
 $jobs\
 $localip\

@@ -223,12 +223,20 @@ vim.g.cmake_get_exec_path = function()
     return vim.g["cmake_last_exec_path"]
 end
 
+-- working in Windows, change cwd to binary folder
+vim.g.cmake_get_exec_directory = function()
+    local path = vim.fn.fnamemodify(vim.g["cmake_last_exec_path"], ":h")
+    print("Program executed in: " .. path)
+    return path
+    -- return "${workspaceFolder}"
+end
+
 vim.g.nvim_config_variables = {
     "cmake_last_exec_path",
-    "cmake_last_work_path",
     "cmake_last_proj_path",
 }
 
+-- tool function to load nvim_config.toml
 vim.g.read_nvim_custom_config = function()
     local root_dir = vim.fn.getcwd()
     local out = nil
@@ -251,6 +259,7 @@ vim.g.read_nvim_custom_config = function()
     return out
 end
 
+-- tool function to write variables in g:nvim_config_variables to nvim_config.toml
 vim.g.write_nvim_custom_config = function()
     local root_dir = vim.fn.getcwd()
     -- lua check if .vscode folder exists
