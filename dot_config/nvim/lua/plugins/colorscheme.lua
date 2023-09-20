@@ -1,20 +1,21 @@
 return {
-    -- -- Turn tokyonight to transparent
-    -- {
-    --     "folke/tokyonight.nvim",
-    --     opts = {
-    --         transparent = true,
-    --         styles = {
-    --             sidebars = "transparent",
-    --             floats = "transparent",
-    --         },
-    --     },
-    -- },
-    -- { "Mofiqul/dracula.nvim", version = "*" },
+    -- Turn tokyonight to transparent
+    {
+        "folke/tokyonight.nvim",
+        opts = {
+            transparent = true,
+            styles = {
+                sidebars = "transparent",
+                floats = "transparent",
+            },
+        },
+    },
+    -- { "Mofiqul/dracula.nvim", version = false },
     {
         "LazyVim/LazyVim",
         opts = {
-            colorscheme = "tokyonight",
+            -- colorscheme = "tokyonight",
+            colorscheme = "catppuccin",
             -- colorscheme = "dracula",
         },
     },
