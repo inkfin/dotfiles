@@ -144,11 +144,7 @@ return {
                         return vim.g.cmake_get_exec_path()
                     end,
                     cwd = function()
-                        -- working in Windows, change cwd to binary folder
-                        local path = vim.fn.fnamemodify(vim.g["cmake_last_exec_path"], ":h")
-                        print("Program executed in: " .. path)
-                        return path
-                        -- return "${workspaceFolder}"
+                        return vim.g.cmake_get_exec_directory()
                     end,
                 },
                 {
@@ -162,10 +158,7 @@ return {
                         return vim.g.cmake_get_exec_path()
                     end,
                     cwd = function()
-                        -- working in Windows, change cwd to binary folder
-                        local path = vim.fn.fnamemodify(vim.g["cmake_last_exec_path"], ":h")
-                        print("Program executed in: " .. path)
-                        return path
+                        return vim.g.cmake_get_exec_directory()
                     end,
                 },
                 {

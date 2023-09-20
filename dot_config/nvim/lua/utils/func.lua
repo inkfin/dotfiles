@@ -223,9 +223,14 @@ vim.g.cmake_get_exec_path = function()
     return vim.g["cmake_last_exec_path"]
 end
 
--- working in Windows, change cwd to binary folder
+-- change cwd to binary folder
 vim.g.cmake_get_exec_directory = function()
-    local path = vim.fn.fnamemodify(vim.g["cmake_last_exec_path"], ":h")
+    -- local path = vim.fn.fnamemodify(vim.g["cmake_last_exec_path"], ":h")
+
+    -- Use pattern to match the folder path
+    local pattern = "(.-)[\\/]([^\\/]-%.([^\\/%.]-))$"
+    local path, _, _ = string.match(vim.g["cmake_last_exec_path"], pattern)
+
     print("Program executed in: " .. path)
     return path
     -- return "${workspaceFolder}"
