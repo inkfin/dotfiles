@@ -36,3 +36,5 @@ yaml
 toml
 lsp
 cmp
+Verilog
+verilog

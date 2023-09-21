@@ -319,6 +319,7 @@ alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
 
+alias ai='python3 /Users/inkfin/Documents/Code/Python/openaiAPI/app.py'
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
