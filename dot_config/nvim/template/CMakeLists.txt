@@ -53,6 +53,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 # 链接库，PUBLIC/PRIVATE 指定是否传播
 #target_link_libraries(${PROJECT_NAME} PUBLIC mylib Eigen3::Eigen)
 
+# 设置输出目录
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/bin/Debug)
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY    ${CMAKE_SOURCE_DIR}/bin/Debug)
+elseif(UNIX)
+endif()
+message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
 
 # CMake Cache 默认值
 # option(WITH_TBB "set to ON to enable TBB, OFF to disable TBB." ON)
