@@ -25,6 +25,8 @@ return {
             lazy = false, -- lazy-loading will disable inverse search
             -- stylua: ignore
             keys = {
+                { "K", mode = { "n" }, "5k", silent = true },
+
                 { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-toggle)", desc = "Toggle TOC" },
                 { "<localleader>e", mode = { "n" }, "<Plug>(vimtex-errors)", desc = "Show errors" },
                 { "<localleader>c", mode = { "n" }, "<Cmd>write<CR><Cmd>VimtexCompile<CR>", desc = "Compile" },
@@ -100,11 +102,11 @@ return {
                     vim.cmd([[
                         augroup vimtex_event_focus
                             au!
-                            au User VimtexEventViewReverse call s:TexFocusVim()
-                            au User VimtexEventView call s:TexFocusVim()
+                            au User VimtexEventViewReverse call g:TexFocusVim()
+                            au User VimtexEventView call g:TexFocusVim()
                         augroup END
 
-                        function! s:TexFocusVim() abort
+                        function! g:TexFocusVim() abort
                             if exists("g:neovide")
                                 silent execute "!open -a Neovide"
                             else
@@ -123,7 +125,7 @@ return {
                 servers = {
                     texlab = {
                         keys = {
-                            { "<localLeader>H", "<plug>(vimtex-doc-package)", desc = "Vimtex Docs", silent = true },
+                            { "<localLeader>h", "<plug>(vimtex-doc-package)", desc = "Vimtex Docs", silent = true },
                         },
                     },
                 },

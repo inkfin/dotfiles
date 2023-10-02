@@ -25,7 +25,7 @@ return {
         lazy = false,
         config = true,
         opts = {
-            force_write_shada = true,
+            force_write_shada = false,
         },
         -- stylua: ignore
         -- keys = {

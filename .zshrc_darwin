@@ -201,6 +201,11 @@ export CMAKE_INCLUDE_PATH="/opt/homebrew/include"
 export CMAKE_LIBRARY_PATH="/opt/homebrew/lib"
 
 
+# vcpkg
+export VCPKG_HOME="$HOME/vcpkg"
+export PATH="$HOME/vcpkg:$PATH"
+
+
 # JAVA
 export JAVA_20_HOME="/opt/homebrew/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
 export JAVA_11_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
@@ -307,6 +312,9 @@ alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redi
 # MacTex
 export PATH="$PATH:/usr/local/texlive/2022/bin/universal-darwin"
 
+# Vulkan
+source "/usr/local/VulkanSDK/current/setup-env.sh"
+
 
 # === MACOS ===
 # export SDKROOT="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk"
@@ -319,11 +327,20 @@ alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
 
+export OPENAI_API_KEY='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'
+
 alias ai='python3 /Users/inkfin/Documents/Code/Python/openaiAPI/app.py'
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
+# vcpkg integrate
+autoload bashcompinit
+bashcompinit
+source /Users/inkfin/vcpkg/scripts/vcpkg_completion.zsh
+
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
