@@ -45,3 +45,5 @@ dotfile
 api
 autocmd
 Buf
+neovim
+powershell

@@ -74,7 +74,7 @@ return {
                 })
 
                 vim.g.tex_flavor = "latex"
-                vim.g.vimtex_compiler_progname = "nvr"
+                vim.g.vimtex_compiler_progname = "nvr" -- use pip install neovim-remote
                 if vim.fn.has("mac") == 1 then
                     vim.g.vimtex_view_method = "skim"
                     vim.g.vimtex_view_general_viewer = "open -a /Applications/Skim.app "
@@ -84,6 +84,7 @@ return {
                 elseif vim.fn.has("win32") == 1 then
                     vim.g.vimtex_view_general_viewer = "SumatraPDF"
                     vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
+                        .. ' -inverse-search "wt -w 0 \\"\\" nvim --headless -c \\"VimtexInverseSearch %l \'%f\'\\""'
                 end
 
                 -- vim.g.vimtex_mappings_disable = { ["n"] = { "K" } }
@@ -111,6 +112,23 @@ return {
                                 silent execute "!open -a Neovide"
                             else
                                 silent execute "!open -a iTerm"
+                            endif
+                            redraw!
+                        endfunction
+                    ]])
+                elseif vim.fn.has("win32") == 1 then
+                    vim.cmd([[
+                        augroup vimtex_event_focus
+                            au!
+                            au User VimtexEventViewReverse call g:TexFocusVim()
+                            au User VimtexEventView call g:TexFocusVim()
+                        augroup END
+
+                        function! g:TexFocusVim() abort
+                            if exists("g:neovide")
+                                silent execute "!Show-Window Neovide"
+                            else
+                                silent execute "!Show-Window WindowsTerminal"
                             endif
                             redraw!
                         endfunction

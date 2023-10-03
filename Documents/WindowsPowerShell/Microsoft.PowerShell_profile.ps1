@@ -56,6 +56,7 @@ function Invoke-Starship-TransientFunction {
 }
 
 . "$PSScriptRoot/PSReadLine_config.ps1"
+. "$PSScriptRoot/Utilities.ps1"
 . "$($(Get-Item $(Get-Command scoop).Path).Directory.Parent.FullName)\apps\scoop-completion\current\add-profile-content.ps1"
 
 Invoke-Expression (&starship init powershell)
