@@ -132,7 +132,7 @@ alias nv="neovide"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 alias lg="lazygit"
-alias ra="ranger"
+alias ra="lf"
 
 # Proxy
 alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"
