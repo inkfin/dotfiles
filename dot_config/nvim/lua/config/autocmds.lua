@@ -3,10 +3,10 @@
 -- Add any additional autocmds here
 
 -- Unfold all blocks on entry
-vim.api.nvim_create_autocmd({ "BufReadPost", "FileReadPost" }, {
-    pattern = "*",
-    command = "normal zx zR", -- FIXME: Manually fold and unfold file, strange issue: https://github.com/nvim-treesitter/nvim-treesitter/issues/1226
-})
+-- vim.api.nvim_create_autocmd({ "BufReadPost", "FileReadPost" }, {
+--     pattern = "*",
+--     command = "normal zx zR", -- FIXME: Manually fold and unfold file, strange issue: https://github.com/nvim-treesitter/nvim-treesitter/issues/1226
+-- })
 
 -- Don't auto commenting new lines
 vim.api.nvim_create_autocmd("BufEnter", {

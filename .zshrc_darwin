@@ -219,6 +219,9 @@ export PATH="$PATH:$JAVA_HOME/bin"
 export M2_HOME="/opt/homebrew/opt/maven/libexec"
 export PATH="$PATH:$M2_HOME/bin"
 
+# 1Password
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
 
 # =======================
 # ===== Conda Start =====
@@ -332,14 +335,14 @@ export OPENAI_API_KEY='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'
 alias ai='python3 /Users/inkfin/Documents/Code/Python/openaiAPI/app.py'
 
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-
 # vcpkg integrate
 autoload bashcompinit
 bashcompinit
 source /Users/inkfin/vcpkg/scripts/vcpkg_completion.zsh
+
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 
 # Fig post block. Keep at the bottom of this file.

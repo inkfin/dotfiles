@@ -29,6 +29,11 @@ set icons true
 # Set the path of a previewer file to filter the content of regular files for previewing. The file should be executable. The following arguments are passed to the file, (1) current file name, (2) width, (3) height, (4) horizontal position, and (5) vertical position of preview pane respectively. SIGPIPE signal is sent when enough lines are read. If the previewer returns a non-zero exit code, then the preview cache for the given file is disabled. This means that if the file is selected in the future, the previewer is called once again. Preview filtering is disabled and files are displayed as they are when the value of this option is left empty.
 set previewer ''
 
+# Custom mappings
+map gh cd ~        # builtin command
+map D trash        # custom command
+map U !du -csh *   # waiting shell command
+
 # use enter for shell commands
 map <enter> shell
 
@@ -62,24 +67,24 @@ map a :push %mkdir<space>
 # map r push :rename<space>
 
 # make sure trash folder exists
-# %mkdir -p ~/.trash
+%mkdir -p ~/.trash
 
 # move current file or selected files to trash folder
 # (also see 'man mv' for backup/overwrite options)
 cmd trash %set -f; mv $fx ~/.trash
 
 # define a custom 'delete' command
-# cmd delete ${{
-#     set -f
-#     printf "$fx\n"
-#     printf "delete?[y/n]"
-#     read ans
-#     [ "$ans" = "y" ] && rm -rf $fx
-# }}
+cmd delete ${{
+    set -f
+    printf "$fx\n"
+    printf "delete?[y/n]"
+    read ans
+    [ "$ans" = "y" ] && rm -rf $fx
+}}
 
 # use '<delete>' key for either 'trash' or 'delete' command
 # map <delete> trash
-# map <delete> delete
+map <delete> delete
 
 # extract the current file with the right command
 # (xkcd link: https://xkcd.com/1168/)

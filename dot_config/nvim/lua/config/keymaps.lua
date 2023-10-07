@@ -91,3 +91,4 @@ wk.register({
 -- Custom commands
 map("n", "<leader>cr", vim.g.compile_run, { desc = "Compile & Run" })
 map("n", "<leader>cu", vim.g.write_nvim_custom_config, { desc = "Update nvim custom config" })
+map("n", "<leader>ut", vim.g.toggle_typewriter_mode, { desc = "Typewriter mode" })

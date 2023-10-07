@@ -51,6 +51,15 @@ end
 
 vim.g.tprint = tprint
 
+-- typewriter mode
+vim.g.toggle_typewriter_mode = function()
+    if vim.wo.scrolloff <= 5 then
+        vim.wo.scrolloff = 999
+    else
+        vim.wo.scrolloff = 5
+    end
+end
+
 -------------------------------------------------------------------
 -- Quickly Run
 -------------------------------------------------------------------
