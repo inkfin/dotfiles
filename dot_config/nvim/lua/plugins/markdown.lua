@@ -28,7 +28,7 @@ return {
         lazy = true,
         -- FIXME: https://github.com/iamcco/markdown-preview.nvim/issues/558#issuecomment-1678379107
         -- Seems unable to build in Windows, do this manually
-        build = "cd app && npm install",
+        build = "cd app; npm install",
         config = function()
             vim.cmd([[
                 " options for markdown render

@@ -13,7 +13,12 @@ return {
         {
             "<leader>e",
             function()
-                require("neo-tree.command").execute({ toggle = true, dir = require("lazyvim.util").get_root() })
+                local path = require("lazyvim.util").root()
+                if vim.fn.has("win32") then
+                    -- use \ instead of / in windows
+                    path = path:gsub("/", "\\")
+                end
+                require("neo-tree.command").execute({ toggle = true, dir = path })
             end,
             desc = "Explorer NeoTree (root dir)",
         },
@@ -31,6 +36,7 @@ return {
     },
     opts = {
         sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+        open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
         source_selector = {
             winbar = true, -- toggle to show selector on winbar
             show_scrolled_off_parent_node = true,
@@ -41,7 +47,6 @@ return {
                 { source = "document_symbols", display_name = " Sym" },
             },
         },
-        open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
         filesystem = {
             bind_to_cwd = false,
             follow_current_file = { enabled = true },

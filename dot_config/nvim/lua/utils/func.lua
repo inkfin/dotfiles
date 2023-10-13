@@ -1,3 +1,8 @@
+vim.g.file_exists = function(name)
+    local f = io.open(name, "r")
+    return f ~= nil and io.close(f)
+end
+
 ---Convert a snake_case string to camelCase
 ---@param str string?
 ---@return string?

@@ -19,6 +19,9 @@ local function map(mode, lhs, rhs, opts)
     end
 end
 
+-- handy keymaps
+map("n", "<C-a>", "ggVG")
+
 -- Paste over currently selected text without yanking it
 map("v", "p", '"_dP', { silent = true })
 
