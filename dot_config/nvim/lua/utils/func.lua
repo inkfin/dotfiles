@@ -1,3 +1,11 @@
+---Change tab width
+---@param width number
+vim.g.settab = function(width)
+    vim.opt.tabstop = width
+    vim.opt.shiftwidth = width
+    vim.opt.softtabstop = width
+end
+
 vim.g.file_exists = function(name)
     local f = io.open(name, "r")
     return f ~= nil and io.close(f)
