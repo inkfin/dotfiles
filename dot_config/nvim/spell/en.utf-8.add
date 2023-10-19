@@ -47,3 +47,8 @@ autocmd
 Buf
 neovim
 powershell
+iff
+tristimulus
+rgb
+Gouraud
+Phong

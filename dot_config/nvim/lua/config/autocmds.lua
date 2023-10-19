@@ -8,11 +8,28 @@
 --     command = "normal zx zR", -- FIXME: Manually fold and unfold file, strange issue: https://github.com/nvim-treesitter/nvim-treesitter/issues/1226
 -- })
 
--- Don't auto commenting new lines
-vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "",
-    command = "set fo-=c fo-=r fo-=o",
-})
+-- -- Don't auto commenting new lines
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--     pattern = "",
+--     command = "set fo-=c fo-=r fo-=o",
+-- })
+
+-- Set tab for different filetype
+-- stylua: ignore start
+vim.api.nvim_create_autocmd("FileType", { pattern = {
+    "markdown",
+    "javascript",
+    "typescript",
+    "html",
+    "css"
+    }, callback = function() vim.g.settab(2) end })
+vim.api.nvim_create_autocmd("FileType", { pattern = {
+    "cpp",
+    "c",
+    "python",
+    "rust"
+    }, callback = function() vim.g.settab(4) end })
+-- stylua: ignore end
 
 -- Copy template files
 vim.api.nvim_create_autocmd("BufNewFile", {

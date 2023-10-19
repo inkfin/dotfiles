@@ -1,61 +1,82 @@
 {
-    "equations with case": {
-        "prefix": [
-            "equations",
-            "cases"
-        ],
-        "body": [
-            "\\begin{cases}",
-            "  $1 = &2",
-            "\\end{cases}"
-        ],
-        "discription": "equations with huge left bracket"
-    },
-    "equations": {
-        "prefix": [
-            "equations",
-            "align"
-        ],
-        "body": [
-            "\\begin{align*}",
-            "  $1 &= &2",
-            "\\end{align*}"
-        ],
-        "discription": "equations without left bracket"
-    },
-    "red text": {
-        "prefix": "red",
-        "body": [
-            "<span style=\"color:red\">$0</span>"
-        ],
-        "description": "red text"
-    },
-    "blue text": {
-        "prefix": "blue",
-        "body": [
-            "<span style=\"color:blue\">$0</span>"
-        ],
-        "description": "blue text"
-    },
-    "yellow text": {
-        "prefix": "yellow",
-        "body": [
-            "<span style=\"color:yellow\">$0</span>"
-        ],
-        "description": "yellow text"
-    },
-    "green text": {
-        "prefix": "green",
-        "body": [
-            "<span style=\"color:green\">$0</span>"
-        ],
-        "description": "green text"
-    },
-    "white text": {
-        "prefix": "white",
-        "body": [
-            "<span style=\"color:white\">$0</span>"
-        ],
-        "description": "white text"
-    }
+  "equations with case": {
+    "prefix": [
+      "equations",
+      "cases"
+    ],
+    "body": [
+      "\\begin{cases}",
+      "  $1 = &2",
+      "\\end{cases}"
+    ],
+    "discription": "equations with huge left bracket"
+  },
+  "equations": {
+    "prefix": [
+      "equations",
+      "align"
+    ],
+    "body": [
+      "\\begin{align*}",
+      "  $1 &= &2",
+      "\\end{align*}"
+    ],
+    "discription": "equations without left bracket"
+  },
+  "fractions": {
+    "prefix": [
+      "frac",
+      "\\frac"
+    ],
+    "body": [
+      "\\frac{$1}{$2}"
+    ]
+  },
+  "red text": {
+    "prefix": "red",
+    "body": [
+      "<span style=\"color:red\">$0</span>"
+    ],
+    "description": "red text"
+  },
+  "blue text": {
+    "prefix": "blue",
+    "body": [
+      "<span style=\"color:blue\">$0</span>"
+    ],
+    "description": "blue text"
+  },
+  "yellow text": {
+    "prefix": "yellow",
+    "body": [
+      "<span style=\"color:yellow\">$0</span>"
+    ],
+    "description": "yellow text"
+  },
+  "green text": {
+    "prefix": "green",
+    "body": [
+      "<span style=\"color:green\">$0</span>"
+    ],
+    "description": "green text"
+  },
+  "white text": {
+    "prefix": "white",
+    "body": [
+      "<span style=\"color:white\">$0</span>"
+    ],
+    "description": "white text"
+  },
+  "definition tag": {
+    "prefix": "definition",
+    "body": [
+      "(#definition)"
+    ]
+  },
+  "important tag": {
+    "prefix": "important",
+    "body": [
+      "(#IMPORTANT)"
+    ]
+  }
 }
