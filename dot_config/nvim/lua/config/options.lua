@@ -67,6 +67,7 @@ opt.sidescrolloff = 8 -- Columns of context
 opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 opt.smartcase = true -- Don't ignore case with capitals
 opt.smartindent = true -- Insert indents automatically
+opt.smarttab = true
 opt.spell = true -- Spell check
 opt.spelllang = { "en", "cjk" } -- Set language: English and Chinese
 opt.spelloptions = "camel" -- Enable camel case
@@ -111,6 +112,7 @@ vim.g.terminal_color_13 = "#FF92D0"
 vim.g.terminal_color_14 = "#9AEDFE"
 
 vim.g.zen_width = 100
+vim.g.zen_height = 1
 
 -----------------------------
 -- Platform Specific Settings

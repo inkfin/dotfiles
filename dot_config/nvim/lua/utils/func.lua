@@ -1,3 +1,11 @@
+---Change tab width
+---@param width number
+vim.g.settab = function(width)
+    vim.opt.tabstop = width
+    vim.opt.shiftwidth = width
+    vim.opt.softtabstop = width
+end
+
 ---Convert a snake_case string to camelCase
 ---@param str string?
 ---@return string?
