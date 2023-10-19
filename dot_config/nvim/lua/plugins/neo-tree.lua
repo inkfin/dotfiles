@@ -14,7 +14,7 @@ return {
             "<leader>e",
             function()
                 local path = require("lazyvim.util").root()
-                if vim.fn.has("win32") then
+                if vim.fn.has("win32") == 1 then
                     -- use \ instead of / in windows
                     path = path:gsub("/", "\\")
                 end
