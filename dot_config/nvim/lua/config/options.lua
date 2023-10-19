@@ -34,6 +34,17 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 vim.g.tex_flavor = "latex"
 
+-- Enable LazyVim auto format
+vim.g.autoformat = true
+
+-- LazyVim root dir detection
+-- Each entry can be:
+-- * the name of a detector function like `lsp` or `cwd`
+-- * a pattern or array of patterns like `.git` or `lua`.
+-- * a function with signature `function(buf) -> string|string[]`
+vim.g.root_spec =
+    { "lsp", { ".git", "lua", "node_modules", "Makefile", ".vscode", ".root", ".vim", ".vs", ".idea" }, "cwd" }
+
 local opt = vim.opt
 local indent = 4
 
@@ -82,15 +93,31 @@ opt.updatetime = 200 -- Save swap file and trigger CursorHold
 opt.wildmode = "longest:full,full" -- Command-line completion mode
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = true -- Enable line wrap
+opt.fillchars = {
+    foldopen = "",
+    foldclose = "",
+    -- fold = "⸱",
+    fold = " ",
+    foldsep = " ",
+    diff = "╱",
+    eob = " ",
+}
+
+-- Folding
+vim.opt.foldlevel = 99
+vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
 
 if vim.fn.has("nvim-0.9.0") == 1 then
-    opt.splitkeep = "screen"
-    opt.shortmess:append({ C = true })
+    vim.opt.statuscolumn = [[%!v:lua.require'lazyvim.util'.ui.statuscolumn()]]
 end
 
-opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
-
+-- HACK: causes freezes on <= 0.9, so only enable on >= 0.10 for now
+if vim.fn.has("nvim-0.10") == 1 then
+    vim.opt.foldmethod = "expr"
+    vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+else
+    vim.opt.foldmethod = "indent"
+end
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0
 
@@ -118,17 +145,12 @@ vim.g.zen_height = 1
 -- Platform Specific Settings
 -----------------------------
 
-local function file_exists(name)
-    local f = io.open(name, "r")
-    return f ~= nil and io.close(f)
-end
-
 --- MacOS ---
 if vim.fn.has("mac") == 1 then
     -- specify the python parser path
     local intel_brew = "/usr/local/bin/python3"
     local arm_brew = "/opt/homebrew/bin/python3"
-    if file_exists(arm_brew) then
+    if vim.g.file_exists(arm_brew) then
         vim.g.python3_host_prog = arm_brew
     else
         vim.g.python3_host_prog = intel_brew
@@ -144,7 +166,7 @@ if vim.fn.has("mac") == 1 then
     --   unlet g:smartim_disable
     -- endfunction
 elseif vim.fn.has("win32") then
-    vim.g.python3_host_prog = "$HOME/miniconda3/current/python"
+    vim.g.python3_host_prog = "$HOME/scoop/apps/python311/current/python.EXE"
 
     -- change default shell to powershell
     vim.go.shell = "powershell"
@@ -155,6 +177,12 @@ elseif vim.fn.has("win32") then
     vim.go.shellquote = "" -- !<quote>command<quote>
     vim.go.shellxquote = ""
 end
+
+--- mouse menus
+vim.cmd([[
+    aunmenu PopUp.How-to\ disable\ mouse
+    aunmenu PopUp.-1-
+]])
 
 --- Neovide Configurations
 if vim.g.neovide then

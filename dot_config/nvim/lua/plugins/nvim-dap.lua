@@ -28,10 +28,10 @@ return {
             { "<F6>", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
             { "<F5>", function() require("dap").continue() end, desc = "Continue" },
             { "<S-F5>", function() require("dap").terminate(); require("dap").repl.close(); require("dapui").close() end, desc = "Terminate" }, -- this won't work in terminal
-            { "<F10>", function() require("dap").step_over() end, desc = "Step Over" },
-            { "<F11>", function() require("dap").step_into() end, desc = "Step Into" },
-            { "<S-F11>", function() require("dap").step_out() end, desc = "Step Out" }, -- this won't work in terminal
-            { "<F9>", function() require("dap").reverse_continue() end, desc = "Step Back*" }, -- requires debugger reverse debugging support
+            { "<F9>", function() require("dap").step_over() end, desc = "Step Over" },
+            { "<F8>", function() require("dap").step_into() end, desc = "Step Into" },
+            { "<S-F8>", function() require("dap").step_out() end, desc = "Step Out" }, -- this won't work in terminal
+            { "<F7>", function() require("dap").reverse_continue() end, desc = "Step Back*" }, -- requires debugger reverse debugging support
             { "<leader>dR", function() require("dap").restart() end, desc = "Restart" },
             { "<C-S-F5>", function() require("dap").restart() end, desc = "Restart" },
         },
