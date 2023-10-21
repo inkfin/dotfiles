@@ -55,6 +55,19 @@ else
     map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 end
 
+-- tabs
+map("n", "<leader>ti", "<cmd>tabe<cr>", { desc = "New empty tab" })
+map("n", "<leader>td", "<cmd>tabc<cr>", { desc = "Delete tab" })
+map("n", "]t", "<cmd>tabn<cr>", { desc = "Next tab" })
+map("n", "[t", "<cmd>tabp<cr>", { desc = "Prev tab" })
+map("n", "<leader>t<left>", "<cmd>tabm -<cr>", { desc = "Move tab left" })
+map("n", "<leader>t<right>", "<cmd>tabm +<cr>", { desc = "Move tab right" })
+map("n", "<leader>tmh", "<cmd>-tabm<cr>", { desc = "Move tab left" })
+map("n", "<leader>tml", "<cmd>tabm +<cr>", { desc = "Move tab right" })
+wk.register({
+    ["<leader>tm"] = { name = "+tab +move" },
+})
+
 -- Clear search, diff update and redraw
 -- taken from runtime/lua/_editor.lua
 map(
@@ -87,7 +100,7 @@ map("n", "Q", "<cmd>q<cr><esc>", { desc = "quit file" })
 
 wk.register({
     ["cs"] = { name = "+surrounds" },
-    ["<leader>t"] = { name = "+Translate" },
+    ["<leader>t"] = { name = "+tab/Translate" },
     ["<leader>o"] = { name = "+open" },
 })
 
