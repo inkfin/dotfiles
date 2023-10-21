@@ -29,6 +29,10 @@ if vim.fn.has("persistent_undo") == 1 then
     vim.go.undodir = undo_path
 end
 
+if vim.fn.has("nvim") == 1 then
+    vim.cmd([[ let $GIT_EDITOR = 'nvr -cc split --remote-wait' ]])
+end
+
 -----------------------
 -- Basic editor configs
 -----------------------
