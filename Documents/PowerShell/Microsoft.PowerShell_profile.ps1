@@ -1,49 +1,25 @@
 # Aliases
-function l { ls }
-function la() {
-    param([string] $fp)
-    Get-ChildItem -Force $fp
-}
+function list-files { param($file) Get-ChildItem $file | Format-Table }
+Set-Alias -Name l -Value list-files
+Set-Alias -Name ll -value list-files -Option AllScope -Description 'List directory contents in long format'
+function list-hidden-files { param($file) Get-ChildItem -Hidden $file | Format-Table } 
+Set-Alias -Name la -value list-hidden-files -Option AllScope -Description 'List directory contents including hidden files'
 
-function open() {
-    param([string] $par)
-    Invoke-Item $par
-}
+function open-invoke { param($file) Invoke-Item $file }
+function open-start { param($file) Start-Process $file }
+Set-Alias -Name open -Value open-start -Option AllScope -Description 'Opens a file in its default application'
 
 function ee { exit }
 
-function gp { git pull }
-function gP { git push }
-function ga() {
-    param([string] $fp)
-    git add $fp
-}
-function gcm() {
-    param([string] $msg)
-    git commit -m $msg
-}
+# gp, gP, gc, gcm are occupied by powershell cmdlets, just use lazygit
 function gst { git status }
-function lg { lazygit }
-function ra() {
-    param([string] $fp)
-    lf $fp
-}
-function v() {
-    param([string] $fp)
-    nvim $fp
-}
-function vim() {
-    param([string] $fp)
-    nvim $fp
-}
-function nvi() {
-    param([string] $fp)
-    neovide $fp
-}
-function cz() {
-    param([string] $par)
-    chezmoi $par
-}
+
+Set-Alias -Name lg -Value 'lazygit'
+Set-Alias -Name ra -Value 'lf'
+Set-Alias -Name v -Value 'nvim'
+Set-Alias -Name vim -Value 'nvim'
+Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
+Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 
 # oh-my-posh
