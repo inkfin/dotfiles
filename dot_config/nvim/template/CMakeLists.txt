@@ -72,10 +72,12 @@ message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 # endif()
 
 
-# ADD_CUSTOM_COMMAND(
-#     TARGET ${PROJECT_NAME}
-#     POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#     ${CMAKE_BINARY_DIR}/compile_commands.json
-#     ${CMAKE_SOURCE_DIR}
-# )
+# if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
+#     ADD_CUSTOM_COMMAND(
+#         TARGET ${PROJECT_NAME}
+#         POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         ${CMAKE_BINARY_DIR}/compile_commands.json
+#         ${CMAKE_SOURCE_DIR}
+#     )
+# endif()

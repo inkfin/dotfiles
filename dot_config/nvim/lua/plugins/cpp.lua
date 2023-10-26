@@ -20,9 +20,19 @@ return {
                 vim.list_extend(opts.ensure_installed, {
                     "codelldb",
                     "clang-format",
+                    "cmakelang",
+                    "cmakelint",
                 })
             end
         end,
+    },
+    {
+        "mfussenegger/nvim-lint",
+        opts = {
+            linters_by_ft = {
+                cmake = { "cmakelint" },
+            },
+        },
     },
 
     -- Correctly setup lspconfig for clangd 🚀

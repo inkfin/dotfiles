@@ -175,7 +175,7 @@ elseif vim.fn.has("win32") then
     vim.g.python3_host_prog = "$HOME/scoop/apps/python311/current/python.EXE"
 
     -- change default shell to powershell
-    vim.go.shell = "powershell"
+    vim.go.shell = "pwsh"
     --- Disable profile to accelerate powershell startup;
     --- I need my custom function to focus different windows, so execute that ps1 file
     vim.go.shellcmdflag = "-NoLogo -NonInteractive -NoProfile -ExecutionPolicy RemoteSigned "
