@@ -9,6 +9,7 @@ function open-invoke { param($file) Invoke-Item $file }
 function open-start { param($file) Start-Process $file }
 Set-Alias -Name open -Value open-start -Option AllScope -Description 'Opens a file in its default application'
 
+function source { . $PROFILE }
 function ee { exit }
 
 # gp, gP, gc, gcm are occupied by powershell cmdlets, just use lazygit
@@ -21,6 +22,7 @@ Set-Alias -Name vim -Value 'nvim'
 Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
+function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }
 
 # oh-my-posh
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression
@@ -42,3 +44,7 @@ Enable-TransientPrompt
 # imports
 Import-Module scoop-completion
 Import-Module 'C:\dev\vcpkg\scripts\posh-vcpkg'
+
+# vcpkg
+$env:VCPKG_ROOT = "C:\dev\vcpkg"
+$env:PATH = "$env:VCPKG_ROOT;$env:PATH"
