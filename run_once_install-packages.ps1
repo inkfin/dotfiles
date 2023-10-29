@@ -13,18 +13,34 @@ winget install Valve.Steam
 # winget install JanDeDobbeleer.OhMyPosh -s winget
 winget install Starship.Starship
 
-if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {
-    Write-host "WindowsPowerShell config doesn't exists, creating now..." -f Green
-    mkdir "$HOME\Documents\WindowsPowerShell"
-    "mklink %USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 %USERPROFILE%\.config\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" | cmd
-}
-
+winget install Microsoft.PowerShell
 
 # Update PowershellGet for pwsh < 5.1
 Install-Module -Name PowerShellGet -Force
 # Install Packages
-Install-Module ZLocation -Scope CurrentUser; Import-Module ZLocation;
-Install-Module -Name PSReadLine; Import-Module PSReadLine;
+Install-Module ZLocation -Scope CurrentUser;
+Install-Module -Name PSReadLine;
+
+Write-host "Installing scoop ..." -f Green
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm get.scoop.sh | iex
+
+Write-host "Installing scoop packages ..." -f Green
+scoop install fzf psfzf
+scoop install cmake neovim python ripgrep bat
+
+# if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {
+#     Write-host "WindowsPowerShell config doesn't exists, creating now..." -f Green
+#     mkdir "$HOME\Documents\WindowsPowerShell"
+#     "mklink %USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 %USERPROFILE%\.config\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" | cmd
+# }
 
 .$PROFILE
+
+}
+else
+{
+
+Write-host "$HOME\.init_flag found, skipping boost script." -f Green
+
 }

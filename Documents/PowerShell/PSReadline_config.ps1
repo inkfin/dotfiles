@@ -129,3 +129,6 @@ Set-PSReadLineKeyHandler -Key F1 `
         }
     }
 }
+
+# PSFzf integration
+Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }

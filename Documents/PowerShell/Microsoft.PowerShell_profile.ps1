@@ -44,6 +44,7 @@ Enable-TransientPrompt
 # imports
 Import-Module scoop-completion
 Import-Module 'C:\dev\vcpkg\scripts\posh-vcpkg'
+Import-Module PSFzf
 
 # vcpkg
 $env:VCPKG_ROOT = "C:\dev\vcpkg"
