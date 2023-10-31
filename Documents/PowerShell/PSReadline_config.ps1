@@ -131,4 +131,27 @@ Set-PSReadLineKeyHandler -Key F1 `
 }
 
 # PSFzf integration
-Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
+
+# Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
+
+# psfzf aliases
+# url: https://github.com/kelleyma49/PSFzf#helper-functions
+$env:PSFZF_EDITOR_OPTIONS="nvim"
+Set-PSFzfOption -EnableAliasFuzzyEdit           # fe
+Set-PSFzfOption -EnableAliasFuzzyZLocation      # fz
+Set-PSFzfOption -EnableAliasFuzzyHistory        # fh
+Set-PsFzfOption -EnableAliasFuzzyGitStatus      # fgs
+Set-PsFzfOption -EnableAliasFuzzyKillProcess    # fkill
+Set-PSFzfOption -EnableAliasFuzzySetLocation    # fd
+Set-PSFzfOption -EnableAliasFuzzyScoop          # fs
+
+# Press Ctrl+t to start PSFzf to select provider paths. PSFzf will parse the current token and use that as the starting path to search from. If current token is empty, or the token isn't a valid path, PSFzf will search below the current working directory.
+
+# Press Ctrl+r to start PSFzf to select a command in the command history saved by PSReadline. PSFzf will insert the command into the current line, but it will not execute the command.
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+
+# Set-Location Based on Selected Directory (default chord: Alt+c)
+# example command - use $Location with a different command:
+$commandOverride = [ScriptBlock]{ param($Location) Write-Host $Location }
+# pass your override to PSFzf:
+Set-PsFzfOption -AltCCommand $commandOverride

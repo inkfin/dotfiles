@@ -2,6 +2,8 @@
 ## Modified from https://starship.rs/presets/tokyo-night.html
 add_newline = false
 
+command_timeout = 2000
+
 format = """
 $shell\
 [ $os ](bg:#a3aed2 fg:#090c0c)\
@@ -10,7 +12,6 @@ $directory\
 [](fg:#769ff0 bg:#394260)\
 $git_branch\
 $git_state\
-$git_status\
 $git_commit\
 [](fg:#394260 bg:#212736)\
 $CMake\
@@ -38,6 +39,8 @@ $username$hostname\
 $status\
 $character"""
 
+# $git_status\
+
 [fill]
 symbol = "─"
 
@@ -51,7 +54,13 @@ truncation_symbol = "…/"
 "Documents" = "󰈙 "
 "Downloads" = " "
 "Music" = " "
+"Vidwos" = "󰕧 "
 "Pictures" = " "
+"Code" = " "
+".config" = " "
+".vscode" = "󰨞 "
+".vs" = "󰘐 "
+".vim" = " "
 
 [status]
 disabled = false
@@ -67,6 +76,8 @@ style = "bg:#394260"
 format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
 
 [git_status]
+ignore_submodules = true
+untracked = ""
 style = "bg:#394260"
 format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
 
