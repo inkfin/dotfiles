@@ -38,6 +38,12 @@ end
 
 vim.g.camel_to_snake = camel_to_snake
 
+local function get_root()
+    return vim.lsp.buf.list_workspace_folders()[1]
+end
+
+vim.g.get_root = get_root
+
 local function tprint(tbl, indent)
     if not indent then
         indent = 0
@@ -168,11 +174,11 @@ end
 -- CMake
 -------------------------------------------------------------------
 
----Build cmake project according to getcwd() and user input
+---Build cmake project according to get_root() and user input
 ---referenced from https://github.com/mfussenegger/nvim-dap/wiki/Cookbook#making-debugging-net-easier
 vim.g.cmake_build_project = function()
     vim.g.read_nvim_custom_config() -- reload config
-    local default_path = vim.fn.getcwd() .. "/"
+    local default_path = vim.g.get_root() .. "/"
     if vim.g["cmake_last_proj_path"] ~= nil then
         default_path = vim.g["cmake_last_proj_path"]
     end
@@ -180,10 +186,17 @@ vim.g.cmake_build_project = function()
     local path = vim.fn.input("Path to your CMakeLists.txt ", default_path, "file")
     vim.g["cmake_last_proj_path"] = path
     -- vim.g.write_nvim_custom_config() -- update config
-    local cmake_args = " -Bbuild-debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug "
-    local cmd0 = "cmake " .. path .. cmake_args -- .. " > /dev/null"
+    local cmake_args =
+        ' -Bbuild-debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\\scripts\\buildsystems\\vcpkg.cmake"'
+    local cmd0 = "cmake " .. '"' .. path .. '"' .. cmake_args -- .. " > /dev/null"
     local cmd1 = "cmake --build build-debug" -- .. " > /dev/null"
     print("\n(0/2)Cmd to execute: " .. cmd0)
+    -- local job0 = vim.fn.jobstart(
+    --     cmd0,
+    --     {
+    --         cwd = vim.g.get_root,
+    --     }
+    -- ) -- https://www.reddit.com/r/neovim/comments/y2by27/is_there_a_way_to_run_terminal_commands_with_lua/
     local f = os.execute(cmd0)
     if f == 0 then
         print("\nGenerate build: ✔️ ")
@@ -213,14 +226,12 @@ vim.g.cmake_build_project = function()
     return true
 end
 
----Return cmake project executable file path according to getcwd() and user input
+---Return cmake project executable file path according to get_root() and user input
 vim.g.cmake_get_exec_path = function()
     local request = function()
         local path = ""
-        if vim.g["cmake_last_exec_path"] ~= nil then
-            path = vim.g["cmake_last_exec_path"]
-        else
-            path = vim.fn.getcwd() .. "/build-debug/main"
+        if vim.g["cmake_last_exec_path"] == nil then
+            path = vim.g.get_root() .. "/build-debug/main"
         end
         ---@diagnostic disable-next-line: redundant-parameter
         return vim.fn.input("Path to executable ", path, "file")
@@ -245,13 +256,23 @@ vim.g.cmake_get_exec_path = function()
 
     -- vim.g.write_nvim_custom_config() -- update config
 
+    -- -- return executable path
+    -- if mode == 0 then
+    --     return vim.g["cmake_last_exec_path"]
+    -- elseif mode == 1 then
+    --     local pattern = "(.-)[\\/]([^\\/]-%.([^\\/%.]-))$"
+    --     local path, _, _ = string.match(vim.g["cmake_last_exec_path"], pattern)
+
+    --     print("Program executed in: " .. path)
+    --     return path
+    -- end
+
     return vim.g["cmake_last_exec_path"]
 end
 
 -- change cwd to binary folder
 vim.g.cmake_get_exec_directory = function()
-    -- local path = vim.fn.fnamemodify(vim.g["cmake_last_exec_path"], ":h")
-
+    vim.g.read_nvim_custom_config()
     -- Use pattern to match the folder path
     local pattern = "(.-)[\\/]([^\\/]-%.([^\\/%.]-))$"
     local path, _, _ = string.match(vim.g["cmake_last_exec_path"], pattern)
@@ -268,7 +289,7 @@ vim.g.nvim_config_variables = {
 
 -- tool function to load nvim_config.toml
 vim.g.read_nvim_custom_config = function()
-    local root_dir = vim.fn.getcwd()
+    local root_dir = vim.g.get_root()
     local out = nil
     local toml = require("utils/toml")
     local f, err = io.open(root_dir .. "/.vscode/nvim_config.toml", "r")
@@ -291,7 +312,7 @@ end
 
 -- tool function to write variables in g:nvim_config_variables to nvim_config.toml
 vim.g.write_nvim_custom_config = function()
-    local root_dir = vim.fn.getcwd()
+    local root_dir = vim.g.get_root()
     -- lua check if .vscode folder exists
     if vim.fn.isdirectory(root_dir .. "/.vscode") == 0 then
         vim.fn.mkdir(root_dir .. "/.vscode")

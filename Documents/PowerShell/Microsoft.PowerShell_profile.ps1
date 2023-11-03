@@ -48,4 +48,5 @@ Import-Module PSFzf
 # vcpkg
 $env:VCPKG_ROOT = "C:\dev\vcpkg"
 $env:PATH = "$env:VCPKG_ROOT;$env:PATH"
+$env:PATH = "$HOME\.local\bin;$env:PATH"
 Import-Module scoop-completion
