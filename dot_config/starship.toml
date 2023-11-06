@@ -13,6 +13,7 @@ $directory\
 $git_branch\
 $git_state\
 $git_commit\
+$git_metrics\
 [](fg:#394260 bg:#212736)\
 $CMake\
 $c\
@@ -72,14 +73,34 @@ format = "[$hostname$ssh_symbol]($style)"
 
 [git_branch]
 symbol = ""
+truncation_length = 8
+truncation_symbol = ''
+style = 'fg:bold purple bg:#394260'
+format = '[on ](bg:#394260)[$symbol $branch(:$remote_branch) ]($style)'
+ignore_branches = ['master', 'main']
+
+[git_state]
 style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+format = '[\($state( $progress_current of $progress_total)\) ]($style)'
+cherry_pick = '[🍒 PICKING](bold red)'
+
+[git_commit]
+style = "fg:bold green bg:#394260"
+commit_hash_length = 6
+format = '[\($hash$tag\)]($style)'
 
 [git_status]
 ignore_submodules = true
 untracked = ""
-style = "bg:#394260"
+style = "fg:bold yellow bg:#394260"
 format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+
+[git_metrics]
+disabled = false
+added_style = 'fg:bold green bg:#394260'
+deleted_style = 'fg:bold red bg:#394260'
+format = '[+$added]($added_style)[-$deleted]($deleted_style)'
+
 
 [nodejs]
 symbol = ""

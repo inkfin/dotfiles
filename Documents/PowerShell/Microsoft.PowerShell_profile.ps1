@@ -23,6 +23,7 @@ Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }
+function vs { param($file) start "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe" $file }
 
 # oh-my-posh
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression

@@ -41,7 +41,7 @@ function Show-Window {
 }
 
 # cmake commands
-function cmc  { cmake -S . -B $args }
-function cmcv { cmake -S . -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
+function cmc  { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B $args }
+function cmcv { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
 function cmb  { cmake --build $args }
 

@@ -20,6 +20,15 @@ return {
         },
     },
     {
+        "JoosepAlviste/nvim-ts-context-commentstring",
+        opts = {
+            -- change the comment string here
+            config = {
+                cpp = "// %s",
+            },
+        },
+    },
+    {
         "echasnovski/mini.surround",
         version = "*",
         opts = {
