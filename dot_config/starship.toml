@@ -13,6 +13,7 @@ $directory\
 $git_branch\
 $git_state\
 $git_commit\
+$git_status\
 $git_metrics\
 [](fg:#394260 bg:#212736)\
 $CMake\
@@ -40,7 +41,6 @@ $username$hostname\
 $status\
 $character"""
 
-# $git_status\
 
 [fill]
 symbol = "─"
@@ -82,7 +82,7 @@ ignore_branches = ['master', 'main']
 [git_state]
 style = "bg:#394260"
 format = '[\($state( $progress_current of $progress_total)\) ]($style)'
-cherry_pick = '[🍒 PICKING](bold red)'
+cherry_pick = '[🍒 PICKING](fg:bold red bg:#394260)'
 
 [git_commit]
 style = "fg:bold green bg:#394260"
@@ -90,16 +90,17 @@ commit_hash_length = 6
 format = '[\($hash$tag\)]($style)'
 
 [git_status]
+disabled = false
 ignore_submodules = true
 untracked = ""
 style = "fg:bold yellow bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+format = '([\[$all_status$ahead_behind\]]($style))'
 
 [git_metrics]
 disabled = false
 added_style = 'fg:bold green bg:#394260'
 deleted_style = 'fg:bold red bg:#394260'
-format = '[+$added]($added_style)[-$deleted]($deleted_style)'
+format = '(([+$added]($added_style))[/](bg:#394260)([-$deleted]($deleted_style)))'
 
 
 [nodejs]
