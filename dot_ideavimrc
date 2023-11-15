@@ -1,0 +1,179 @@
+" .ideavimrc is a configuration file for IdeaVim plugin. It uses
+"   the same commands as the original .vimrc configuration.
+" You can find a list of commands here: https://jb.gg/h38q75
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+
+"" -- Suggested options --
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+set scrolloff=5
+syntax on
+set number relativenumber
+set ruler
+set wrap
+set cursorline
+set fdm=marker
+" tab settings
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set expandtab
+set smartindent
+set backspace=2
+set co=5
+set history=10000
+
+set nobackup
+set noswapfile
+
+set showmode
+set clipboard^=unnamed, unnamedplus
+set fenc=utf-8
+
+let mapleader=" "
+let g:mapleader=" "
+let maplocalleader=","
+let g:maplocalleader=","
+
+" Do incremental searching.
+set hlsearch
+set incsearch
+set ignorecase
+
+" set ide handler
+sethandler <C-A> a:vim
+sethandler <C-C> a:vim
+sethandler <C-V> a:vim
+sethandler <C-S> a:vim
+sethandler <C-E> a:vim
+sethandler <C-Y> a:vim
+sethandler <C-I> a:vim
+sethandler <C-O> a:vim
+sethandler <C-N> a:vim
+sethandler <C-P> a:vim
+sethandler <C-W> a:vim
+sethandler <C-R> a:vim
+sethandler <C-H> a:vim
+sethandler <C-J> a:vim
+sethandler <C-K> a:vim
+sethandler <C-L> a:vim
+
+" Custom mapping
+map J 5j
+map K 5k
+map W 5w
+map B 5b
+map E 5e
+
+nnoremap H gT
+nnoremap L gt
+nnoremap tmh :tabm -<CR>
+nnoremap tml :tabm +<CR>
+
+map Q :action CloseContent<CR>
+map <C-S> :w<cr>
+
+" Split screen
+nnoremap <Leader>\ <C-W>v
+nnoremap <Leader>- <C-W>s
+noremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+
+
+" clear the search buffer when hitting return
+nnoremap <space><cr> :nohlsearch<cr>
+
+
+
+
+" Use some IDE utils
+nnoremap <Leader>h :<C-u>action QuickJavaDoc<CR>
+
+" go to ...
+nnoremap ga :<C-u>action GotoAction<CR>
+nnoremap gb :<C-u>action JumpToLastChange<CR>
+nnoremap gc :<C-u>action GotoClass<CR>
+nnoremap gd :<C-u>action GotoDeclaration<CR>
+nnoremap gs :<C-u>action GotoSuperMethod<CR>
+nnoremap gi :<C-u>action GotoImplementation<CR>
+nnoremap gr :<C-u>action ShowUsages<CR>
+nnoremap gt :<C-u>action GotoTest<CR>
+
+" search
+nnoremap <Leader><Leader> :<C-u>action GotoFile<CR>
+nnoremap <Leader>/ :<C-u>action FindInPath<CR>
+nnoremap <Leader>ff :<C-u>action FindInPath<CR>
+nnoremap <Leader>sf :<C-u>action FindInPath<CR>
+nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
+nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
+" replace
+nnoremap <Leader>f/ :<C-u>action Find<CR>
+nnoremap <Leader>s/ :<C-u>action Find<CR>
+nnoremap <Leader>rp <ESC>:action Replace<cr>
+nnoremap <Leader>rP <ESC>:action ReplaceInPath<cr>
+
+nnoremap <Leader>rn :<C-u>action RenameElement<CR>
+nnoremap <Leader>ci :<C-u>action ImplementMethods<CR>
+nnoremap <Leader>rv :<C-u>action IntroduceVariable<CR>
+nnoremap <Leader>cr :<C-u>action CopyReference<CR>
+nnoremap <Leader>em :<C-u>action ExtractMethod<CR>
+nnoremap <Leader>sw :<C-u>action SurroundWith<CR>
+
+" Debug
+nnoremap <Leader>db :action ToggleLineBreakpoint<cr>
+nnoremap <Leader>dc :<C-u>action ChooseRunConfiguration<CR>
+" nnoremap F5 :<C-u>action StepInto<CR>
+" nnoremap F6 :<C-u>action StepOver<CR>
+" nnoremap F8 :<C-u>action Resume<CR>
+
+" Bookmark
+nnoremap tm :action ToggleBookmark<cr>
+
+nnoremap ta :action Annotate<cr>
+
+" code editing
+nnoremap \r :action ReformatCode<CR>
+nnoremap \i :action OptimizeImports<CR>
+
+" commentary
+map <Leader>ci :<C-u>action CommentByLineComment<CR>
+map <Leader>cc :<C-u>action CommentByLineComment<CR>
+
+
+
+" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
+Plug 'machakann/vim-highlightedyank'
+
+" Plugins
+set easymotion
+"map , <Plug>(easymotion-prefix)
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_use_upper = 0
+
+" Acejump
+nnoremap s :<C-u>action AceAction<CR>
+nnoremap S :<C-u>action AceTargetAction<CR>
+
+set NERDTree
+nnoremap <Leader>e :NERDTreeToggle<CR>
+
+
+set surround
+set keep-english-in-normal
+
+set multiple-cursors
+let g:multi_cursor_use_default_mapping = 1
+let g:multi_cursor_start_word_key      = '<C-n>'
+let g:multi_cursor_select_all_word_key = '<A-n>'
+let g:multi_cursor_start_key           = 'g<C-n>'
+let g:multi_cursor_select_all_key      = 'g<A-n>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
+
+
+
