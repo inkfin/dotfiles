@@ -57,16 +57,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 #target_link_libraries(${PROJECT_NAME} PUBLIC mylib Eigen3::Eigen)
 
 # 设置输出目录
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/bin/Release)
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/bin/Debug)
 if(WIN32)
-    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY    ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug)
+    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY    ${CMAKE_SOURCE_DIR}/bin/Debug)
 elseif(UNIX)
 endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/Release)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Release)
 else() # Debug
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Debug)
 endif()
 message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
@@ -80,12 +80,17 @@ message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 # endif()
 
 
-# if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
-#     ADD_CUSTOM_COMMAND(
-#         TARGET ${PROJECT_NAME}
-#         POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#         ${CMAKE_BINARY_DIR}/compile_commands.json
-#         ${CMAKE_SOURCE_DIR}
-#     )
-# endif()
+if (EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
+    file(COPY "${CMAKE_BINARY_DIR}/compile_commands.json" DESTINATION ${CMAKE_SOURCE_DIR})
+endif()
+
+
+# file(GLOB DLLS_TO_COPY ${CMAKE_SOURCE_DIR}/lib/*.dll)
+# ADD_CUSTOM_COMMAND(
+#     TARGET ${PROJECT_NAME}
+#     POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#     ${DLLS_TO_COPY}
+#     $<TARGET_FILE_DIR:${PROJECT_NAME}>
+#     COMMENT "Copying dlls... to target directory"
+# )
