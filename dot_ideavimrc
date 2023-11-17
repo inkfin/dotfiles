@@ -70,6 +70,7 @@ nnoremap H gT
 nnoremap L gt
 nnoremap tmh :tabm -<CR>
 nnoremap tml :tabm +<CR>
+nnoremap <Leader>bd :action CloseContent<CR>
 
 map Q :action CloseContent<CR>
 map <C-S> :w<cr>
@@ -105,7 +106,7 @@ nnoremap gt :<C-u>action GotoTest<CR>
 " search
 nnoremap <Leader><Leader> :<C-u>action GotoFile<CR>
 nnoremap <Leader>/ :<C-u>action FindInPath<CR>
-nnoremap <Leader>ff :<C-u>action FindInPath<CR>
+nnoremap <Leader>ff :<C-u>action GotoFile<CR>
 nnoremap <Leader>sf :<C-u>action FindInPath<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
 nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
