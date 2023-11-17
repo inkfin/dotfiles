@@ -10,6 +10,7 @@ return {
                 -- Toggle comment (like `gcip` - comment inner paragraph) for both
                 -- Normal and Visual modes
                 comment = "<leader>cc",
+                comment_visual = "<leader>cc",
 
                 -- Toggle comment on current line
                 comment_line = "<leader>ci",

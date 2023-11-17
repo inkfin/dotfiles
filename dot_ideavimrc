@@ -68,6 +68,8 @@ map E 5e
 
 nnoremap H gT
 nnoremap L gt
+nnoremap [b gT
+nnoremap ]b gt
 nnoremap tmh :tabm -<CR>
 nnoremap tml :tabm +<CR>
 nnoremap <Leader>bd :action CloseContent<CR>
@@ -76,7 +78,7 @@ map Q :action CloseContent<CR>
 map <C-S> :w<cr>
 
 " Split screen
-nnoremap <Leader>\ <C-W>v
+nnoremap <Leader>| <C-W>v
 nnoremap <Leader>- <C-W>s
 noremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
@@ -103,6 +105,10 @@ nnoremap gi :<C-u>action GotoImplementation<CR>
 nnoremap gr :<C-u>action ShowUsages<CR>
 nnoremap gt :<C-u>action GotoTest<CR>
 
+nnoremap ]d :<C-u>action GotoNextError<CR>
+nnoremap [d :<C-u>action GotoPreviousError<CR>
+
+
 " search
 nnoremap <Leader><Leader> :<C-u>action GotoFile<CR>
 nnoremap <Leader>/ :<C-u>action FindInPath<CR>
@@ -110,6 +116,7 @@ nnoremap <Leader>ff :<C-u>action GotoFile<CR>
 nnoremap <Leader>sf :<C-u>action FindInPath<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
 nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
+nnoremap <Leader>sm :<C-u>action ShowBookmarks<CR>
 " replace
 nnoremap <Leader>f/ :<C-u>action Find<CR>
 nnoremap <Leader>s/ :<C-u>action Find<CR>
@@ -131,9 +138,10 @@ nnoremap <Leader>dc :<C-u>action ChooseRunConfiguration<CR>
 " nnoremap F8 :<C-u>action Resume<CR>
 
 " Bookmark
-nnoremap tm :action ToggleBookmark<cr>
+nnoremap mm :action ToggleBookmark<cr>
+noremap m] :<C-u>action GotoNextBookmark<CR>
+noremap m[ :<C-u>action GotoPreviousBookmark<CR>
 
-nnoremap ta :action Annotate<cr>
 
 " code editing
 nnoremap \r :action ReformatCode<CR>
