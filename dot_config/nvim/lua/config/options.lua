@@ -7,6 +7,10 @@ require("utils.func")
 ------------------------------
 -- Setup backup and undo paths
 ------------------------------
+-- https://vimdoc.sourceforge.net/htmldoc/usr_21.html#21.3
+vim.go.viminfo = "!,'1000,f1,<500,s10,h"
+vim.go.encoding = "utf-8"
+
 local is_directory_exists = function(dir)
     return vim.fn.empty(vim.fn.glob(dir)) == 0
 end
