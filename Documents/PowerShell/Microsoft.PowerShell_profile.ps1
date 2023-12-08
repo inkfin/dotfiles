@@ -46,8 +46,26 @@ Enable-TransientPrompt
 Import-Module 'C:\dev\vcpkg\scripts\posh-vcpkg'
 Import-Module PSFzf
 
+
+# CUDA environment
+$env:CUDA_PATH_V12_1 = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
+$env:CUDA_PATH_V11_2 = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2"
+$env:CUDA_PATH = "$env:CUDA_PATH_V12_1"
+
+$env:PATH = "$env:CUDA_PATH\bin;$env:PATH"
+$env:PATH = "$env:CUDA_PATH\libnvvp;$env:PATH"
+
+# C++ environment
+#
+## toolset
+# $env:CC = "$HOME\scoop\apps\mingw\current\bin\gcc.EXE"
+# $env:CXX = "$HOME\scoop\apps\mingw\current\bin\g++.EXE"
+$env:CC = "C:\Users\11096\scoop\apps\llvm\current\bin\clang.EXE"
+$env:CXX = "C:\Users\11096\scoop\apps\llvm\current\bin\clang++.EXE"
+
 # vcpkg
 $env:VCPKG_ROOT = "C:\dev\vcpkg"
 $env:PATH = "$env:VCPKG_ROOT;$env:PATH"
 $env:PATH = "$HOME\.local\bin;$env:PATH"
+$env:LLVMInstallDir = "$HOME\scoop\apps\llvm\current"
 Import-Module scoop-completion

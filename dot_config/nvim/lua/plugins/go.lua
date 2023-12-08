@@ -2,36 +2,6 @@
 if true then return {} end
 
 return {
-    -- Install code highlighter
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = function(_, opts)
-            if type(opts.ensure_installed) == "table" then
-                vim.list_extend(opts.ensure_installed, {
-                    "go",
-                    "gomod",
-                    "gowork",
-                    "gosum",
-                })
-            end
-        end,
-    },
-    -- Install lsp and dap
-    {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-            if type(opts.ensure_installed) == "table" then
-                vim.list_extend(opts.ensure_installed, {
-                    "gopls", --lsp
-                    "delve", --dap
-                    "gofumpt", --formatter
-                    "gomodifytags",
-                    "impl",
-                })
-            end
-        end,
-    },
-
     -- Correctly setup lspconfig for go 🚀
     {
         "neovim/nvim-lspconfig",
@@ -75,17 +45,6 @@ return {
                         },
                     },
                 },
-            },
-        },
-    },
-
-    -- formatter config
-    {
-        "stevearc/conform.nvim",
-        optional = true,
-        opts = {
-            formatters_by_ft = {
-                go = { "goimports", "gofumpt" },
             },
         },
     },

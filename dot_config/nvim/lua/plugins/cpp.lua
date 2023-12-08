@@ -1,40 +1,4 @@
 return {
-    -- Install code highlighter
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = function(_, opts)
-            if type(opts.ensure_installed) == "table" then
-                vim.list_extend(opts.ensure_installed, {
-                    "c",
-                    "cpp",
-                    "cmake",
-                })
-            end
-        end,
-    },
-    -- Install lsp and dap
-    {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-            if type(opts.ensure_installed) == "table" then
-                vim.list_extend(opts.ensure_installed, {
-                    "codelldb",
-                    "clang-format",
-                    "cmakelang",
-                    "cmakelint",
-                })
-            end
-        end,
-    },
-    {
-        "mfussenegger/nvim-lint",
-        opts = {
-            linters_by_ft = {
-                cmake = { "cmakelint" },
-            },
-        },
-    },
-
     -- Correctly setup lspconfig for clangd 🚀
     {
         "neovim/nvim-lspconfig",
@@ -45,51 +9,7 @@ return {
                     keys = {
                         { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
                     },
-                    root_dir = function(fname)
-                        -- using a root .clang-format or .clang-tidy file messes up projects, so remove them
-                        return require("lspconfig.util").root_pattern(
-                            "Makefile",
-                            "CMakeLists.txt",
-                            "configure.ac",
-                            "configure.in",
-                            "config.h.in",
-                            "meson.build",
-                            "meson_options.txt",
-                            "build.ninja"
-                        )(fname) or require("lspconfig.util").root_pattern(
-                            "compile_commands.json",
-                            "compile_flags.txt"
-                        )(fname) or require("lspconfig.util").find_git_ancestor(fname)
-                    end,
-                    capabilities = {
-                        offsetEncoding = { "utf-16" },
-                    },
-                    cmd = {
-                        "clangd",
-                        "--background-index",
-                        "--clang-tidy",
-                        "--header-insertion=iwyu",
-                        "--completion-style=detailed",
-                        "--function-arg-placeholders",
-                        "--fallback-style=llvm",
-                    },
-                    init_options = {
-                        usePlaceholders = true,
-                        completeUnimported = true,
-                        clangdFileStatus = true,
-                    },
                 },
-            },
-            -- FIXIT: Issue (https://github.com/LazyVim/LazyVim/pull/1308), merge appending
-            -- remove this after it get merged
-            setup = {
-                clangd = function(_, opts)
-                    local clangd_ext_opts = require("lazyvim.util").opts("clangd_extensions.nvim")
-                    require("clangd_extensions").setup(
-                        vim.tbl_deep_extend("force", clangd_ext_opts or {}, { server = opts })
-                    )
-                    return false -- change true to false
-                end,
             },
         },
     },
@@ -187,17 +107,4 @@ return {
             dap.configurations.c = dap.configurations.cpp
         end,
     },
-
-    -- formatter config
-    -- {
-    --     "nvimtools/none-ls.nvim",
-    --     opts = function(_, opts)
-    --         if type(opts.sources) == "table" then
-    --             local nls = require("null-ls")
-    --             vim.list_extend(opts.sources, {
-    --                 nls.builtins.formatting.clang_format,
-    --             })
-    --         end
-    --     end,
-    -- },
 }

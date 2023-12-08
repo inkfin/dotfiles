@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #生成 compile_commands.json 以便 clang
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # if (NOT CMAKE_TOOLCHAIN_FILE)
-#     set(CMAKE_TOOLCHAIN_FILE "vcpkg/scripts/buildsystems/vcpkg.cmake")
+#     set(CMAKE_TOOLCHAIN_FILE "vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FORCE)
 # endif()
 
 project(HelloWorld LANGUAGES CXX VERSION 0.1)
@@ -47,7 +47,7 @@ endif()
 
 
 # aux_source_directory(src sources)
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.h)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.h include/*.h)
 
 add_executable(${PROJECT_NAME} ${sources})
 

@@ -93,10 +93,10 @@ vim.g.compile_run = function()
             " windows fix: can't execute file without '.exe' postfix
             if has("win32")
                 exec "!clang % -o %<.exe"
-                exec "!time %<.exe"
+                exec "!time ./%<.exe"
             else
                 exec "!clang % -o %<"
-                exec "!time %<"
+                exec "!time ./%<"
             endif
         ]])
     elseif vim.bo.filetype == "cpp" then
@@ -105,11 +105,11 @@ vim.g.compile_run = function()
             :sp
             :res +10
             if has("win32")
-                exec "!clang++ -std=c++17 % -Wall -o %<.exe"
-                :term time %<.exe
+                exec "!clang++ -std=c++20 % -Wall -o %<.exe"
+                :term time ./%<.exe
             else
-                exec "!clang++ -std=c++17 % -Wall -o %<"
-                :term time %<
+                exec "!clang++ -std=c++20 % -Wall -o %<"
+                :term time ./%<
             endif
         ]])
     elseif vim.bo.filetype == "rust" then
@@ -119,18 +119,18 @@ vim.g.compile_run = function()
             :sp
             :res +5
             if has("win32")
-                :term time %<.exe
+                :term time ./%<.exe
             else
-                :term time %<
+                :term time ./%<
             endif
         ]])
     elseif vim.bo.filetype == "java" then
         vim.cmd([[
             exec "!javac %"
             if has("win32")
-                exec "!time java %<.exe"
+                exec "!time java ./%<.exe"
             else
-                exec "!time java %<"
+                exec "!time java ./%<"
             endif
         ]])
     elseif vim.bo.filetype == "sh" then

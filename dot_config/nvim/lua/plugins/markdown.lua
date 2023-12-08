@@ -1,32 +1,8 @@
 return {
-    -- Install lsp and dap
-    {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-            if type(opts.ensure_installed) == "table" then
-                vim.list_extend(opts.ensure_installed, {
-                    -- "grammarly-languageserver",
-                    "markdownlint",
-                })
-            end
-        end,
-    },
-    -- {
-    --     "neovim/nvim-lspconfig",
-    --     opts = {
-    --         servers = {
-    --             -- Ensure mason installs the server
-    --             grammarly = {
-    --                 init_options = { clientId = "client_BaDkMgx4X19X9UxxYRCXZo" },
-    --             },
-    --         },
-    --     },
-    -- },
     {
         "iamcco/markdown-preview.nvim",
         ft = "markdown",
         lazy = true,
-        build = "cd app; npm install; git restore .",
         config = function()
             vim.cmd([[
                 " options for markdown render

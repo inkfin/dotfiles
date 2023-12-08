@@ -14,10 +14,12 @@ return {
             "<leader>e",
             function()
                 local path = require("lazyvim.util").root()
+                --[[
                 if vim.fn.has("win32") == 1 then
                     -- use \ instead of / in windows
                     path = path:gsub("/", "\\")
                 end
+                --]]
                 require("neo-tree.command").execute({ toggle = true, dir = path })
             end,
             desc = "Explorer NeoTree (root dir)",

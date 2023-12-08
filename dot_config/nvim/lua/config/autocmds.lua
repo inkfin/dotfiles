@@ -21,6 +21,7 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
     "javascript",
     "typescript",
     "html",
+    "json",
     "css"
     }, callback = function() vim.g.settab(2) end })
 vim.api.nvim_create_autocmd("FileType", { pattern = {
