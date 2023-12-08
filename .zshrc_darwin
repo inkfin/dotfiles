@@ -334,6 +334,8 @@ export OPENAI_API_KEY='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'
 
 alias ai='python3 /Users/inkfin/Documents/Code/Python/openaiAPI/app.py'
 
+alias browse='/usr/local/carbonyl-0.0.3/carbonyl'
+
 
 # vcpkg integrate
 autoload bashcompinit
