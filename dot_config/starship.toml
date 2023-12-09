@@ -163,6 +163,7 @@ symbol = "↕️ "
 disabled = false
 bash_indicator = ""
 fish_indicator = '󰈺'
+zsh_indicator = ""
 powershell_indicator = ""
 cmd_indicator = ""
 
@@ -176,6 +177,7 @@ disabled = false
 format = "$symbol"
 symbols.Ubuntu = ""
 symbols.Windows = ""
+symbols.Macos = "󰀵"
 
 [sudo]
 disabled = false
