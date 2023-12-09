@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Because Git submodule commands cannot operate without a work tree, they must
 # be run from within $HOME (assuming this is the root of your dotfiles)
@@ -15,14 +15,16 @@ fi
 
 system_type=$(uname -s)
 
+pkg_manager=("pac")
+
 # check if has command
 is_command() {
 	command -v "$1" >/dev/null 2>&1
 }
 
 install_command() {
-	echo "Installing $2..."
-	$1 install $2
+	echo "Installing $1..."
+	${pkg_manager[@]} install -y $2
 	if [ $? -eq 0 ]; then
 		echo "$2 installed."
 	else
@@ -30,11 +32,9 @@ install_command() {
 	fi
 }
 
-pkg_manager=pac
-
 install_if_not_exist() {
 	if ! is_command $1; then
-		install_command $pkg_manager $1
+		install_command $1
 	fi
 }
 
@@ -44,7 +44,7 @@ command_list=(zsh tmux ranger fzf rg fd bat)
 
 # MacOS
 if [ ${system_type} = "Darwin" ]; then
-	pkg_manager=brew
+	pkg_manager=("brew")
 
 	# install homebrew
 	if ! is_command brew; then
@@ -78,14 +78,18 @@ fi
 
 # Linux
 if [ ${system_type} = "Linux" ]; then
-	pkg_manager="sudo apt-get"
+	pkg_manager=("sudo" "apt-get")
 
-	$pkg_manager update
+	${pkg_manager[@]} update
 
     # install basic command in list
     for command in ${command_list[*]}; do
+		echo $command
         install_if_not_exist $command
     done
+
+	# set zsh as default shell
+	sudo chsh -s $(which zsh)
 
 	# Vim init
     install_if_not_exist neovim

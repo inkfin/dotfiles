@@ -182,6 +182,7 @@ symbols.Macos = "󰀵"
 [sudo]
 disabled = false
 symbol = "👑 "
+format = "[ $symbol]($style)"
 
 # Conda
 [conda]
