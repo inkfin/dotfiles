@@ -22,7 +22,11 @@ return {
                 go = { "gofumpt" },
             },
             ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
-            formatters = {},
+            formatters = {
+                injected = {
+                    ignore_errors = true,
+                },
+            },
         },
     },
 }
