@@ -26,6 +26,7 @@ return {
             -- change the comment string here
             config = {
                 cpp = "// %s",
+                wgsl = "// %s",
             },
         },
     },

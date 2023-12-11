@@ -63,11 +63,3 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
         vim.wo.conceallevel = 0
     end,
 })
-
--- nvim-lsp config in README
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-    pattern = { "*.rs", "*.go" },
-    callback = function()
-        vim.fn.execute("LspDocumentFormatSync")
-    end,
-})

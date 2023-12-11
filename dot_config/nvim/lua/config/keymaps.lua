@@ -90,6 +90,7 @@ function Show_documentation()
     vim.lsp.buf.hover()
 end
 
+-- configure it here so it is active all the time
 map({ "n" }, "<leader>h", Show_documentation, { desc = "hover" })
 
 -- save file

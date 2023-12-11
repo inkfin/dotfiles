@@ -44,34 +44,38 @@ end
 
 vim.g.get_root = get_root
 
-local function tprint(tbl, indent)
+local function tprintstr(tbl, indent)
     if not indent then
         indent = 0
     end
-    local toprint = string.rep(" ", indent) .. "{\r\n"
+    local toprint = string.rep(" ", indent) .. "{\n"
     indent = indent + 2
     for k, v in pairs(tbl) do
         toprint = toprint .. string.rep(" ", indent)
         if type(k) == "number" then
             toprint = toprint .. "[" .. k .. "] = "
         elseif type(k) == "string" then
-            toprint = toprint .. k .. "= "
+            toprint = toprint .. k .. " = "
         end
         if type(v) == "number" then
-            toprint = toprint .. v .. ",\r\n"
+            toprint = toprint .. v .. ",\n"
         elseif type(v) == "string" then
-            toprint = toprint .. '"' .. v .. '",\r\n'
+            toprint = toprint .. '"' .. v .. '",\n'
         elseif type(v) == "table" then
-            toprint = toprint .. tprint(v, indent + 2) .. ",\r\n"
+            toprint = toprint .. tprintstr(v, indent + 2) .. ",\n"
         else
-            toprint = toprint .. '"' .. tostring(v) .. '",\r\n'
+            toprint = toprint .. '"' .. tostring(v) .. '",\n'
         end
     end
     toprint = toprint .. string.rep(" ", indent - 2) .. "}"
     return toprint
 end
 
-vim.g.tprint = tprint
+---print a table
+---@param tbl table
+_G.tprint = function(tbl)
+    print(tprintstr(tbl))
+end
 
 -- typewriter mode
 vim.g.toggle_typewriter_mode = function()
