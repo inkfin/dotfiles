@@ -6,6 +6,7 @@ return {
         "neovim/nvim-lspconfig",
         opts = {
             servers = {
+                -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
                 -- Ensure mason installs the server
                 rust_analyzer = {
                     keys = {
@@ -34,4 +35,5 @@ return {
             },
         },
     },
+    -- rustfmt: https://rust-lang.github.io/rustfmt/
 }
