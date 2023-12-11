@@ -4,6 +4,7 @@ return {
         "neovim/nvim-lspconfig",
         opts = {
             servers = {
+                -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#clangd
                 -- Ensure mason installs the server
                 clangd = {
                     keys = {

@@ -1,12 +1,11 @@
--- stylua: ignore
 -- if true then return {} end
 
 return {
     -- Correctly setup lspconfig for Rust 🚀
     {
         "neovim/nvim-lspconfig",
-        opts = function (_, opts)
-            opts.servers = {
+        opts = {
+            servers = {
                 -- Ensure mason installs the server
                 rust_analyzer = {
                     keys = {
@@ -32,7 +31,7 @@ return {
                         { "K", false },
                     },
                 },
-            }
-        end
+            },
+        },
     },
 }

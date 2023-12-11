@@ -32,7 +32,7 @@ return {
             -- nvim-cmp setup
             local cmp = require("cmp")
 
-            opts.completion.completeopt = "menu,menuone,noinsert,noselect"
+            opts.completion.completeopt = "menu,menuone" --,noinsert,noselect
 
             opts.mapping = cmp.mapping.preset.insert({
                 -- changing scrolling keymap from <C-b/f> to <C-u/d>
