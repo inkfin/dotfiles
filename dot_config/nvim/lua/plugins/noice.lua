@@ -20,6 +20,13 @@ return {
         preset = {
             cmdline_output_to_split = true,
         },
+        -- disable some messages
+        routes = {
+            {
+                skip = true,
+                filter = { event = "msg_show", find = ":!chezmoi" },
+            },
+        },
     },
     keys = {
         -- change scrolling keymap to <C-d/u> (can affect LSP)
