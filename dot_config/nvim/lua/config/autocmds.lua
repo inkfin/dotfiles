@@ -22,13 +22,14 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
     "typescript",
     "html",
     "json",
-    "css"
+    "css",
     }, callback = function() vim.g.settab(2) end })
 vim.api.nvim_create_autocmd("FileType", { pattern = {
     "cpp",
     "c",
     "python",
-    "rust"
+    "rust",
+    "cmake",
     }, callback = function() vim.g.settab(4) end })
 -- stylua: ignore end
 

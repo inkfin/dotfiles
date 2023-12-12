@@ -42,6 +42,18 @@ return {
             -- },
         },
     },
+    -- formatters
+    {
+        "stevearc/conform.nvim",
+        opts = {
+            ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
+            formatters = {
+                ["cmake_format"] = {
+                    prepend_args = { "--tab-size", "4" },
+                },
+            },
+        },
+    },
 
     -- Debugger settings
     {
