@@ -70,9 +70,9 @@ if enable_glsl then
         print(
             "Can't find glsl_analyzer in $PATH\nPlease get glsl_analyzer from https://github.com/nolanderc/glsl_analyzer/releases/latest ..."
         )
-        return
+    else
+        table.insert(M, glsl_config)
     end
-    table.insert(M, glsl_config)
 end
 
 if enable_wgsl then
