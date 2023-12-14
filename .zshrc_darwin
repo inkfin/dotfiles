@@ -159,6 +159,11 @@ if [ -f "$HB_CNF_HANDLER" ]; then
 source "$HB_CNF_HANDLER";
 fi
 
+# CMake
+alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
+alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=/Users/inkfin/vcpkg/scripts/buildsystems/vcpkg.cmake -B"
+alias cmb="cmake --build "
+
 
 # ==================================================
 # === Environment Variables
@@ -304,6 +309,11 @@ export PATH="$PATH:/usr/local/texlive/2022/bin/universal-darwin"
 
 # Vulkan
 source "/usr/local/VulkanSDK/current/setup-env.sh"
+
+
+# dawn
+# depot_tools
+export PATH="$HOME/dev/depot_tools:$PATH"
 
 
 # === MACOS ===
