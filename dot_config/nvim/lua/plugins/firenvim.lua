@@ -8,7 +8,6 @@ return {
         vim.fn["firenvim#install"](0)
     end,
     opts = function()
-        print("hsdoafjsdal;fk")
         vim.g.firenvim_config = {
             globalSettings = { alt = "all" },
             localSettings = {
@@ -18,6 +17,13 @@ return {
                     priority = 0,
                     selector = 'textarea:not([readonly], [aria-readonly]), div[role="textbox"]',
                     takeover = "always",
+                },
+                [".google.com"] = {
+                    selector = 'textarea:not([class="gLFyf"])',
+                },
+                [".sshx.io"] = {
+                    takeover = "never",
+                    priority = 99,
                 },
             },
         }

@@ -27,6 +27,7 @@ modikeys.sh
 {{ if ne .chezmoi.os "windows" }}
 .config/AutoHotkey/
 Documents/WindowsPowerShell/
+Documents/PowerShell/
 install-packages.ps1
 {{ end }}
 {{ if eq .chezmoi.os "windows" }}
