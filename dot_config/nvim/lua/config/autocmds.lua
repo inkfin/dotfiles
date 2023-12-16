@@ -42,6 +42,10 @@ vim.api.nvim_create_autocmd("BufNewFile", {
     pattern = "CMakeLists.txt",
     command = "0r $HOME/.config/nvim/template/CMakeLists.txt",
 })
+vim.api.nvim_create_autocmd("BufNewFile", {
+    pattern = ".marksman.toml",
+    command = "0r $HOME/.config/nvim/template/.marksman.toml",
+})
 
 -- Run chezmoi apply whenever a dotfile is saved
 vim.cmd([[
