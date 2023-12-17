@@ -25,6 +25,10 @@ return {
                     takeover = "never",
                     priority = 99,
                 },
+                [".openai.com"] = {
+                    takeover = "never",
+                    priority = 99,
+                },
             },
         }
         if vim.go.lines <= 5 then
