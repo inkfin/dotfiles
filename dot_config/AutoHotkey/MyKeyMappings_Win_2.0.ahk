@@ -40,3 +40,48 @@ CapsLock up:: {
     }
 }
 
+
+;;; Hotkey for launching terminal
+
+^#z:: {
+    terminalTitle := "popup"
+    DetectHiddenWindows True
+
+    if WinExist(terminalTitle) {
+        ;MsgBox "terminal already exists"
+        DetectHiddenWindows False
+
+        if WinExist(terminalTitle) {
+            ;MsgBox "terminal is not hidden"
+            WinHide terminalTitle
+        } else {
+            ;MsgBox "terminal is hidden"
+            WinShow terminalTitle
+            WinMaximize terminalTitle
+        }
+    } else {
+        ;MsgBox "terminal does not exist"
+        Run "wt.exe -Mf -p `"PowerShell 7`" --title " terminalTitle
+        WinWait terminalTitle
+        if WinExist(terminalTitle) {
+            WinActivate terminalTitle
+            WinMaximize terminalTitle
+        }
+    }
+    return
+}
+
+;;; see window properties
+;SetTimer WatchCursor, 100
+
+WatchCursor()
+{
+    MouseGetPos , , &id, &control
+    ToolTip
+    (
+        "ahk_id " id "
+        ahk_class " WinGetClass(id) "
+        " WinGetTitle(id) "
+        Control: " control
+    )
+}
