@@ -15,4 +15,11 @@ return {
             { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
         },
     },
+    {
+        "keaising/im-select.nvim",
+        enable = vim.fn.executable("im-select") == 1,
+        config = function()
+            require("im_select").setup({})
+        end,
+    },
 }
