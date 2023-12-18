@@ -18,7 +18,6 @@ winget install Microsoft.PowerShell
 # Update PowershellGet for pwsh < 5.1
 Install-Module -Name PowerShellGet -Force
 # Install Packages
-Install-Module ZLocation -Scope CurrentUser;
 Install-Module -Name PSReadLine;
 
 Write-host "Installing scoop ..." -f Green
@@ -27,6 +26,7 @@ irm get.scoop.sh | iex
 
 Write-host "Installing scoop packages ..." -f Green
 scoop install fzf psfzf
+scoop install zoxide
 scoop install cmake neovim python ripgrep bat
 
 # if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {

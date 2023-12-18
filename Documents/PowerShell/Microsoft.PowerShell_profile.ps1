@@ -1,3 +1,7 @@
+# ENVs
+$env:OPENER = "nvim"
+$env:EDITOR = "code"
+
 # Aliases
 function list-files { param($file) Get-ChildItem $file | Format-Table }
 Set-Alias -Name l -Value list-files
@@ -39,6 +43,7 @@ function Invoke-Starship-TransientFunction {
 . "$($(Get-Item $(Get-Command scoop).Path).Directory.Parent.FullName)\apps\scoop-completion\current\add-profile-content.ps1"
 
 Invoke-Expression (&starship init powershell)
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 Enable-TransientPrompt
 
