@@ -1,3 +1,6 @@
+-- stylua: ignore
+if true then return {} end
+
 return {
     "glacambre/firenvim",
 
@@ -20,6 +23,9 @@ return {
                 },
                 [".google.com"] = {
                     selector = 'textarea:not([class="gLFyf"])',
+                },
+                [".bing.com"] = {
+                    selector = 'textarea:not([class="b_searchbox"])',
                 },
                 [".sshx.io"] = {
                     takeover = "never",
