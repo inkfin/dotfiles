@@ -33,9 +33,19 @@ map w $pwsh
 # change 'doc' command to use a different pager
 cmd ? $lf -doc | less
 
+map t toggle
+map T tag-toggle
+
 # leave some space at the top and the bottom of the screen
 set scrolloff 10
 
 # use enter for shell commands
 map <enter> shell
 
+set previewer C:\\Users\\11096\\scripts\\previewer.bat
+
+cmd preview $preview $Env:f | less -R
+
+map i preview
+
+cmd pwd $pwd | less -R

@@ -1,0 +1,22 @@
+param(
+    [string]$filePath,
+    [int]$width = 800,
+    [int]$height = 600,
+    [float]$horizontal_position = 0,
+    [float]$vertical_position = 0
+)
+
+$extension = [System.IO.Path]::GetExtension($filePath).ToLower()
+
+switch ($extension) {
+    ".zip" { & unzip -l $filePath | bat }
+    ".rar" { & "unrar" l $filePath | bat }
+    ".7z"  { & "7z" l $filePath }
+    ".pdf" { & "pdftotext" $filePath - }
+    ".jpg" { & "chafa" $filePath }
+    ".jpeg" { & "chafa" $filePath }
+    ".webp" { & "chafa" $filePath }
+    ".png" { & "chafa" $filePath }
+    ".md" { & "glow" $filePath -s dark }
+    default { & "bat" --color always $filePath }  # 默认显示文件的前 10 行
+}

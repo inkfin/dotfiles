@@ -45,3 +45,13 @@ function cmc  { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B $args }
 function cmcv { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
 function cmb  { cmake --build $args }
 
+function preview {
+    param(
+        [string]$filePath,
+        [int]$width = 800,
+        [int]$height = 600,
+        [float]$horizontal_position = 0,
+        [float]$vertical_position = 0
+    )
+    & $HOME/scripts/previewer.ps1 $filePath $width $height $horizontal_position $vertical_position
+}
