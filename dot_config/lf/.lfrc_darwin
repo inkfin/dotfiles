@@ -52,6 +52,8 @@ cmd open &{{
 # mkdir command. See wiki if you want it to select created dir
 map A :push %mkdir<space>
 
+set previewer ~/scripts/preview.sh
+
 # define a custom 'rename' command without prompt for overwrite
 # cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
 # map r push :rename<space>

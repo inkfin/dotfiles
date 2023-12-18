@@ -18,5 +18,5 @@ switch ($extension) {
     ".webp" { & "chafa" $filePath }
     ".png" { & "chafa" $filePath }
     ".md" { & "glow" $filePath -s dark }
-    default { & "bat" --color always $filePath }  # 默认显示文件的前 10 行
+    default { & "bat" --color=always --line-range=:200 $filePath }
 }

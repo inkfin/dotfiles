@@ -21,5 +21,5 @@ IF not x%item:.md=%==x%item% (
 ) ELSE IF not x%item:.webp=%==x%item% (
     chafa %1
 ) ELSE (
-	bat --color=always %1
+	bat --color=always --line-range=:200 %1
 )
