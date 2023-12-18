@@ -1,0 +1,28 @@
+{{- if eq .chezmoi.os "windows" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://www.pdftron.com/downloads/pdf2text.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["pdf2text/*.exe"]
+
+{{- else if eq .chezmoi.os "darwin" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://www.pdftron.com/downloads/pdf2text_mac.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["pdf2text_mac/pdf2text"]
+
+{{- else if eq .chezmoi.os "linux" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://www.pdftron.com/downloads/pdf2text.tar.gz"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["pdf2text/pdf2text"]
+
+{{- end }}

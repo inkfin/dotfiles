@@ -1,0 +1,9 @@
+{{- if ne .chezmoi.os "windows" }}
+
+[".config/ranger/plugins/ranger_devicons"]
+    type = "git-repo"
+    url = "https://github.com/alexanderjeurissen/ranger_devicons"
+    exact = true
+    refreshPeriod = "168h"
+
+{{- end }}

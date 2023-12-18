@@ -1,0 +1,28 @@
+{{- if eq .chezmoi.os "windows" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://github.com/nolanderc/glsl_analyzer/releases/latest/download/x86_64-windows.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["bin/glsl_analyzer.exe"]
+
+{{- else if eq .chezmoi.os "darwin" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://github.com/nolanderc/glsl_analyzer/releases/latest/download/aarch64-macos.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["bin/glsl_analyzer"]
+
+{{- else if eq .chezmoi.os "linux" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://github.com/nolanderc/glsl_analyzer/releases/latest/download/x86_64-linux-musl.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["bin/glsl_analyzer"]
+
+{{- end}}

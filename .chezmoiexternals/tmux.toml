@@ -1,0 +1,9 @@
+{{- if ne .chezmoi.os "windows" }}
+
+[".tmux/plugins/tpm"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tpm"
+    exact = true
+    refreshPeriod = "168h"
+
+{{- end }}
