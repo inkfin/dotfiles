@@ -44,3 +44,15 @@
     refreshPeriod = "168h"
 
 {{- end }}
+
+
+{{- if eq .chezmoi.os "windows" }}
+
+[".local/bin/"]
+    type = "archive"
+    url = "https://www.pdftron.com/downloads/pdf2text.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1
+    include = ["pdf2text/*.exe"]
+
+{{- end }}

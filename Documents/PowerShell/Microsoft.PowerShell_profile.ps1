@@ -51,6 +51,9 @@ Enable-TransientPrompt
 Import-Module 'C:\dev\vcpkg\scripts\posh-vcpkg'
 Import-Module PSFzf
 
+# local bin
+$env:PATH = "$HOME\.local\bin;$env:PATH"
+$env:PATH = "C:\Program Files\TerminalTools;$env:PATH"
 
 # CUDA environment
 $env:CUDA_PATH_V12_1 = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"

@@ -27,7 +27,7 @@ irm get.scoop.sh | iex
 Write-host "Installing scoop packages ..." -f Green
 scoop install fzf psfzf
 scoop install zoxide
-scoop install cmake neovim python ripgrep bat
+scoop install cmake neovim python ripgrep bat fd glow chafa
 
 # if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {
 #     Write-host "WindowsPowerShell config doesn't exists, creating now..." -f Green

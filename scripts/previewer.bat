@@ -11,7 +11,8 @@ IF not x%item:.md=%==x%item% (
 ) ELSE IF not x%item:.rar=%==x%item% (
 	unrar l %1 | bat
 ) ELSE IF not x%item:.pdf=%==x%item% (
-    powershell -Command "pdftotext" %1 - | bat
+    REM Download exe from https://docs.apryse.com/documentation/cli/download/
+    pdf2text %1 | bat
 ) ELSE IF not x%item:.jpg=%==x%item% (
     chafa %1
 ) ELSE IF not x%item:.jpeg=%==x%item% (
