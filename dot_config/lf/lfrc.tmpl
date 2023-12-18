@@ -1,0 +1,8 @@
+{{- if eq .chezmoi.os "windows" }}
+{{-     include "dot_config/lf/.lfrc_windows" }}
+{{- else if eq .chezmoi.os "linux" }}
+{{-     include "dot_config/lf/.lfrc_linux" }}
+{{- else if eq .chezmoi.os "darwin" }}
+{{-     include "dot_config/lf/.lfrc_darwin" }}
+{{- end }}
+
