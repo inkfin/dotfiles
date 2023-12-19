@@ -29,6 +29,8 @@ function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }
 function vs { param($file) start "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe" $file }
 
+function newquake { wt -w _quake --title quake musicfox `; sp -V -s .8 -d C:\dev\Code --title quake }
+
 # oh-my-posh
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression
 
