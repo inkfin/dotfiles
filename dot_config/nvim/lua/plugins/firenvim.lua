@@ -1,5 +1,5 @@
 -- stylua: ignore
-if true then return {} end
+-- if true then return {} end
 
 return {
     "glacambre/firenvim",
@@ -19,7 +19,11 @@ return {
                     content = "text",
                     priority = 0,
                     selector = 'textarea:not([readonly], [aria-readonly]), div[role="textbox"]',
-                    takeover = "always",
+                    takeover = "never",
+                },
+                [".leetcode.com"]= {
+                    priority = 99,
+                    takeover = "always"
                 },
                 [".google.com"] = {
                     selector = 'textarea:not([class="gLFyf"])',
