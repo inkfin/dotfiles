@@ -26,7 +26,7 @@ irm get.scoop.sh | iex
 
 Write-host "Installing scoop packages ..." -f Green
 scoop install fzf psfzf
-scoop install zoxide
+scoop install zoxide lsd bottom
 scoop install cmake neovim python ripgrep bat fd glow chafa
 
 # if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {

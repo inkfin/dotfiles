@@ -103,6 +103,13 @@ alias tnew="tnux new -s "
 alias vim="nvim"
 alias ra="ranger"
 
+# lsd
+alias ls="lsd"
+alias l="ls -l"
+alias la="ls -a"
+alias lla="ls -al"
+alias lt="ls --tree"
+
 alias ee="exit"
 
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"

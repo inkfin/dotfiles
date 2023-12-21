@@ -3,11 +3,16 @@ $env:OPENER = "nvim"
 $env:EDITOR = "code"
 
 # Aliases
-function list-files { param($file) Get-ChildItem $file | Format-Table }
-Set-Alias -Name l -Value list-files
-Set-Alias -Name ll -value list-files -Option AllScope -Description 'List directory contents in long format'
-function list-hidden-files { param($file) Get-ChildItem -Hidden $file | Format-Table } 
-Set-Alias -Name la -value list-hidden-files -Option AllScope -Description 'List directory contents including hidden files'
+# function list-files { param($file) Get-ChildItem $file | Format-Table }
+# Set-Alias -Name l -Value list-files
+# Set-Alias -Name ll -value list-files -Option AllScope -Description 'List directory contents in long format'
+# function list-hidden-files { param($file) Get-ChildItem -Hidden $file | Format-Table } 
+# Set-Alias -Name la -value list-hidden-files -Option AllScope -Description 'List directory contents including hidden files'
+Set-Alias -Name ls -Value 'lsd'
+function l   { lsd -l }
+function la  { lsd -a }
+function lla { lsd -la }
+function lt  { lsd --tree }
 
 function open-invoke { param($file) Invoke-Item $file }
 function open-start { param($file) Start-Process $file }

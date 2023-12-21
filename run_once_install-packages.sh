@@ -6,7 +6,7 @@ cd "$HOME"
 
 # check for installed flag
 if [ -f $HOME/.init_flag ]; then
-    echo "Found init flag (~/.init_flag), skipping bootstrap script."
+	echo "Found init flag (~/.init_flag), skipping bootstrap script."
 	exit
 else
 	touch $HOME/.init_flag
@@ -38,9 +38,8 @@ install_if_not_exist() {
 	fi
 }
 
-
 # define command list
-command_list=(zsh tmux ranger fzf rg fd bat)
+command_list=(zsh tmux ranger fzf rg fd bat zoxide lsd)
 
 # MacOS
 if [ ${system_type} = "Darwin" ]; then
@@ -59,13 +58,13 @@ if [ ${system_type} = "Darwin" ]; then
 		brew bundle --global
 	fi
 
-    # install basic command in list
-    for command in ${command_list[*]}; do
-        install_if_not_exist $command
-    done
+	# install basic command in list
+	for command in ${command_list[*]}; do
+		install_if_not_exist $command
+	done
 
-    # fzf init
-    /opt/homebrew/opt/fzf/install
+	# fzf init
+	/opt/homebrew/opt/fzf/install
 
 	# Vim init
 	install_if_not_exist neovim
@@ -82,17 +81,17 @@ if [ ${system_type} = "Linux" ]; then
 
 	${pkg_manager[@]} update
 
-    # install basic command in list
-    for command in ${command_list[*]}; do
+	# install basic command in list
+	for command in ${command_list[*]}; do
 		echo $command
-        install_if_not_exist $command
-    done
+		install_if_not_exist $command
+	done
 
 	# set zsh as default shell
 	sudo chsh -s $(which zsh)
 
 	# Vim init
-    install_if_not_exist neovim
+	install_if_not_exist neovim
 	# if is_command nvim; then
 	# 	echo "Bootstraping NeoVim"
 	# 	nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'

@@ -121,6 +121,13 @@ alias cze="chezmoi edit "
 alias lg="lazygit"
 alias ra="lf"
 
+# lsd
+alias ls="lsd"
+alias l="ls -l"
+alias la="ls -a"
+alias lla="ls -al"
+alias lt="ls --tree"
+
 # Proxy
 alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"
 alias unsethttpproxy="unset http_proxy"
