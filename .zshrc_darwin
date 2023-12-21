@@ -127,6 +127,7 @@ alias l="ls -l"
 alias la="ls -a"
 alias lla="ls -al"
 alias lt="ls --tree"
+alias li="imgls"
 
 # Proxy
 alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"
@@ -348,6 +349,8 @@ source /Users/inkfin/vcpkg/scripts/vcpkg_completion.zsh
 
 
 eval "$(starship init zsh)"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

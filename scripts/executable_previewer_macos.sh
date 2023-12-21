@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 case "$1" in
 *.tar*) tar tf "$1" ;;
@@ -7,6 +7,10 @@ case "$1" in
 *.7z) 7z l "$1" ;;
 *.pdf) pdftotext "$1" - ;;
 *.md) glow "$1" -s dark ;;
-*.jpg | *.jpeg | *.png | *.webp | *.bmp) chafa --animate off "$1" -s "$2x$3" ;;
+*.jpg | *.jpeg | *.png | *.webp | *.bmp)
+	# ${HOME}/.iterm2/imgcat --height "$(echo "$2*0.9/1" | bc)" "$1"
+	chafa --animate off "$1" -s "$2x$3"
+	;;
 *) bat --color=always --line-range=:200 "$1" ;;
 esac
+exit 127
