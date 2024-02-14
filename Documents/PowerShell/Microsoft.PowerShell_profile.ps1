@@ -28,7 +28,8 @@ Set-Alias -Name lg -Value 'lazygit'
 Set-Alias -Name ra -Value 'lf'
 Set-Alias -Name v -Value 'nvim'
 Set-Alias -Name vim -Value 'nvim'
-Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
+# Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
+function nvi { param($file) Start-Process -NoNewWindow neovide $file }
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }

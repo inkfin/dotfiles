@@ -45,4 +45,7 @@ return {
             })
         end,
     },
+    {
+        "wakatime/vim-wakatime",
+    },
 }

@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- stylua: ignore start
 vim.api.nvim_create_autocmd("FileType", { pattern = {
     "markdown",
+    "quarto",
     "javascript",
     "typescript",
     "html",

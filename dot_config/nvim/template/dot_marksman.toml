@@ -3,7 +3,7 @@
 # Only override what is needed.
 
 [core]
-markdown.file_extensions = ["md", "markdown"]
+markdown.file_extensions = ["md", "markdown", "qmd"]
 # Configures text sync protocol between the editor (LSP client)
 # and Marksman (LSP server). 
 # Can be either 'full' or `incremental`:

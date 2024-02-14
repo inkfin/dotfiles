@@ -16,19 +16,11 @@ return {
             { "hrsh7th/cmp-emoji" },
             {
                 "uga-rosa/cmp-dictionary",
-                opts = function(_, opts)
-                    local dict = require("cmp_dictionary")
-
-                    opts.exact = 2
-                    opts.capacity = 5
-                    opts.max_items = -1
-
-                    dict.switcher({
-                        spelllang = {
-                            en = vim.fn.stdpath("config") .. "/spell/en.dict",
-                        },
-                    })
-                end,
+                opts = {
+                    paths = { vim.fn.stdpath("config") .. "/spell/en.dict" },
+                    exact_length = 2,
+                    first_case_insenstive = false,
+                },
             },
         },
         opts = function(_, opts)
