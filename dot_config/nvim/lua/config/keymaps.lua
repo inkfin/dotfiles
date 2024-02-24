@@ -103,6 +103,7 @@ wk.register({
     ["cs"] = { name = "+surrounds" },
     ["<leader>t"] = { name = "+tab/Translate" },
     ["<leader>o"] = { name = "+open" },
+    ["<leader>p"] = { name = "+preview" },
 })
 
 -- Custom commands

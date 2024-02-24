@@ -23,6 +23,7 @@ return {
         {
             "lervag/vimtex",
             lazy = false, -- lazy-loading will disable inverse search
+            ft = "tex",
             -- stylua: ignore
             keys = {
                 { "K", mode = { "n" }, "5k", silent = true },

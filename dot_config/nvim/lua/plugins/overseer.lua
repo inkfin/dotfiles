@@ -6,10 +6,11 @@ return {
             { "<leader>or", "<cmd>OverseerRun<cr>", desc = "Overseer Run" },
             { "<leader>oa", "<cmd>OverseerQuickAction<cr>", desc = "Overseer Quick Actions" },
         },
-        config = {
-            templates = { "builtin", "cpp.build_single_file" },
-        },
+        -- config = {
+        --     templates = { "builtin", "cpp.build_single_file" },
+        -- },
         opts = function(_, opts)
+            opts.templates = { "builtin", "cpp.build_single_file" }
             --  to stop watching the file use the "dispose" action from :OverseerQuickAction.
             vim.api.nvim_create_user_command("WatchRun", function()
                 local overseer = require("overseer")

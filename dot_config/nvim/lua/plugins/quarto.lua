@@ -6,7 +6,7 @@ return {
 
     -- this taps into vim.ui.select and vim.ui.input
     -- and in doing so currently breaks renaming in otter.nvim
-    -- { "stevearc/dressing.nvim", enabled = vim.bo.filetype ~= "quarto" },
+    { "stevearc/dressing.nvim", enabled = false },
 
     {
         "quarto-dev/quarto-nvim",
@@ -22,30 +22,42 @@ return {
             lspFeatures = {
                 languages = { "python", "bash", "html", "lua" },
             },
+            codeRunner = {
+                enabled = true,
+                default_method = "slime",
+            },
             keymap = {
                 hover = "<leader>h",
                 definition = "gd",
-                rename = "<leader>qrn",
+                type_definition = "gD",
+                rename = "<leader>rn",
+                format = "<leader>fm",
                 references = "gr",
             },
         },
         ft = "quarto",
+        -- stylua: ignore
         keys = {
-            { "<leader>qa", ":QuartoActivate<cr>", desc = "quarto activate" },
-            { "<leader>qp", ":lua require'quarto'.quartoPreview()<cr>", desc = "quarto preview" },
-            { "<leader>qq", ":lua require'quarto'.quartoClosePreview()<cr>", desc = "quarto close" },
-            { "<leader>qh", ":QuartoHelp ", desc = "quarto help" },
-            { "<leader>qe", ":lua require'otter'.export()<cr>", desc = "quarto export" },
-            { "<leader>qE", ":lua require'otter'.export(true)<cr>", desc = "quarto export overwrite" },
-            { "<leader>qrr", ":QuartoSendAbove<cr>", desc = "quarto run to cursor" },
-            { "<leader>qra", ":QuartoSendAll<cr>", desc = "quarto run all" },
+            { "<localleader>qa", "<cmd>QuartoActivate<cr>", desc = "quarto activate" },
+            { "<localleader>qp", "<cmd>QuartoPreview<cr>", desc = "quarto preview" },
+            { "<localleader>qq", "<cmd>QuartoClosePreview<cr>", desc = "quarto close" },
+            { "<localleader>qh", ":QuartoHelp ", desc = "quarto help" },
+            { "<localleader>qe", function() require("otter").export() end, desc = "quarto export" },
+            { "<localleader>qE", function() require("otter").export(true) end, desc = "quarto export overwrite" },
+            { "<localleader>rc", function() require("quarto.runner").run_cell() end, desc = "run cell" },
+            { "<localleader>rc", function() require("quarto.runner").run_above() end, desc = "run cell and above" },
+            { "<localleader>rA", function() require("quarto.runner").run_all() end, desc = "run all cells" },
+            { "<localleader>rl", function() require("quarto.runner").run_line() end, desc = "run line" },
+            { "<localleader>r", mode = { "v" }, function() require("quarto.runner").run_range() end, desc = "run visual range" },
+            -- { "<localleader>rr", ":QuartoSendAbove<cr>", desc = "quarto run to cursor" },
+            { "<localleader>ra", ":QuartoSendAll<cr>", desc = "quarto run all" },
             { "<localleader><cr>", ":SlimeSend<cr>", desc = "send code chunk" },
             { "<c-cr>", "<esc>:SlimeSend<cr>i", mode = "i", desc = "send code chunk" },
             { "<cr>", "<Plug>SlimeRegionSend<cr>", mode = "v", desc = "send code chunk" },
-            -- { "<leader>ctr", ":split term://R<cr>", desc = "terminal: R" },
-            { "<leader>cti", ":split term://ipython<cr>", desc = "terminal: ipython" },
-            { "<leader>ctp", ":split term://python<cr>", desc = "terminal: python" },
-            -- { "<leader>ctj", ":split term://julia<cr>", desc = "terminal: julia" },
+            -- { "<localleader>tr", ":split term://R<cr>", desc = "terminal: R" },
+            { "<localleader>ti", ":split term://ipython<cr>", desc = "terminal: ipython" },
+            { "<localleader>tp", ":split term://python<cr>", desc = "terminal: python" },
+            -- { "<localleader>tj", ":split term://julia<cr>", desc = "terminal: julia" },
             { "K", false },
         },
     },
@@ -94,16 +106,17 @@ return {
 
             vim.b.slime_cell_delimiter = "# %%"
 
-            if vim.fn.exists("$TMUX") == 1 then
-                -- slime, tmux
-                vim.g.slime_target = "tmux"
-                vim.g.slime_bracketed_paste = 1
-                vim.g.slime_default_config = { socket_name = "default", target_pane = ".2" }
-            else
-                -- slime, neovvim terminal
-                vim.g.slime_target = "neovim"
-                vim.g.slime_python_ipython = 1
-            end
+            -- if vim.fn.exists("$TMUX") == 1 then
+            --     -- slime, tmux
+            --     vim.g.slime_target = "tmux"
+            --     vim.g.slime_bracketed_paste = 1
+            --     vim.g.slime_default_config = { socket_name = "default", target_pane = ".2" }
+            -- else
+            -- slime, neovvim terminal
+            vim.g.slime_target = "neovim"
+            vim.g.slime_python_ipython = 1
+            -- vim.g.slime_bracketed_paste = 1
+            -- end
 
             local function toggle_slime_tmux_nvim()
                 if vim.g.slime_target == "tmux" then
@@ -130,9 +143,11 @@ return {
             end
 
             require("which-key").register({
-                ["<leader>om"] = { mark_terminal, "slime mark terminal" },
-                ["<leader>os"] = { set_terminal, "slime set terminal" },
-                ["<leader>ot"] = { toggle_slime_tmux_nvim, "toggle tmux/nvim terminal" },
+                ["<localleader>r"] = { "Quarto Run" },
+                ["<localleader>t"] = { "terminal" },
+                ["<localleader>tm"] = { mark_terminal, "slime mark terminal" },
+                ["<localleader>ts"] = { set_terminal, "slime set terminal" },
+                ["<localleader>tt"] = { toggle_slime_tmux_nvim, "toggle tmux/nvim terminal" },
             })
         end,
     },

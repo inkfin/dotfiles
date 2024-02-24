@@ -45,6 +45,7 @@ return {
             for _, ft in ipairs({ "markdown", "norg", "rmd", "org" }) do
                 opts[ft] = {
                     headline_highlights = {},
+                    fat_headline_lower_string = "▀",
                 }
                 for i = 1, 6 do
                     local hl = "Headline" .. i
