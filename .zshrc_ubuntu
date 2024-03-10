@@ -102,6 +102,7 @@ alias lg="lazygit"
 alias tnew="tnux new -s "
 alias vim="nvim"
 alias nvi="neovide"
+alias v="vim"
 alias ra="ranger"
 
 # lsd
