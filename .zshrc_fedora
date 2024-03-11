@@ -137,6 +137,11 @@ alias cz="chezmoi"
 alias cze="chezmoi edit "
 export EDITOR=nvim
 
+# CMake
+alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
+alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake -B"
+alias cmb="cmake --build "
+
 # === User Config ===
 
 
