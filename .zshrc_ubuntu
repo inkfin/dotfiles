@@ -122,6 +122,7 @@ alias mok="~/modikeys.sh"
 
 alias cz="chezmoi"
 alias cze="chezmoi edit "
+
 export EDITOR=nvim
 
 # ranger
@@ -154,12 +155,21 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 # === User Config ===
 
 # Clash
 alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7891"
 alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
 
+# w3m
 export PATH="$PATH:/usr/lib/w3m"
+
+# wsl2
+alias wopen="explorer.exe"
 
 eval "$(starship init zsh)"

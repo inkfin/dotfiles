@@ -173,7 +173,7 @@ if vim.fn.has("mac") == 1 then
     -- function! Multiple_cursors_after()
     --   unlet g:smartim_disable
     -- endfunction
-elseif vim.fn.has("win32") then
+elseif vim.fn.has("win32") and not vim.fn.has("wsl") then
     vim.g.python3_host_prog = "$HOME/scoop/apps/python311/current/python.EXE"
 
     -- change default shell to powershell

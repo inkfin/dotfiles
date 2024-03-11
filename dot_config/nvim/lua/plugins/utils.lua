@@ -17,6 +17,7 @@ return {
     },
     {
         "keaising/im-select.nvim",
+        enabled = not vim.fn.has("wsl"),
         config = function()
             -- download im-select executable if don't exists
             if vim.fn.executable("im-select") == 0 then
