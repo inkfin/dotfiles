@@ -123,6 +123,7 @@ alias gP="git push"
 alias lg="lazygit"
 alias tnew="tnux new -s "
 alias vim="nvim"
+alias v=nn
 alias nvi="neovide"
 
 alias ee="exit"
@@ -136,6 +137,8 @@ alias ra="ranger"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 export EDITOR=nvim
+
+alias nn="~/.local/neovim/bin/nvim"
 
 # CMake
 alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"

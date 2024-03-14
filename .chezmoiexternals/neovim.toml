@@ -1,0 +1,25 @@
+{{- if eq .chezmoi.os "windows" }}
+
+[".local/neovim"]
+    type = "archive"
+    url = "https://github.com/neovim/neovim/releases/download/nightly/nvim-win64.zip"
+    refreshPeriod = "72h"
+    stripComponents = 1
+
+{{- else if eq .chezmoi.os "darwin" }}
+
+[".local/neovim"]
+    type = "archive"
+    url = "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz"
+    refreshPeriod = "72h"
+    stripComponents = 1
+
+{{- else if eq .chezmoi.os "linux" }}
+
+[".local/neovim"]
+    type = "archive"
+    url = "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
+    refreshPeriod = "72h"
+    stripComponents = 1
+
+{{- end}}

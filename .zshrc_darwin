@@ -114,12 +114,14 @@ alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_darwin"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
 alias sourcezsh="source ~/.zshrc"
 alias vim="nvim"
-alias v="vim"
+alias v=nn
 alias nvi="neovide"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 alias lg="lazygit"
 alias ra="lf"
+
+alias nn="~/.local/neovim/bin/nvim"
 
 # lsd
 alias ls="lsd"

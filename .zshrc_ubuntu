@@ -100,10 +100,12 @@ alias gp="git pull"
 alias gP="git push"
 alias lg="lazygit"
 alias tnew="tnux new -s "
-alias vim="nvim"
+alias vim=nn
 alias nvi="neovide"
 alias v="vim"
 alias ra="ranger"
+
+alias nn="~/.local/neovim/bin/nvim"
 
 # lsd
 alias ls="lsd"
