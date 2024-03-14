@@ -26,6 +26,13 @@ return {
             -- change the comment string here
             config = {
                 cpp = "// %s",
+                glsl = "// %s",
+                vert = "// %s",
+                tesc = "// %s",
+                tese = "// %s",
+                frag = "// %s",
+                geom = "// %s",
+                comp = "// %s",
                 wgsl = "// %s",
             },
         },

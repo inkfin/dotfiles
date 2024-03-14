@@ -13,6 +13,16 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { pattern = {"*.geom"},
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { pattern = {"*.comp"}, callback = function() vim.bo.filetype = "comp" end })
 --stylua: ignore end
 
+local glsl_filetypes = {
+    "glsl",
+    "vert",
+    "tesc",
+    "tese",
+    "frag",
+    "geom",
+    "comp",
+}
+
 local glsl_config = {
     "neovim/nvim-lspconfig",
     ---@class PluginLspOpts
@@ -23,20 +33,14 @@ local glsl_config = {
         servers = {
             glsl_analyzer = {
                 cmd = { "glsl_analyzer" },
-                filetypes = {
-                    "glsl",
-                    "vert",
-                    "tesc",
-                    "tese",
-                    "frag",
-                    "geom",
-                    "comp",
-                },
+                filetypes = glsl_filetypes,
                 single_file_support = true,
             },
         },
     },
 }
+
+vim.treesitter.language.register("glsl", glsl_filetypes)
 
 -- configure filetypes
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {

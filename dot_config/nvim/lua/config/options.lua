@@ -45,6 +45,9 @@ vim.g.tex_flavor = "latex"
 -- Enable LazyVim auto format
 vim.g.autoformat = true
 
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+
 -- LazyVim root dir detection
 -- Each entry can be:
 -- * the name of a detector function like `lsp` or `cwd`
@@ -198,19 +201,14 @@ if vim.g.neovide then
     vim.o.linespace = 0 -- Controls spacing between lines, may also be negative.
     vim.o.neovide_scale_factor = 1.0
 
-    -- Background Color (Currently macOS only)
+    -- Window Blur (Currently macOS only)
     if vim.fn.has("mac") == 1 then
-        local alpha = function()
-            return string.format("%x", math.floor((255 * vim.g.transparency) or 0.8))
-        end
-        -- g:neovide_transparency should be 0 if you want to unify transparency of content and title bar.
-        vim.g.neovide_transparency = 0.0
-        vim.g.transparency = 0.8
-        vim.g.neovide_background_color = "#0f1117" .. alpha()
+        vim.g.neovide_transparency = 0.2
+        vim.g.neovide_window_blurred = true
     else
         vim.g.neovide_transparency = 0.8
     end
-    vim.g.neovide_theme = "auto"
+    vim.g.neovide_theme = "dark"
 
     -- Windows configuration
     if vim.fn.has("win32") == 1 then
@@ -220,6 +218,13 @@ if vim.g.neovide then
         -- vim.g.neovide_padding_right = 200
         -- vim.g.neovide_padding_left = 200
     end
+
+    -- Floating shadow
+    -- since 0.12.0
+    vim.g.neovide_floating_shadow = true
+    vim.g.neovide_floating_z_height = 10
+    vim.g.neovide_light_angle_degrees = 45
+    vim.g.neovide_light_radius = 5
 
     -- Floating Blur Amount
     vim.g.neovide_floating_blur_amount_x = 2.0

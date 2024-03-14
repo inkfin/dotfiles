@@ -22,9 +22,9 @@ return {
                 -- defaults to false.
                 annotate = true,
             },
-        },
-        mappings = {
-            annotate = "ma",
+            mappings = {
+                annotate = "ma",
+            },
         },
         -- stylua: ignore
         keys = {

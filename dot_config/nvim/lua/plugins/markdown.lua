@@ -42,7 +42,7 @@ return {
         "lukas-reineke/headlines.nvim",
         opts = function()
             local opts = {}
-            for _, ft in ipairs({ "markdown", "norg", "rmd", "org" }) do
+            for _, ft in ipairs({ "markdown", "quarto", "norg", "rmd", "org" }) do
                 opts[ft] = {
                     headline_highlights = {},
                     fat_headline_lower_string = "▀",
@@ -55,7 +55,7 @@ return {
             end
             return opts
         end,
-        ft = { "markdown", "norg", "rmd", "org" },
+        ft = { "markdown", "quarto", "norg", "rmd", "org" },
         config = function(_, opts)
             -- PERF: schedule to prevent headlines slowing down opening a file
             vim.schedule(function()
