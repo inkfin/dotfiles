@@ -26,7 +26,7 @@ function gst { git status }
 
 Set-Alias -Name lg -Value 'lazygit'
 Set-Alias -Name ra -Value 'lf'
-Set-Alias -Name v -Value 'nvim'
+Set-Alias -Name v -Value 'nn'
 Set-Alias -Name vim -Value 'nvim'
 # Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
 function nvi { param($file) Start-Process -NoNewWindow neovide $file }
@@ -35,6 +35,15 @@ function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }
 function vs { param($file) start "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe" $file }
 
+function nn {
+    param($file)
+    $nvimPath = "C:\Users\11096\.local\neovim\nvim-win64\bin\nvim.exe"
+    if ($null -ne $file) {
+        & $nvimPath $file
+    } else {
+        & $nvimPath
+    }
+}
 function newquake { wt -w _quake --title quake musicfox `; sp -V -s .8 -d D:\dev\Code --title quake }
 
 # oh-my-posh
