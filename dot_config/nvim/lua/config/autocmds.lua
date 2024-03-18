@@ -69,3 +69,11 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
         vim.wo.conceallevel = 0
     end,
 })
+
+-- Change LspInlayHint color
+vim.api.nvim_create_autocmd("ColorScheme", {
+    pattern = "*",
+    callback = function()
+        vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#87744d", bg = "NONE" })
+    end,
+})
