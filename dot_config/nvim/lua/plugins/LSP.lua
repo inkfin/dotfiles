@@ -31,7 +31,7 @@ return {
             keys[#keys + 1] = { "<leader>cl", false } -- disable default LspInfo
             keys[#keys + 1] = { "<leader>uL", "<Cmd>LspInfo<CR>", desc = "Lsp Info", mode = { "n" } }
             -- map <leader>cl
-            keys[#keys + 1] = { "<leader>cc", false } -- disable default codelens
+            keys[#keys + 1] = { "<leader>cc", false, mode = { "n", "v" } } -- disable default codelens
             keys[#keys + 1] = { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } }
         end,
     },
