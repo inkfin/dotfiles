@@ -44,7 +44,8 @@ function nn {
         & $nvimPath
     }
 }
-function newquake { wt -w _quake --title quake musicfox `; sp -V -s .8 -d D:\dev\Code --title quake }
+# function newquake { wt -w _quake --title quake musicfox `; sp -V -s .8 -d D:\dev\Code --title quake }
+function newquake { wt -w _quake --title quake wsl -d Ubuntu -- tmux attach-session -t popup }
 
 # oh-my-posh
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression
@@ -85,8 +86,10 @@ $env:PATH = "$env:CUDA_PATH\libnvvp;$env:PATH"
 ## toolset
 # $env:CC = "$HOME\scoop\apps\mingw\current\bin\gcc.EXE"
 # $env:CXX = "$HOME\scoop\apps\mingw\current\bin\g++.EXE"
-$env:CC = "C:\Users\11096\scoop\apps\llvm\current\bin\clang.EXE"
-$env:CXX = "C:\Users\11096\scoop\apps\llvm\current\bin\clang++.EXE"
+# $env:CC = "C:\Users\11096\scoop\apps\llvm\current\bin\clang.EXE"
+# $env:CXX = "C:\Users\11096\scoop\apps\llvm\current\bin\clang++.EXE"
+$env:CC = "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\bin\Hostx64\x64\cl.exe"
+$env:CXX = $env:CC
 
 # vcpkg
 $env:VCPKG_ROOT = "D:\dev\vcpkg"

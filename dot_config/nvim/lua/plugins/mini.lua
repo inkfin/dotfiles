@@ -10,13 +10,13 @@ return {
                 -- Toggle comment (like `gcip` - comment inner paragraph) for both
                 -- Normal and Visual modes
                 comment = "<leader>cc",
-                comment_visual = "<leader>cc",
+                comment_visual = "<leader>ci",
 
                 -- Toggle comment on current line
                 comment_line = "<leader>ci",
 
                 -- Define 'comment' textobject (like `dgc` - delete whole comment block)
-                textobject = "<leader>cc",
+                textobject = "gc",
             },
         },
     },
