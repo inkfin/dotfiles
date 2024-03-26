@@ -10,7 +10,7 @@
 
 [".local/neovim"]
     type = "archive"
-    url = "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz"
+    url = "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-arm64.tar.gz"
     refreshPeriod = "72h"
     stripComponents = 1
 
