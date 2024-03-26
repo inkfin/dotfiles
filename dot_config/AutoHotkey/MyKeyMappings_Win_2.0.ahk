@@ -3,7 +3,7 @@
 ;==============CapsLock 改键==============
 ; 短按 CapsLock 为 Esc, 长按 CapsLock 为 Ctrl
 
-^Esc::CapsLock
+^Capslock::CapsLock
 
 *CapsLock:: {
     if A_PriorKey = "LControl" {
