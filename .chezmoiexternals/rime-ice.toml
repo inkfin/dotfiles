@@ -1,0 +1,5 @@
+[".config/Rime"]
+    type = "archive"
+    url = "https://github.com/iDvel/rime-ice/archive/refs/heads/main.zip"
+    refreshPeriod = "672h"
+    stripComponents = 1

@@ -1,0 +1,16 @@
+patch:
+  # 方案列表
+  schema_list:
+    # 可以直接删除或注释不需要的方案，对应的 *.schema.yaml 方案文件也可以直接删除
+    - schema: rime_ice               # 雾凇拼音（全拼）
+    - schema: double_pinyin_flypy    # 小鹤双拼
+
+  # 菜单
+  menu:
+    page_size: 7  # 候选词个数
+    alternative_select_labels: [ ①, ②, ③, ④, ⑤, ⑥, ⑦, ⑧, ⑨, ⑩ ]  # 修改候选项标签
+
+  recognizer/patterns/url_2: "^[A-Za-z]+[.].*"   # 句号不上屏，支持 google.com abc.txt 等网址或文件名，使用句号翻页时需要注释掉
+
+  key_binder/bindings/+:
+    - { when: always, toggle: ascii_mode, accept: Control+space } # 切换中英
