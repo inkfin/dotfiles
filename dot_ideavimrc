@@ -58,6 +58,7 @@ sethandler <C-H> a:vim
 sethandler <C-J> a:vim
 sethandler <C-K> a:vim
 sethandler <C-L> a:vim
+sethandler <A-J> a:vim
 
 " Custom mapping
 map J 5j
@@ -70,9 +71,12 @@ nnoremap H gT
 nnoremap L gt
 nnoremap [b gT
 nnoremap ]b gt
-nnoremap tmh :tabm -<CR>
-nnoremap tml :tabm +<CR>
+nnoremap <Leader>tmh :tabm -<CR>
+nnoremap <Leader>tml :tabm +<CR>
 nnoremap <Leader>bd :action CloseContent<CR>
+
+nnoremap <A-j> :action MoveLineDown<CR>
+nnoremap <A-k> :action MoveLineUp<CR>
 
 map Q :action CloseContent<CR>
 map <C-S> :w<cr>
@@ -96,7 +100,6 @@ nnoremap <space><cr> :nohlsearch<cr>
 nnoremap <Leader>h :<C-u>action QuickJavaDoc<CR>
 
 " go to ...
-nnoremap ga :<C-u>action GotoAction<CR>
 nnoremap gb :<C-u>action JumpToLastChange<CR>
 nnoremap gc :<C-u>action GotoClass<CR>
 nnoremap gd :<C-u>action GotoDeclaration<CR>
@@ -115,6 +118,7 @@ nnoremap <Leader>/ :<C-u>action FindInPath<CR>
 nnoremap <Leader>ff :<C-u>action GotoFile<CR>
 nnoremap <Leader>sf :<C-u>action FindInPath<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
+nnoremap <Leader>sa :<C-u>action GotoAction<CR>
 nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
 nnoremap <Leader>sm :<C-u>action ShowBookmarks<CR>
 " replace
@@ -146,6 +150,7 @@ noremap m[ :<C-u>action GotoPreviousBookmark<CR>
 " code editing
 nnoremap \r :action ReformatCode<CR>
 nnoremap \i :action OptimizeImports<CR>
+nnoremap <leader>ca :action ShowIntentionActions<CR>
 
 " commentary
 map <Leader>ci :<C-u>action CommentByLineComment<CR>
