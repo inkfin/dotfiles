@@ -3,4 +3,4 @@
     url = "https://github.com/iDvel/rime-ice/archive/refs/heads/main.zip"
     refreshPeriod = "672h"
     stripComponents = 1
-    exclude = ["custom_phrase.txt"]
+    exclude = ["*/custom_phrase.txt"]
