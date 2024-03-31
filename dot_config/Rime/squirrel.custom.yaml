@@ -1,2 +1,2 @@
 patch:
-  style/candidate_list_layout: linear # 候选项排列方向 stacked(默认) | linear
+  style/candidate_list_layout: stacked # 候选项排列方向 stacked(默认) | linear

@@ -99,9 +99,10 @@ alias gp="git pull"
 alias gP="git push"
 alias lg="lazygit"
 alias tnew="tnux new -s "
-alias vim=nn
+alias nvim="nn"
+alias vim="nvim"
 alias nvi="neovide"
-alias v="vim"
+alias v="nvim"
 alias ra="ranger"
 
 alias nn="~/.local/neovim/bin/nvim"
@@ -118,7 +119,10 @@ alias ee="exit"
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_ubuntu"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
+alias rimerc="nvim ~/.local/share/chezmoi/dot_config/Rime/squirrel.custom.yaml"
+alias custom_phrase="nvim ~/.local/share/chezmoi/dot_config/Rime/custom_phrase.txt"
 alias sourcezsh="source ~/.zshrc"
+
 alias mok="~/modikeys.sh"
 
 alias cz="chezmoi"

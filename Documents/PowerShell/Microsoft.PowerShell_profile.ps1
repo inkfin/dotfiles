@@ -33,10 +33,12 @@ function nvi { param($file) Start-Process -NoNewWindow neovide $file }
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }
+function rimerc { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custom.yaml" }
+function custom_phrase { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom_phrase.txt" }
 
 function nn {
     param($file)
-    $nvimPath = "C:\Users\11096\.local\neovim\nvim-win64\bin\nvim.exe"
+    $nvimPath = "$HOME\.local\neovim\nvim-win64\bin\nvim.exe"
     if ($null -ne $file) {
         & $nvimPath $file
     } else {

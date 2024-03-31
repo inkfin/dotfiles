@@ -21,6 +21,7 @@ patch:
       vim_mode: true # vim 模式, Esc <C-c> <C-[> 切换到 ascii 状态
 
   style/horizontal: false # 候选项横排：true；false
-  style/vertical_auto_reverse: true # 文本竖排模式下，候选窗口位于光标上方时倒序排列：true；false
-
+  style/font_point: 12 # 全局字体字号
+  style/label_font_point: 12 # 标签字体字号，不设定 fallback 到 font_point
+  style/comment_font_point: 11 # 注释字体字号，不设定 fallback 到 font_point
 
