@@ -184,7 +184,7 @@ elseif vim.fn.has("win32") == 1 and vim.fn.has("wsl") == 0 then
     --- Disable profile to accelerate powershell startup;
     --- I need my custom function to focus different windows, so execute that ps1 file
     vim.go.shellcmdflag = "-NoLogo -NonInteractive -NoProfile -ExecutionPolicy RemoteSigned "
-        .. "-Command . $HOME/Documents/WindowsPowerShell/Utilities.ps1; "
+        .. "-Command . $HOME/Documents/PowerShell/Utilities.ps1; "
     vim.go.shellquote = "" -- !<quote>command<quote>
     vim.go.shellxquote = ""
 end

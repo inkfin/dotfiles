@@ -1,5 +1,38 @@
+# PowerShell_profile
+# pwsh.exe
+# Subscripts include: PSReadLine_config.ps1, Utilities.ps1
+
+function Init-EnvironmentVariable($Name, $Val) {
+    $OldValue = [Environment]::GetEnvironmentVariable($Name, "User")
+    if ($null -eq $OldValue) {
+        Set-Item -Path env:$Name -Value $Val
+        [Environment]::SetEnvironmentVariable($Name, $Val, "User")
+        Write-Host "Environment variable '$Name' set to '$Val'."
+    }
+}
+
+function Set-EnvironmentVariable($Name, $Val) {
+    $OldValue = [Environment]::GetEnvironmentVariable($Name, "User")
+    if ($OldValue -ne $Val) {
+        Set-Item -Path env:$Name -Value $Val
+        [Environment]::SetEnvironmentVariable($Name, $Val, "User")
+        Write-Host "Environment variable '$Name' set to '$Val'."
+    }
+}
+
+function Append-UserPath($Path) {
+    $ENVPATH = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($ENVPATH -notlike "*$Path*") {
+        $ENVPATH = $ENVPATH + $PATH + [IO.Path]::PathSeparator
+        # Write-Host "$ENVPATH"
+        $env:PATH = $ENVPATH
+        [Environment]::SetEnvironmentVariable( "Path", $ENVPATH, "User" )
+        Write-Host "'$Path' is appended to User-Path."
+    }
+}
+
 # ENVs
-$env:OPENER = "nvim"
+$env:OPENER = "vim"
 $env:EDITOR = "code"
 
 # Aliases
@@ -26,6 +59,7 @@ function gst { git status }
 
 Set-Alias -Name lg -Value 'lazygit'
 Set-Alias -Name ra -Value 'lf'
+Set-Alias -Name nvim -Value 'nn'
 Set-Alias -Name v -Value 'nn'
 Set-Alias -Name vim -Value 'nvim'
 # Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
@@ -37,13 +71,7 @@ function rimerc { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custo
 function custom_phrase { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom_phrase.txt" }
 
 function nn {
-    param($file)
-    $nvimPath = "$HOME\.local\neovim\nvim-win64\bin\nvim.exe"
-    if ($null -ne $file) {
-        & $nvimPath $file
-    } else {
-        & $nvimPath
-    }
+    & "$HOME\.local\neovim\bin\nvim.exe" $args
 }
 # function newquake { wt -w _quake --title quake musicfox `; sp -V -s .8 -d D:\dev\Code --title quake }
 function newquake { wt -w _quake --title quake wsl -d Ubuntu -- tmux attach-session -t popup }
@@ -67,34 +95,46 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 Enable-TransientPrompt
 
 # imports
-Import-Module 'D:\dev\vcpkg\scripts\posh-vcpkg'
 Import-Module PSFzf
 
 # local bin
-$env:PATH = "$HOME\.local\bin;$env:PATH"
-$env:PATH = "C:\Program Files\TerminalTools;$env:PATH"
+Append-UserPath("$HOME\.local\bin")
 
 # CUDA environment
-$env:CUDA_PATH_V12_1 = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
-$env:CUDA_PATH_V11_2 = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2"
-$env:CUDA_PATH = "$env:CUDA_PATH_V12_1"
-
-$env:PATH = "$env:CUDA_PATH\bin;$env:PATH"
-$env:PATH = "$env:CUDA_PATH\libnvvp;$env:PATH"
+Set-EnvironmentVariable CUDA_PATH_V12_1 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
+Set-EnvironmentVariable CUDA_PATH_V11_2 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2"
+Set-EnvironmentVariable CUDA_PATH "$env:CUDA_PATH_V12_1"
+Append-UserPath "$env:CUDA_PATH\bin"
+Append-UserPath "$env:CUDA_PATH\libnvvp"
 
 # C++ environment
 #
 ## toolset
-# $env:CC = "$HOME\scoop\apps\mingw\current\bin\gcc.EXE"
-# $env:CXX = "$HOME\scoop\apps\mingw\current\bin\g++.EXE"
-# $env:CC = "C:\Users\11096\scoop\apps\llvm\current\bin\clang.EXE"
-# $env:CXX = "C:\Users\11096\scoop\apps\llvm\current\bin\clang++.EXE"
-$env:CC = "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\bin\Hostx64\x64\cl.exe"
-$env:CXX = $env:CC
+## Only set for current session
+$CC_GCC = "$HOME\scoop\apps\mingw\current\bin\gcc.EXE"
+$CXX_GCC = "$HOME\scoop\apps\mingw\current\bin\g++.EXE"
+$CC_CLANG = "$HOME\scoop\apps\llvm\current\bin\clang.EXE"
+$CXX_CLANG = "$HOME\scoop\apps\llvm\current\bin\clang++.EXE"
+function Use-CC($cc) {
+    if ($cc -match "clang") {
+        $env:CC = $CC_CLANG
+        $env:CXX = $CXX_CLANG
+    }
+    elseif ($cc -match "gcc") {
+        $env:CC = $CC_GCC
+        $env:CXX = $CXX_GCC
+    } else #if ($cc -match "msvc")
+    {
+        $env:CC = ""
+        $env:CXX = ""
+    }
+}
 
 # vcpkg
-$env:VCPKG_ROOT = "D:\dev\vcpkg"
-$env:PATH = "$env:VCPKG_ROOT;$env:PATH"
-$env:PATH = "$HOME\.local\bin;$env:PATH"
+Init-EnvironmentVariable VCPKG_ROOT "$HOME\dev\vcpkg"
+Append-UserPath $env:VCPKG_ROOT
+Append-UserPath $HOME\.local\bin
 $env:LLVMInstallDir = "$HOME\scoop\apps\llvm\current"
+Import-Module (Join-Path $env:VCPKG_ROOT "\scripts\posh-vcpkg")
+
 Import-Module scoop-completion
