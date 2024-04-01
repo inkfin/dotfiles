@@ -199,7 +199,7 @@ vim.cmd([[
 if vim.g.neovide then
     vim.o.guifont = "FiraCode Nerd Font Mono:h14"
     vim.o.linespace = 0 -- Controls spacing between lines, may also be negative.
-    vim.o.neovide_scale_factor = 1.0
+    vim.g.neovide_scale_factor = 1.0
 
     -- Window Blur (Currently macOS only)
     if vim.fn.has("mac") == 1 then

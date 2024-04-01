@@ -99,6 +99,7 @@ Import-Module PSFzf
 
 # local bin
 Append-UserPath("$HOME\.local\bin")
+Append-UserPath("$HOME\.local\neovim\bin")
 
 # CUDA environment
 Set-EnvironmentVariable CUDA_PATH_V12_1 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
