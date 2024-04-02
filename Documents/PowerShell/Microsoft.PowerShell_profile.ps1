@@ -102,9 +102,9 @@ Append-UserPath("$HOME\.local\bin")
 Append-UserPath("$HOME\.local\neovim\bin")
 
 # CUDA environment
-Set-EnvironmentVariable CUDA_PATH_V12_1 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
-Set-EnvironmentVariable CUDA_PATH_V11_2 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2"
-Set-EnvironmentVariable CUDA_PATH "$env:CUDA_PATH_V12_1"
+Init-EnvironmentVariable CUDA_PATH_V12_1 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
+Init-EnvironmentVariable CUDA_PATH_V11_2 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2"
+Init-EnvironmentVariable CUDA_PATH "$env:CUDA_PATH_V12_1"
 Append-UserPath "$env:CUDA_PATH\bin"
 Append-UserPath "$env:CUDA_PATH\libnvvp"
 
