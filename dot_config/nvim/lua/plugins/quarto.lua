@@ -10,6 +10,7 @@ return {
 
     {
         "quarto-dev/quarto-nvim",
+        ft = "quarto",
         dependencies = {
             "jmbuhr/otter.nvim",
             opts = {
@@ -35,7 +36,6 @@ return {
                 references = "gr",
             },
         },
-        ft = "quarto",
         -- stylua: ignore
         keys = {
             { "<localleader>qa", "<cmd>QuartoActivate<cr>", desc = "quarto activate" },
@@ -75,7 +75,8 @@ return {
     -- like ipython, R, bash
     {
         "jpalardy/vim-slime",
-        init = function()
+        ft = "quarto",
+        config = function()
             vim.b["quarto_is_" .. "python" .. "_chunk"] = false
             Quarto_is_in_python_chunk = function()
                 require("otter.tools.functions").is_otter_language_context("python")
@@ -176,6 +177,7 @@ return {
     -- :PasteImg,
     {
         "dfendr/clipboard-image.nvim",
+        ft = { "quarto", "markdown" },
         keys = {
             { "<leader>pi", ":PasteImg<cr>", desc = "image paste" },
         },
@@ -195,6 +197,7 @@ return {
     -- preview equations
     {
         "jbyuki/nabla.nvim",
+        ft = { "quarto", "tex", "markdown" },
         keys = {
             { "<leader>pe", ':lua require"nabla".toggle_virt()<cr>', desc = "toggle equations" },
             { "<leader>ph", ':lua require"nabla".popup()<cr>', desc = "hover equation" },

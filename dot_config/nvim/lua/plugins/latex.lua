@@ -22,11 +22,12 @@ return {
     {
         "lervag/vimtex",
         lazy = false, -- lazy-loading will disable inverse search
+        ft = "tex",
         -- stylua: ignore
         keys = {
             { "K", mode = { "n" }, "5k", silent = true },
 
-            { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-toggle)", desc = "Toggle TOC" },
+            { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-open)", desc = "Open TOC" },
             { "<localleader>e", mode = { "n" }, "<Plug>(vimtex-errors)", desc = "Show errors" },
             { "<localleader>c", mode = { "n" }, "<Cmd>write<CR><Cmd>VimtexCompile<CR>", desc = "Compile" },
             { "<localleader>r", mode = { "n" }, "<Plug>(vimtex-reload)", desc = "Reload" },
@@ -37,7 +38,7 @@ return {
             -- o: +open
             { "<localleader>oi", mode = { "n" }, "<Plug>(vimtex-info)", desc = "info" },
             { "<localleader>oI", mode = { "n" }, "<Plug>(vimtex-info-full)", desc = "info-full" },
-            { "<localleader>ot", mode = { "n" }, "<Plug>(vimtex-toc-open)", desc = "toc" },
+            { "<localleader>ot", mode = { "n" }, "<Plug>(vimtex-toc-toggle)", desc = "toggle-toc" },
             { "<localleader>os", mode = { "n" }, "<Plug>(vimtex-status)", desc = "status" },
             { "<localleader>oS", mode = { "n" }, "<Plug>(vimtex-status-full)", desc = "status-full" },
 
