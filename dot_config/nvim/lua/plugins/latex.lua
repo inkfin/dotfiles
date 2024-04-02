@@ -77,11 +77,15 @@ return {
                 vim.g.tex_flavor = "latex"
                 vim.g.vimtex_compiler_progname = "nvr" -- use pip install neovim-remote
                 if vim.fn.has("mac") == 1 then
-                    vim.g.vimtex_view_method = "skim"
-                    vim.g.vimtex_view_general_viewer = "open -a /Applications/Skim.app "
-                    vim.g.vimtex_view_skim_sync = 1
-                    vim.g.vimtex_view_skim_activate = 1
-                    vim.g.vimtex_view_skim_reading_bar = 1
+                    -- Currently Skim has bug that prevents forward searching
+                    -- vim.g.vimtex_view_method = "skim"
+                    -- vim.g.vimtex_view_skim_sync = 1
+                    -- vim.g.vimtex_view_skim_activate = 0
+                    -- vim.g.vimtex_view_skim_no_select = 0 -- Set this option to 1 to prevent Skim from selecting the text after command |:VimtexView| or compiler callback.
+                    -- vim.g.vimtex_view_skim_reading_bar = 1
+
+                    vim.g.vimtex_view_method = "sioyek"
+                    vim.g.vimtex_view_sioyek_options = "--nofocus --reuse-window" -- --nofocus not working?
                 elseif vim.fn.has("win32") == 1 then
                     vim.g.vimtex_view_general_viewer = "SumatraPDF"
                     vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
@@ -94,47 +98,43 @@ return {
                 vim.g.vimtex_quickfix_mode = 0 -- quickfix auto pop up
                 vim.g.vimtex_quickfix_ignore_filters = {
                     "does not contain requested Script",
+                    "Overfull",
+                    "Underfull",
                 }
 
                 -- Disable imaps
                 vim.g.vimtex_imaps_enabled = 0
                 -- vim.g.vimtex_view_automatic = 0
 
-                if vim.fn.has("mac") == 1 then
-                    vim.cmd([[
-                        augroup vimtex_event_focus
-                            au!
-                            au User VimtexEventViewReverse call g:TexFocusVim()
-                            au User VimtexEventView call g:TexFocusVim()
-                        augroup END
-
-                        function! g:TexFocusVim() abort
-                            if exists("g:neovide")
-                                silent execute "!open -a Neovide"
-                            else
-                                silent execute "!open -a iTerm"
-                            endif
-                            redraw!
-                        endfunction
-                    ]])
-                elseif vim.fn.has("win32") == 1 then
-                    vim.cmd([[
-                        augroup vimtex_event_focus
-                            au!
-                            au User VimtexEventViewReverse call g:TexFocusVim()
-                            au User VimtexEventView call g:TexFocusVim()
-                        augroup END
-
-                        function! g:TexFocusVim() abort
-                            if exists("g:neovide")
-                                silent execute "!Show-Window Neovide"
-                            else
-                                silent execute "!Show-Window WindowsTerminal"
-                            endif
-                            redraw!
-                        endfunction
-                    ]])
+                -- Auto refocus neovim (not working for sioyek)
+                local function tex_focus_vim()
+                    if vim.fn.has("mac") == 1 then
+                        if vim.g.neovide then
+                            vim.cmd("silent !open -a Neovide")
+                        else
+                            vim.cmd("silent !open -a iTerm")
+                        end
+                    elseif vim.fn.has("win32") == 1 then
+                        if vim.g.neovide then
+                            vim.cmd("silent !Show-Window Neovide")
+                        else
+                            vim.cmd("silent !Show-Window WindowsTerminal")
+                        end
+                    end
+                    vim.cmd("redraw!")
                 end
+
+                vim.api.nvim_create_augroup("vimtex_event_focus", { clear = true })
+                vim.api.nvim_create_autocmd("User", {
+                    pattern = "VimtexEventViewReverse",
+                    group = "vimtex_event_focus",
+                    callback = tex_focus_vim,
+                })
+                vim.api.nvim_create_autocmd("User", {
+                    pattern = "VimtexEventView",
+                    group = "vimtex_event_focus",
+                    callback = tex_focus_vim,
+                })
             end,
         },
         {

@@ -1,0 +1,13 @@
+# https://github.com/ahrm/sioyek/blob/main/pdf_viewer/prefs.config
+startup_commands toggle_synctex
+
+{{ if eq .chezmoi.os "darwin" }}
+inverse_search_command nvim --headless -c "VimtexInverseSearch %2 '%1'"
+{{ else if eq .chezmoi.os "windows" }}
+
+{{ else if eq .chezmoi.os "linux" }}
+
+{{ end }}
+
+should_launch_new_instance 0
+should_launch_new_window 0

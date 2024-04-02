@@ -114,7 +114,7 @@ alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
 alias rimerc="nvim ~/.local/share/chezmoi/dot_config/Rime/squirrel.custom.yaml"
 alias custom_phrase="nvim ~/.local/share/chezmoi/dot_config/Rime/custom_phrase.txt"
 alias sourcezsh="source ~/.zshrc"
-alias nvim="nn"
+# alias nvim="nn"
 alias vim="nvim"
 alias v="nn"
 alias nvi="neovide"
@@ -334,6 +334,18 @@ export PATH="$HOME/dev/depot_tools:$PATH"
 # MACOS SecureInput
 alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 
+# Miktex
+export PATH="$HOME/bin:$PATH"
+
+# Remove Path that requires Permissions
+remove_path_from_path() {
+    PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "$1" | paste -sd ':' -)
+}
+
+# Call the function with the path you want to remove
+remove_path_from_path "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin"
+remove_path_from_path "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin"
+remove_path_from_path "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
 
 # Applications
 alias typora='open -a Typora.app'

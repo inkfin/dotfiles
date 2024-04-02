@@ -203,7 +203,7 @@ if vim.g.neovide then
 
     -- Window Blur (Currently macOS only)
     if vim.fn.has("mac") == 1 then
-        vim.g.neovide_transparency = 0.2
+        vim.g.neovide_transparency = 0.6
         vim.g.neovide_window_blurred = true
     else
         vim.g.neovide_transparency = 0.8
