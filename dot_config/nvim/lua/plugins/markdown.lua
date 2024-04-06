@@ -36,6 +36,7 @@ return {
             }
         end,
     },
+
     {
         "lukas-reineke/headlines.nvim",
         opts = function()
@@ -62,6 +63,47 @@ return {
             end)
         end,
     },
+
+    -- paste an image to markdown from the clipboard
+    -- :PasteImg,
+    {
+        "dfendr/clipboard-image.nvim",
+        ft = { "quarto", "markdown" },
+        keys = {
+            { "<leader>pi", "<cmd>PasteImg<cr>", silent = true, desc = "image paste" },
+        },
+        cmd = {
+            "PasteImg",
+        },
+        opts = {
+            quarto = {
+                img_dir = { "%:p:h", "assets" },
+                affix = "![](%s)",
+            },
+            markdown = {
+                img_dir = { "%:p:h", "assets" },
+                img_dir_txt = "assets",
+                affix = "![](%s)",
+                -- Insert alt-text with img_handler (https://github.com/ekickx/clipboard-image.nvim/discussions/15#discussioncomment-2170666)
+                img_handler = function(img)
+                    vim.cmd("normal! f[") -- go to [
+                    vim.cmd("normal! a" .. img.name) -- append text with image name
+                end,
+            },
+        },
+    },
+
+    -- preview equations
+    {
+        "jbyuki/nabla.nvim",
+        ft = { "quarto", "tex", "markdown" },
+        -- stylua: ignore
+        keys = {
+            { "<leader>pe", function() require("nabla").toggle_virt() end, desc = "toggle equations" },
+            { "<leader>ph", function() require"nabla".popup() end, desc = "hover equation" },
+        },
+    },
+
     {
         "nvim-treesitter/nvim-treesitter",
         opts = function(_, opts)

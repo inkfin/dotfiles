@@ -61,6 +61,7 @@ return {
             { "K", false },
         },
     },
+
     {
         "hrsh7th/nvim-cmp",
         dependencies = { "jmbuhr/otter.nvim" },
@@ -170,37 +171,6 @@ return {
                     root_dir = require("lspconfig.util").root_pattern(".git", ".marksman.toml", "_quarto.yml"),
                 },
             },
-        },
-    },
-
-    -- paste an image to markdown from the clipboard
-    -- :PasteImg,
-    {
-        "dfendr/clipboard-image.nvim",
-        ft = { "quarto", "markdown" },
-        keys = {
-            { "<leader>pi", ":PasteImg<cr>", desc = "image paste" },
-        },
-        cmd = {
-            "PasteImg",
-        },
-        config = function()
-            require("clipboard-image").setup({
-                quarto = {
-                    img_dir = "img",
-                    affix = "![](%s)",
-                },
-            })
-        end,
-    },
-
-    -- preview equations
-    {
-        "jbyuki/nabla.nvim",
-        ft = { "quarto", "tex", "markdown" },
-        keys = {
-            { "<leader>pe", ':lua require"nabla".toggle_virt()<cr>', desc = "toggle equations" },
-            { "<leader>ph", ':lua require"nabla".popup()<cr>', desc = "hover equation" },
         },
     },
 
