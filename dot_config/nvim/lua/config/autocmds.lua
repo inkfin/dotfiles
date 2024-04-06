@@ -17,7 +17,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- Set tab for different filetype
 -- stylua: ignore start
 vim.api.nvim_create_autocmd("FileType", { pattern = {
-    "markdown",
     "quarto",
     "javascript",
     "typescript",
@@ -25,6 +24,7 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
     "css",
     }, callback = function() vim.g.settab(2) end })
 vim.api.nvim_create_autocmd("FileType", { pattern = {
+    "markdown",
     "json",
     "cpp",
     "c",

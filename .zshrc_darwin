@@ -121,7 +121,7 @@ alias nvi="neovide"
 alias cz="chezmoi"
 alias cze="chezmoi edit "
 alias lg="lazygit"
-alias ra="lf"
+alias ra="ranger"
 
 alias nn="~/.local/neovim/bin/nvim"
 
