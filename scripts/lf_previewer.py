@@ -180,9 +180,18 @@ def clean_text(text):
 
 
 def call_chafa(file_path):
+    command = ["chafa", "-c", "full", "--polite", "on"]
+    width = params[2] if 2 in params else None
+    height = params[3] if 3 in params else None
+
+    if width is not None and height is not None:
+        if width != "" and height != "":
+            command.append("-s")
+            command.append(f"{width}x{height}")
+
     try:
-        subprocess.run(["chafa", file_path])
-        print()
+        command.append(file_path)
+        subprocess.run(command)
     except Exception as e:
         print(f"Error calling chafa: {e}")
 
@@ -272,6 +281,12 @@ def format_file_size(size_in_bytes):
 
 if __name__ == "__main__":
     file_path = sys.argv[1]
+
+    params = {}
+    if len(sys.argv) > 1:
+        for key, val in enumerate(sys.argv):
+            params[key] = val
+
     mimetype = get_mimetype(file_path)
 
     if mimetype is None:

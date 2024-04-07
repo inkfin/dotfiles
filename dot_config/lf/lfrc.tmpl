@@ -7,6 +7,8 @@ set icons true
 set preview true
 set scrolloff 5
 
+set sixel true
+
 map J push 5j
 map K push 5k
 
@@ -53,9 +55,6 @@ map A :push %mkdir<space>
 # Use powershell on windows, won't support cmd
 # interpreter for shell commands
 set shell pwsh
-
-# use sixel in windows terminal
-set sixel true
 
 # change the default open command to work in powerShell
 cmd open &$Env:OPENER $Env:f
