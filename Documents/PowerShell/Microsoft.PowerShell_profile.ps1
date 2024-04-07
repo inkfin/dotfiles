@@ -32,8 +32,8 @@ function Append-UserPath($Path) {
 }
 
 # ENVs
-$env:OPENER = "vim"
-$env:EDITOR = "code"
+$env:OPENER = "Invoke-Item"
+$env:EDITOR = "nvim"
 
 # Aliases
 # function list-files { param($file) Get-ChildItem $file | Format-Table }
