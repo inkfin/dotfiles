@@ -22,11 +22,22 @@ def print_divider():
 
 
 def check_command_exists(command):
-    try:
-        subprocess.run([command], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return True
-    except FileNotFoundError:
-        return False
+    if os_name == "windows":
+        try:
+            subprocess.run(
+                [command], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            return True
+        except FileNotFoundError:
+            return False
+    else:
+        try:
+            result = subprocess.run(
+                ["which", command], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            return result.returncode == 0
+        except FileNotFoundError:
+            return False
 
 
 def reveal_zip_contents(zip_path):
@@ -211,8 +222,12 @@ def handle_image(path):
         else:
             print("Install chafa for image previews")
     elif os_name == "darwin":
+        if check_command_exists("chafa"):
+            call_chafa(path)
+        else:
+            print("Install chafa for image previews")
         # iTerm2 image preview
-        send_image_to_iterm2(path)
+        # send_image_to_iterm2(path)
     elif os_name == "linux":
         if check_command_exists("chafa"):
             call_chafa(path)
@@ -227,6 +242,14 @@ def handle_image(path):
         print(f"Size: {width}*{height}")
     except ImportError:
         print("Install Pillow for image previews")
+
+    size = pathlib.Path(path).stat().st_size
+    print_divider()
+    print("File Size: {}".format(format_file_size(size)))
+    print("Modify Time: {}".format(format_time_t(os.path.getmtime(file_path))))
+    print("Mimetype: {}".format(mimetype))
+    print_divider()
+    sys.exit()
 
 
 def format_time_t(time_t):

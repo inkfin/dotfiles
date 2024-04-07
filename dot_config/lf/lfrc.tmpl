@@ -7,6 +7,9 @@ set icons true
 set preview true
 set scrolloff 5
 
+map J push 5j
+map K push 5k
+
 # execute current file (must be executable)
 map x $$f
 map X !$f
@@ -14,8 +17,23 @@ map X !$f
 map t toggle
 map T tag-toggle
 
+map i preview
+
+map c cut
+map C clear
+
+map d # delete default cut
+map dc calcdirsize
+map dD delete $Env:f
+
+map R reload
+
+map <backspace> set hidden!
+
 # show the result of execution of previous commands
-map ` !true # close the backtick(`) to fix syntax highlighting
+map ` !true
+
+# close the backtick(`) to fix syntax highlighting
 
 # mkdir command. See wiki if you want it to select created dir
 map A :push %mkdir<space>
@@ -65,25 +83,10 @@ cmd ? $lf -doc | less
 # leave some space at the top and the bottom of the screen
 set scrolloff 10
 
-# use enter for shell commands
-# map <enter> shell
-
 # set windows previewer
 set previewer ~\\scripts\\previewer.bat
 
 # cmd preview $preview $Env:f | less -R
-
-map i preview
-
-map c cut
-map C clear
-
-map dc caldirsize
-map dD delete $Env:f
-
-map R reload
-
-map <backspace> set hidden!
 
 # map custom directories
 map gh cd ~
@@ -115,18 +118,8 @@ set shellopts '-eu'
 # commands accordingly.
 set ifs "\n"
 
-# leave some space at the top and the bottom of the screen
-set scrolloff 10
-
 # Use the `dim` attribute instead of underline for the cursor in the preview pane
 set cursorpreviewfmt "\033[7;2m"
-
-# use enter for shell commands
-map <enter> shell
-
-# execute current file (must be executable)
-map x $$f
-map X !$f
 
 # dedicated keys for file opener actions
 map o &mimeopen $f
@@ -136,12 +129,12 @@ map O $mimeopen --ask $f
 # This command is called when current file is not a directory. You may want to
 # use either file extensions and/or mime types here. Below uses an editor for
 # text files and a file opener for the rest.
-cmd open &\{\{
-    case $(file --mime-type -Lb $f) in
-        text/*) lf -remote "send $id \$$EDITOR \$fx";;
-        *) for f in $fx; do $OPENER $f > /dev/null 2> /dev/null & done;;
-    esac
-}}
+# cmd open &\{\{
+#     case $(file --mime-type -Lb $f) in
+#         text/*) lf -remote "send $id \$$EDITOR \$fx";;
+#         *) for f in $fx; do $OPENER $f > /dev/null 2> /dev/null & done;;
+#     esac
+# }}
 
 set previewer ~/scripts/previewer.sh
 
@@ -208,7 +201,7 @@ cmd zip $\{\{
 map gh cd ~
 map gd cd ~/Downloads
 map gD cd ~/Documents
-map gc cd ~/Code
+map gc cd ~/dev/Code
 
 {{- else if eq .chezmoi.os "linux" }}
 
