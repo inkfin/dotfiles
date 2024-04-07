@@ -33,7 +33,7 @@ map R reload
 map <backspace> set hidden!
 
 # show the result of execution of previous commands
-map ` !true
+map ` !#true
 
 # close the backtick(`) to fix syntax highlighting
 
@@ -57,7 +57,7 @@ map A :push %mkdir<space>
 set shell pwsh
 
 # change the default open command to work in powerShell
-cmd open &$Env:OPENER $Env:f
+cmd open &Invoke-Item $Env:f
 map o open $Env:f
 
 # change the editor used in default editor keybinding
@@ -65,7 +65,7 @@ map o open $Env:f
 # mapping uses 'notepad' which launches in a separate GUI window. You may
 # instead install a terminal editor of your choice and replace the default
 # editor keybinding accordingly.
-map e $Env:EDITOR $Env:f
+map e $nvim $Env:f
 
 # change the pager used in default pager keybinding
 # The standard pager used in Windows is 'more' which is not a very capable
@@ -79,9 +79,6 @@ map S $pwsh
 # change 'doc' command to use a different pager
 cmd ? $lf -doc | less
 
-# leave some space at the top and the bottom of the screen
-set scrolloff 10
-
 # set windows previewer
 set previewer ~\\scripts\\previewer.bat
 
@@ -91,7 +88,7 @@ set previewer ~\\scripts\\previewer.bat
 map gh cd ~
 map gd cd ~/Downloads
 map gD cd ~/Documents
-map gc cd D:/dev/Code
+map gc cd C:/dev/Code
 
 cmd pwd $pwd | less -R
 
