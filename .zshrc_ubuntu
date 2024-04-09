@@ -109,9 +109,9 @@ alias nn="~/.local/neovim/bin/nvim"
 
 # lsd
 alias ls="lsd"
-alias l="ls -l"
-alias la="ls -a"
-alias lla="ls -al"
+alias l="ls"
+alias ll="ls -l"
+alias la="ls -al"
 alias lt="ls --tree"
 
 alias ee="exit"

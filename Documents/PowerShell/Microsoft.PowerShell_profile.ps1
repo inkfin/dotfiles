@@ -42,9 +42,9 @@ $env:EDITOR = "nvim"
 # function list-hidden-files { param($file) Get-ChildItem -Hidden $file | Format-Table } 
 # Set-Alias -Name la -value list-hidden-files -Option AllScope -Description 'List directory contents including hidden files'
 Set-Alias -Name ls -Value 'lsd'
-function l   { lsd -l }
-function la  { lsd -a }
-function lla { lsd -la }
+function l   { lsd }
+function ll  { lsd -l }
+function la  { lsd -la }
 function lt  { lsd --tree }
 
 function open-invoke { param($file) Invoke-Item $file }
