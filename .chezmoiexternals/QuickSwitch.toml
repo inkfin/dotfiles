@@ -1,0 +1,9 @@
+{{- if eq .chezmoi.os "windows" }}
+
+[".local/bin"]
+    type = "archive"
+    url = "https://github.com/gepruts/QuickSwitch/releases/download/v0.5/QuickSwitch_v0.5_x64.zip"
+    refreshPeriod = "672h"
+    include = ["QuickSwitch.exe"]
+
+{{- end}}

@@ -25,7 +25,7 @@ map c cut
 map C clear
 
 map d # delete default cut
-map dc calcdirsize
+map dc calcdirsize $Env:f
 map dD delete $Env:f
 
 map R reload
@@ -57,7 +57,7 @@ map A :push %mkdir<space>
 set shell pwsh
 
 # change the default open command to work in powerShell
-cmd open &Invoke-Item $Env:f
+cmd open $Invoke-Item $Env:f
 map o open $Env:f
 
 # change the editor used in default editor keybinding
