@@ -16,6 +16,10 @@ return {
         },
     },
     {
+        "hedyhli/outline.nvim",
+        keys = { { "<leader>cs", false }, { "<leader>oo", "<cmd>Outline<cr>", desc = "Toggle Outline" } },
+    },
+    {
         "keaising/im-select.nvim",
         enabled = vim.fn.executable("im-select") == 1,
         config = function()
