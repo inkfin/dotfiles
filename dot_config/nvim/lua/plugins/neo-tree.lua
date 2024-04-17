@@ -123,7 +123,7 @@ return {
                 event = "file_opened",
                 handler = function(file_path)
                     -- auto close
-                    require("neo-tree.command").execute({ action = "close" })
+                    -- require("neo-tree.command").execute({ action = "close" })
                 end,
             },
         },
