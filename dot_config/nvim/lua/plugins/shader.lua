@@ -70,13 +70,7 @@ local wgsl_config = {
 }
 
 if enable_glsl then
-    if vim.fn.executable("glsl_analyzer") == 0 then
-        print(
-            "Can't find glsl_analyzer in $PATH\nPlease get glsl_analyzer from https://github.com/nolanderc/glsl_analyzer/releases/latest ..."
-        )
-    else
-        table.insert(M, glsl_config)
-    end
+    table.insert(M, glsl_config)
 end
 
 if enable_wgsl then

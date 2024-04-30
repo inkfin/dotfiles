@@ -25,9 +25,11 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 irm get.scoop.sh | iex
 
 Write-host "Installing scoop packages ..." -f Green
-scoop install fzf psfzf
+scoop install fzf psfzf scoop-completion
+scoop bucket add extras
+scoop install 7zip git aria2
 scoop install zoxide lsd bottom
-scoop install cmake neovim python ripgrep bat fd glow chafa
+scoop install cmake python ripgrep bat fd glow chafa
 
 # if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {
 #     Write-host "WindowsPowerShell config doesn't exists, creating now..." -f Green
