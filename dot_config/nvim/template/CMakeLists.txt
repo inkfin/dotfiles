@@ -49,15 +49,20 @@ endif()
 
 #===== Source Files ====================
 
-# aux_source_directory(src sources)
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.h include/*.h)
+# aux_source_directory(src SOURCE_FILES)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.h include/*.h)
 
-add_executable(${PROJECT_NAME} ${sources})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 
-#===== Cached Options ==================
+#===== Target Build Options ============
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+)
 
 # option(WITH_TBB "set to ON to enable TBB, OFF to disable TBB." ON)
 # if (WITH_TBB)
@@ -78,7 +83,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/bin/Debug)
 if(WIN32)
-    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY    ${CMAKE_SOURCE_DIR}/bin/Debug)
+    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Debug)
 elseif(UNIX)
 endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
