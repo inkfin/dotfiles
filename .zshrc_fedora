@@ -123,7 +123,7 @@ alias gP="git push"
 alias lg="lazygit"
 alias tnew="tnux new -s "
 alias vim="nvim"
-alias v=nn
+alias v="nvim"
 alias nvi="neovide"
 
 alias ee="exit"
