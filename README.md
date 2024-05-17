@@ -42,4 +42,17 @@ Config current profiles in `$HOME/.config/chezmoi/chezmoi.toml`.
     profile = "work"
 ```
 
+### Pre-installation steps
+
+#### Windows
+
+Install Scoop in Windows
+
+```shell
+
+Write-host "Installing scoop ..." -f Green
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm get.scoop.sh | iex
+
+```
 

@@ -7,29 +7,27 @@ winget install Yuanli.uTools
 winget install XP89DCGQ3K6VLD  # Powertoys
 winget install AgileBits.1Password
 winget install AutoHotkey.AutoHotkey
-winget install Fndroid.ClashForWindows
+# winget install Fndroid.ClashForWindows
 winget install Valve.Steam
 
 # winget install JanDeDobbeleer.OhMyPosh -s winget
-winget install Starship.Starship
 
 winget install Microsoft.PowerShell
+winget install --id Microsoft.WindowsTerminal -e
 
 # Update PowershellGet for pwsh < 5.1
 Install-Module -Name PowerShellGet -Force
 # Install Packages
 Install-Module -Name PSReadLine;
 
-Write-host "Installing scoop ..." -f Green
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-irm get.scoop.sh | iex
-
+# Scoop installation instructions are in README.md
 Write-host "Installing scoop packages ..." -f Green
-scoop install fzf psfzf scoop-completion
+scoop install fzf psfzf starship scoop-completion
 scoop bucket add extras
 scoop install 7zip git aria2
 scoop install zoxide lsd bottom
-scoop install cmake python ripgrep bat fd glow chafa
+scoop install cmake python
+scoop install neovim ripgrep bat fd glow chafa
 
 # if (-not (Test-Path "$HOME\Documents\WindowsPowerShell")) {
 #     Write-host "WindowsPowerShell config doesn't exists, creating now..." -f Green
