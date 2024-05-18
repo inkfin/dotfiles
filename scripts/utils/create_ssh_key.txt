@@ -1,0 +1,13 @@
+# Generate & Add SSH Key
+# link: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+
+ssh-keygen -t ed25519 -C "inkfinite@qq.com"
+
+# start the ssh-agent in the background
+## Windows
+Get-Service -Name ssh-agent | Set-Service -StartupType Manual
+Start-Service ssh-agent
+## MacOS
+eval "$(ssh-agent -s)"
+
+ssh-add $HOME/.ssh/id_ed25519
