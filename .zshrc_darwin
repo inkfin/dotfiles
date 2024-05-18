@@ -134,12 +134,8 @@ alias lt="ls --tree"
 alias li="imgls"
 
 # Proxy
-alias sethttpproxy="export http_proxy=http://127.0.0.1:1087"
-alias unsethttpproxy="unset http_proxy"
-alias sethttpsproxy="export https_proxy=http://127.0.0.1:1087"
-alias unsethttpsproxy="unset https_proxy"
-alias setallproxy="export ALL_PROXY=socks5://127.0.0.1:1080"
-alias unsetallproxy="unset ALL_PROXY=socks5://127.0.0.1:1080"
+alias setproxy="export http_proxy=http://127.0.0.1:7890; export https_proxy=http://127.0.0.1:7890; export ALL_PROXY=socks5://127.0.0.1:7890"
+alias unsetproxy="unset http_proxy; unset https_proxy; unset all_proxy"
 
 # the fuck
 eval $(thefuck --alias)
