@@ -1,4 +1,5 @@
 # README
+
 ```
 >
 >   ____ _   _ _____ _______  __  ___ ___ 
@@ -35,6 +36,11 @@ Config current profiles in `$HOME/.config/chezmoi/chezmoi.toml`.
     command = "nvim"
     args = ["-d", "{{ .Destination }}", "{{ .Source }}"]
 
+# Windows
+[cd]
+    command = "pwsh.EXE"
+    args = ["-NoLogo"]
+
 # work
 [data]
     email = ""
@@ -55,4 +61,3 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 irm get.scoop.sh | iex
 
 ```
-
