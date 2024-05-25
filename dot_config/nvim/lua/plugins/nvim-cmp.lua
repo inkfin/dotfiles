@@ -49,11 +49,18 @@ return {
                 }),
                 ["<Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
-                        cmp.select_next_item()
-                    elseif luasnip.expand_or_jumpable() then
-                        luasnip.expand_or_jump()
+                        if #cmp.get_entries() == 1 then
+                            cmp.confirm({ select = true })
+                        else
+                            cmp.select_next_item()
+                        end
+                    elseif luasnip.locally_jumpable(1) then
+                        luasnip.jump(1)
                     elseif has_words_before() then
                         cmp.complete()
+                        if #cmp.get_entries() == 1 then
+                            cmp.confirm({ select = true })
+                        end
                     else
                         fallback()
                     end
@@ -61,7 +68,7 @@ return {
                 ["<S-Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.select_prev_item()
-                    elseif luasnip.jumpable(-1) then
+                    elseif luasnip.locally_jumpable(-1) then
                         luasnip.jump(-1)
                     else
                         fallback()
