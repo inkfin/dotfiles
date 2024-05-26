@@ -1,0 +1,4 @@
+Pillow
+rarfile
+py7zr
+PyMuPDF

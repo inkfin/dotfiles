@@ -132,12 +132,14 @@ WatchCursor()
 ;;; Manually fetch *ANY* hotkey hidden window
 
 ;;; Win + Ctrl + A to save current window
-#^A:: StoreWindowID("Z")
+;#^A:: StoreWindowID("Z")
 #^S:: StoreWindowID("X")
+#^D:: StoreWindowID("C")
 
 ;;; Win + Ctrl + Z to toggle hidden window
-#^Z:: ToggleWindow("Z")
+;#^Z:: ToggleWindow("Z")
 #^X:: ToggleWindow("X")
+#^C:: StoreWindowID("C")
 
 ;;; Implementation
 global StoredWindowIDMap := Map()
@@ -145,6 +147,7 @@ global StoredWindowIDMap := Map()
 
 StoreWindowID(KeyName) {
     global StoredWindowIDMap
+    DetectHiddenWindows true
     TrayTipTitle := "Hidden Window Helper"
 
     ActiveID := WinGetID("A")
@@ -152,7 +155,7 @@ StoreWindowID(KeyName) {
     ; Release window if has previous stored window
     if (StoredWindowIDMap.Has(KeyName)) {
         StoredWindowID := StoredWindowIDMap[KeyName]
-        if (StoredWindowID != ActiveID) {
+        if (WinExist("ahk_id " . StoredWindowID) && StoredWindowID != ActiveID) {
             WinShow("ahk_id " . StoredWindowID)
             WinActivate("ahk_id " . StoredWindowID)
         }
@@ -161,6 +164,7 @@ StoreWindowID(KeyName) {
     StoredWindowIDMap[KeyName] := ActiveID
 
     TrayTip "Window " WinGetTitle("A") " is bind to " KeyName ".", TrayTipTitle, 1
+    DetectHiddenWindows false
     return
 }
 
