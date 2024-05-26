@@ -1,9 +1,22 @@
 #Requires AutoHotkey v2.0
 
+#SingleInstance  ; Allow only one instance of this script to be running.
+Persistent
+
 ;==============CapsLock 改键==============
 ; 短按 CapsLock 为 Esc, 长按 CapsLock 为 Ctrl
 
-^Capslock::CapsLock
+^Esc:: {
+    if (GetKeyState("Ctrl", "P") && GetKeyState("Shift", "P")) {
+        Send("^+{Esc}")
+    } else {
+        if GetKeyState("CapsLock", "T") {
+            SetCapsLockState("Off")
+        } else {
+            SetCapsLockState("On")
+        }
+    }
+}
 
 *CapsLock:: {
     if A_PriorKey = "LControl" {
@@ -85,4 +98,111 @@ WatchCursor()
         " WinGetTitle(id) "
         Control: " control
     )
+}
+
+
+;==============Hotkey Window============
+;;; Ctrl + Win + ` toggle terminal window
+^#`:: {
+    DetectHiddenWindows True
+    ; alacritty executable:
+    exeName := "alacritty.exe"
+    ; there's no $HOME (eww...)
+    exeArgs := " --config-file " . A_AppData . "/../../.config/alacritty/profiles/windows/transparent_fullscreen.toml"
+
+    terminalTitle := "popup" ; detect exact window title
+    ;terminalTitle := "ahk_exe " exeName ; detect all backgroud exe
+    if WinExist(terminalTitle) { ; Check if a window with your program exists
+        DetectHiddenWindows False ; Disable hidden window check to see if is currently hidden, otherwise won't work
+        if WinActive(terminalTitle) { ; Check if the window is active
+            WinHide(terminalTitle) ; If the window is active, hide it
+        } else {
+            WinShow(terminalTitle) ; If the window is not active (hidden or in the background), show it
+            WinActivate(terminalTitle) ; Activate the window
+        }
+    } else {
+        Run(exeName " " exeArgs) ; If the window does not exist, launch the program
+    }
+    DetectHiddenWindows False
+    return
+}
+
+
+;=======================================
+;;; Manually fetch *ANY* hotkey hidden window
+
+;;; Win + Ctrl + A to save current window
+#^A:: StoreWindowID("Z")
+#^S:: StoreWindowID("X")
+
+;;; Win + Ctrl + Z to toggle hidden window
+#^Z:: ToggleWindow("Z")
+#^X:: ToggleWindow("X")
+
+;;; Implementation
+global StoredWindowIDMap := Map()
+
+
+StoreWindowID(KeyName) {
+    global StoredWindowIDMap
+    TrayTipTitle := "Hidden Window Helper"
+
+    ActiveID := WinGetID("A")
+
+    ; Release window if has previous stored window
+    if (StoredWindowIDMap.Has(KeyName)) {
+        StoredWindowID := StoredWindowIDMap[KeyName]
+        if (StoredWindowID != ActiveID) {
+            WinShow("ahk_id " . StoredWindowID)
+            WinActivate("ahk_id " . StoredWindowID)
+        }
+    }
+
+    StoredWindowIDMap[KeyName] := ActiveID
+
+    TrayTip "Window " WinGetTitle("A") " is bind to " KeyName ".", TrayTipTitle, 1
+    return
+}
+
+ToggleWindow(KeyName) {
+    global StoredWindowIDMap
+    DetectHiddenWindows true
+
+    TrayTipTitle := "Hidden Window Helper"
+
+    if (StoredWindowIDMap.Has(KeyName)) {
+        windowID := StoredWindowIDMap[KeyName]
+        if WinExist("ahk_id " . windowID) {
+            if DllCall("IsWindowVisible", "Ptr", windowID) {
+                WinHide("ahk_id " . windowID)
+                ;TrayTip "Window with ID " . windowID . " hidden.", TrayTipTitle
+            } else {
+                WinShow("ahk_id " . windowID)
+                WinActivate("ahk_id " . windowID)
+                ;TrayTip "Window with ID " . windowID . " shown.", TrayTipTitle
+            }
+        } else {
+            TrayTip("The saved window no longer exists.", TrayTipTitle, 2)
+            StoredWindowIDMap.Delete(KeyName)  ; Clear saved window ID
+        }
+    } else {
+        TrayTip("No window is bind to " KeyName ".", TrayTipTitle, "Mute")
+    }
+
+    DetectHiddenWindows false
+    return
+}
+
+; Release all window before exit
+OnExit UnHideAll
+
+UnHideAll(*) {
+    global StoredWindowIDMap
+    for KeyName, StoredWindowID in StoredWindowIDMap {
+        if (StoredWindowID != "" && WinExist("ahk_id " . StoredWindowID)) {
+            WinShow("ahk_id " . StoredWindowID)
+            WinActivate("ahk_id " . StoredWindowID)
+        }
+    }
+    StoredWindowIDMap.Clear()  ; Clear all keys
 }
