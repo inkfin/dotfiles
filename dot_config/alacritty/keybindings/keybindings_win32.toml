@@ -1,0 +1,5 @@
+[keyboard]
+bindings = [
+    { key = "T", mods = "Control|Shift", action = "CreateNewWindow" },
+    { key = "W", mods = "Control|Shift", action = "Quit" },
+]

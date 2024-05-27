@@ -1,0 +1,10 @@
+import = ["~/.config/alacritty/keybindings/keybindings_win32.toml"]
+
+[mouse]
+bindings = [{ mouse = "Right", mods = "Control", action = "Paste" }]
+
+[keyboard]
+bindings = [
+    { key = "/", mods = "Control", action = "ReceiveChar" },
+    { key = "/", mode = "Vi|~Search", action = "ReceiveChar" },
+]
