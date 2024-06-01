@@ -40,6 +40,31 @@ function Show-Window {
 
 }
 
+# wezterm suggested OSC 7 Escape sequence to set the working directory
+# https://wezfurlong.org/wezterm/shell-integration.html#osc-7-on-windows-with-cmdexe
+# powershell without starship
+function prompt {
+    $p = $executionContext.SessionState.Path.CurrentLocation
+    $osc7 = ""
+    if ($p.Provider.Name -eq "FileSystem") {
+        $ansi_escape = [char]27
+        $provider_path = $p.ProviderPath -Replace "\\", "/"
+        $osc7 = "$ansi_escape]7;file://${env:COMPUTERNAME}/${provider_path}${ansi_escape}\"
+    }
+    "${osc7}PS $p$('>' * ($nestedPromptLevel + 1)) ";
+}
+# powershell with starship
+$prompt = ""
+function Invoke-Starship-PreCommand {
+    $current_location = $executionContext.SessionState.Path.CurrentLocation
+    if ($current_location.Provider.Name -eq "FileSystem") {
+        $ansi_escape = [char]27
+        $provider_path = $current_location.ProviderPath -replace "\\", "/"
+        $prompt = "$ansi_escape]7;file://${env:COMPUTERNAME}/${provider_path}$ansi_escape\"
+    }
+    $host.ui.Write($prompt)
+}
+
 # cmake commands
 function cmc  { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B $args }
 function cmcv { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
