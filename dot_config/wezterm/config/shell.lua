@@ -1,9 +1,10 @@
 -- shell.lua
 local wezterm = require("wezterm")
 local t = require("tools")
+local config = {}
 
 if t.os("windows") then
-	return {
+	t.merge_table(config, {
 		default_prog = { "pwsh.exe", "-NoLogo" },
 
 		launch_menu = {
@@ -19,5 +20,15 @@ if t.os("windows") then
 			-- },
 			{ label = "CMD", args = { "cmd.exe" } },
 		},
-	}
+	})
+elseif t.os("macos") then
+	t.merge_table(config, {
+		launch_menu = {
+			{ label = "zsh", args = { "/usr/bin/zsh" } },
+			{ label = "bash", args = { "/usr/bin/bash" } },
+			{ label = "fish", args = { "/usr/bin/fish" } },
+		},
+	})
 end
+
+return config

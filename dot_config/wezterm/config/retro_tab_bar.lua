@@ -1,10 +1,6 @@
-local wezterm = require("wezterm")
--- The filled in variant of the < symbol
-local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
--- The filled in variant of the > symbol
-local SOLID_RIGHT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
-
 -- https://wezfurlong.org/wezterm/config/lua/window-events/format-tab-title.html
+local wezterm = require("wezterm")
+local t = require("tools")
 
 -- The filled in variant of the < symbol
 local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
@@ -16,7 +12,7 @@ local SOLID_RIGHT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
 -- It prefers the title that was set via `tab:set_title()`
 -- or `wezterm cli set-tab-title`, but falls back to the
 -- title of the active pane in that tab.
-function tab_title(tab_info)
+local function tab_title(tab_info)
 	local title = tab_info.tab_title
 	-- if the tab title is explicitly set, take that
 	if title and #title > 0 then
@@ -60,6 +56,73 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		{ Text = SOLID_RIGHT_ARROW },
 	}
 end)
+
+-- Tmux like status bar
+-- https://github.com/wez/wezterm/issues/500
+wezterm.on("update-status", function(window, pane)
+	-- Each element holds the text for a cell in a "powerline" style << fade
+	local cells = {}
+
+	-- Figure out the cwd and host of the current pane.
+	-- This will pick up the hostname for the remote host if your
+	-- shell is using OSC 7 on the remote host.
+	local cwd_uri = pane:get_current_working_dir()
+	if cwd_uri then
+		table.insert(cells, cwd_uri.path or "can't fetch cwd")
+		table.insert(cells, cwd_uri.host or "localhost")
+	end
+
+	-- I like my date/time in this style: "Wed Mar 3 08:14"
+	local date = wezterm.strftime("%a %b %-d %H:%M")
+	table.insert(cells, date)
+
+	-- An entry for each battery (typically 0 or 1 battery)
+	for _, b in ipairs(wezterm.battery_info()) do
+		table.insert(cells, string.format("%.0f%%", b.state_of_charge * 100))
+	end
+
+	-- Color palette for the backgrounds of each cell
+	local colors = {
+		"#2b2042",
+		"#3b3052",
+		"#3c1361",
+		"#52307c",
+		"#663a82",
+		"#7c5295",
+		"#b491c8",
+	}
+
+	-- Foreground color for the text across the fade
+	local text_fg = "#c0c0c0"
+
+	-- The elements to be formatted
+	local elements = {}
+	-- How many cells have been formatted
+	local num_cells = 0
+
+	-- Translate a cell into elements
+	table.insert(elements, { Foreground = { Color = colors[1] } })
+	table.insert(elements, { Text = SOLID_LEFT_ARROW })
+	local function push(text, is_last)
+		local cell_no = num_cells + 1
+		table.insert(elements, { Foreground = { Color = text_fg } })
+		table.insert(elements, { Background = { Color = colors[cell_no] } })
+		table.insert(elements, { Text = " " .. text .. " " })
+		if not is_last then
+			table.insert(elements, { Foreground = { Color = colors[cell_no + 1] } })
+			table.insert(elements, { Text = SOLID_LEFT_ARROW })
+		end
+		num_cells = num_cells + 1
+	end
+
+	while #cells > 0 do
+		local cell = table.remove(cells, 1)
+		push(cell, #cells == 0)
+	end
+
+	window:set_right_status(wezterm.format(elements))
+end)
+
 return {
 	colors = {
 		tab_bar = {

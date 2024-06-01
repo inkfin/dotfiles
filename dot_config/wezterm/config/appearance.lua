@@ -9,7 +9,8 @@ return {
 	initial_cols = 96,
 	initial_rows = 24,
 
-	freetype_load_target = "HorizontalLcd",
+	-- "VerticalLcd" "HorizontalLcd" "Normal" "Mono" "Light"
+	freetype_load_target = "Normal",
 
 	-- color_scheme = "Batman",
 	color_scheme = "Snazzy (Gogh)",
