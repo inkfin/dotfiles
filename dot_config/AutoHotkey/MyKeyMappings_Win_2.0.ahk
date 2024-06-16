@@ -139,7 +139,7 @@ WatchCursor()
 ;;; Win + Ctrl + Z to toggle hidden window
 ;#^Z:: ToggleWindow("Z")
 #^X:: ToggleWindow("X")
-#^C:: ToggleWindowID("C")
+#^C:: ToggleWindow("C")
 
 ;;; Implementation
 global StoredWindowIDMap := Map()

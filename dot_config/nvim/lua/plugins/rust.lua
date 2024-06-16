@@ -5,10 +5,15 @@ return {
     {
         "neovim/nvim-lspconfig",
         opts = {
+            setup = {
+                -- prevent mason from auto installing rust_analyzer
+                rust_analyzer = function()
+                    return true
+                end,
+            },
             servers = {
                 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
                 -- Ensure mason installs the server
-                rust_analyzer = {},
                 taplo = {
                     keys = {
                         {

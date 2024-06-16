@@ -9,6 +9,8 @@ return {
 	initial_cols = 96,
 	initial_rows = 24,
 
+	window_background_opacity = 0.55,
+
 	-- "VerticalLcd" "HorizontalLcd" "Normal" "Mono" "Light"
 	freetype_load_target = "Normal",
 
@@ -24,7 +26,6 @@ return {
 	font = wezterm.font_with_fallback({ "JetBrains Mono" }),
 	font_size = 11.0,
 
-	window_background_opacity = 0.75,
 	window_decorations = "INTEGRATED_BUTTONS|RESIZE",
 	-- enable scroll bar
 	-- window_padding = { left = 0, right = 15, top = 0, bottom = 0 },
