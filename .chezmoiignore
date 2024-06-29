@@ -4,6 +4,8 @@ README.md
 
 .config/nvim.old
 
+.config/nvim/symlink
+
 {{- if ne .profile "work" }}
 .work       # only manage .work on work-laptop
 {{- end }}
