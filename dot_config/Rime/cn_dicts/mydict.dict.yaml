@@ -1,0 +1,22 @@
+# mydict.dict.yaml
+---
+name: mydict
+version: "0.1"
+sort: by_weight
+---
+你	ni
+我	wo
+的	de	99%
+的	di	1%
+地	de	10%
+地	di	90%
+
+你我
+我的
+好好地
+天地	tian di
+目的地	mu di di
+
+你好	ni hao	1
+世界	shi jie	1
+艾尔登法环	ai er deng fa huan	1

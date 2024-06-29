@@ -1,0 +1,10 @@
+{{- if eq .chezmoi.os "windows" }}
+
+[".local/bin/im-select.exe"]
+    type = "file"
+    url = "https://github.com/daipeihust/im-select/raw/master/win/out/x86/im-select.exe"
+    refreshPeriod = "672h"
+    executable = true
+
+{{- end}}
+
