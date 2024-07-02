@@ -16,8 +16,12 @@ return {
             local M = {}
             if vim.fn.has("win32") == 1 then
                 M.cmd = { vim.fn.getenv("HOME") .. "/.local/Rime/rime-ls/target/release/rime_ls.exe" }
-                M.rime_user_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/Rime"
-                M.shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/rime-data"
+                M.rime_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
+                M.shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/"
+            elseif vim.fn.has("mac") == 1 then
+                M.cmd = { vim.fn.getenv("HOME") .. "/.local/Rime/rime-ls/target/release/rime_ls" }
+                M.rime_user_dir = "~/.config/Rime"
+                M.shared_data_dir = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
             end
             require("rimels").setup(M)
         end,

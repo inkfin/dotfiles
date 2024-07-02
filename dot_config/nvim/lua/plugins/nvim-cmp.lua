@@ -83,9 +83,8 @@ return {
                 { name = "copilot" },
                 { name = "buffer" },
             }, {
-                { name = "nvim_lsp" },
                 { name = "buffer" },
-                -- { name = "dictionary", keyword_length = 2 },
+                { name = "dictionary", keyword_length = 2 },
             })
 
             local compare = require("cmp.config.compare")

@@ -315,9 +315,16 @@ alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redi
 # MacTex
 export PATH="$PATH:/usr/local/texlive/2022/bin/universal-darwin"
 
+# Miktex
+export PATH="$HOME/bin:$PATH"
+
+
 # Vulkan
 source "/usr/local/VulkanSDK/current/setup-env.sh"
 
+
+# librime
+export DYLD_LIBRARY_PATH="/usr/local/lib:$DYLD_LIBRARY_PATH"
 
 # dawn
 # depot_tools
@@ -329,9 +336,6 @@ export PATH="$HOME/dev/depot_tools:$PATH"
 
 # MACOS SecureInput
 alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
-
-# Miktex
-export PATH="$HOME/bin:$PATH"
 
 # Remove Path that requires Permissions
 remove_path_from_path() {
