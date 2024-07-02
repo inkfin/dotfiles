@@ -83,9 +83,25 @@ return {
                 { name = "copilot" },
                 { name = "buffer" },
             }, {
+                { name = "nvim_lsp" },
                 { name = "buffer" },
-                { name = "dictionary", keyword_length = 2 },
+                -- { name = "dictionary", keyword_length = 2 },
             })
+
+            local compare = require("cmp.config.compare")
+            opts.sorting = {
+                comparators = {
+                    compare.sort_text,
+                    compare.offset,
+                    compare.exact,
+                    compare.score,
+                    compare.recently_used,
+                    compare.kind,
+                    compare.length,
+                    compare.order,
+                },
+            }
+
             opts.formatting = {
                 format = function(entry, item)
                     local icons = require("lazyvim.config").icons.kinds

@@ -212,11 +212,11 @@ if vim.g.neovide then
 
     -- Windows configuration
     if vim.fn.has("win32") == 1 then
-        -- vim.g.neovide_fullscreen = true
-        -- vim.g.neovide_padding_top = 200
-        -- vim.g.neovide_padding_bottom = 200
-        -- vim.g.neovide_padding_right = 200
-        -- vim.g.neovide_padding_left = 200
+        vim.g.neovide_fullscreen = true
+        vim.g.neovide_padding_top = 10
+        vim.g.neovide_padding_bottom = 10
+        vim.g.neovide_padding_right = 10
+        vim.g.neovide_padding_left = 10
     end
 
     -- Floating shadow
