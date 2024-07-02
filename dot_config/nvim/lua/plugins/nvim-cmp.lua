@@ -82,8 +82,6 @@ return {
                 { name = "path" },
                 { name = "copilot" },
                 { name = "buffer" },
-            }, {
-                { name = "buffer" },
                 { name = "dictionary", keyword_length = 2 },
             })
 

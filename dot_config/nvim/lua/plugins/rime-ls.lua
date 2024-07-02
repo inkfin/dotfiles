@@ -19,7 +19,7 @@ return {
                 M.rime_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
                 M.shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/"
             elseif vim.fn.has("mac") == 1 then
-                M.cmd = { vim.fn.getenv("HOME") .. "/.local/Rime/rime-ls/target/release/rime_ls" }
+                M.cmd = { "rime_ls" }
                 M.rime_user_dir = "~/.config/Rime"
                 M.shared_data_dir = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
             end
@@ -49,7 +49,28 @@ return {
             },
         },
         keys = {
-            { "<leader>rt", "<cmd>ToggleRime<cr>", desc = "toggle rime" },
+            {
+                "<leader>rt",
+                function()
+                    vim.cmd("ToggleRime")
+                    local cmp = require("cmp")
+                    local sources = assert(cmp.get_config().sources)
+                    local bHasDictionary = false
+                    for i = #sources, 1, -1 do
+                        if sources[i].name == "dictionary" then
+                            table.remove(sources, i)
+                            print("Rime Input On 🚀")
+                            bHasDictionary = true
+                        end
+                    end
+                    if not bHasDictionary then
+                        print("Rime Input Off 💤")
+                        table.insert(sources, { name = "dictionary" })
+                    end
+                    cmp.setup.buffer({ sources = sources })
+                end,
+                desc = "toggle rime",
+            },
             { "<leader>rs", "<cmd>RimeSync<cr>", desc = "sync rime user-data" },
         },
     },
