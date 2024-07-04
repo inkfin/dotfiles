@@ -1,3 +1,25 @@
+local rime_ls_exe_path = "undefined"
+local rime_ls_user_dir = "undefined"
+local rime_ls_shared_data_dir = "undefined"
+
+if vim.fn.has("win32") == 1 then
+    rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls.exe"
+    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
+    rime_ls_shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/"
+elseif vim.fn.has("mac") == 1 then
+    rime_ls_exe_path = "rime_ls"
+    rime_ls_user_dir = "~/.config/Rime"
+    rime_ls_shared_data_dir = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
+end
+
+-- only enable space and enter when editing filename ends with '-cn'
+local bDisableChinese = true
+
+local filename = vim.fn.expand("%:p:t:r")
+if filename:sub(-3) == "-cn" then
+    bDisableChinese = false
+end
+
 return {
     -- rime-ls
     -- https://github.com/wlh320/rime-ls
@@ -6,44 +28,32 @@ return {
     -- https://github.com/liubianshi/cmp-lsp-rimels
     {
         "liubianshi/cmp-lsp-rimels",
+        enabled = function()
+            return vim.fn.filereadable(rime_ls_exe_path) == 1
+        end,
         ft = { "markdown", "text" },
         dependencies = {
             "neovim/nvim-lspconfig",
             "hrsh7th/nvim-cmp",
             "hrsh7th/cmp-nvim-lsp",
         },
-        config = function()
-            -- only enable space and enter when editing filename ends with '-cn'
-            local bDisableChinese = true
-
-            local filename = vim.fn.expand("%:p:t:r")
-            if filename:sub(-3) == "-cn" then
-                bDisableChinese = false
-            end
-            local M = {}
-            if vim.fn.has("win32") == 1 then
-                M.cmd = { vim.fn.getenv("HOME") .. "/.local/bin/rime_ls.exe" }
-                M.rime_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
-                M.shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/"
-            elseif vim.fn.has("mac") == 1 then
-                M.cmd = { "rime_ls" }
-                M.rime_user_dir = "~/.config/Rime"
-                M.shared_data_dir = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
-            end
-
-            M.max_candidates = 9
-            M.trigger_characters = {}
-            M.schema_trigger_character = "&" -- [since v0.2.0] 当输入此字符串时请求补全会触发 “方案选单”
-            M.probes = {
+        config = {
+            cmd = { rime_ls_exe_path },
+            rime_user_dir = rime_ls_user_dir,
+            shared_data_dir = rime_ls_shared_data_dir,
+            max_candidates = 9,
+            trigger_characters = {},
+            schema_trigger_character = "&", -- [since v0.2.0] 当输入此字符串时请求补全会触发 “方案选单”
+            probes = {
                 ignore = {},
                 using = {},
                 add = {},
-            }
-            M.detectors = {
+            },
+            detectors = {
                 with_treesitter = {},
                 with_syntax = {},
-            }
-            M.cmp_keymaps = {
+            },
+            cmp_keymaps = {
                 disable = {
                     space = bDisableChinese,
                     enter = bDisableChinese,
@@ -51,9 +61,8 @@ return {
                     brackets = bDisableChinese,
                     backspace = bDisableChinese,
                 },
-            }
-            require("rimels").setup(M)
-        end,
+            },
+        },
         keys = {
             {
                 "<leader>rt",

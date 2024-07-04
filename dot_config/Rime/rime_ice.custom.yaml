@@ -1,0 +1,6 @@
+# <https://dvel.me/posts/rime-ice/#%e4%bb%a5-patch-%e7%9a%84%e6%96%b9%e5%bc%8f%e6%89%93%e8%a1%a5%e4%b8%81>
+
+patch:
+  translator/dictionary: rime_ice_custom # 挂载词库 rime_ice_custom
+  pin_cand_filter:
+    __include: pin_candidate:/list
