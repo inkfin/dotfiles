@@ -75,6 +75,9 @@ nnoremap <Leader>tmh :tabm -<CR>
 nnoremap <Leader>tml :tabm +<CR>
 nnoremap <Leader>bd :action CloseContent<CR>
 
+" Paste over currently selected text without yanking it
+vnoremap <silent> p "_dP
+
 nnoremap <A-j> :action MoveLineDown<CR>
 nnoremap <A-k> :action MoveLineUp<CR>
 

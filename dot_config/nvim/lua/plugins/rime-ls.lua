@@ -20,6 +20,10 @@ if filename:sub(-3) == "-cn" then
     bDisableChinese = false
 end
 
+if vim.fn.filereadable(rime_ls_exe_path) == 0 then
+    return {} -- disable this plugin if rime_ls is not found
+end
+
 return {
     -- rime-ls
     -- https://github.com/wlh320/rime-ls
@@ -28,9 +32,6 @@ return {
     -- https://github.com/liubianshi/cmp-lsp-rimels
     {
         "liubianshi/cmp-lsp-rimels",
-        enabled = function()
-            return vim.fn.filereadable(rime_ls_exe_path) == 1
-        end,
         ft = { "markdown", "text" },
         dependencies = {
             "neovim/nvim-lspconfig",
@@ -92,6 +93,25 @@ return {
                 desc = "toggle rime",
             },
             { "<leader>rs", "<cmd>RimeSync<cr>", desc = "sync rime user-data" },
+        },
+    },
+    {
+        "noearc/jieba.nvim",
+        ft = { "markdown", "text" },
+        dependencies = { "noearc/jieba-lua" },
+        keys = {
+            -- stylua: ignore start
+            { "ciw", mode = { "n" }, function() require("jieba_nvim").change_w() end, silent = true, noremap = false, },
+            { "diw", mode = { "n" }, function() require("jieba_nvim").delete_w() end,
+            },
+            {
+                "viw",
+                mode = { "n" },
+                function()
+                    require("jieba_nvim").select_w()
+                end,
+            },
+            -- stylua: ignore end
         },
     },
 }

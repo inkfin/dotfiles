@@ -21,6 +21,9 @@ end
 
 -- handy keymaps
 map("n", "<C-a>", "ggVG")
+map("n", "dK", ":normal! v0k$d<CR>", { desc = "til prev line", silent = true, noremap = true }) -- delete to start of upper line
+map("n", "dJ", ":normal! d$J<CR>", { desc = "til next line", silent = true, noremap = true }) -- delete to end of lower line
+map("n", "<leader>J", ":normal! J<CR>", { silent = true, noremap = true })
 
 -- Paste over currently selected text without yanking it
 map("v", "p", '"_dP', { silent = true })
@@ -92,6 +95,7 @@ end
 
 -- configure it here so it is active all the time
 map({ "n" }, "<leader>h", Show_documentation, { desc = "hover" })
+-- vim.keymap.del("n", "<leader>K")
 
 -- save file
 map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
