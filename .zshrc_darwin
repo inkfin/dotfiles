@@ -357,6 +357,13 @@ alias ai='python3 /Users/inkfin/Documents/Code/Python/openaiAPI/app.py'
 
 alias browse='~/.local/carbonyl-0.0.3/carbonyl'
 
+# Pandoc
+alias pandock='docker run --rm -v "$(pwd):/data" -u $(id -u):$(id -g) pandoc/extra'
+alias panexport='pandoc --template eisvogel --listings --pdf-engine=xelatex -V CJKmainfont="PingFang SC" '
+
+# Rime
+alias vimrime='vim ~/.local/share/chezmoi/dot_config/Rime/custom_phrase.txt'
+
 
 # vcpkg integrate
 autoload bashcompinit

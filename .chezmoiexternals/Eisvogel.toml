@@ -1,0 +1,28 @@
+# Source: https://github.com/Wandmalfarbe/pandoc-latex-template
+# Chinese tutorial: <https://ask.latexstudio.net/ask/article/768.html>
+
+{{- if eq .chezmoi.os "windows" }}
+
+["AppData/Roaming/pandoc/templates"]
+    type = "archive"
+    url = "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/Eisvogel.zip"
+    refreshPeriod = "672h"
+    include = ["eisvogel.latex"]
+
+{{- else if eq .chezmoi.os "darwin" }}
+
+[".local/share/pandoc/templates"]
+    type = "archive"
+    url = "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/Eisvogel.zip"
+    refreshPeriod = "672h"
+    include = ["eisvogel.latex"]
+
+{{- else if eq .chezmoi.os "linux" }}
+
+[".local/share/pandoc/templates"]
+    type = "archive"
+    url = "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/Eisvogel.zip"
+    refreshPeriod = "672h"
+    include = ["eisvogel.latex"]
+
+{{- end }}

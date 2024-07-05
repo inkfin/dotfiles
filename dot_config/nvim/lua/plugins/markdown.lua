@@ -104,6 +104,23 @@ return {
         },
     },
 
+    -- export pdf
+    {
+        "jghauser/auto-pandoc.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        ft = "markdown",
+        keys = {
+            {
+                "<leader>pE",
+                function()
+                    require("auto-pandoc").run_pandoc()
+                end,
+                desc = "Export pdf (pandoc)",
+                ft = "markdown", -- this is for buffer-local keymaps
+            },
+        },
+    },
+
     {
         "nvim-treesitter/nvim-treesitter",
         opts = function(_, opts)
