@@ -7,7 +7,7 @@
     type = "archive"
     url = "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/Eisvogel.zip"
     refreshPeriod = "672h"
-    include = ["eisvogel.latex"]
+    include = ["eisvogel.latex", "icon.png", "examples/**"]
 
 {{- else if eq .chezmoi.os "darwin" }}
 
@@ -15,7 +15,7 @@
     type = "archive"
     url = "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/Eisvogel.zip"
     refreshPeriod = "672h"
-    include = ["eisvogel.latex"]
+    include = ["eisvogel.latex", "icon.png", "examples/**"]
 
 {{- else if eq .chezmoi.os "linux" }}
 
@@ -23,6 +23,6 @@
     type = "archive"
     url = "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/Eisvogel.zip"
     refreshPeriod = "672h"
-    include = ["eisvogel.latex"]
+    include = ["eisvogel.latex", "icon.png", "examples/**"]
 
 {{- end }}
