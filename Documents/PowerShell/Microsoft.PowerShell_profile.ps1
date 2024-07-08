@@ -136,7 +136,6 @@ function Use-CC($cc) {
 # vcpkg
 Init-EnvironmentVariable VCPKG_ROOT "$HOME\dev\vcpkg"
 Append-UserPath $env:VCPKG_ROOT
-Append-UserPath $HOME\.local\bin
 $env:LLVMInstallDir = "$HOME\scoop\apps\llvm\current"
 Import-Module (Join-Path $env:VCPKG_ROOT "\scripts\posh-vcpkg")
 Import-Module scoop-completion

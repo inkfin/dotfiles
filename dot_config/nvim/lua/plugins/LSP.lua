@@ -15,8 +15,8 @@ return {
             -- Be aware that you also will need to properly configure your LSP server to
             -- provide the code lenses.
             codelens = {
-                -- enabled = false,
-                enabled = vim.fn.has("nvim-0.10") == 1,
+                enabled = false,
+                -- enabled = vim.fn.has("nvim-0.10") == 1,
             },
         },
         init = function()
