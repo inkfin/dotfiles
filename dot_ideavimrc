@@ -137,6 +137,10 @@ nnoremap <Leader>cr :<C-u>action CopyReference<CR>
 nnoremap <Leader>em :<C-u>action ExtractMethod<CR>
 nnoremap <Leader>sw :<C-u>action SurroundWith<CR>
 
+" reformat
+nnoremap <Leader>rf :<C-u>action ReformatCode<CR>
+vnoremap <Leader>rf :<C-u>'<,'>action ReformatCode<CR>
+
 " Debug
 nnoremap <Leader>db :action ToggleLineBreakpoint<cr>
 nnoremap <Leader>dc :<C-u>action ChooseRunConfiguration<CR>

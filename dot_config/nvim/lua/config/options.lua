@@ -43,7 +43,7 @@ vim.g.maplocalleader = ","
 vim.g.tex_flavor = "latex"
 
 -- Enable LazyVim auto format
-vim.g.autoformat = true
+vim.g.autoformat = false
 
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0

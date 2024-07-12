@@ -3,7 +3,7 @@ return {
         "stevearc/conform.nvim",
         keys = {
             {
-                "<leader>cF",
+                "<leader>rF",
                 function()
                     require("conform").format({ formatters = { "injected" } })
                 end,

@@ -110,6 +110,13 @@ wk.register({
     ["<leader>p"] = { name = "+preview" },
 })
 
+-- reformat
+map({ "n", "v" }, "<leader>rf", function()
+    LazyVim.format({ force = true })
+end, { desc = "Format" })
+-- delete default reformat keymap
+vim.keymap.del({ "n", "v" }, "<leader>cf")
+
 -- Custom commands
 map("n", "<leader>cr", vim.g.compile_run, { desc = "Compile & Run" })
 map("n", "<leader>cu", vim.g.write_nvim_custom_config, { desc = "Update nvim custom config" })
