@@ -107,6 +107,7 @@ return {
     -- export pdf
     {
         "jghauser/auto-pandoc.nvim",
+        -- dir = "C:/Users/11096/Code/Lua/auto-pandoc.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
         ft = "markdown",
         keys = {

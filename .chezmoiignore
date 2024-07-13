@@ -31,10 +31,12 @@ modikeys.sh
 # Windows specific settings
 {{ if ne .chezmoi.os "windows" }}
 .config/AutoHotkey/
-Documents/WindowsPowerShell/
-Documents/PowerShell/
+Documents/
+AppData/
 install-packages.ps1
 {{ end }}
+
+# Unix specific settings
 {{ if eq .chezmoi.os "windows" }}
 install-packages.sh
 .tmux/

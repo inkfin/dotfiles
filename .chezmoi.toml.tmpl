@@ -1,0 +1,22 @@
+{{ $profile := promptString "profile" "personal" -}}
+{{ $email := promptString "email" "inkfinite@qq.com" -}}
+
+[data]
+    email = {{ $email | quote }}
+    name = "inkfin"
+    profile = {{ $profile | quote }}
+[git]
+    autoCommit = false
+    autoPush = false
+[diff]
+    command = "nvim"
+    args = ["-d", "{{ .Destination }}", "{{ .Target }}"]
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ .Destination }}", "{{ .Source }}"]
+{{- if eq .chezmoi.os "windows" }}
+[cd]
+    command = "pwsh.EXE"
+    args = ["-NoLogo"]
+{{- end}}
+
