@@ -10,10 +10,10 @@
     autoPush = false
 [diff]
     command = "nvim"
-    args = ["-d", "{{ .Destination }}", "{{ .Target }}"]
+    args = ["-d", {{`"{{ .Destination }}"`}}, {{`"{{ .Target }}"`}}]
 [merge]
     command = "nvim"
-    args = ["-d", "{{ .Destination }}", "{{ .Source }}"]
+    args = ["-d", {{`"{{ .Destination }}"`}}, {{`"{{ .Source }}"`}}]
 {{- if eq .chezmoi.os "windows" }}
 [cd]
     command = "pwsh.EXE"
