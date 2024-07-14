@@ -186,4 +186,14 @@ return {
             end
         end,
     },
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = { "kdheepak/cmp-latex-symbols" },
+        opts = function(_, opts)
+            if vim.bo.filetype == "tex" then
+                table.insert(opts.sources, { name = "latex_symbols", option = { strategy = 1 } })
+                table.insert(opts.sources, { name = "dictionary", option = { keyword_length = 2 } })
+            end
+        end,
+    },
 }

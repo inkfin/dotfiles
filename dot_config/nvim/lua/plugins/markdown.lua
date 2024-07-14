@@ -138,4 +138,24 @@ return {
             },
         },
     },
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = {
+            "uga-rosa/cmp-dictionary",
+            opts = {
+                paths = { vim.fn.stdpath("config") .. "/spell/en.dict" },
+                exact_length = 2,
+                first_case_insenstive = false,
+            },
+        },
+        opts = function(_, opts)
+            local enable_filetype = {
+                ["markdown"] = true,
+                ["org"] = true,
+            }
+            if enable_filetype[vim.bo.filetype] then
+                table.insert(opts.sources, { name = "dictionary", option = { keyword_length = 2 } })
+            end
+        end,
+    },
 }
