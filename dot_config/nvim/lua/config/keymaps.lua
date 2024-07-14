@@ -104,10 +104,11 @@ map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 map("n", "Q", "<cmd>q<cr><esc>", { desc = "quit file" })
 
 wk.add({
-    { "cs", { group = "+surrounds" } },
-    { "<leader>t", { group = "+tab/Translate" } },
-    { "<leader>o", { group = "+open" } },
-    { "<leader>p", { group = "+preview" } },
+    { "cs", group = "+surrounds" },
+    { "<leader>t", group = "+tab/Translate" },
+    { "<leader>o", group = "+open" },
+    { "<leader>p", group = "+preview" },
+    { "<leader>r", group = "+refactor" },
 })
 
 -- reformat
