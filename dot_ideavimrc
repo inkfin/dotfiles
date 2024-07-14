@@ -160,8 +160,7 @@ nnoremap \i :action OptimizeImports<CR>
 nnoremap <leader>ca :action ShowIntentionActions<CR>
 
 " commentary
-map <Leader>ci :<C-u>action CommentByLineComment<CR>
-map <Leader>cc :<C-u>action CommentByLineComment<CR>
+map gcc :<C-u>action CommentByLineComment<CR>
 
 
 

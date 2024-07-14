@@ -8,12 +8,9 @@ return {
             mappings = {
                 -- Toggle comment (like `gcip` - comment inner paragraph) for both
                 -- Normal and Visual modes
-                comment = "<leader>cc",
-                comment_visual = "<leader>ci",
-
-                -- Toggle comment on current line
-                comment_line = "<leader>ci",
-
+                comment = "gc",
+                comment_line = "gcc",
+                comment_visual = "gc",
                 -- Define 'comment' textobject (like `dgc` - delete whole comment block)
                 textobject = "gc",
             },
@@ -25,6 +22,7 @@ return {
             -- change the comment string here
             config = {
                 cpp = "// %s",
+                -- shader stuff
                 glsl = "// %s",
                 vert = "// %s",
                 tesc = "// %s",
