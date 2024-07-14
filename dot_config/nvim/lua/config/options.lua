@@ -233,7 +233,7 @@ if vim.g.neovide then
     vim.g.neovide_hide_mouse_when_typing = true
     vim.g.neovide_underline_automatic_scaling = true
     vim.g.neovide_confirm_quit = true
-    vim.g.neovide_input_macos_alt_is_meta = true
+    vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 
     -- Animations
     vim.g.neovide_scroll_animation_length = 0.3
