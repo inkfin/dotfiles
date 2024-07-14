@@ -16,6 +16,13 @@ return {
         },
     },
     {
+        "folke/which-key.nvim",
+        ---@class wk.Opts
+        opts = {
+            preset = "classic",
+        },
+    },
+    {
         "hedyhli/outline.nvim",
         keys = { { "<leader>cs", false }, { "<leader>oo", "<cmd>Outline<cr>", desc = "Toggle Outline" } },
     },

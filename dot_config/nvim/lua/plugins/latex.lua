@@ -146,6 +146,12 @@ return {
                 group = "vimtex_event_focus",
                 callback = tex_focus_vim,
             })
+
+            require("which-key").add({
+                { "<localLeader>l", group = "vimtex" },
+                { "<localLeader>o", group = "open" },
+                { "<localLeader>p", group = "plugin" },
+            })
         end,
     },
     {
@@ -157,17 +163,6 @@ return {
                         { "<localLeader>h", "<plug>(vimtex-doc-package)", desc = "Vimtex Docs", silent = true },
                     },
                 },
-            },
-        },
-    },
-    {
-        "folke/which-key.nvim",
-        optional = true,
-        opts = {
-            defaults = {
-                ["<localLeader>l"] = { name = "+vimtex" },
-                ["<localLeader>o"] = { name = "+open" },
-                ["<localLeader>p"] = { name = "+plugin" },
             },
         },
     },

@@ -67,8 +67,8 @@ map("n", "<leader>t<left>", "<cmd>tabm -<cr>", { desc = "Move tab left" })
 map("n", "<leader>t<right>", "<cmd>tabm +<cr>", { desc = "Move tab right" })
 map("n", "<leader>tmh", "<cmd>-tabm<cr>", { desc = "Move tab left" })
 map("n", "<leader>tml", "<cmd>tabm +<cr>", { desc = "Move tab right" })
-wk.register({
-    ["<leader>tm"] = { name = "+tab +move" },
+wk.add({
+    { "<leader>tm", group = "+tab +move" },
 })
 
 -- Clear search, diff update and redraw
@@ -103,11 +103,11 @@ map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 -- quit current file
 map("n", "Q", "<cmd>q<cr><esc>", { desc = "quit file" })
 
-wk.register({
-    ["cs"] = { name = "+surrounds" },
-    ["<leader>t"] = { name = "+tab/Translate" },
-    ["<leader>o"] = { name = "+open" },
-    ["<leader>p"] = { name = "+preview" },
+wk.add({
+    { "cs", { group = "+surrounds" } },
+    { "<leader>t", { group = "+tab/Translate" } },
+    { "<leader>o", { group = "+open" } },
+    { "<leader>p", { group = "+preview" } },
 })
 
 -- reformat
