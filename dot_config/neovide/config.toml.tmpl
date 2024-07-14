@@ -1,0 +1,10 @@
+vsync = true
+maximized = false
+idle = true
+theme = "dark"
+{{- if eq .chezmoi.os "darwin" }}
+title-hidden = true
+frame = "transparent" # "full" "buttonless" "none"
+{{- else }}
+frame = "full" # "none"
+{{- end}}

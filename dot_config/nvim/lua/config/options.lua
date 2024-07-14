@@ -197,7 +197,7 @@ vim.cmd([[
 
 --- Neovide Configurations
 if vim.g.neovide then
-    vim.o.guifont = "FiraCode Nerd Font Mono:h14"
+    vim.o.guifont = "FiraCode Nerd Font Mono:h16"
     vim.o.linespace = 0 -- Controls spacing between lines, may also be negative.
     vim.g.neovide_scale_factor = 1.0
 
@@ -208,7 +208,6 @@ if vim.g.neovide then
     else
         vim.g.neovide_transparency = 0.8
     end
-    vim.g.neovide_theme = "dark"
 
     -- Windows configuration
     if vim.fn.has("win32") == 1 then
