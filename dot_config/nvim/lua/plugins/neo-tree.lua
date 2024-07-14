@@ -86,7 +86,7 @@ return {
                     local node = state.tree:get_node()
                     local path = node:get_id()
                     if vim.fn.has("mac") == 1 then
-                        vim.fn.jobstart({ "xdg-open", "-g", path }, { detach = true })
+                        vim.fn.jobstart({ "open", path }, { detach = true })
                     elseif vim.fn.has("linux") == 1 then
                         vim.fn.jobstart({ "xdg-open", path }, { detach = true })
                     elseif vim.fn.has("win32") == 1 then
