@@ -12,8 +12,8 @@ if vim.fn.has("win32") == 1 then
     rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
     rime_ls_shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/"
 elseif vim.fn.has("mac") == 1 then
-    rime_ls_exe_path = "rime_ls"
-    rime_ls_user_dir = "~/.config/Rime"
+    rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls"
+    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
     rime_ls_shared_data_dir = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
 end
 
