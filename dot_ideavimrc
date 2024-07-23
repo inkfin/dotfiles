@@ -104,7 +104,6 @@ nnoremap <Leader>h :<C-u>action QuickJavaDoc<CR>
 
 " go to ...
 nnoremap gb :<C-u>action JumpToLastChange<CR>
-nnoremap gc :<C-u>action GotoClass<CR>
 nnoremap gd :<C-u>action GotoDeclaration<CR>
 nnoremap gs :<C-u>action GotoSuperMethod<CR>
 nnoremap gi :<C-u>action GotoImplementation<CR>
@@ -121,6 +120,7 @@ nnoremap <Leader>/ :<C-u>action FindInPath<CR>
 nnoremap <Leader>ff :<C-u>action GotoFile<CR>
 nnoremap <Leader>sf :<C-u>action FindInPath<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
+nnoremap <Leader>sc :<C-u>action GotoClass<CR>
 nnoremap <Leader>sa :<C-u>action GotoAction<CR>
 nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
 nnoremap <Leader>sm :<C-u>action ShowBookmarks<CR>
@@ -160,7 +160,8 @@ nnoremap \i :action OptimizeImports<CR>
 nnoremap <leader>ca :action ShowIntentionActions<CR>
 
 " commentary
-map gcc :<C-u>action CommentByLineComment<CR>
+nnoremap gcc :<C-u>action CommentByLineComment<CR>
+vnoremap gc :<C-u>action CommentByLineComment<CR>
 
 
 
