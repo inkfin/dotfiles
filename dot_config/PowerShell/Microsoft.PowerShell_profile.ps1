@@ -66,15 +66,15 @@ Set-Alias -Name vim -Value 'nvim'
 function nvi { param($file) Start-Process -NoNewWindow neovide $file }
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
-function pwshrc { nvim "$HOME\.local\share\chezmoi\Documents\Powershell\Microsoft.PowerShell_profile.ps1" }
+function pwshrc { nvim "$HOME\.local\share\chezmoi\dot_config\Powershell\Microsoft.PowerShell_profile.ps1" }
 function rimerc { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custom.yaml" }
 function custom_phrase { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom_phrase.txt" }
 
 function nn {
     & "$HOME\.local\neovim\bin\nvim.exe" $args
 }
-# function newquake { wt -w _quake --title quake musicfox `; sp -V -s .8 -d D:\dev\Code --title quake }
-function newquake { wt -w _quake --title quake wsl -d Ubuntu -- tmux attach-session -t popup }
+function newquake { wt -w _quake -d $HOME\Documents\WorkNotes --title quake `; sp -V -p "PowerShell" -s .35 --title quake pwsh.exe && musicfox.exe `; sp -H -p "PowerShell" -s .8 --title quake btm }
+# function newquake { wt -w _quake --title quake wsl -d Ubuntu -- tmux attach-session -t popup }
 
 # oh-my-posh
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression
