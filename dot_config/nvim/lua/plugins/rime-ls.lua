@@ -83,6 +83,9 @@ return {
                         if sources[i].name == "dictionary" then
                             table.remove(sources, i)
                             bHasDictionary = true
+                        elseif sources[i].name == "buffer" then
+                            table.remove(sources, i)
+                            bHasDictionary = true
                         elseif sources[i].name == "copilot" then
                             table.remove(sources, i)
                             bHasDictionary = true
@@ -90,6 +93,7 @@ return {
                     end
                     if not bHasDictionary then
                         print("Rime Input Off 💤")
+                        table.insert(sources, { name = "buffer" })
                         table.insert(sources, { name = "copilot" })
                         table.insert(sources, { name = "dictionary" })
                     else
@@ -108,9 +112,9 @@ return {
         dependencies = { "noearc/jieba-lua" },
         keys = {
             -- stylua: ignore start
-            { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
-            { "W", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_W() end end, silent = true, noremap = true, },
-            { "E", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_E() end end, silent = true, noremap = true, },
+            -- { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
+            -- { "W", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_W() end end, silent = true, noremap = true, },
+            -- { "E", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_E() end end, silent = true, noremap = true, },
 
             { "ciw", mode = { "n" }, function() require("jieba_nvim").change_w() end, silent = true, noremap = false, },
             { "diw", mode = { "n" }, function() require("jieba_nvim").delete_w() end, },
