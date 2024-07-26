@@ -1,12 +1,15 @@
 #!/bin/bash
 
-. ~/scripts/env_init/helpers.sh
+. $HOME/scripts/env_init/helpers.sh
 
 # linuxbrew prerequisites
 if [[ $(uname -s) == "Linux" ]]; then
-    local system_name=$(get_system_name)
+    system_name=$(get_system_name)
     if [[ "$system_name" == "Ubuntu" ]]; then
         sudo apt-get install build-essential procps curl file git
+    elif [[ "$system_name" =~ "openSUSE" ]]; then
+        sudo zypper install -y --type pattern devel_basis
+        sudo zypper install -y procps curl file git
     else
         echo "($system_name) needs install homebrew requirements: https://docs.brew.sh/Homebrew-on-Linux#requirements"
     fi

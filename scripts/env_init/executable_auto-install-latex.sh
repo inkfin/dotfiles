@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/scripts/env_init/helpers.sh
+. $HOME/scripts/env_init/helpers.sh
 
 if ! is_command neovim; then
     echo "==========================================="
