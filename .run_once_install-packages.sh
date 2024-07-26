@@ -15,6 +15,7 @@ fi
 
 system_type=$(uname -s)
 
+# set default manager to my custom alias
 pkg_manager=("pac")
 
 # check if has command
@@ -39,24 +40,13 @@ install_if_not_exist() {
 }
 
 # define command list
-command_list=(zsh tmux ranger fzf unzip rg fd bat zoxide lsd bottom cmake python3 glow bat)
+command_list=(tmux ranger fzf unzip)
+brew_install_list=(rg fd bat zoxide starship lsd bottom glow)
 
 # MacOS
 if [ ${system_type} = "Darwin" ]; then
     pkg_manager=("brew")
 
-    # install homebrew
-    if ! is_command brew; then
-        echo "Installing homebrew"
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
-
-    $pkg_manager update
-
-    if [ -f "$HOME/.Brewfile" ]; then
-        echo "Updating homebrew bundle"
-        brew bundle --global
-    fi
 
     # install basic command in list
     for command in ${command_list[*]}; do
@@ -66,8 +56,6 @@ if [ ${system_type} = "Darwin" ]; then
     # fzf init
     /opt/homebrew/opt/fzf/install
 
-    # Vim init
-    install_if_not_exist neovim
     # if is_command nvim; then
     # 	echo "Bootstraping NeoVim"
     # 	nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
@@ -81,8 +69,21 @@ if [ ${system_type} = "Linux" ]; then
 
     ${pkg_manager[@]} update
 
+    # setup zsh
+    if ! is_command zsh; then
+        echo "Install zsh as default shell"
+        install_if_not_exist zsh
+        sudo chsh -s /usr/bin/zsh
+    fi
+
     # install basic command in list
     for command in ${command_list[*]}; do
+        echo $command
+        install_if_not_exist $command
+    done
+
+    # install brew command list
+    for command in ${brew_install_list[*]}; do
         echo $command
         install_if_not_exist $command
     done
@@ -90,8 +91,6 @@ if [ ${system_type} = "Linux" ]; then
     # set zsh as default shell
     sudo chsh -s $(which zsh)
 
-    # Vim init
-    install_if_not_exist neovim
     # if is_command nvim; then
     # 	echo "Bootstraping NeoVim"
     # 	nvim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+CocInstall' '+qall'
