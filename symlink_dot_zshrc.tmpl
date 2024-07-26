@@ -1,0 +1,32 @@
+{{- if ne .chezmoi.os "windows" }}
+
+# MacOS
+{{-   if eq .chezmoi.os "darwin" }}
+
+{{ .chezmoi.homeDir }}/.zshrc.conf/zshrc_darwin
+
+# LINUX
+{{-   else if eq .chezmoi.os "linux" }}
+
+# ubuntu
+{{-   if eq .chezmoi.osRelease.id "ubuntu" }}
+
+{{ .chezmoi.homeDir }}/.zshrc.conf/zshrc_ubuntu
+
+# fedora
+{{-   else if eq .chezmoi.osRelease.id "fedora" }}
+
+{{ .chezmoi.homeDir }}/.zshrc.conf/zshrc_fedora
+
+# openSUSE Tumbleweed
+{{-   else if eq .chezmoi.osRelease.id "opensuse-tumbleweed" }}
+
+{{ .chezmoi.homeDir }}/.zshrc.conf/zshrc_opensuse
+
+{{-   else }}
+
+{{ .chezmoi.homeDir }}/.zshrc.conf/zshrc_linux
+
+{{-   end }}
+
+{{- end }}

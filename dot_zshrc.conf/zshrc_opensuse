@@ -1,0 +1,30 @@
+# zshrc openSUSE
+
+
+ZSHCONF_HOME="$HOME/.zshrc.conf/"
+
+# ==== Includes ====
+
+## oh-my-zsh configs
+source $ZSHCONF_HOME/omz.zsh
+
+## user custom configs
+source $ZSHCONF_HOME/custom.zsh
+
+## 3rd party plugins
+source $ZSHCONF_HOME/plugins.zsh
+
+## development configs
+source $ZSHCONF_HOME/dev.zsh
+
+## local configs
+source $ZSHCONF_HOME/local.zsh
+
+
+# ==== Platform specific configs ====
+
+## === Aliases ====
+
+alias pac="sudo zypper "
+
+

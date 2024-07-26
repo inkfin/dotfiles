@@ -1,0 +1,70 @@
+# custom.zsh
+#
+#   user customizations & environment configs that don't require 3rd party plugins
+#
+
+
+# ==== Environment Variables ====
+
+## PATH
+export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
+
+## man
+export MANPATH="/usr/local/man:$MANPATH"
+
+# ==== User Commands ====
+
+alias gst="git status"
+alias gcl="git clone"
+alias ga="git add"
+alias gc="git commit"
+alias gp="git pull"
+alias gP="git push"
+alias lg="lazygit"
+alias vim="nvim"
+alias nvi="neovide"
+alias v="nvim"
+alias ra="ranger"
+alias ee="exit"
+
+# alias nn="~/.local/neovim/bin/nvim"
+# alias nvim="nn"
+
+alias sourcezsh="source ~/.zshrc"
+
+## lsd
+alias ls="lsd"
+alias l="ls"
+alias ll="ls -l"
+alias la="ls -al"
+alias lt="ls --tree"
+
+## chezmoi configs
+alias cz="chezmoi"
+alias cze="chezmoi edit "
+
+alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
+alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc"
+alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
+alias custom_phrase="nvim ~/.local/share/chezmoi/dot_config/Rime/custom_phrase.txt"
+
+
+# ==== User configurations ====
+
+## zsh history
+HISTFILE=~/.zshrc.conf/.histfile
+HISTSIZE=5000
+SAVEHIST=5000
+## emacs like keybinds
+bindkey -e
+
+export LANG=en_US.UTF-8
+
+## Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='nvim'
+else
+  export EDITOR='nvim'
+fi
+
+

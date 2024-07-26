@@ -42,5 +42,7 @@ install-packages.sh
 .tmux/
 .tmux.conf
 .config/fzf/
+.zshrc
+.zshrc.conf/
 {{ end }}
 

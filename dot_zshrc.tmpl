@@ -1,9 +1,0 @@
-{{ if eq .chezmoi.os "darwin" }}
-{{   include ".zshrc_darwin" }}
-{{ else if eq .chezmoi.os "linux" }}
-{{   if eq .chezmoi.osRelease.id "ubuntu" }}
-{{     include ".zshrc_ubuntu" }}
-{{   else if eq .chezmoi.osRelease.id "fedora" }}
-{{     include ".zshrc_fedora" }}
-{{   end }}
-{{ end }}

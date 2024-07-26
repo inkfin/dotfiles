@@ -1,8 +1,12 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:~/.local/bin:$PATH
+# omz.zsh
+#
+#   oh-my-zsh configuration
+#
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
+# ==== ZSH configurations ====
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -74,90 +78,10 @@ DISABLE_AUTO_UPDATE="true"
 plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting extract cp git-open safe-paste command-not-found zsh_codex rust)
 
 
-source $ZSH/oh-my-zsh.sh
-
-
-# ranger
-rag() {
-    if [ -z "$RANGER_LEVEL" ]
-    then
-        ranger
-    else
-        exit
-    fi
-}
-
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source ~/.config/fzf/fzf_config.zsh
-
-# The following lines were added by compinstall
-
-zstyle ':completion:*' completer _expand _complete _ignored _correct
-zstyle :compinstall filename '$HOME/.zshrc'
-
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
-#
-HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
-bindkey -e
-
-
-# User configuration
+# zsh codex
 bindkey '^X' create_completion
 
-# User Settings:
-alias l="ls"
-alias ll="ls -l"
-alias la="ls -al"
-alias pac="sudo dnf"
-alias gst="git status"
-alias gcl="git clone"
-alias ga="git add"
-alias gc="git commit"
-alias gp="git pull"
-alias gP="git push"
-alias lg="lazygit"
-alias tnew="tnux new -s "
-alias vim="nvim"
-alias v="nvim"
-alias nvi="neovide"
+# ==== ZSH Post Init ====
+# At the end source oh-my-zsh
+source $ZSH/oh-my-zsh.sh
 
-alias ee="exit"
-
-alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
-alias vimzsh="nvim ~/.local/share/chezmoi/.zshrc_fedora"
-alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
-alias sourcezsh="source ~/.zshrc"
-
-alias ra="ranger"
-alias cz="chezmoi"
-alias cze="chezmoi edit "
-export EDITOR=nvim
-
-alias nn="~/.local/neovim/bin/nvim"
-
-# CMake
-alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
-alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake -B"
-alias cmb="cmake --build "
-
-# === User Config ===
-
-
-# Clash
-#export http_proxy=http://127.0.0.1:7890
-#export https_proxy=http://127.0.0.1:7890
-#alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7891"
-#alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
-
-export http_proxy=http://73.102.37.105:8878
-
-# Dotnet
-export DOTNET_ROOT=$HOME/.dotnet
-export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
-
-eval "$(starship init zsh)"
