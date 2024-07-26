@@ -75,7 +75,7 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many pluginsBreadcrumbsBreadcrumbs slow down shell startup.
-plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting extract cp git-open safe-paste command-not-found zsh_codex rust)
+plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found zsh_codex rust)
 
 
 # zsh codex

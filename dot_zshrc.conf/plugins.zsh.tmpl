@@ -1,13 +1,16 @@
 # plugins.zsh
 #
 #   3rd party plugins settings
+#   vi: ft=zsh
 #
 
 
 # ==== Environment variables ====
 
-## homebrew
+{{ if eq .chezmoi.os "linux" -}}
+## linuxbrew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+{{- end }}
 
 ## w3m
 export PATH="$PATH:/usr/lib/w3m"
@@ -26,7 +29,7 @@ rag() {
 }
 
 ## Clash
-alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7891"
+alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7890"
 alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
 
 

@@ -21,6 +21,7 @@ return {
         opts = {
             -- change the comment string here
             config = {
+                c = "// %s",
                 cpp = "// %s",
                 -- shader stuff
                 glsl = "// %s",
