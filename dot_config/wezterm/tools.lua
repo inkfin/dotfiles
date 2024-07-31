@@ -1,4 +1,5 @@
 local wezterm = require("wezterm")
+Config = Config or {}
 
 local module = {}
 

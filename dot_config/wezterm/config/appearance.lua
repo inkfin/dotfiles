@@ -5,11 +5,25 @@ local t = require("tools")
 
 t.require_config("config.retro_tab_bar")
 
+local font_with_fallback = {}
+if t.os("windows") then
+	font_with_fallback = { "IosevkaTerm NFM Medium", "JetBrains Mono" }
+elseif t.os("macos") then
+	font_with_fallback = { "JetBrains Mono" }
+end
+
+local window_background_opacity = 0.6
+if t.os("windows") then
+	window_background_opacity = 0.85
+elseif t.os("macos") then
+	window_background_opacity = 0.65
+end
+
 return {
 	initial_cols = 96,
 	initial_rows = 24,
 
-	window_background_opacity = 0.55,
+	window_background_opacity = window_background_opacity,
 
 	-- "VerticalLcd" "HorizontalLcd" "Normal" "Mono" "Light"
 	freetype_load_target = "Normal",
@@ -23,7 +37,7 @@ return {
 	-- retro tab bar
 	use_fancy_tab_bar = false,
 
-	font = wezterm.font_with_fallback({ "JetBrains Mono" }),
+	font = wezterm.font_with_fallback(font_with_fallback),
 	font_size = 11.0,
 
 	window_decorations = "INTEGRATED_BUTTONS|RESIZE",
