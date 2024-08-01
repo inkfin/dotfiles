@@ -31,6 +31,8 @@ if filename:sub(-3) == "-cn" then
     bDisableChinese = false
 end
 
+CmpCache = { keymaps = {}, cmp_sources = {} }
+
 return {
     -- rime-ls
     -- https://github.com/wlh320/rime-ls
@@ -77,29 +79,40 @@ return {
                 function()
                     vim.cmd("ToggleRime")
                     local cmp = require("cmp")
-                    local sources = assert(cmp.get_config().sources)
+                    local sources = assert(cmp.get_config().sources, "[toggle_rime] can't get cmp_config.sources!")
+                    local mapping = assert(cmp.get_config().mapping, "[toggle_rime] can't get cmp_config.mapping!")
+                    -- remove conflict sources
                     local bHasDictionary = false
+                    local conflict_sources = { "dictionary", "buffer", "copilot" }
                     for i = #sources, 1, -1 do
-                        if sources[i].name == "dictionary" then
-                            table.remove(sources, i)
-                            bHasDictionary = true
-                        elseif sources[i].name == "buffer" then
-                            table.remove(sources, i)
-                            bHasDictionary = true
-                        elseif sources[i].name == "copilot" then
-                            table.remove(sources, i)
-                            bHasDictionary = true
+                        for _, v in ipairs(conflict_sources) do
+                            if sources[i].name == v then
+                                table.insert(CmpCache.cmp_sources, sources[i])
+                                table.remove(sources, i)
+                                bHasDictionary = true
+                                break
+                            end
                         end
                     end
                     if not bHasDictionary then
                         print("Rime Input Off 💤")
-                        table.insert(sources, { name = "buffer" })
-                        table.insert(sources, { name = "copilot" })
-                        table.insert(sources, { name = "dictionary" })
+
+                        for _, v in ipairs(CmpCache.cmp_sources) do
+                            table.insert(sources, v)
+                        end
+                        CmpCache.cmp_sources = {}
+
+                        CmpCache.keymaps["<Space>i"] = mapping[" "].i
+                        mapping[" "].i = function()
+                            vim.fn.feedkeys(" ", "n")
+                        end
                     else
                         print("Rime Input On 🚀")
+
+                        mapping[" "].i = CmpCache.keymaps["<Space>i"]
                     end
                     cmp.setup.buffer({ sources = sources })
+                    cmp.setup.buffer({ mapping = mapping })
                 end,
                 desc = "toggle rime",
             },
