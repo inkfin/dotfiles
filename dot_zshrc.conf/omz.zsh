@@ -78,10 +78,10 @@ DISABLE_AUTO_UPDATE="true"
 plugins=(git tmux colored-man-pages zsh-autosuggestions zsh-syntax-highlighting extract cp git-open safe-paste command-not-found zsh_codex rust)
 
 
-# zsh codex
-bindkey '^X' create_completion
-
 # ==== ZSH Post Init ====
 # At the end source oh-my-zsh
 source $ZSH/oh-my-zsh.sh
+
+# zsh codex
+bindkey '^X' create_completion
 
