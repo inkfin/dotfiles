@@ -71,6 +71,7 @@ return {
                 { name = "nvim_lsp" },
                 { name = "emoji" },
                 { name = "path" },
+                { name = "dictionary" },
             }, {
                 { name = "buffer" },
             })

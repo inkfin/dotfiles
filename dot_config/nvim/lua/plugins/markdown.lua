@@ -152,6 +152,7 @@ return {
             local enable_filetype = {
                 ["markdown"] = true,
                 ["org"] = true,
+                ["text"] = true,
             }
             if enable_filetype[vim.bo.filetype] then
                 table.insert(opts.sources, { name = "dictionary", option = { keyword_length = 2 } })

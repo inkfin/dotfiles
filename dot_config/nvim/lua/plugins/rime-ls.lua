@@ -23,15 +23,20 @@ end
 
 ---------------------------------------------------------------------
 
--- only enable space and enter when editing filename ends with '-cn'
 local bDisableChinese = true
 
+-- only enable space and enter when editing filename ends with '-cn'
 local filename = vim.fn.expand("%:p:t:r")
 if filename:sub(-3) == "-cn" then
     bDisableChinese = false
 end
 
-CmpCache = { keymaps = {}, cmp_sources = {} }
+-- check vim modeline 'set rime=on'
+if vim.g.rime and vim.g.rime == "on" then
+    bDisableChinese = false
+end
+
+local cmp_cache = { keymaps = {}, cmp_sources = {} }
 
 return {
     -- rime-ls
@@ -41,7 +46,8 @@ return {
     -- https://github.com/liubianshi/cmp-lsp-rimels
     {
         "liubianshi/cmp-lsp-rimels",
-        ft = { "markdown", "text" },
+        enabled = not (vim.g.rime and vim.g.rime == "off"),
+        ft = { "markdown", "org", "text" },
         dependencies = {
             "neovim/nvim-lspconfig",
             "hrsh7th/nvim-cmp",
@@ -81,35 +87,43 @@ return {
                     local cmp = require("cmp")
                     local sources = assert(cmp.get_config().sources, "[toggle_rime] can't get cmp_config.sources!")
                     local mapping = assert(cmp.get_config().mapping, "[toggle_rime] can't get cmp_config.mapping!")
+
                     -- remove conflict sources
-                    local bHasDictionary = false
+                    local bIsChineseInputOn = false
                     local conflict_sources = { "dictionary", "buffer", "copilot" }
                     for i = #sources, 1, -1 do
                         for _, v in ipairs(conflict_sources) do
                             if sources[i].name == v then
-                                table.insert(CmpCache.cmp_sources, sources[i])
+                                table.insert(cmp_cache.cmp_sources, sources[i])
                                 table.remove(sources, i)
-                                bHasDictionary = true
+                                bIsChineseInputOn = true
                                 break
                             end
                         end
                     end
-                    if not bHasDictionary then
-                        print("Rime Input Off 💤")
-
-                        for _, v in ipairs(CmpCache.cmp_sources) do
-                            table.insert(sources, v)
-                        end
-                        CmpCache.cmp_sources = {}
-
-                        CmpCache.keymaps["<Space>i"] = mapping[" "].i
-                        mapping[" "].i = function()
-                            vim.fn.feedkeys(" ", "n")
-                        end
-                    else
+                    if bIsChineseInputOn then
                         print("Rime Input On 🚀")
 
-                        mapping[" "].i = CmpCache.keymaps["<Space>i"]
+                        -- restore cmp <Space> keymap in insert mode
+                        if mapping[" "] ~= nil then
+                            mapping[" "].i = cmp_cache.keymaps["<Space>i"]
+                        end
+                    else
+                        print("Rime Input Off 💤")
+
+                        -- refill conflict sources
+                        for _, v in ipairs(cmp_cache.cmp_sources) do
+                            table.insert(sources, v)
+                        end
+                        cmp_cache.cmp_sources = {}
+
+                        -- disable cmp <Space> keymap in insert mode
+                        if mapping[" "] ~= nil then
+                            cmp_cache.keymaps["<Space>i"] = mapping[" "].i
+                            mapping[" "].i = function()
+                                vim.fn.feedkeys(" ", "n")
+                            end
+                        end
                     end
                     cmp.setup.buffer({ sources = sources })
                     cmp.setup.buffer({ mapping = mapping })
@@ -122,7 +136,7 @@ return {
     {
         "noearc/jieba.nvim",
         ft = { "markdown", "text" },
-        dependencies = { "noearc/jieba-lua" },
+        dependencies = { { "noearc/jieba-lua", ft = { "markdown", "text" } } },
         keys = {
             -- stylua: ignore start
             -- { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
