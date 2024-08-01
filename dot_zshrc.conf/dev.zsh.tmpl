@@ -1,0 +1,154 @@
+# -*- zsh -*-
+# vi: ft=zsh
+
+# ======================================
+#  dev.zsh
+# ======================================
+#   developement related commands
+# ======================================
+
+
+# ==== Environment variables ====
+#
+#   *hint:
+#     $PATH:                executable paths
+#   (*Linux)
+#     $LD_LIBRARY_PATH:     dynamic library paths
+#   (*MacOS)
+#     $DYLD_LIBRARY_PATH:   dynamic library paths
+#
+
+
+## ---- homebrew ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+append_to_flag CPPFLAGS "-I/opt/homebrew/include"
+append_to_flag LDFLAGS  "-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib"
+append_to_path PATH "/opt/homebrew/sbin/"
+export HOMEBREW_NO_AUTO_UPDATE=0
+
+## homebrew/command-not-found
+HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
+if [ -f "$HB_CNF_HANDLER" ]; then
+source "$HB_CNF_HANDLER";
+fi
+
+{{- else if eq .chezmoi.os "linux" -}}
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+{{- end }}
+
+## ---- dylib ----
+{{ if eq .chezmoi.os "linux" -}}
+
+prepend_to_path LD_LIBRARY_PATH   "$HOME/.local/lib:/usr/local/lib/"
+
+{{- else if eq .chezmoi.os "darwin" -}}
+
+prepend_to_path DYLD_LIBRARY_PATH "$HOME/.local/lib:/usr/local/lib/"
+
+{{- end }}
+
+## ---- vcpkg ----
+export VCPKG_HOME="$HOME/vcpkg/"
+prepend_to_path PATH "$VCPKG_HOME"
+
+## ---- rustup ----
+prepend_to_path PATH "/home/linuxbrew/.linuxbrew/opt/rustup/bin/"
+
+## ---- cargo ----
+export CARGO_HOME="$HOME/.cargo/"
+prepend_to_path PATH "$CARGO_HOME/bin/"
+
+## ---- cuda ----
+##  set PATH & LD_LIBRARY_PATH in local.zsh
+export CUDA_124_HOME="/usr/local/cuda-12.4/"
+
+## ---- nvm ----
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+## ---- llvm ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+append_to_path PATH     "/opt/homebrew/opt/llvm/bin"
+append_to_flag LDFLAGS  "-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib"
+append_to_flag CPPFLAGS "-I/opt/homebrew/opt/llvm/include"
+
+{{- end }}
+
+## ---- CMake ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+append_to_path CMAKE_INCLUDE_PATH "/opt/homebrew/include"
+append_to_path CMAKE_LIBRARY_PATH "/opt/homebrew/lib"
+
+{{- end }}
+
+## ---- DOCKER ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+export DOCKER_PATH="/Applications/Docker.app/Contents/Resources/bin"
+append_to_path PATH "$DOCKER_PATH"
+
+{{- end }}
+
+## ---- Vulkan ----
+source "/usr/local/VulkanSDK/current/setup-env.sh"
+
+## ---- JAVA ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+export JAVA_20_HOME="/opt/homebrew/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
+export JAVA_11_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
+export JAVA_8_HOME="/opt/homebrew/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home"
+
+export JAVA_HOME=$JAVA_20_HOME
+append_to_flag CPPFLAGS "-I$JAVA_HOME/include"
+append_to_path PATH "$JAVA_HOME/bin"
+
+## ---- Maven -----
+export M2_HOME="/opt/homebrew/opt/maven/libexec"
+append_to_path PATH "$M2_HOME/bin"
+
+{{- end }}
+
+## ---- Ruby ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+append_to_path PATH     "/opt/homebrew/opt/ruby/bin"
+append_to_path PATH     "/opt/homebrew/lib/ruby/gems/3.1.0/bin"
+append_to_flag LDFLAGS  "-L/opt/homebrew/opt/ruby/lib"
+append_to_flag CPPFLAGS "-I/opt/homebrew/opt/ruby/include"
+append_to_path PKG_CONFIG_PATH "/opt/homebrew/opt/ruby/lib/pkgconfig"
+
+{{- end }}
+
+
+# ==== Utility aliases ====
+
+## ---- CMake ----
+alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
+alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$VCPKG_HOME/vcpkg/scripts/buildsystems/vcpkg.cmake -B"
+alias cmb="cmake --build "
+
+## ---- Redis ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+# To restart redis after an upgrade:
+alias restartredis='brew services restart redis'
+# Or, if you don't want/need a background service you can just run:
+alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf'
+
+{{- end }}
+
+
+# ==== Initialization ====
+
+## ---- vcpkg ----
+source $VCPKG_HOME/scripts/vcpkg_completion.zsh
+
+
+

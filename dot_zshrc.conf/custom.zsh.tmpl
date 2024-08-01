@@ -1,16 +1,24 @@
-# custom.zsh
-#
-#   vi: ft=zsh
+# -*- zsh -*-
+# vi: ft=zsh
+
+# ======================================
+#  custom.zsh
+# ======================================
 #   user customizations & environment configs that don't require 3rd party plugins
+# ======================================
 
 
 # ==== Environment Variables ====
 
 ## PATH
-export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
+# export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
+prepend_to_path PATH /usr/local/bin
+prepend_to_path PATH $HOME/.local/bin
 
 ## man
-export MANPATH="/usr/local/man:$MANPATH"
+# export MANPATH="/usr/local/man:$MANPATH"
+prepend_to_path MANPATH "/usr/local/man/"
+
 
 # ==== User Commands ====
 
@@ -62,6 +70,11 @@ alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.conf/zshrc_opensuse"
 {{ end }}
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
 alias custom_phrase="nvim ~/.local/share/chezmoi/dot_config/Rime/custom_phrase.txt"
+
+## Rime
+{{ if eq .chezmoi.os "darwin" }}
+alias rimerc="nvim ~/.local/share/chezmoi/dot_config/Rime/squirrel.custom.yaml"
+{{ end }}
 
 
 # ==== User configurations ====

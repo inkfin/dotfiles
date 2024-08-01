@@ -1,24 +1,25 @@
-# plugins.zsh
-#
+# -*- zsh -*-
+# vi: ft=zsh
+
+# ======================================
+#  plugins.zsh
+# ======================================
 #   3rd party plugins settings
-#   vi: ft=zsh
-#
+# ======================================
 
 
 # ==== Environment variables ====
 
-{{ if eq .chezmoi.os "linux" -}}
-## linuxbrew
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-{{- end }}
+## ---- Miktex ----
+export PATH="$HOME/bin:$PATH"
 
-## w3m
-export PATH="$PATH:/usr/lib/w3m"
+## ---- w3m ----
+append_to_path PATH "/usr/lib/w3m/"
 
 
 # ==== Utility aliases ====
 
-## ranger
+## ---- ranger ----
 rag() {
     if [ -z "$RANGER_LEVEL" ]
     then
@@ -28,20 +29,25 @@ rag() {
     fi
 }
 
-## Clash
+## ---- Clash ----
 alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7890"
 alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
+
+## ---- Pandoc ----
+{{ if eq .chezmoi.os "darwin" -}}
+alias panexport='pandoc --template eisvogel --listings --pdf-engine=xelatex -V CJKmainfont="PingFang SC" '
+{{- end }}
 
 
 # ==== Initialization ====
 
-## zoxide
+## ---- zoxide ----
 eval "$(zoxide init zsh)"
 
-## starship
+## ---- starship ----
 eval "$(starship init zsh)"
 
-## fzf
+## ---- fzf ----
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 source ~/.config/fzf/fzf_config.zsh
 

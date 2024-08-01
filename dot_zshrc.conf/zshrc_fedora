@@ -5,6 +5,9 @@ ZSHCONF_HOME="$HOME/.zshrc.conf/"
 
 # ==== Includes ====
 
+## helper functions
+source $ZSHCONF_HOME/helper.zsh
+
 ## oh-my-zsh configs
 source $ZSHCONF_HOME/omz.zsh
 

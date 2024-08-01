@@ -1,7 +1,11 @@
-# omz.zsh
-#
+# -*- zsh -*-
+# vi: ft=zsh
+
+# ======================================
+#  omz.zsh
+# ======================================
 #   oh-my-zsh configuration
-#
+# ======================================
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"

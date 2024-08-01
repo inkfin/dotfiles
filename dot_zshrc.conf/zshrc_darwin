@@ -9,6 +9,9 @@ ZSHCONF_HOME="$HOME/.zshrc.conf/"
 
 # ==== Includes ====
 
+## helper functions
+source $ZSHCONF_HOME/helper.zsh
+
 ## oh-my-zsh configs
 source $ZSHCONF_HOME/omz.zsh
 
@@ -28,66 +31,12 @@ source $ZSHCONF_HOME/local.zsh
 # ==== Platform specific configs ====
 
 
-## ==== Environment variables ====
-
-## homebrew
-export CPPFLAGS="-I/opt/homebrew/include $CPPFLAGS"
-export LDFLAGS="-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib $LDFLAGS"
-export PATH="/opt/homebrew/sbin:$PATH"
-export HOMEBREW_NO_AUTO_UPDATE=0
-
-## homebrew/command-not-found
-HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
-if [ -f "$HB_CNF_HANDLER" ]; then
-source "$HB_CNF_HANDLER";
-fi
-
-## Miktex
-export PATH="$HOME/bin:$PATH"
-
-
-## ==== Development environment ====
-
-## llvm
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib $LDFLAGS"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include $CPPFLAGS"
-
-## CMake
-export CMAKE_INCLUDE_PATH="/opt/homebrew/include"
-export CMAKE_LIBRARY_PATH="/opt/homebrew/lib"
-
-## DOCKER
-export DOCKER_PATH="/Applications/Docker.app/Contents/Resources/bin"
-export PATH="$PATH:$DOCKER_PATH"
-
-## Vulkan
-source "/usr/local/VulkanSDK/current/setup-env.sh"
-
-## JAVA
-export JAVA_20_HOME="/opt/homebrew/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
-export JAVA_11_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
-export JAVA_8_HOME="/opt/homebrew/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home"
-
-export JAVA_HOME=$JAVA_20_HOME
-export CPPFLAGS="-I$JAVA_HOME/include"
-export PATH="$PATH:$JAVA_HOME/bin"
-
-## Maven
-export M2_HOME="/opt/homebrew/opt/maven/libexec"
-export PATH="$PATH:$M2_HOME/bin"
-
-## Ruby
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export PATH="/opt/homebrew/lib/ruby/gems/3.1.0/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/ruby/lib $LDFLAGS"
-export CPPFLAGS="-I/opt/homebrew/opt/ruby/include $CPPFLAGS"
-export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
+# ==== Environment variables ====
 
 
 ## ==== MacOS Specific ====
 
-## 1Password
+## ---- 1Password ----
 # export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
 ## translate-shell
@@ -95,14 +44,9 @@ export HOME_LANG="zh-CN"
 export TARGET_LANG="zh-CN"
 
 ## Remove Path that requires Permissions
-remove_path_from_path() {
-    PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "$1" | paste -sd ':' -)
-}
-
-## Call the function with the path you want to remove
-remove_path_from_path "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin"
-remove_path_from_path "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin"
-remove_path_from_path "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
+remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin"
+remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin"
+remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
 
 ## iterm2_shell_integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
@@ -117,20 +61,8 @@ alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
 alias browse='~/.local/carbonyl-0.0.3/carbonyl'
 
-# Pandoc
-alias panexport='pandoc --template eisvogel --listings --pdf-engine=xelatex -V CJKmainfont="PingFang SC" '
-
-## Rime
-alias rimerc="nvim ~/.local/share/chezmoi/dot_config/Rime/squirrel.custom.yaml"
-
 ## the fuck
 eval $(thefuck --alias)
-
-## Redis
-# To restart redis after an upgrade:
-alias restartredis='brew services restart redis'
-# Or, if you don't want/need a background service you can just run:
-alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf'
 
 # MACOS SecureInput
 alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
@@ -138,25 +70,7 @@ alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 
 ## ==== Initialization ====
 
-## vcpkg integrate
-autoload bashcompinit
-bashcompinit
-source /Users/inkfin/vcpkg/scripts/vcpkg_completion.zsh
 
-## Miniforge
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 # Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
