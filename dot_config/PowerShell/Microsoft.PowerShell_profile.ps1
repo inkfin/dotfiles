@@ -73,7 +73,7 @@ function custom_phrase { nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom
 function nn {
     & "$HOME\.local\neovim\bin\nvim.exe" $args
 }
-function newquake { wt -w _quake -d $HOME\Documents\WorkNotes --title quake `; sp -V -p "PowerShell" -s .35 --title quake pwsh.exe && musicfox.exe `; sp -H -p "PowerShell" -s .8 --title quake btm }
+function newquake { wt -w _quake -d $HOME\Documents\WorkNotes --title quake `; sp -V -p "PowerShell" -s .35 --title quake `; sp -H -p "PowerShell" -s .8 --title quake }
 # function newquake { wt -w _quake --title quake wsl -d Ubuntu -- tmux attach-session -t popup }
 
 # oh-my-posh

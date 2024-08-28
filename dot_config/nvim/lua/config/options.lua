@@ -189,6 +189,37 @@ elseif vim.fn.has("win32") == 1 and vim.fn.has("wsl") == 0 then
     vim.go.shellxquote = ""
 end
 
+-- clipboard settings (:h clipboard-wsl)
+if vim.fn.has("wsl") == 1 then
+    if vim.fn.executable("win32yank.exe") == 1 then
+        vim.g.clipboard = {
+            name = "win32yank-wsl",
+            copy = {
+                ["+"] = "win32yank.exe -i --crlf",
+                ["*"] = "win32yank.exe -i --crlf",
+            },
+            paste = {
+                ["+"] = "win32yank.exe -o --lf",
+                ["*"] = "win32yank.exe -o --lf",
+            },
+            cache_enabled = true,
+        }
+    else
+        vim.g.clipboard = {
+            name = "WslClipboard",
+            copy = {
+                ["+"] = "clip.exe",
+                ["*"] = "clip.exe",
+            },
+            paste = {
+                ["+"] = 'powershell.exe -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+                ["*"] = 'powershell.exe -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+            },
+            cache_enabled = 0,
+        }
+    end
+end
+
 --- mouse menus
 vim.cmd([[
     aunmenu PopUp.How-to\ disable\ mouse
