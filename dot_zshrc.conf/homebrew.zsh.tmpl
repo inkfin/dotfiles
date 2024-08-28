@@ -1,0 +1,29 @@
+# -*- zsh -*-
+# vi: ft=zsh
+
+# ======================================
+#  homebrew.zsh
+# ======================================
+#   homebrew initialization
+# ======================================
+
+
+{{ if eq .chezmoi.os "darwin" -}}
+
+append_to_flag CPPFLAGS "-I/opt/homebrew/include"
+append_to_flag LDFLAGS  "-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib"
+append_to_path PATH "/opt/homebrew/sbin/"
+export HOMEBREW_NO_AUTO_UPDATE=0
+
+## homebrew/command-not-found
+HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
+if [ -f "$HB_CNF_HANDLER" ]; then
+source "$HB_CNF_HANDLER";
+fi
+
+{{- else if eq .chezmoi.os "linux" -}}
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+{{- end }}
+

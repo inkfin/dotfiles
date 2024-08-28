@@ -19,26 +19,6 @@
 #
 
 
-## ---- homebrew ----
-{{ if eq .chezmoi.os "darwin" -}}
-
-append_to_flag CPPFLAGS "-I/opt/homebrew/include"
-append_to_flag LDFLAGS  "-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib"
-append_to_path PATH "/opt/homebrew/sbin/"
-export HOMEBREW_NO_AUTO_UPDATE=0
-
-## homebrew/command-not-found
-HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
-if [ -f "$HB_CNF_HANDLER" ]; then
-source "$HB_CNF_HANDLER";
-fi
-
-{{- else if eq .chezmoi.os "linux" -}}
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-{{- end }}
-
 ## ---- dylib ----
 {{ if eq .chezmoi.os "linux" -}}
 
@@ -96,7 +76,9 @@ append_to_path PATH "$DOCKER_PATH"
 {{- end }}
 
 ## ---- Vulkan ----
-source "/usr/local/VulkanSDK/current/setup-env.sh"
+if [ -f "/usr/local/VulkanSDK/current/setup-env.sh" ]; then
+    source "/usr/local/VulkanSDK/current/setup-env.sh"
+fi
 
 ## ---- JAVA ----
 {{ if eq .chezmoi.os "darwin" -}}
@@ -148,7 +130,9 @@ alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redi
 # ==== Initialization ====
 
 ## ---- vcpkg ----
-source $VCPKG_HOME/scripts/vcpkg_completion.zsh
+if [ -f /home/inkfin/vcpkg/scripts/vcpkg_completion.zsh ]; then
+    source $VCPKG_HOME/scripts/vcpkg_completion.zsh
+fi
 
 
 
