@@ -37,6 +37,26 @@ return {
         end,
     },
 
+    {
+        "MeanderingProgrammer/markdown.nvim",
+        ft = { "markdown", "norg", "rmd", "org", "tex" },
+        opts = {
+            file_types = { "markdown", "norg", "rmd", "org", "tex" },
+            --- Styles: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki#components
+            code = {
+                sign = true,
+                width = "block",
+                left_pad = 2,
+                right_pad = 4,
+                min_width = 45,
+            },
+            heading = {
+                sign = true,
+            },
+            pipe_table = { preset = "double" },
+        },
+    },
+
     -- {
     --     "lukas-reineke/headlines.nvim",
     --     opts = function()
@@ -94,20 +114,26 @@ return {
     },
 
     -- preview equations
+    -- {
+    --     "jbyuki/nabla.nvim",
+    --     ft = { "quarto", "tex", "markdown" },
+    --     -- stylua: ignore
+    --     keys = {
+    --         { "<leader>pe", function() require("nabla").toggle_virt() end, desc = "toggle equations" },
+    --         { "<leader>ph", function() require"nabla".popup() end, desc = "hover equation" },
+    --     },
+    -- },
+
     {
-        "jbyuki/nabla.nvim",
-        ft = { "quarto", "tex", "markdown" },
-        -- stylua: ignore
-        keys = {
-            { "<leader>pe", function() require("nabla").toggle_virt() end, desc = "toggle equations" },
-            { "<leader>ph", function() require"nabla".popup() end, desc = "hover equation" },
-        },
+        "Kicamon/markdown-table-mode.nvim",
+        config = function()
+            require("markdown-table-mode").setup()
+        end,
     },
 
     -- export pdf
     {
         "jghauser/auto-pandoc.nvim",
-        -- dir = "C:/Users/11096/Code/Lua/auto-pandoc.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
         ft = "markdown",
         keys = {
