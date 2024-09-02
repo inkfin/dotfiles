@@ -10,7 +10,7 @@ local rime_ls_shared_data_dir = "undefined"
 if vim.fn.has("win32") == 1 then
     rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls.exe"
     rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
-    rime_ls_shared_data_dir = vim.fn.getenv("APPDATA") .. "/rime-ls/"
+    rime_ls_shared_data_dir = "C:\\Program Files (x86)\\Rime\\weasel-0.16.1\\data"
 elseif vim.fn.has("mac") == 1 then
     rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls"
     rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
@@ -31,8 +31,9 @@ if filename:sub(-3) == "-cn" then
     bDisableChinese = false
 end
 
--- check vim modeline 'set rime=on'
-if vim.g.rime and vim.g.rime == "on" then
+-- check vim modeline 'let rime=1'
+-- nvim filename.md --cmd 'let rime=1'
+if vim.g.rime then
     bDisableChinese = false
 end
 

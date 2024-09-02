@@ -9,7 +9,7 @@ def auto_page_down(interval, cycles=None):
             print("Press CTRL+C to stop the program.")
         i = 0 if cycles is None else int(cycles)
         while True:
-            pyautogui.press("right")
+            pyautogui.press("down")
             time.sleep(interval)
             if cycles is not None:
                 i -= 1
