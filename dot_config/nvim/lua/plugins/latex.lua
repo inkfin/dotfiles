@@ -27,42 +27,42 @@ return {
         keys = {
             { "K", mode = { "n" }, "5k", silent = true },
 
-            { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-open)", desc = "Open TOC" },
-            { "<localleader>e", mode = { "n" }, "<Plug>(vimtex-errors)", desc = "Show errors" },
-            { "<localleader>c", mode = { "n" }, "<Cmd>write<CR><Cmd>VimtexCompile<CR>", desc = "Compile" },
-            { "<localleader>r", mode = { "n" }, "<Plug>(vimtex-reload)", desc = "Reload" },
-            { "<localleader>w", mode = { "n" }, "<Cmd>VimtexCountWords<CR>", desc = "Count words" },
-            { "<localleader>z", mode = { "n" }, "<Plug>(vimtex-clean)", desc = "Clean auxiliary files" },
-            { "<localleader>Z", mode = { "n" }, "<Plug>(vimtex-clean-full)", desc = "Clean all outputs" },
+            { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-open)", desc = "Open TOC", ft = "tex"},
+            { "<localleader>e", mode = { "n" }, "<Plug>(vimtex-errors)", desc = "Show errors", ft = "tex" },
+            { "<localleader>c", mode = { "n" }, "<Cmd>write<CR><Cmd>VimtexCompile<CR>", desc = "Compile", ft = "tex" },
+            { "<localleader>r", mode = { "n" }, "<Plug>(vimtex-reload)", desc = "Reload", ft = "tex" },
+            { "<localleader>w", mode = { "n" }, "<Cmd>VimtexCountWords<CR>", desc = "Count words", ft = "tex" },
+            { "<localleader>z", mode = { "n" }, "<Plug>(vimtex-clean)", desc = "Clean auxiliary files", ft = "tex" },
+            { "<localleader>Z", mode = { "n" }, "<Plug>(vimtex-clean-full)", desc = "Clean all outputs", ft = "tex" },
 
             -- o: +open
-            { "<localleader>oi", mode = { "n" }, "<Plug>(vimtex-info)", desc = "info" },
-            { "<localleader>oI", mode = { "n" }, "<Plug>(vimtex-info-full)", desc = "info-full" },
-            { "<localleader>ot", mode = { "n" }, "<Plug>(vimtex-toc-toggle)", desc = "toggle-toc" },
-            { "<localleader>os", mode = { "n" }, "<Plug>(vimtex-status)", desc = "status" },
-            { "<localleader>oS", mode = { "n" }, "<Plug>(vimtex-status-full)", desc = "status-full" },
+            { "<localleader>oi", mode = { "n" }, "<Plug>(vimtex-info)", desc = "info", ft = "tex" },
+            { "<localleader>oI", mode = { "n" }, "<Plug>(vimtex-info-full)", desc = "info-full", ft = "tex" },
+            { "<localleader>ot", mode = { "n" }, "<Plug>(vimtex-toc-toggle)", desc = "toggle-toc", ft = "tex" },
+            { "<localleader>os", mode = { "n" }, "<Plug>(vimtex-status)", desc = "status", ft = "tex" },
+            { "<localleader>oS", mode = { "n" }, "<Plug>(vimtex-status-full)", desc = "status-full", ft = "tex" },
 
             -- Forward search
-            { "<localleader>f", mode = { "n" }, "<Cmd>VimtexView<CR>", desc = "scroll-sync-PDF" },
+            { "<localleader>f", mode = { "n" }, "<Cmd>VimtexView<CR>", desc = "scroll-sync-PDF", ft = "tex" },
             -- NOTE: To perform reverse-search, <cmd+S>+<LeftClick> in the PDF Reader
 
-            { "dsm", mode = { "n" }, "<Plug>(vimtex-env-delete-math)", desc = "Delete surr math" },
-            { "csm", mode = { "n" }, "<Plug>(vimtex-cmd-change-math)", desc = "Change surr math" },
+            { "dsm", mode = { "n" }, "<Plug>(vimtex-env-delete-math)", desc = "Delete surr math", ft = "tex" },
+            { "csm", mode = { "n" }, "<Plug>(vimtex-cmd-change-math)", desc = "Change surr math", ft = "tex" },
             -- Use `ai` and `ii` for the item text object
-            { "ii", mode = { "x" }, "<Plug>(vimtex-im)" },
-            { "ii", mode = { "o" }, "<Plug>(vimtex-im)" },
-            { "ai", mode = { "x" }, "<Plug>(vimtex-am)" },
-            { "ai", mode = { "o" }, "<Plug>(vimtex-am)" },
+            { "ii", mode = { "x" }, "<Plug>(vimtex-im)", ft = "tex" },
+            { "ii", mode = { "o" }, "<Plug>(vimtex-im)", ft = "tex" },
+            { "ai", mode = { "x" }, "<Plug>(vimtex-am)", ft = "tex" },
+            { "ai", mode = { "o" }, "<Plug>(vimtex-am)", ft = "tex" },
             -- Use `am` and `im` for the inline math text object
-            { "im", mode = { "x" }, "<Plug>(vimtex-i$)" },
-            { "im", mode = { "o" }, "<Plug>(vimtex-i$)" },
-            { "am", mode = { "x" }, "<Plug>(vimtex-a$)" },
-            { "am", mode = { "o" }, "<Plug>(vimtex-a$)" },
+            { "im", mode = { "x" }, "<Plug>(vimtex-i$)", ft = "tex" },
+            { "im", mode = { "o" }, "<Plug>(vimtex-i$)", ft = "tex" },
+            { "am", mode = { "x" }, "<Plug>(vimtex-a$)", ft = "tex" },
+            { "am", mode = { "o" }, "<Plug>(vimtex-a$)", ft = "tex" },
 
             -- Utils
-            { "<localleader>i", mode = { "n" }, "<Plug>(vimtex-imaps-list)", desc = "Show imap list" },
-            { "<localleader>pk", mode = { "n" }, "<Plug>(vimtex-stop)", desc = "Stop VimTex" },
-            { "<localleader>pK", mode = { "n" }, "<Plug>(vimtex-stop-all)", desc = "Stop VimTex all" },
+            { "<localleader>i", mode = { "n" }, "<Plug>(vimtex-imaps-list)", desc = "Show imap list", ft = "tex" },
+            { "<localleader>pk", mode = { "n" }, "<Plug>(vimtex-stop)", desc = "Stop VimTex", ft = "tex" },
+            { "<localleader>pK", mode = { "n" }, "<Plug>(vimtex-stop-all)", desc = "Stop VimTex all", ft = "tex" },
         },
         config = function()
             vim.api.nvim_create_autocmd({ "FileType" }, {
