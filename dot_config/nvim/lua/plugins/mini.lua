@@ -37,16 +37,15 @@ return {
     },
     {
         "echasnovski/mini.surround",
-        version = "*",
         opts = {
             mappings = {
-                add = "csa", -- Add surrounding in Normal and Visual modes
-                delete = "csd", -- Delete surrounding
-                find = "csf", -- Find surrounding (to the right)
-                find_left = "csF", -- Find surrounding (to the left)
-                highlight = "csh", -- Highlight surrounding
-                replace = "csr", -- Replace surrounding
-                update_n_lines = "csn", -- Update `n_lines`}
+                add = "gsa", -- Add surrounding in Normal and Visual modes
+                delete = "gsd", -- Delete surrounding
+                find = "gsf", -- Find surrounding (to the right)
+                find_left = "gsF", -- Find surrounding (to the left)
+                highlight = "gsh", -- Highlight surrounding
+                replace = "gsr", -- Replace surrounding
+                update_n_lines = "gsn", -- Update `n_lines`}
             },
         },
     },
