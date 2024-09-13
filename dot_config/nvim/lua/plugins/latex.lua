@@ -76,7 +76,7 @@ return {
             vim.g.tex_flavor = "latex"
             vim.g.vimtex_compiler_progname = "nvr" -- use pip install neovim-remote
             vim.g.vimtex_compiler_latexmk_engines = {
-                ["_"] = "-xelatex", -- default value
+                ["_"] = "-pdf", -- default value
                 ["pdfdvi"] = "-pdfdvi",
                 ["pdfps"] = "-pdfps",
                 ["pdflatex"] = "-pdf",
