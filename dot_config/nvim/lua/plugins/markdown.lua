@@ -114,15 +114,15 @@ return {
     },
 
     -- preview equations
-    -- {
-    --     "jbyuki/nabla.nvim",
-    --     ft = { "quarto", "tex", "markdown" },
-    --     -- stylua: ignore
-    --     keys = {
-    --         { "<leader>pe", function() require("nabla").toggle_virt() end, desc = "toggle equations" },
-    --         { "<leader>ph", function() require"nabla".popup() end, desc = "hover equation" },
-    --     },
-    -- },
+    {
+        "jbyuki/nabla.nvim",
+        ft = { "quarto", "tex", "markdown" },
+        -- stylua: ignore
+        keys = {
+            { "<leader>pe", function() require("nabla").toggle_virt() end, desc = "toggle equations", ft = { "quarto", "tex", "markdown" } },
+            { "<leader>ph", function() require"nabla".popup() end, desc = "hover equation", ft = { "quarto", "tex", "markdown" } },
+        },
+    },
 
     {
         "Kicamon/markdown-table-mode.nvim",
