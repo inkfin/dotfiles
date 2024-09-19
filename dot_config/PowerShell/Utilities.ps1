@@ -80,3 +80,30 @@ function preview {
     )
     & $HOME/scripts/previewer.ps1 $filePath $width $height $horizontal_position $vertical_position
 }
+
+# wsl
+## tmux
+function tl { wsl -- tmux list-sessions }
+function ts { param ([string]$session) wsl -- tmux switch-client -t $session }
+function ta {
+    param (
+        [string]$session = ""
+    )
+
+    if ($session) {
+        wsl -- tmux attach-session -t $session
+    } else {
+        wsl -- tmux attach-session
+    }
+}
+function tkss {
+    param (
+        [string[]]$args
+    )
+
+    if (-not $args[0] -or $args[0].StartsWith('-')) {
+        wsl -- tmux kill-session @args
+    } else {
+        wsl -- tmux kill-session -t @args
+    }
+}
