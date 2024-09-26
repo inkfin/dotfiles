@@ -184,6 +184,11 @@ def call_chafa(file_path):
     width = params[2] if 2 in params else None
     height = params[3] if 3 in params else None
 
+    support_sixel = os_name == "windows"  # windows terminal preview
+    if support_sixel:
+        command.append("-f")
+        command.append("sixel")
+
     if width is not None and height is not None:
         if width != "" and height != "":
             command.append("-s")
