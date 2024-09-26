@@ -14,13 +14,13 @@ REM ) ELSE IF not x%item:.pdf=%==x%item% (
 REM     REM Download exe from https://docs.apryse.com/documentation/cli/download/
 REM     pdf2text %1 | bat
 REM ) ELSE IF not x%item:.jpg=%==x%item% (
-REM     chafa %1
+REM     chafa -f sixel %1
 REM ) ELSE IF not x%item:.jpeg=%==x%item% (
-REM     chafa %1
+REM     chafa -f sixel %1
 REM ) ELSE IF not x%item:.png=%==x%item% (
-REM     chafa %1
+REM     chafa -f sixel %1
 REM ) ELSE IF not x%item:.webp=%==x%item% (
-REM     chafa %1
+REM     chafa -f sixel %1
 REM ) ELSE (
 REM 	bat --color=always --line-range=:200 %1
 REM )
