@@ -184,7 +184,15 @@ def call_chafa(file_path):
     width = params[2] if 2 in params else None
     height = params[3] if 3 in params else None
 
-    support_sixel = os_name == "windows"  # windows terminal preview
+    support_sixel = False
+
+    if os_name == "windows":
+        support_sixel = True  # windows terminal preview
+    elif os_name == "darwin":
+        support_sixel = False  # iTerm2
+        command.append("-f")
+        command.append("iterm")
+
     if support_sixel:
         command.append("-f")
         command.append("sixel")
@@ -236,12 +244,12 @@ def handle_image(path):
         else:
             print("Install chafa for image previews")
     elif os_name == "darwin":
+        # iTerm2 image preview
+        # send_image_to_iterm2(path)
         if check_command_exists("chafa"):
             call_chafa(path)
         else:
             print("Install chafa for image previews")
-        # iTerm2 image preview
-        # send_image_to_iterm2(path)
     elif os_name == "linux":
         if check_command_exists("chafa"):
             call_chafa(path)
