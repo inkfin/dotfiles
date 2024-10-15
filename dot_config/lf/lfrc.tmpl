@@ -82,7 +82,7 @@ cmd ? $lf -doc | less
 # set windows previewer
 set previewer ~\\scripts\\previewer.bat
 
-# cmd preview $preview $Env:f | less -R
+# cmd preview $Env:~\\scripts\\previewer.bat $Env:f | less -R
 
 # map custom directories
 map gh cd ~
@@ -133,6 +133,8 @@ map O $mimeopen --ask $f
 # }}
 
 set previewer ~/scripts/previewer.sh
+
+cmd preview $~/scripts/previewer.sh $f | less -R
 
 # define a custom 'rename' command without prompt for overwrite
 # cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
