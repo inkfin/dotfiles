@@ -1,0 +1,10 @@
+{
+    "xmake.compile_commands": {
+        "prefix": [
+            "add_rules"
+        ],
+        "body": [
+            "add_rules(\"plugin.compile_commands.autoupdate\", {outputdir = \".\"})"
+        ]
+    }
+}

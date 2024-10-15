@@ -1,0 +1,17 @@
+{
+    "cout": {
+        "prefix": [
+            "std::cout",
+            "cout"
+        ],
+        "body": [
+            "std::cout << $0 << std::endl;"
+        ]
+    },
+    "<<": {
+        "prefix": "<<",
+        "body": [
+            "<< \"$0\""
+        ]
+    }
+}
