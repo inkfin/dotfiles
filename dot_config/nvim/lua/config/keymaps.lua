@@ -122,3 +122,15 @@ vim.keymap.del({ "n", "v" }, "<leader>cf")
 map("n", "<leader>cr", vim.g.compile_run, { desc = "Compile & Run" })
 map("n", "<leader>cu", vim.g.write_nvim_custom_config, { desc = "Update nvim custom config" })
 map("n", "<leader>ut", vim.g.toggle_typewriter_mode, { desc = "Typewriter mode" })
+
+vim.cmd([[
+
+command! Edir call feedkeys(":e <C-R>=expand('%:p:h')<CR>/", 'n')
+
+" custom command "cdc" to change directory to the current file's directory
+command! CD execute 'cd' expand('%:p:h')
+
+" custom command "cwd" to print the current file's directory
+command! Cwd echo expand('%:p:h')
+
+]])
