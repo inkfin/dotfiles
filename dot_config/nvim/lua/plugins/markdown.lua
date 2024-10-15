@@ -46,7 +46,7 @@ return {
             code = {
                 sign = true,
                 width = "block",
-                left_pad = 2,
+                left_pad = 0,
                 right_pad = 4,
                 min_width = 45,
             },
@@ -54,6 +54,9 @@ return {
                 sign = true,
             },
             pipe_table = { preset = "normal" },
+            latex = {
+                enabled = false,
+            },
         },
     },
 

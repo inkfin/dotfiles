@@ -93,14 +93,14 @@ return {
             }
             if vim.fn.has("mac") == 1 then
                 -- Currently Skim has bug that prevents forward searching
-                -- vim.g.vimtex_view_method = "skim"
-                -- vim.g.vimtex_view_skim_sync = 1
-                -- vim.g.vimtex_view_skim_activate = 1
-                -- vim.g.vimtex_view_skim_no_select = 1 -- Set this option to 1 to prevent Skim from selecting the text after command |:VimtexView| or compiler callback.
-                -- vim.g.vimtex_view_skim_reading_bar = 1
+                vim.g.vimtex_view_method = "skim"
+                vim.g.vimtex_view_skim_sync = 1
+                vim.g.vimtex_view_skim_activate = 1
+                vim.g.vimtex_view_skim_no_select = 1 -- Set this option to 1 to prevent Skim from selecting the text after command |:VimtexView| or compiler callback.
+                vim.g.vimtex_view_skim_reading_bar = 1
 
-                vim.g.vimtex_view_method = "sioyek"
-                vim.g.vimtex_view_sioyek_options = "--nofocus --reuse-window" -- --nofocus not working?
+                -- vim.g.vimtex_view_method = "sioyek"
+                -- vim.g.vimtex_view_sioyek_options = "--nofocus --reuse-window" -- --nofocus not working?
             elseif vim.fn.has("win32") == 1 then
                 vim.g.vimtex_view_general_viewer = "SumatraPDF"
                 vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
