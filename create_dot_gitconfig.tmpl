@@ -1,0 +1,54 @@
+# vi: ft=toml
+
+[user]
+	name = "{{ .profile }}"
+	email = "{{ .email }}"
+
+[include]
+	path = ~/.config/gitalias.txt
+
+[diff]
+	tool = code
+[difftool "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE
+[difftool "code"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[pager]
+	difftool = true
+
+[merge]
+	tool = nvimdiff
+{{ if eq .chezmoi.os "windows" }}
+[mergetool "nvimdiff"]
+    cmd = nvim -d $REMOTE $LOCAL $BASE $MERGED -c '$wincmd w' -c 'wincmd J'
+{{ else }}
+[mergetool "nvimdiff"]
+    cmd = nvim -d $REMOTE $LOCAL $BASE $MERGED
+{{ end }}
+[mergetool "code"]
+    cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+
+[core]
+	autocrlf = input
+	excludesfile = ~/.gitignore_global
+[commit]
+	template = ~/.gitmessage
+	
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[pull]
+	ff = true
+	reabase = true
+
+[credential "helperselector"]
+	selected = manager
+[credential "https://git.overleaf.com"]
+	provider = generic
+[credential "https://codeup.aliyun.com"]
+	provider = generic
+[credential]
+	helper = store
+
