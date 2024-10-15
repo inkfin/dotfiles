@@ -84,13 +84,15 @@ return {
             commands = {
                 system_open = function(state)
                     local node = state.tree:get_node()
-                    local path = '"' .. node:get_id() .. '"'
+                    local path = node:get_id()
+                    local path_ = '"' .. path .. '"'
                     if vim.fn.has("mac") == 1 then
+                        vim.notify("open " .. path)
                         vim.fn.jobstart({ "open", path }, { detach = true })
                     elseif vim.fn.has("linux") == 1 then
                         vim.fn.jobstart({ "xdg-open", path }, { detach = true })
                     elseif vim.fn.has("win32") == 1 then
-                        vim.cmd("silent !Invoke-Item " .. path)
+                        vim.cmd("silent !Invoke-Item " .. path_)
                     end
 
                     -- -- Windows: Without removing the file from the path, it opens in code.exe instead of explorer.exe

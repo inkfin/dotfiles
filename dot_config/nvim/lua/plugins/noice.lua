@@ -4,7 +4,7 @@ return {
     {
         "folke/noice.nvim",
         -- cursor flickering bug (trace: https://github.com/folke/noice.nvim/issues/923)
-        commit = "d9328ef",
+        -- commit = "d9328ef",
         enabled = not (vim.g.started_by_firenvim or _G.disable_plugins.noice),
         opts = {
             views = {
