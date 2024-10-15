@@ -91,7 +91,7 @@ return {
 
                     -- remove conflict sources
                     local bIsChineseInputOn = false
-                    local conflict_sources = { "dictionary", "buffer", "copilot" }
+                    local conflict_sources = { "luasnip", "dictionary", "buffer", "copilot" }
                     for i = #sources, 1, -1 do
                         for _, v in ipairs(conflict_sources) do
                             if sources[i].name == v then

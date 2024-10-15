@@ -68,11 +68,12 @@ return {
                 end, { "i", "s" }),
             })
             opts.sources = cmp.config.sources({
+                { name = "luasnip" },
                 { name = "nvim_lsp" },
+                { name = "copilot" },
                 { name = "emoji" },
                 { name = "path" },
                 { name = "dictionary" },
-            }, {
                 { name = "buffer" },
             })
 
