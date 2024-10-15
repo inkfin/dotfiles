@@ -58,8 +58,15 @@
 (add-to-list 'default-frame-alist '(height . 50)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 (xterm-mouse-mode t)
 (setq custom-enabled-themes '(tango-dark))
-(add-to-list 'default-frame-alist 
-             '(font . "JetBrainsMono Nerd Font Mono-18:weight=medium"))
+
+(cond
+  ( *is-mac*
+    (add-to-list 'default-frame-alist
+                 '(font . "JetBrainsMono Nerd Font Mono-18:weight=medium")))
+  ( *is-windows*
+    (add-to-list 'default-frame-alist
+                 '(font . "Sarasa Term SC Nerd Font-18:weight=medium")))
+)
 
 (require 'keybindings-config)
 
@@ -74,7 +81,13 @@
 (setq org-pretty-table-charset "╒╕╘╛╤╡╧╞╪═│")
 
 
-(setq custom-file "~/.config/emacs/custom.el")
+(if *is-windows*
+    (setq custom-file "~/.emacs.d/custom.el")
+  ; else
+  (setq custom-file "~/.config/emacs/custom.el"))
+;; create custom-file if not exists
+(unless (file-exists-p custom-file)
+  (with-temp-buffer (write-file custom-file)))
 (load custom-file)
 
 (provide 'init)
