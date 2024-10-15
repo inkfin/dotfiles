@@ -53,7 +53,7 @@ return {
             heading = {
                 sign = true,
             },
-            pipe_table = { preset = "double" },
+            pipe_table = { preset = "normal" },
         },
     },
 

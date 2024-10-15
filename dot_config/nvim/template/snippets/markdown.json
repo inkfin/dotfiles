@@ -1,35 +1,94 @@
 {
   "equations with case": {
     "prefix": [
-      "equations",
-      "cases"
+      "\\cases"
     ],
     "body": [
+      "$$",
       "\\begin{cases}",
       "  $1 = &2",
-      "\\end{cases}"
+      "\\end{cases}",
+      "$$"
     ],
     "discription": "equations with huge left bracket"
   },
-  "equations": {
+  "label": {
     "prefix": [
-      "equations",
-      "align"
+      "\\label"
     ],
     "body": [
-      "\\begin{align*}",
+      "\\label{${1:type}}$0"
+    ]
+  },
+  "equations aligned": {
+    "prefix": [
+      "\\aligned"
+    ],
+    "body": [
+      "$$",
+      "\\begin{aligned}",
       "  $1 &= &2",
-      "\\end{align*}"
+      "\\end{aligned}",
+      "$$"
+    ],
+    "discription": "equations alinged"
+  },
+  "equations align": {
+    "prefix": [
+      "\\align"
+    ],
+    "body": [
+      "$$",
+      "\\begin{align}",
+      "  $1 &= &2",
+      "\\end{align}",
+      "$$"
     ],
     "discription": "equations without left bracket"
   },
+  "equations align*": {
+    "prefix": [
+      "\\align*"
+    ],
+    "body": [
+      "$$",
+      "\\begin{align*}",
+      "  $1 &= &2",
+      "\\end{align*}",
+      "$$"
+    ],
+    "discription": "equations align*"
+  },
   "fractions": {
     "prefix": [
-      "frac",
       "\\frac"
     ],
     "body": [
       "\\frac{$1}{$2}"
+    ]
+  },
+  "square root": {
+    "prefix": [
+      "\\sqrt"
+    ],
+    "body": [
+      "\\sqrt{$0}"
+    ]
+  },
+  "left bracket": {
+    "prefix": [
+      "\\("
+    ],
+    "body": [
+      "\\left("
+    ]
+  },
+  "right bracket": {
+    "prefix": [
+      "\\)"
+    ],
+    "body": [
+      "\\right("
     ]
   },
   "red text": {
