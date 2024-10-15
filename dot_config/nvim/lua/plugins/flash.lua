@@ -1,3 +1,7 @@
+if _G.disable_plugins.flash then
+    return {}
+end
+
 return {
     {
         "folke/flash.nvim",

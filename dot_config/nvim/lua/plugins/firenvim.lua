@@ -1,5 +1,6 @@
--- stylua: ignore
-if true then return {} end
+if _G.disable_plugins.firenvim then
+    return {}
+end
 
 return {
     "glacambre/firenvim",

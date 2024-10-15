@@ -1,4 +1,6 @@
--- if true then return {} end
+if _G.disable_plugins.rust then
+    return {}
+end
 
 return {
     -- Correctly setup lspconfig for Rust 🚀

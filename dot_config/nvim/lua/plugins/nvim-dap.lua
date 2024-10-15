@@ -1,4 +1,8 @@
 -- Debug plugins settings
+if _G.disable_plugins.dap then
+    return {}
+end
+
 return {
     {
         "mfussenegger/nvim-dap",

@@ -18,6 +18,10 @@
 ---
 --- Code:
 
+if _G.disable_plugins.tex then
+    return {}
+end
+
 return {
     {
         "lervag/vimtex",

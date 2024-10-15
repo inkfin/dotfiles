@@ -5,7 +5,7 @@ return {
         "folke/noice.nvim",
         -- cursor flickering bug (trace: https://github.com/folke/noice.nvim/issues/923)
         commit = "d9328ef",
-        enabled = not vim.g.started_by_firenvim,
+        enabled = not (vim.g.started_by_firenvim or _G.disable_plugins.noice),
         opts = {
             views = {
                 cmdline_popup = {
@@ -63,6 +63,7 @@ return {
     },
     {
         "rcarriga/nvim-notify",
+        enabled = not _G.disable_plugins.notify,
         opts = {
             fps = 60,
             timeout = 3500,

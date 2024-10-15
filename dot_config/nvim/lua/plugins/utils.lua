@@ -28,7 +28,7 @@ return {
     },
     {
         "keaising/im-select.nvim",
-        enabled = vim.fn.executable("im-select") == 1,
+        enabled = _G.disable_plugins.rime and vim.fn.executable("im-select") == 1,
         config = function()
             -- download im-select executable if don't exists
             -- Windows:
@@ -46,5 +46,6 @@ return {
     },
     {
         "wakatime/vim-wakatime",
+        enabled = not _G.disable_plugins.wakatime,
     },
 }

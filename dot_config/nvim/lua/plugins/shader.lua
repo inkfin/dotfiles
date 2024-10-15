@@ -1,6 +1,4 @@
 local M = {}
-local enable_glsl = true
-local enable_wgsl = true
 
 -- configure filetypes
 -- stylua: ignore start
@@ -69,11 +67,11 @@ local wgsl_config = {
     },
 }
 
-if enable_glsl then
+if not _G.disable_plugins.glsl then
     table.insert(M, glsl_config)
 end
 
-if enable_wgsl then
+if not _G.disable_plugins.wgsl then
     table.insert(M, wgsl_config)
 end
 

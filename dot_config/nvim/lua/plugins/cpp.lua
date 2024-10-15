@@ -1,3 +1,7 @@
+if _G.disable_plugins.cpp then
+    return {}
+end
+
 return {
     -- Correctly setup lspconfig for clangd 🚀
     {

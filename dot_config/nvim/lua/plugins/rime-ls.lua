@@ -1,5 +1,9 @@
 --- Config for rime-ls
 
+if _G.disable_plugins.rime then
+    return {}
+end
+
 ---------------------------------------------------------------------
 -- Auto disable when rime_ls is not found
 ---------------------------------------------------------------------

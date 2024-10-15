@@ -1,3 +1,7 @@
+if _G.disable_plugins.overseer then
+    return {}
+end
+
 return {
     -- tutorials: https://github.com/stevearc/overseer.nvim/blob/master/doc/tutorials.md
     {
