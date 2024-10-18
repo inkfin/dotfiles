@@ -38,7 +38,7 @@ return {
     },
 
     {
-        "MeanderingProgrammer/markdown.nvim",
+        "MeanderingProgrammer/render-markdown.nvim",
         ft = { "markdown", "norg", "rmd", "org", "tex" },
         opts = {
             file_types = { "markdown", "norg", "rmd", "org", "tex" },
@@ -53,7 +53,10 @@ return {
             heading = {
                 sign = true,
             },
-            pipe_table = { preset = "normal" },
+            pipe_table = {
+                -- preset = "double",
+                style = "normal",
+            },
             latex = {
                 enabled = false,
             },
