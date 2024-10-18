@@ -27,6 +27,23 @@ return {
         keys = { { "<leader>cs", false }, { "<leader>oo", "<cmd>Outline<cr>", desc = "Toggle Outline" } },
     },
     {
+        "mbbill/undotree",
+        keys = {
+            -- stylua: ignore
+            { "U", function() vim.cmd.UndotreeToggle() vim.cmd.UndotreeFocus() end, mode = "n", desc = "UndotreeToggle" },
+        },
+        -- https://github.com/mbbill/undotree/blob/master/plugin/undotree.vim#L27
+        init = function()
+            vim.g.undotree_WindowLayout = 3
+
+            vim.g.undotree_DiffAutoOpen = 0
+            if vim.fn.executable("diff") == 1 then
+                -- https://github.com/mbbill/undotree/issues/168
+                vim.g.undotree_DiffAutoOpen = 1
+            end
+        end,
+    },
+    {
         "keaising/im-select.nvim",
         enabled = _G.disable_plugins.rime and vim.fn.executable("im-select") == 1,
         config = function()

@@ -13,8 +13,8 @@ local is_directory_exists = function(dir)
     return vim.fn.empty(vim.fn.glob(dir)) == 0
 end
 
-local backup_path = vim.fn.stdpath("data") .. "/tmp/backup"
-local undo_path = vim.fn.stdpath("data") .. "/tmp/undo"
+local backup_path = vim.fn.stdpath("data") .. "/cache/backup"
+local undo_path = vim.fn.stdpath("data") .. "/cache/undo"
 
 if not is_directory_exists(backup_path) then
     os.execute(backup_path)
