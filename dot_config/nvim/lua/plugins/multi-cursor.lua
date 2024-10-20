@@ -19,6 +19,7 @@ return {
                 let g:VM_maps["Add Cursor At Pos"]  = '<C-]>'         " after adding cursor, use arrow key to navigate
                 let g:VM_maps["Add Cursor Down"]    = '<M-Down>'      " start selecting down
                 let g:VM_maps["Add Cursor Up"]      = '<M-Up>'        " start selecting up
+                let g:VM_maps['Find Under']         = ''              " disable find under
 
                 let g:VM_maps["Mouse Word"]         = '<C-RightMouse>'
                 let g:VM_maps["Mouse Cursor"]       = '<M-LeftMouse>'
