@@ -29,6 +29,7 @@ _G.disable_plugins = {
 
     --- AI
     --copilot = true,
+    --harper = true,
 
     --- input method
     rime = true,
