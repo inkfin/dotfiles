@@ -16,6 +16,7 @@ SPH
 len
 num
 UML
+pts
 RGBD
 nvim
 luap
@@ -32,6 +33,7 @@ FIXME
 Phong
 super
 PINNs
+ANOVA
 Surfel
 surfel
 voxels
@@ -73,6 +75,7 @@ keyframe
 Rasterize
 workgroup
 keyframes
+pagebreak
 covariance
 javascript
 treesitter
