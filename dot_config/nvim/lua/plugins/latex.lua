@@ -29,7 +29,7 @@ return {
         ft = "tex",
         -- stylua: ignore
         keys = {
-            { "K", mode = { "n" }, "5k", silent = true },
+            { "K", mode = { "n" }, "5gk", silent = true },
 
             { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-open)", desc = "Open TOC", ft = "tex"},
             { "<localleader>e", mode = { "n" }, "<Plug>(vimtex-errors)", desc = "Show errors", ft = "tex" },

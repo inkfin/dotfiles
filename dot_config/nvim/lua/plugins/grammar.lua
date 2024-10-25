@@ -18,6 +18,8 @@ if _G.disable_plugins.harper then
     return {}
 end
 
+-- TODO: https://blob42.xyz/blog/neovim-diagnostic-filtering/
+
 return {
     {
         "neovim/nvim-lspconfig",
