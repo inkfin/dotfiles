@@ -24,8 +24,8 @@ return {
 
             local keys = require("lazyvim.plugins.lsp.keymaps").get()
             -- cancel K from hover
-            keys[#keys + 1] = { "K", false }
-            keys[#keys + 1] = { "K", "5gk", noremap = true } -- lsp mapping disabling don't work, so explicitly remap it
+            -- keys[#keys + 1] = { "K", false }
+            -- keys[#keys + 1] = { "K", "5gk", noremap = true } -- lsp mapping disabling don't work, so explicitly remap it
             -- cancel <leader>cr from rename
             keys[#keys + 1] = { "<leader>cr", false } -- disable default rename
             keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, desc = "Rename", mode = { "n" } }

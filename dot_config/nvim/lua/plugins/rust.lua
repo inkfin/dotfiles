@@ -29,7 +29,7 @@ return {
                             end,
                             desc = "Show Crate Documentation",
                         },
-                        { "K", false },
+                        -- { "K", false },
                     },
                 },
             },

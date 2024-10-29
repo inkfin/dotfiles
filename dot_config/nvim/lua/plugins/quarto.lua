@@ -58,7 +58,7 @@ return {
             { "<localleader>ti", ":split term://ipython<cr>", desc = "terminal: ipython", ft = "quarto" },
             { "<localleader>tp", ":split term://python<cr>", desc = "terminal: python", ft = "quarto" },
             -- { "<localleader>tj", ":split term://julia<cr>", desc = "terminal: julia", ft = "quarto" },
-            { "K", false },
+            -- { "K", false },
         },
     },
 
