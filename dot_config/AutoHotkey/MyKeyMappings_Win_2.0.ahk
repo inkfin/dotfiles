@@ -177,9 +177,15 @@ ToggleWindow(KeyName) {
     if (StoredWindowIDMap.Has(KeyName)) {
         windowID := StoredWindowIDMap[KeyName]
         if WinExist("ahk_id " . windowID) {
-            if DllCall("IsWindowVisible", "Ptr", windowID) {
-                WinHide("ahk_id " . windowID)
-                ;TrayTip "Window with ID " . windowID . " hidden.", TrayTipTitle
+            if WinActive("ahk_id " . windowID) {
+                if DllCall("IsWindowVisible", "Ptr", windowID) {
+                    WinHide("ahk_id " . windowID)
+                    ;TrayTip "Window with ID " . windowID . " hidden.", TrayTipTitle
+                } else {
+                    WinShow("ahk_id " . windowID)
+                    WinActivate("ahk_id " . windowID)
+                    ;TrayTip "Window with ID " . windowID . " is now shown and focused.", TrayTipTitle
+                }
             } else {
                 WinShow("ahk_id " . windowID)
                 WinActivate("ahk_id " . windowID)
@@ -203,10 +209,8 @@ OnExit UnHideAll
 UnHideAll(*) {
     global StoredWindowIDMap
     for KeyName, StoredWindowID in StoredWindowIDMap {
-        if (StoredWindowID != "" && WinExist("ahk_id " . StoredWindowID)) {
-            WinShow("ahk_id " . StoredWindowID)
-            WinActivate("ahk_id " . StoredWindowID)
-        }
+        WinShow("ahk_id " . StoredWindowID)
+        WinActivate("ahk_id " . StoredWindowID)
     }
     StoredWindowIDMap.Clear()  ; Clear all keys
 }
