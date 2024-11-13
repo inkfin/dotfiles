@@ -58,7 +58,7 @@ return {
             "hrsh7th/nvim-cmp",
             "hrsh7th/cmp-nvim-lsp",
         },
-        config = {
+        opts = {
             cmd = { rime_ls_exe_path },
             rime_user_dir = rime_ls_user_dir,
             shared_data_dir = rime_ls_shared_data_dir,

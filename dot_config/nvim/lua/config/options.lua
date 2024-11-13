@@ -61,7 +61,9 @@ local indent = 4
 
 opt.autowrite = true -- Enable auto write
 opt.backup = true
-opt.clipboard = "unnamedplus" -- Sync with system clipboard
+-- only set clipboard if not in ssh, to make sure the OSC 52
+-- integration works automatically. Requires Neovim >= 0.10.0
+opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
 opt.completeopt = "menu,menuone,noselect"
 opt.conceallevel = 3 -- Hide * markup for bold and italic
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
@@ -80,10 +82,10 @@ opt.pumblend = 10 -- Popup blend
 opt.pumheight = 10 -- Maximum number of entries in a popup
 opt.relativenumber = true -- Relative line numbers
 opt.scrolloff = 5 -- Lines of context
-opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize" }
+opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 opt.shiftround = true -- Round indent
 opt.shiftwidth = indent -- Size of an indent
-opt.shortmess:append({ W = true, I = true, c = true })
+opt.shortmess:append({ W = true, I = true, c = true, C = true })
 opt.showmode = false -- Dont show mode since we have a statusline
 opt.sidescrolloff = 8 -- Columns of context
 opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
@@ -95,9 +97,10 @@ opt.spelllang = { "en", "cjk" } -- Set language: English and Chinese
 opt.spelloptions = "camel" -- Enable camel case
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
+opt.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]]
 opt.tabstop = indent -- Number of spaces tabs count for
 opt.termguicolors = true -- True color support
-opt.timeoutlen = 150 -- Set wait time
+opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
@@ -107,19 +110,22 @@ opt.wrap = true -- Enable line wrap
 opt.fillchars = {
     foldopen = "",
     foldclose = "",
-    -- fold = "⸱",
-    fold = " ",
+    fold = "⸱",
+    -- fold = " ",
     foldsep = " ",
     diff = "╱",
     eob = " ",
 }
 
 -- Folding
-vim.opt.foldlevel = 99
-vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-
-if vim.fn.has("nvim-0.9.0") == 1 then
-    vim.opt.statuscolumn = [[%!v:lua.require'lazyvim.util'.ui.statuscolumn()]]
+if vim.fn.has("nvim-0.10") == 1 then
+    opt.smoothscroll = true
+    opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
+    opt.foldmethod = "expr"
+    opt.foldtext = ""
+else
+    opt.foldmethod = "indent"
+    opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
 end
 
 -- HACK: causes freezes on <= 0.9, so only enable on >= 0.10 for now
