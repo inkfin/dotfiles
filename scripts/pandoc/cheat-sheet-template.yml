@@ -1,0 +1,40 @@
+---
+# This cheat-sheet configuration is used for pandoc template pandoc-cheat-sheet,
+#   which needs a latex local compiler
+#   repo-link: https://github.com/idiv-biodiversity/pandoc-cheat-sheet?tab=readme-ov-file#pdf
+#
+# these are not shown in the document, they are just for metadata
+title: Midterm 2 Cheat Sheet
+author: inkfin
+lang: en
+keywords:
+  - cheat sheet
+
+# highlighting increases readability
+linkcolor: blue
+
+# these LaTeX variables fit as much content on as few pages as possible
+documentclass: scrartcl
+pagestyle: empty
+papersize: letterpaper
+linestretch: 1.0
+geometry:
+  - letterpaper
+  - left=1cm
+  - right=1cm
+  - top=1cm
+  - bottom=1cm
+#  - landscape
+# you can also add "landscape" to geometry if you want more than 2 columns
+
+# fiddle with these to increase readability
+columns: 2
+fontsize: 9pt
+
+# vertical space between paragraphs
+whitespace: none
+
+# this essentially disables justification, which can increase readability
+ragged: yes
+---
+
