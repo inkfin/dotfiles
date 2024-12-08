@@ -158,6 +158,26 @@ return {
             })
         end,
     },
+
+    {
+        "HakonHarnes/img-clip.nvim",
+        ft = { "tex" },
+        opts = {
+            file_types = {
+                tex = {
+                    template = [[
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{$FILE_PATH}
+  \caption{$CURSOR}
+  \label{fig:$LABEL}
+\end{figure}
+                    ]],
+                },
+            },
+        },
+    },
+
     {
         "neovim/nvim-lspconfig",
         opts = {

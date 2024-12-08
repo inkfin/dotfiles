@@ -70,6 +70,9 @@ eval $(thefuck --alias)
 # MACOS SecureInput
 alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 
+# imagemagick (image utility)
+export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+
 
 ## ==== Initialization ====
 

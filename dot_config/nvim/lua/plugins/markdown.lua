@@ -90,34 +90,80 @@ return {
     --     end,
     -- },
 
-    -- paste an image to markdown from the clipboard
-    -- :PasteImg,
     {
-        "dfendr/clipboard-image.nvim",
-        ft = { "quarto", "markdown" },
-        keys = {
-            { "<leader>pi", "<cmd>PasteImg<cr>", silent = true, desc = "image paste" },
-        },
-        cmd = {
-            "PasteImg",
-        },
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        ft = { "markdown" },
         opts = {
-            quarto = {
-                img_dir = { "%:p:h", "assets" },
-                affix = "![](%s)",
+            default = {
+                dir_path = "assets",
             },
-            markdown = {
-                img_dir = { "%:p:h", "assets" },
-                img_dir_txt = "assets",
-                affix = "![](%s)",
-                -- Insert alt-text with img_handler (https://github.com/ekickx/clipboard-image.nvim/discussions/15#discussioncomment-2170666)
-                img_handler = function(img)
-                    vim.cmd("normal! f[") -- go to [
-                    vim.cmd("normal! a" .. img.name) -- append text with image name
+            file_types = {
+                markdown = {
+                    template = "![$CURSOR]($FILE_PATH)",
+                },
+            },
+        },
+        keys = {
+            { "<leader>pi", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
+            {
+                "<leader>pI",
+                function()
+                    local telescope = require("telescope.builtin")
+                    local actions = require("telescope.actions")
+                    local action_state = require("telescope.actions.state")
+
+                    telescope.find_files({
+                        attach_mappings = function(_, map)
+                            local function embed_image(prompt_bufnr)
+                                local entry = action_state.get_selected_entry()
+                                local filepath = entry[1]
+                                actions.close(prompt_bufnr)
+
+                                local img_clip = require("img-clip")
+                                img_clip.paste_image(nil, filepath)
+                            end
+
+                            map("i", "<CR>", embed_image)
+                            map("n", "<CR>", embed_image)
+
+                            return true
+                        end,
+                        desc = "Select image to embed",
+                    })
                 end,
             },
         },
     },
+
+    -- paste an image to markdown from the clipboard
+    -- :PasteImg,
+    -- {
+    --     "dfendr/clipboard-image.nvim",
+    --     ft = { "quarto", "markdown" },
+    --     keys = {
+    --         { "<leader>pi", "<cmd>PasteImg<cr>", silent = true, desc = "image paste" },
+    --     },
+    --     cmd = {
+    --         "PasteImg",
+    --     },
+    --     opts = {
+    --         quarto = {
+    --             img_dir = { "%:p:h", "assets" },
+    --             affix = "![](%s)",
+    --         },
+    --         markdown = {
+    --             img_dir = { "%:p:h", "assets" },
+    --             img_dir_txt = "assets",
+    --             affix = "![](%s)",
+    --             -- Insert alt-text with img_handler (https://github.com/ekickx/clipboard-image.nvim/discussions/15#discussioncomment-2170666)
+    --             img_handler = function(img)
+    --                 vim.cmd("normal! f[") -- go to [
+    --                 vim.cmd("normal! a" .. img.name) -- append text with image name
+    --             end,
+    --         },
+    --     },
+    -- },
 
     -- preview equations
     {
@@ -132,9 +178,9 @@ return {
 
     {
         "Kicamon/markdown-table-mode.nvim",
-        config = function()
-            require("markdown-table-mode").setup()
-        end,
+        opts = {
+            filetype = { "*.md" },
+        },
     },
 
     -- export pdf

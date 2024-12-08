@@ -65,16 +65,16 @@ return {
         "wakatime/vim-wakatime",
         enabled = not _G.disable_plugins.wakatime,
     },
-    {
+    -- {
 
-        "vhyrro/luarocks.nvim",
-        priority = 1000,
-        opts = function(_, opts)
-            if vim.fn.has("mac") then
-                opts.luarocks_build_args = {
-                    "--with-lua-include=/usr/include",
-                }
-            end
-        end,
-    },
+    --     "vhyrro/luarocks.nvim",
+    --     priority = 1000,
+    --     opts = function(_, opts)
+    --         if vim.fn.has("mac") then
+    --             opts.luarocks_build_args = {
+    --                 "--with-lua-include=/usr/include",
+    --             }
+    --         end
+    --     end,
+    -- },
 }

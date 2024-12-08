@@ -8,6 +8,7 @@ _G.disable_plugins = {
     firenvim = true,
     flash = true,
     org = true,
+    --notebook = true,
 
     --- languages
 
@@ -39,6 +40,7 @@ _G.disable_plugins = {
     --notify = true, -- notification
 
     --wakatime = true,
+    --image = true,
 }
 
 --------------------------
