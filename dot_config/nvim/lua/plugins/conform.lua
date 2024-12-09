@@ -19,6 +19,7 @@ return {
                 cpp = { "clang_format" },
                 rust = { "rustfmt" },
                 markdown = { "markdownlint" },
+                quarto = { "markdownlint" },
                 go = { "gofumpt" },
             },
             ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>

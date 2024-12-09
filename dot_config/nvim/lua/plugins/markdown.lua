@@ -39,9 +39,9 @@ return {
 
     {
         "MeanderingProgrammer/render-markdown.nvim",
-        ft = { "markdown", "norg", "rmd", "org", "tex" },
+        ft = { "markdown", "quarto", "norg", "rmd", "org", "tex" },
         opts = {
-            file_types = { "markdown", "norg", "rmd", "org", "tex" },
+            file_types = { "markdown", "quarto", "norg", "rmd", "org", "tex" },
             --- Styles: https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki#components
             code = {
                 sign = true,
