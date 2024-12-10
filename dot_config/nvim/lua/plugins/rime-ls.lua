@@ -4,6 +4,11 @@ if _G.disable_plugins.rime then
     return {}
 end
 
+-- disable this plugin if in diff mode
+if vim.wo.diff then
+    return {}
+end
+
 ---------------------------------------------------------------------
 -- Auto disable when rime_ls is not found
 ---------------------------------------------------------------------

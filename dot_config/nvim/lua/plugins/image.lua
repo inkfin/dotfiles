@@ -2,6 +2,11 @@ if _G.disable_plugins.image then
     return {}
 end
 
+-- disable this plugin if in diff mode
+if vim.wo.diff then
+    return {}
+end
+
 return {
     {
         "3rd/image.nvim",

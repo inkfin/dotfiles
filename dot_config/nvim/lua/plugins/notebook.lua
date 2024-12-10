@@ -12,7 +12,7 @@ return {
     -- python requirements: `pip install pynvim jupyter_client`
     {
         "benlubas/molten-nvim",
-        enabled = vim.fn.has("mac") == 1,
+        enabled = vim.fn.has("mac") == 1 and not vim.wo.diff,
         ft = { "quarto", "markdown", "jupyter_notebook" },
         version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
         build = ":UpdateRemotePlugins",

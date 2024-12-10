@@ -11,8 +11,10 @@ return {
     {
         "quarto-dev/quarto-nvim",
         ft = { "quarto", "markdown" },
+        enabled = not vim.wo.diff,
         dependencies = {
             "jmbuhr/otter.nvim",
+            enabled = not vim.wo.diff,
             opts = {
                 buffers = {
                     set_filetype = true,
@@ -74,6 +76,7 @@ return {
     -- `pip install jupytext`
     {
         "GCBallesteros/jupytext.nvim",
+        enabled = not vim.wo.diff,
         opts = {
             custom_language_formatting = {
                 python = {
