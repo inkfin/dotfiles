@@ -60,8 +60,13 @@ bind -r ^j resizep -D 10
 bind -r ^h resizep -L 10
 bind -r ^l resizep -R 10
 
-bind -r ^p swapp -U # swap panel position with previous panel
-bind -r ^n swapp -U # swap panel position with next panel
+# swap panel position with previous / next panel
+bind ^p swapp -U
+bind ^n swapp -D
+
+# swap window (tab) position with previous / next panel
+bind '^[p' swap-window -t :-
+bind '^[n' swap-window -t :+
 
 ## copy mode
 bind -T copy-mode-vi v send-keys -X begin-selection
