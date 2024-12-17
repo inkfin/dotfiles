@@ -8,8 +8,9 @@ return {
         "neovim/nvim-lspconfig",
         opts = {
             servers = {
-                -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#clangd
+                -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#clangd
                 -- Ensure mason installs the server
+                -- clangd configurations: https://clangd.llvm.org/config
                 clangd = {
                     keys = {
                         { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
