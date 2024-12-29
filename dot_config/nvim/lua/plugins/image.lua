@@ -7,14 +7,26 @@ if vim.wo.diff then
     return {}
 end
 
+local is_term_support_kitty = -- only enable in supported terms
+    vim.fn.getenv("TERM_PROGRAM") == "WezTerm" -- Wezterm supports kitty
+    or vim.fn.getenv("TERM_PROGRAM") == "Kitty"
+
+local is_term_support_ueberzug = -- ueberzug for other terms
+    vim.fn.getenv("TERM_PROGRAM") == "iTerm.app" -- iTerm2
+
 return {
     {
         "3rd/image.nvim",
-        enabled = vim.fn.executable("ueberzug") == 1,
-        -- build = false, -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
+        enabled = vim.fn.has("win32") == 0 -- sorry, no windows for now
+            and not vim.g.neovide
+            and (
+                is_term_support_kitty -- kitty native support
+                or (is_term_support_ueberzug and vim.fn.executable("ueberzug") == 1)
+            ),
+        build = not (is_term_support_kitty or vim.fn.executable("magick") == 1), -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
         opts = {
-            backend = "ueberzug",
-            processor = "magick_cli", -- or "magick_rock"
+            backend = is_term_support_kitty and "kitty" or "ueberzug",
+            processor = vim.fn.executable("magick") == 1 and "magick_cli" or "magick_rock",
             max_width = 100,
             max_height = 12,
             max_height_window_percentage = math.huge, -- requirement from molten-nvim
