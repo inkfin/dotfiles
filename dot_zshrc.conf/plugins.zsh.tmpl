@@ -20,13 +20,24 @@ append_to_path PATH "/usr/lib/w3m/"
 # ==== Utility aliases ====
 
 ## ---- ranger ----
-rag() {
-    if [ -z "$RANGER_LEVEL" ]
-    then
-        ranger
-    else
-        exit
-    fi
+# alias ra="ranger"
+# rag() {
+#     if [ -z "$RANGER_LEVEL" ]
+#     then
+#         ranger
+#     else
+#         exit
+#     fi
+# }
+
+alias ra="yazi"
+function rag() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
 }
 
 ## ---- Clash ----

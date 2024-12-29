@@ -58,7 +58,7 @@ function ee { exit }
 function gst { git status }
 
 Set-Alias -Name lg -Value 'lazygit'
-Set-Alias -Name ra -Value 'lf'
+# Set-Alias -Name ra -Value 'lf'
 # Set-Alias -Name nvim -Value 'nn'
 Set-Alias -Name v -Value 'nvim'
 Set-Alias -Name vim -Value 'nvim'
@@ -76,6 +76,19 @@ function nn {
 }
 function newquake { wt -w _quake -d $HOME\Documents\WorkNotes --title quake `; sp -V -p "PowerShell" -s .35 --title quake `; sp -H -p "PowerShell" -s .8 --title quake }
 # function newquake { wt -w _quake --title quake wsl -d Ubuntu -- tmux attach-session -t popup }
+
+# yazi
+Init-EnvironmentVariable YAZI_FILE_ONE "C:\Program Files\Git\usr\bin\file.exe"
+Set-Alias -Name ra -Value 'yazi'
+function rag {
+    $tmp = [System.IO.Path]::GetTempFileName()
+    yazi $args --cwd-file="$tmp"
+    $cwd = Get-Content -Path $tmp
+    if (-not [String]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
+        Set-Location -LiteralPath $cwd
+    }
+    Remove-Item -Path $tmp
+}
 
 # oh-my-posh
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/wholespace.omp.json" | Invoke-Expression

@@ -1,0 +1,26 @@
+# https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/yazi-default.toml
+"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+
+[manager]
+sort_by = "natural"
+linemode = "size"
+show_hidden = false
+title_format = "yazi: {cwd}"
+
+[opener]
+edit = [
+    { run = '${EDITOR:-vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
+    { run = 'nvim %*', desc = "nvim", for = "windows" },
+    { run = 'code %*', orphan = true, desc = "code", for = "windows" },
+    { run = 'code -w %*', block = true, desc = "code (block)", for = "windows" },
+]
+
+# git plugin
+[[plugin.prepend_fetchers]]
+id = "git"
+name = "*"
+run = "git"
+[[plugin.prepend_fetchers]]
+id = "git"
+name = "*/"
+run = "git"
