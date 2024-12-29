@@ -53,9 +53,11 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 })
 
 -- Run chezmoi apply whenever a dotfile is saved
-vim.cmd([[
-    autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
-]])
+if not vim.wo.diff then
+    vim.cmd([[
+        autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+    ]])
+end
 ---- following not working, not sure why
 -- vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 --     pattern = { vim.fn.expand("~/.local/share/chezmoi/") .. "*" },
