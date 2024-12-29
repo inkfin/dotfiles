@@ -134,6 +134,9 @@ function Use-CC($cc) {
     }
 }
 
+## libclang
+$env:LIBCLANG_PATH = "$HOME\scoop\apps\llvm\current\lib"
+
 # vcpkg
 Init-EnvironmentVariable VCPKG_ROOT "$HOME\dev\vcpkg"
 Append-UserPath $env:VCPKG_ROOT
