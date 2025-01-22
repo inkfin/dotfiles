@@ -108,6 +108,17 @@ append_to_path PKG_CONFIG_PATH "/opt/homebrew/opt/ruby/lib/pkgconfig"
 
 {{- end }}
 
+## ---- Dotnet ----
+{{ if eq .chezmoi.os "darwin" -}}
+
+export DOTNET6_ROOT="/opt/homebrew/opt/dotnet@6/libexec"
+export DOTNET8_ROOT="/opt/homebrew/opt/dotnet@8/libexec"
+export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+append_to_path PATH "$DOTNET_ROOT"
+append_to_path PATH "$DOTNET_ROOT/tools"
+
+{{- end }}
+
 
 # ==== Utility aliases ====
 

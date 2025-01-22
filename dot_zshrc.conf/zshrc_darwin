@@ -63,6 +63,7 @@ alias pac="brew"
 alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
 alias browse='~/.local/carbonyl-0.0.3/carbonyl'
+alias netease='https_proxy=120.76.98.193:8080 nohup /Applications/NeteaseMusic.app/Contents/MacOS/NeteaseMusic >/dev/null 2>&1 &'
 
 ## the fuck
 eval $(thefuck --alias)
