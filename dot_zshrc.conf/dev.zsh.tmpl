@@ -31,8 +31,8 @@ prepend_to_path DYLD_LIBRARY_PATH "$HOME/.local/lib:/usr/local/lib/"
 {{- end }}
 
 ## ---- vcpkg ----
-export VCPKG_HOME="$HOME/vcpkg/"
-prepend_to_path PATH "$VCPKG_HOME"
+export VCPKG_ROOT="$HOME/vcpkg"
+prepend_to_path PATH "$VCPKG_ROOT"
 
 ## ---- rustup ----
 prepend_to_path PATH "/home/linuxbrew/.linuxbrew/opt/rustup/bin/"
@@ -124,7 +124,7 @@ append_to_path PATH "$DOTNET_ROOT/tools"
 
 ## ---- CMake ----
 alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
-alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$VCPKG_HOME/vcpkg/scripts/buildsystems/vcpkg.cmake -B"
+alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -B"
 alias cmb="cmake --build "
 
 ## ---- Redis ----

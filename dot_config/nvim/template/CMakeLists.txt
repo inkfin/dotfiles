@@ -13,26 +13,26 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # endif()
 
 
-#===== Project Build Options =============
+#===== Project Build Options ===========
 
 project(HelloWorld LANGUAGES CXX VERSION 0.1)
 
-if (PROJECT_BINARY_DIR STREQUAL PROJECT_SOURCE_DIR)
+if(PROJECT_BINARY_DIR STREQUAL PROJECT_SOURCE_DIR)
     message(SEND_ERROR "The binary directory of CMake cannot be the same as source directory!")
 endif()
 
-if (NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if (WIN32)
+if(WIN32)
     # disable min/max macros to avoid conflicts with std::min/max
     add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 endif()
 
-if (NOT MSVC)
+if(NOT MSVC)
     find_program(CCACHE_PROGRAM ccache)
-    if (CCACHE_PROGRAM)
+    if(CCACHE_PROGRAM)
         message(STATUS "Found CCache: ${CCACHE_PROGRAM}")
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
         set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE_PROGRAM})
@@ -40,6 +40,8 @@ if (NOT MSVC)
 endif()
 
 # message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+
+set(BINARY_NAME ${PROJECT_NAME})
 
 
 #===== SubModules ======================
@@ -50,40 +52,67 @@ endif()
 #===== Source Files ====================
 
 # aux_source_directory(src SOURCE_FILES)
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.h include/*.h)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
+    src/*.cpp src/*.h include/*.h
+)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+include_directories(include)
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+add_executable(${BINARY_NAME} ${SOURCE_FILES})
+
+
+#===== GoogleTest =======================
+
+# enable_testing()
+
+# if(WIN32)
+#     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# endif()
+
+# add_library(${BINARY_NAME}_lib STATIC ${SOURCE_FILES})
+
+# file(GLOB_RECURSE TEST_FILES CONFIGURE_DEPENDS
+#     LIST_DIRECTORIES false
+#     test/*.cpp test/*.h
+# )
+
+# add_executable(gtest ${TEST_FILES})
+
+# find_package(GTest CONFIG REQUIRED)
+# target_link_libraries(gtest PRIVATE ${BINARY_NAME}_lib
+#     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+
+# include(GoogleTest)
+# gtest_discover_tests(gtest)
 
 
 #===== Target Build Options ============
 
-target_compile_options(${PROJECT_NAME} PRIVATE
+target_compile_options(${BINARY_NAME} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
 
 # option(WITH_TBB "set to ON to enable TBB, OFF to disable TBB." ON)
 # if (WITH_TBB)
-#     target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_TBB)
+#     target_compile_definitions(${BINARY_NAME} PUBLIC WITH_TBB)
 #     find_package(TBB REQUIRED)
-#     target_link_libraries(${PROJECT_NAME} PUBLIC TBB:tbb)
+#     target_link_libraries(${BINARY_NAME} PUBLIC TBB:tbb)
 # endif()
 
 
 #===== Find Packages ===================
 
 # find_package(Eigen3 COMPONENTS Eigen REQUIRED)
-# target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
+# target_link_libraries(${BINARY_NAME} PUBLIC Eigen3::Eigen)
 
 
 #===== Output Directories ==============
 
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/bin/Debug)
+set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/Release)
+set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/bin/Debug)
 if(WIN32)
-    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Debug)
+    set_target_properties(${BINARY_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Debug)
 elseif(UNIX)
 endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -97,18 +126,18 @@ message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 #===== Copy Commands ===================
 
 # cmake configure time copy
-if (EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
+if(EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
     file(COPY "${CMAKE_BINARY_DIR}/compile_commands.json" DESTINATION ${CMAKE_SOURCE_DIR})
 endif()
 
 # cmake build time copy
 # file(GLOB DLLS_TO_COPY ${CMAKE_SOURCE_DIR}/lib/*.dll)
 # ADD_CUSTOM_COMMAND(
-#     TARGET ${PROJECT_NAME}
+#     TARGET ${BINARY_NAME}
 #     POST_BUILD
 #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
 #     ${DLLS_TO_COPY}
-#     $<TARGET_FILE_DIR:${PROJECT_NAME}>
+#     $<TARGET_FILE_DIR:${BINARY_NAME}>
 #     COMMENT "Copying dlls... to target directory"
 # )
 
