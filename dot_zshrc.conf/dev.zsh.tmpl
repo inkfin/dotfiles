@@ -141,8 +141,8 @@ alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redi
 # ==== Initialization ====
 
 ## ---- vcpkg ----
-if [ -f /home/inkfin/vcpkg/scripts/vcpkg_completion.zsh ]; then
-    source $VCPKG_HOME/scripts/vcpkg_completion.zsh
+if [ -f $VCPKG_ROOT/scripts/vcpkg_completion.zsh ]; then
+    source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
 fi
 
 
