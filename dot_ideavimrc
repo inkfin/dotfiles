@@ -117,24 +117,27 @@ nnoremap [d :<C-u>action GotoPreviousError<CR>
 " search
 nnoremap <Leader><Leader> :<C-u>action GotoFile<CR>
 nnoremap <Leader>/ :<C-u>action FindInPath<CR>
-nnoremap <Leader>ff :<C-u>action GotoFile<CR>
-nnoremap <Leader>sf :<C-u>action FindInPath<CR>
+nnoremap <Leader>ff :<C-u>action FindInPath<CR>
+nnoremap <Leader>sf :<C-u>action GotoFile<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
 nnoremap <Leader>sc :<C-u>action GotoClass<CR>
+nnoremap <Leader>st :<C-u>action TextSearchAction<CR>
 nnoremap <Leader>sa :<C-u>action GotoAction<CR>
 nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
 nnoremap <Leader>sm :<C-u>action ShowBookmarks<CR>
+
 " replace
 nnoremap <Leader>f/ :<C-u>action Find<CR>
 nnoremap <Leader>s/ :<C-u>action Find<CR>
 nnoremap <Leader>rp <ESC>:action Replace<cr>
 nnoremap <Leader>rP <ESC>:action ReplaceInPath<cr>
 
+" refactoring
 nnoremap <Leader>rn :<C-u>action RenameElement<CR>
 nnoremap <Leader>ci :<C-u>action ImplementMethods<CR>
 nnoremap <Leader>rv :<C-u>action IntroduceVariable<CR>
 nnoremap <Leader>cr :<C-u>action CopyReference<CR>
-nnoremap <Leader>em :<C-u>action ExtractMethod<CR>
+nnoremap <Leader>re :<C-u>action ExtractMethod<CR>
 nnoremap <Leader>sw :<C-u>action SurroundWith<CR>
 
 " reformat
