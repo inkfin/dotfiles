@@ -1,0 +1,124 @@
+"=======================================
+" VSVim settings
+"=======================================
+
+
+"enable autocmd in vsvim
+set novsvim_useeditordefaults
+let g:vsvim_autocmd = 1
+
+
+" editor settings
+set showcmd     "show command in status bar
+set wrap        "wrap lines
+" set ruler       "show line and column number
+set cursorline  "highlight current line
+set scrolloff=5  "scroll offset
+
+set number
+"show relative line numbers
+:set number relativenumber
+
+set backspace=indent,eol,start  "backspace wrap to previous/next line
+set clipboard=unnamed   "enable clipboard
+set history=1000        "set history size
+
+
+" tab settings
+set vsvim_useeditordefaults "use editor defaults tab settings
+" set tabstop=4
+" set softtabstop=4
+" set shiftwidth=4
+set vsvim_useeditorindent "no smarttab
+set autoindent  "indent according to previous line
+set expandtab   "expand tabs to spaces
+
+
+" search
+set hlsearch    "highlight search
+set incsearch   "incremental search
+set ignorecase  "ignore case in search
+set smartcase   "smart case in search
+set wrapscan    "loop search
+
+
+""""""""""""
+" map keys "
+""""""""""""
+let g:mapleader=" "
+let g:maplocalleader=","
+
+noremap <LEADER><CR> <CMD>nohlsearch<CR>
+
+nmap Q :q<CR>
+nmap W 5w
+nmap B 5b
+nmap E 5e
+
+vnoremap H ^
+vnoremap L $
+
+vnoremap Y "+y
+vnoremap <C-X> "+x
+" Paste over currently selected text without yanking it
+vnoremap <silent> p "_dP
+
+nnoremap H :vsc Window.PreviousTab<CR>
+nnoremap L :vsc Window.NextTab<CR>
+
+nmap <C-H> :vsc Window.PreviousSplitPane<CR>
+nmap <C-L> :vsc Window.NextSplitPane<CR>
+
+nmap gcc :vsc Edit.ToggleLineComment<CR>
+vmap gc :vsc Edit.ToggleLineComment<CR>
+
+" Code navigation
+nmap <leader>h :vsc Edit.QuickInfo<CR>
+
+nmap gd :vsc Edit.GoToDefinition<CR>
+nmap gD :vsc Edit.GoToDeclaration<CR>
+nmap gm :vsc Edit.GoToMember<CR>
+nmap gH :vsc EditorContextMenus.CodeWindow.ViewCallHierarchy<CR>
+nmap <C-]> :vsc Edit.GoToDefinition<CR>
+nmap gr :vsc Edit.FindAllReferences<CR>
+
+" toggle header/source file
+nmap ch :vsc EditorContextMenus.CodeWindow.ToggleHeaderCodeFile<CR>
+" show code actions
+nmap ca :vsc Edit.ShowCodeLensMenu<CR>
+
+nmap ]d :vsc View.NextError
+nmap [d :vsc View.PreviousError
+
+" nnoremap <leader>ff :vsc Edit.FindinFiles<CR>
+" nnoremap <leader>fr :vsc Edit.FindAllReferences<CR>
+
+nnoremap <leader>ss :vsc Edit.GoToSymbol<CR>
+nnoremap <leader>sT :vsc Edit.GoToType<CR>
+nnoremap <leader>sa :vsc Window.QuickLaunch<CR>
+nnoremap <leader>sf :vsc Edit.GotoFile<CR>
+nnoremap <leader>st :vsc Edit.GotoText<CR>
+nnoremap <leader>sr :vsc Edit.FindAllReferences<CR>
+nnoremap <leader>sm :vsc Edit.GoToMember<CR>
+nnoremap <leader>sh :vsc Edit.PeekDefinition<CR>
+
+" Refactoring
+nmap <leader>rn :vsc Refactor.Rename<CR>
+nmap <leader>rp :vsc Refactor.ReorderParameters<CR>
+
+" Use CTRL-S for saving, also in Insert mode
+noremap <C-S>		:update<CR>
+vnoremap <C-S>		<C-C>:update<CR>
+inoremap <C-S>		<C-O>:update<CR>
+
+" CTRL-A is Select all
+noremap <C-A> gggH<C-O>G
+inoremap <C-A> <C-O>gg<C-O>gH<C-O>G
+cnoremap <C-A> <C-C>gggH<C-O>G
+onoremap <C-A> <C-C>gggH<C-O>G
+snoremap <C-A> <C-C>gggH<C-O>G
+xnoremap <C-A> <C-C>ggVG
+
+"track jump entire session
+nmap <C-O> :vsc View.NavigateBackward<CR>
+nmap <C-I> :vsc View.NavigateForward<CR>

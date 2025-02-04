@@ -30,6 +30,7 @@ modikeys.sh
 
 # Windows specific settings
 {{ if ne .chezmoi.os "windows" }}
+.vsvimrc
 .config/AutoHotkey/
 Documents/
 AppData/
