@@ -1,0 +1,324 @@
+"""""""""""""""""
+" MINIMAL VIMRC "
+"""""""""""""""""
+
+set encoding=utf-8
+scriptencoding utf-8
+
+" File and script encoding settings for vim
+set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+
+" filetype support
+filetype plugin indent on
+syntax on
+
+"{ Builtin optional plugins
+" Activate matchit plugin
+runtime! macros/matchit.vim
+
+" Activate man page plugin
+runtime! ftplugin/man.vim
+"}
+
+" Builtin options and settings
+if !has('nvim')
+    " Change cursor shapes based on whether we are in insert mode,
+    " see https://vi.stackexchange.com/questions/9131/i-cant-switch-to-cursor-in-insert-mode
+    let &t_SI = "\<esc>[6 q"
+    let &t_EI = "\<esc>[2 q"
+    if exists('&t_SR')
+        let &t_SR = "\<esc>[4 q"
+    endif
+
+    " The number of color to use
+    set t_Co=256
+endif
+
+" various settings
+set autoindent
+set number relativenumber
+set ignorecase smartcase
+set backspace=indent,eol,start
+set complete+=d
+set foldlevelstart=999
+set foldmethod=indent
+set hidden
+set incsearch
+set noswapfile
+set path& | let &path .= "**"
+set ruler
+set tags=./tags;,tags;
+set wildcharm=<C-z>
+set wildmenu
+" List all items and start selecting matches in cmd completion
+set wildmode=list:full
+set splitbelow splitright
+set laststatus=2
+
+" General tab settings
+set tabstop=4       " number of visual spaces per TAB
+set softtabstop=4   " number of spaces in tab when editing
+set shiftwidth=4    " number of spaces to use for autoindent
+set expandtab       " expand tab to spaces so that tabs are spaces
+set shiftround
+
+" History
+set history=100
+
+" Time in milliseconds to wait for a mapped sequence to complete,
+" see https://unix.stackexchange.com/q/36882/221410 for more info
+set timeoutlen=500
+
+" For CursorHold events
+set updatetime=800
+
+" Clipboard settings, always use clipboard for all delete, yank, change, put
+" operation, see https://stackoverflow.com/q/30691466/6064933
+set clipboard+=unnamed
+set clipboard+=unnamedplus
+
+" Break line at predefined characters
+set linebreak
+" Character to show before the lines that have been soft-wrapped
+set showbreak=↪
+
+" Show current line where the cursor is
+set cursorline
+
+" Set a ruler at column 80, see https://stackoverflow.com/q/2447109/6064933
+set colorcolumn=80
+
+" Minimum lines to keep above and below cursor when scrolling
+set scrolloff=5
+
+" Use mouse to select and resize windows, etc.
+if has('mouse')
+    set mouse=nic  " Enable mouse in several mode
+    set mousemodel=popup  " Set the behaviour of mouse
+endif
+
+" colorscheme settings
+if exists('&termguicolors')
+    " If we want to use true colors, we must a color scheme which support true
+    " colors, for example, https://github.com/sickill/vim-monokai
+    set notermguicolors
+endif
+set background=dark
+colorscheme habamax
+
+" various autocommands
+augroup minivimrc
+    autocmd!
+    " automatic location/quickfix window
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost    l* lwindow
+    autocmd VimEnter            * cwindow
+    " various adjustments of the default colorscheme
+    autocmd ColorScheme * 
+                \ call execute("hi ModeMsg      cterm=NONE ctermbg=green    ctermfg=black") |
+                \ call execute("hi Search       cterm=NONE ctermbg=yellow   ctermfg=black") |
+                \ call execute("hi StatusLineNC cterm=bold ctermbg=darkgrey") |
+                \ call execute("hi Visual       cterm=NONE ctermbg=white    ctermfg=darkblue")
+    " Git-specific settings
+    " Use { and } to jump between hunks in gitcommit
+    autocmd FileType gitcommit nnoremap <buffer> { ?^@@<CR>|nnoremap <buffer> } /^@@<CR>|setlocal iskeyword+=-
+augroup END
+
+" commands for adjusting indentation rules manually
+command! -nargs=1 Spaces let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " expandtab"   | silent execute "%!expand -it "  . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
+command! -nargs=1 Tabs   let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " noexpandtab" | silent execute "%!unexpand -t " . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
+
+" Key mappings
+
+let g:mapleader = " "
+let g:maplocalleader = ","
+
+" Jump to matching pairs easily in normal mode
+nnoremap <Tab> %
+
+" Paste over currently selected text without yanking it
+vnoremap <silent> p "_dP
+
+vnoremap <silent> H ^
+vnoremap <silent> L $
+noremap <silent> W 5w
+noremap <silent> B 5b
+noremap <silent> E 5e
+
+" Navigate between windows
+nnoremap <silent> <C-H> <C-w>h
+nnoremap <silent> <C-J> <C-w>j
+nnoremap <silent> <C-K> <C-w>k
+nnoremap <silent> <C-L> <C-w>l
+
+" Resize windows using <Alt> and arrow keys, inspiration from
+" https://vim.fandom.com/wiki/Fast_window_resizing_with_plus/minus_keys (bottom page).
+nnoremap <silent> <M-left> <C-w><
+nnoremap <silent> <M-right> <C-w>>
+nnoremap <silent> <M-down> <C-W>-
+nnoremap <silent> <M-up> <C-W>+
+
+nnoremap <silent> H <CMD>bp<CR>
+nnoremap <silent> L <CMD>bn<CR>
+nnoremap <silent> <leader>bd <CMD>bd<CR>
+
+nnoremap <leader>\| :vs<CR>
+nnoremap <leader>- :sp<CR>
+
+nnoremap Q :q<CR>
+map <C-S> :w<CR>
+
+
+nnoremap <silent> <leader>h K
+
+" When completion menu is shown, use <cr> to select an item
+" and do not add an annoying newline. Otherwise, <enter> is what it is.
+" For more info , see https://superuser.com/q/246641/736190 and
+" https://unix.stackexchange.com/q/162528/221410
+inoremap <expr> <cr> ((pumvisible())?("\<C-Y>"):("\<cr>"))
+" Use <esc> to close auto-completion menu
+inoremap <expr> <esc> ((pumvisible())?("\<C-e>"):("\<esc>"))
+
+" Use <tab> to navigate down the completion menu.
+inoremap <expr> <tab>  pumvisible()?"\<C-n>":"\<tab>"
+
+
+" Edit and reload init.vim quickly
+nnoremap <silent> <leader>ov :edit $MYVIMRC<cr>
+nnoremap <silent> R :silent update $MYVIMRC <bar> source $MYVIMRC <bar>
+    \ echomsg "Nvim config successfully reloaded!"<cr>
+
+" Continuous visual shifting (does not exit Visual mode), `gv` means
+" to reselect previous visual area, see https://superuser.com/q/310417/736190
+xnoremap <silent> < <gv
+xnoremap <silent> > >gv
+
+" Decrease indent level in insert mode with shift+tab
+inoremap <S-Tab> <ESC><<i
+
+" Use Esc to quit builtin terminal
+if exists(':tnoremap')
+    tnoremap <ESC>   <C-\><C-n>
+endif
+
+" Clear highlighting
+nnoremap <silent> <leader><enter> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+
+
+
+" statusline settings
+let g:currentmode={
+       \ 'n'  : 'NORMAL ',
+       \ 'v'  : 'VISUAL ',
+       \ 'V'  : 'V·Line ',
+       \ "\<C-V>" : 'V·Block ',
+       \ 'i'  : 'INSERT ',
+       \ 'R'  : 'R ',
+       \ 'Rv' : 'V·Replace ',
+       \ 'c'  : 'Command ',
+       \ 't'  : 'TERMINAL'
+       \}
+
+set statusline=
+set statusline+=%1*
+" Show current mode
+set statusline+=\ %{toupper(g:currentmode[mode()])}
+set statusline+=%{&spell?'[SPELL]':''}
+
+set statusline+=%#WarningMsg#
+set statusline+=%{&paste?'[PASTE]':''}
+
+set statusline+=%2*
+" File path, as typed or relative to current directory
+set statusline+=\ %F
+
+set statusline+=%{&modified?'\ [+]':''}
+set statusline+=%{&readonly?'\ []':''}
+
+" Truncate line here
+set statusline+=%<
+
+" Separation point between left and right aligned items.
+set statusline+=%=
+
+set statusline+=%{&filetype!=#''?&filetype.'\ ':'none\ '}
+
+" Encoding & Fileformat
+set statusline+=%#WarningMsg#
+set statusline+=%{&fileencoding!='utf-8'?'['.&fileencoding.']':''}
+
+set statusline+=%2*
+set statusline+=%-7([%{&fileformat}]%)
+
+" Warning about byte order
+set statusline+=%#WarningMsg#
+set statusline+=%{&bomb?'[BOM]':''}
+
+set statusline+=%1*
+" Location of cursor line
+set statusline+=[%l/%L]
+
+" Column number
+set statusline+=\ col:%2c
+
+" Warning about trailing spaces.
+set statusline+=%#WarningMsg#
+set statusline+=%{StatuslineTrailingSpaceWarning()}
+set statusline+=%{StatuslineTabWarning()}
+
+" Recalculate the trailing whitespace warning when idle, and after saving.
+augroup check_trailing_space
+    autocmd!
+    autocmd CursorHold,BufWritePost * unlet! b:statusline_trailing_space_warning
+        \ | let &statusline=&statusline
+augroup END
+
+augroup check_mixed_tabs
+    autocmd!
+    autocmd CursorHold,BufWritePost * unlet! b:statusline_tab_warning
+        \ | let &statusline=&statusline
+augroup END
+
+" Find if trailing spaces exist.
+function! StatuslineTrailingSpaceWarning()
+    if !exists('b:statusline_trailing_space_warning')
+        " If the file is unmodifiable, do not warn this.
+        if !&modifiable
+            let b:statusline_trailing_space_warning = ''
+            return b:statusline_trailing_space_warning
+        endif
+
+        let l:line_num = search('\s\+$', 'nw')
+        if l:line_num != 0
+            let b:statusline_trailing_space_warning = ' [' . l:line_num . ']' . 'trailing space'
+        else
+            let b:statusline_trailing_space_warning = ''
+        endif
+    endif
+    return b:statusline_trailing_space_warning
+endfunction
+
+" Find if they are mixed indentings.
+function! StatuslineTabWarning()
+    if !exists('b:statusline_tab_warning')
+        " If the file is unmodifiable, do not warn this.
+        if !&modifiable
+            let b:statusline_trailing_space_warning = ''
+            return b:statusline_trailing_space_warning
+        endif
+
+        let has_leading_tabs = search('^\t\+', 'nw') != 0
+        let has_leading_spaces = search('^ \+', 'nw') != 0
+
+        if has_leading_tabs && has_leading_spaces
+            let b:statusline_tab_warning = ' [mixed-indenting]'
+        elseif has_leading_tabs
+            let b:statusline_tab_warning = ' [tabbed-indenting]'
+        else
+            let b:statusline_tab_warning = ''
+        endif
+    endif
+
+    return b:statusline_tab_warning
+endfunction
