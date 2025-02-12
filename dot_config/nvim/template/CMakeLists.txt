@@ -8,8 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 #===== VCPKG ===========================
 
-# if (NOT CMAKE_TOOLCHAIN_FILE)
-#     set(CMAKE_TOOLCHAIN_FILE "vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FORCE)
+# if(NOT CMAKE_TOOLCHAIN_FILE)
+#     set(CMAKE_TOOLCHAIN_FILE "vcpkg/scripts/buildsystems/vcpkg.cmake"
+#         CACHE FILEPATH "Path to vcpkg toolchain file" FORCE)
 # endif()
 
 
@@ -131,14 +132,14 @@ if(EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
 endif()
 
 # cmake build time copy
-# file(GLOB DLLS_TO_COPY ${CMAKE_SOURCE_DIR}/lib/*.dll)
-# ADD_CUSTOM_COMMAND(
+# file(GLOB DLLS_TO_COPY "${CMAKE_SOURCE_DIR}/lib/*.dll")
+# add_custom_command(
 #     TARGET ${BINARY_NAME}
 #     POST_BUILD
 #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
 #     ${DLLS_TO_COPY}
 #     $<TARGET_FILE_DIR:${BINARY_NAME}>
-#     COMMENT "Copying dlls... to target directory"
+#     COMMENT "Copying dlls to target directory..."
 # )
 
 
