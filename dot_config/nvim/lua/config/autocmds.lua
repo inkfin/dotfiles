@@ -44,6 +44,10 @@ vim.api.nvim_create_autocmd("BufNewFile", {
     command = "0r $HOME/.config/nvim/template/CMakeLists.txt",
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
+    pattern = "CMakePresets.json",
+    command = "0r $HOME/.config/nvim/template/CMakePresets.json",
+})
+vim.api.nvim_create_autocmd("BufNewFile", {
     pattern = ".marksman.toml",
     command = "0r $HOME/.config/nvim/template/.marksman.toml",
 })
