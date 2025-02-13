@@ -5,7 +5,7 @@
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 
 
-ZSHCONF_HOME="$HOME/.zshrc.conf/"
+ZSHCONF_HOME="$HOME/.zshrc.conf"
 
 # ==== Includes ====
 

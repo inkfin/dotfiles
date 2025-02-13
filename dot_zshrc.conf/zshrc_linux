@@ -1,7 +1,7 @@
 # zshrc Linux
 
 
-ZSHCONF_HOME="$HOME/.zshrc.conf/"
+ZSHCONF_HOME="$HOME/.zshrc.conf"
 
 # ==== Includes ====
 

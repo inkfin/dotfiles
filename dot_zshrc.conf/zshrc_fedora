@@ -1,7 +1,7 @@
 # zshrc Fedora
 
 
-ZSHCONF_HOME="$HOME/.zshrc.conf/"
+ZSHCONF_HOME="$HOME/.zshrc.conf"
 
 # ==== Includes ====
 
