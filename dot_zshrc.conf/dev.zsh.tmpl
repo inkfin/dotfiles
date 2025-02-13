@@ -35,16 +35,24 @@ export VCPKG_ROOT="$HOME/vcpkg"
 prepend_to_path PATH "$VCPKG_ROOT"
 
 ## ---- rustup ----
-prepend_to_path PATH "/home/linuxbrew/.linuxbrew/opt/rustup/bin/"
+prepend_to_path PATH "${HOMEBREW_PREFIX}/opt/rustup/bin/"
 
 ## ---- cargo ----
-export CARGO_HOME="$HOME/.cargo/"
+export CARGO_HOME="$HOME/.cargo"
 prepend_to_path PATH "$CARGO_HOME/bin/"
 
 ## ---- cuda ----
-##  set PATH & LD_LIBRARY_PATH in local.zsh
-export CUDA_12_6_HOME="/usr/local/cuda-12.6/"
-export CUDA_12_8_HOME="/usr/local/cuda-12.8/"
+{{ if eq .chezmoi.os "linux" -}}
+
+export CUDA_12_6_HOME="/usr/local/cuda-12.6"
+export CUDA_12_8_HOME="/usr/local/cuda-12.8"
+export CUDA_HOME="$CUDA_12_6_HOME"
+
+prepend_to_path PATH "$CUDA_HOME/bin"
+prepend_to_path LD_LIBRARY_PATH "$CUDA_HOME/lib64"
+prepend_to_path CMAKE_PREFIX_PATH "$CUDA_HOME"
+
+{{- end }}
 
 ## ---- nvm ----
 export NVM_DIR="$HOME/.nvm"
@@ -54,19 +62,15 @@ export NVM_DIR="$HOME/.nvm"
 ## ---- llvm ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-append_to_path PATH     "/opt/homebrew/opt/llvm/bin"
-append_to_flag LDFLAGS  "-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib"
-append_to_flag CPPFLAGS "-I/opt/homebrew/opt/llvm/include"
+append_to_path PATH     "${HOMEBREW_PREFIX}/opt/llvm/bin"
+append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -Wl,-rpath,${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -L${HOMEBREW_PREFIX}/opt/llvm/lib"
+append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/opt/llvm/include"
 
 {{- end }}
 
 ## ---- CMake ----
-{{ if eq .chezmoi.os "darwin" -}}
-
-append_to_path CMAKE_INCLUDE_PATH "/opt/homebrew/include"
-append_to_path CMAKE_LIBRARY_PATH "/opt/homebrew/lib"
-
-{{- end }}
+append_to_path CMAKE_INCLUDE_PATH "${HOMEBREW_PREFIX}/include"
+append_to_path CMAKE_LIBRARY_PATH "${HOMEBREW_PREFIX}/lib"
 
 ## ---- DOCKER ----
 {{ if eq .chezmoi.os "darwin" -}}
@@ -77,23 +81,31 @@ append_to_path PATH "$DOCKER_PATH"
 {{- end }}
 
 ## ---- Vulkan ----
+{{ if eq .chezmoi.os "darwin" -}}
+
 if [ -f "/usr/local/VulkanSDK/current/setup-env.sh" ]; then
     source "/usr/local/VulkanSDK/current/setup-env.sh"
 fi
 
+{{- end }}
+
 ## ---- JAVA ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-export JAVA_20_HOME="/opt/homebrew/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
-export JAVA_11_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
-export JAVA_8_HOME="/opt/homebrew/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home"
+export JAVA_20_HOME="${HOMEBREW_PREFIX}/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
+export JAVA_11_HOME="${HOMEBREW_PREFIX}/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
+export JAVA_8_HOME="${HOMEBREW_PREFIX}/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home"
 
 export JAVA_HOME=$JAVA_20_HOME
 append_to_flag CPPFLAGS "-I$JAVA_HOME/include"
 append_to_path PATH "$JAVA_HOME/bin"
 
+{{- end }}
+
 ## ---- Maven -----
-export M2_HOME="/opt/homebrew/opt/maven/libexec"
+{{ if eq .chezmoi.os "darwin" -}}
+
+export M2_HOME="${HOMEBREW_PREFIX}/opt/maven/libexec"
 append_to_path PATH "$M2_HOME/bin"
 
 {{- end }}
@@ -101,20 +113,20 @@ append_to_path PATH "$M2_HOME/bin"
 ## ---- Ruby ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-append_to_path PATH     "/opt/homebrew/opt/ruby/bin"
-append_to_path PATH     "/opt/homebrew/lib/ruby/gems/3.1.0/bin"
-append_to_flag LDFLAGS  "-L/opt/homebrew/opt/ruby/lib"
-append_to_flag CPPFLAGS "-I/opt/homebrew/opt/ruby/include"
-append_to_path PKG_CONFIG_PATH "/opt/homebrew/opt/ruby/lib/pkgconfig"
+append_to_path PATH     "${HOMEBREW_PREFIX}/opt/ruby/bin"
+append_to_path PATH     "${HOMEBREW_PREFIX}/lib/ruby/gems/3.1.0/bin"
+append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/opt/ruby/lib"
+append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/opt/ruby/include"
+append_to_path PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/opt/ruby/lib/pkgconfig"
 
 {{- end }}
 
 ## ---- Dotnet ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-export DOTNET6_ROOT="/opt/homebrew/opt/dotnet@6/libexec"
-export DOTNET8_ROOT="/opt/homebrew/opt/dotnet@8/libexec"
-export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+export DOTNET6_ROOT="${HOMEBREW_PREFIX}/opt/dotnet@6/libexec"
+export DOTNET8_ROOT="${HOMEBREW_PREFIX}/opt/dotnet@8/libexec"
+export DOTNET_ROOT="${HOMEBREW_PREFIX}/opt/dotnet/libexec"
 append_to_path PATH "$DOTNET_ROOT"
 append_to_path PATH "$DOTNET_ROOT/tools"
 
@@ -134,7 +146,7 @@ alias cmb="cmake --build "
 # To restart redis after an upgrade:
 alias restartredis='brew services restart redis'
 # Or, if you don't want/need a background service you can just run:
-alias stopredis='/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf'
+alias stopredis='${HOMEBREW_PREFIX}/opt/redis/bin/redis-server ${HOMEBREW_PREFIX}/etc/redis.conf'
 
 {{- end }}
 

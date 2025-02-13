@@ -7,13 +7,12 @@
 #   homebrew initialization
 # ======================================
 
+# remember to put brew in the PATH
+# "eval $(/path/to/brew shellenv)" >> ~/.zprofile
 
 {{ if eq .chezmoi.os "darwin" -}}
 
-append_to_flag CPPFLAGS "-I/opt/homebrew/include"
-append_to_flag LDFLAGS  "-L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib"
-append_to_path PATH "/opt/homebrew/sbin/"
-export HOMEBREW_NO_AUTO_UPDATE=0
+eval "$(brew shellenv)"
 
 ## homebrew/command-not-found
 HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
@@ -23,7 +22,15 @@ fi
 
 {{- else if eq .chezmoi.os "linux" -}}
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+eval "$(brew shellenv)"
 
 {{- end }}
+
+# disable auto update
+export HOMEBREW_NO_AUTO_UPDATE=
+
+append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/include"
+append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/lib -Wl,-rpath,${HOMEBREW_PREFIX}/lib"
+append_to_flag PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/lib/pkgconfig"
+append_to_flag CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}"
 
