@@ -1,0 +1,20 @@
+# -*- zsh -*-
+# vi: ft=zsh
+
+# ======================================
+#  env.zsh
+# ======================================
+#   environment configurations before loading any other files
+# ======================================
+
+# load homebrew commands
+{{ if eq .chezmoi.os "darwin" -}}
+
+prepend_to_path PATH "/opt/homebrew/bin"
+
+{{- else if eq .chezmoi.os "linux" -}}
+
+prepend_to_path PATH "/home/linuxbrew/.linuxbrew/bin"
+
+{{- end }}
+

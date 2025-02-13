@@ -8,6 +8,9 @@ ZSHCONF_HOME="$HOME/.zshrc.conf/"
 ## helper functions
 source $ZSHCONF_HOME/helper.zsh
 
+## prelude environment
+source $ZSHCONF_HOME/env.zsh
+
 ## homebrew initialization
 source $ZSHCONF_HOME/homebrew.zsh
 
