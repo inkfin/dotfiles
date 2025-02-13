@@ -26,6 +26,7 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.lang.toml" },
         { import = "lazyvim.plugins.extras.formatting.prettier" },
         not _G.disable_plugins.dap and { import = "lazyvim.plugins.extras.dap.core" } or {},
+        { import = "lazyvim.plugins.extras.editor.telescope" },
         { import = "lazyvim.plugins.extras.util.project" },
             -- { import = "lazyvim.plugins.extras.ui.edgy" },
         not _G.disable_plugins.copilot and { import = "lazyvim.plugins.extras.ai.copilot" } or {},
