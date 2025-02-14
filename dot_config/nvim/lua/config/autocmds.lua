@@ -35,25 +35,40 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
 -- stylua: ignore end
 
 -- Copy template files
+local template_dirs = {
+    vim.fn.expand("$HOME/.config/nvim/template"),
+    vim.fn.expand("$HOME/template"),
+    vim.fn.expand("$HOME/template/cmake_project"),
+}
+
+local function find_template(filepath)
+    local filename = vim.fn.fnamemodify(filepath, ":t") -- filename.ext
+    local ext = vim.fn.fnamemodify(filepath, ":e") -- ext
+
+    for _, dir in ipairs(template_dirs) do
+        -- 1. Try find <filename>.<ext>
+        local template_path = dir .. "/" .. filename
+        if vim.fn.filereadable(template_path) == 1 then
+            return template_path
+        end
+
+        -- 2. Try find template.<ext>
+        template_path = dir .. "/template." .. ext
+        if vim.fn.filereadable(template_path) == 1 then
+            return template_path
+        end
+    end
+
+    return nil
+end
+
 vim.api.nvim_create_autocmd("BufNewFile", {
-    pattern = "*.cpp",
-    command = "0r $HOME/.config/nvim/template/template.cpp",
-})
-vim.api.nvim_create_autocmd("BufNewFile", {
-    pattern = "CMakeLists.txt",
-    command = "0r $HOME/.config/nvim/template/CMakeLists.txt",
-})
-vim.api.nvim_create_autocmd("BufNewFile", {
-    pattern = "CMakePresets.json",
-    command = "0r $HOME/.config/nvim/template/CMakePresets.json",
-})
-vim.api.nvim_create_autocmd("BufNewFile", {
-    pattern = ".marksman.toml",
-    command = "0r $HOME/.config/nvim/template/.marksman.toml",
-})
-vim.api.nvim_create_autocmd("BufNewFile", {
-    pattern = ".clangd",
-    command = "0r $HOME/.config/nvim/template/.clangd",
+    callback = function(event)
+        local template = find_template(event.match)
+        if template then
+            vim.cmd("silent! 0r " .. template)
+        end
+    end,
 })
 
 -- Run chezmoi apply whenever a dotfile is saved

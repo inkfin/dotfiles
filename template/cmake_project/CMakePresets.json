@@ -4,9 +4,17 @@
     {
       "name": "vcpkg",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-ninja",
+      "binaryDir": "${sourceDir}/build-vcpkg",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     }
