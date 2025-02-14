@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.29)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # generate compile_commands.json for clangd
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 #===== VCPKG ===========================
@@ -127,9 +126,9 @@ message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 #===== Copy Commands ===================
 
 # cmake configure time copy
-if(EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
-    file(COPY "${CMAKE_BINARY_DIR}/compile_commands.json" DESTINATION ${CMAKE_SOURCE_DIR})
-endif()
+# if(EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
+#     file(COPY "${CMAKE_BINARY_DIR}/compile_commands.json" DESTINATION ${CMAKE_SOURCE_DIR})
+# endif()
 
 # cmake build time copy
 # file(GLOB DLLS_TO_COPY "${CMAKE_SOURCE_DIR}/lib/*.dll")
