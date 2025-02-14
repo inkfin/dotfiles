@@ -134,3 +134,17 @@ command! CD execute 'cd' expand('%:p:h')
 command! Cwd echo expand('%:p:h')
 
 ]])
+
+function JumpToNextPlaceholder()
+    local search_pattern = "<\\*>"
+    local found = vim.fn.search(search_pattern, "W")
+
+    if found ~= 0 then
+        vim.cmd('normal! "_diw')
+        vim.cmd("startinsert")
+    else
+        print("No placeholder <*> found")
+    end
+end
+
+map("n", "]8", JumpToNextPlaceholder, { desc = "Replace next placeholder", noremap = true, silent = true })
