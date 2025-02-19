@@ -18,4 +18,5 @@ nnoremap <leader>sc <CMD>Commands<CR>
 nnoremap <leader>sb <CMD>Buffers<CR>
 nnoremap <leader>sr <CMD>History<CR>
 nnoremap <leader>sw <CMD>Windows<CR>
-
+" fix fzf twindow exit to normal mode
+tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
