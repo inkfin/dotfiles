@@ -11,6 +11,8 @@ nnoremap <Tab> %
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
 
+vnoremap <silent> Y "+y
+
 vnoremap <silent> H ^
 vnoremap <silent> L $
 noremap <silent> W 5w
@@ -29,6 +31,10 @@ nnoremap <silent> <M-left> <C-w><
 nnoremap <silent> <M-right> <C-w>>
 nnoremap <silent> <M-down> <C-W>-
 nnoremap <silent> <M-up> <C-W>+
+
+" quickfix window
+nnoremap <silent> <leader>xq <CMD>copen<CR>
+nnoremap <silent> <leader>xl <CMD>lopen<CR>
 
 " navigate between buffers & tabs
 nnoremap <silent> H <CMD>bp<CR>
@@ -53,7 +59,7 @@ nnoremap <silent> <leader>K K
 " https://unix.stackexchange.com/q/162528/221410
 inoremap <expr> <cr> ((pumvisible())?("\<C-Y>"):("\<cr>"))
 " Use <esc> to close auto-completion menu
-"inoremap <expr> <esc> ((pumvisible())?("\<C-e>"):("\<esc>"))
+inoremap <expr> <esc> ((pumvisible())?("\<C-e>"):("\<esc>"))
 
 " Use <tab> to navigate down the completion menu.
 inoremap <expr> <tab>  pumvisible()?"\<C-n>":"\<tab>"
