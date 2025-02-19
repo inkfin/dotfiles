@@ -20,7 +20,6 @@ local function map(mode, lhs, rhs, opts)
 end
 
 -- handy keymaps
-map("n", "<C-a>", "ggVG")
 map("n", "dK", ":normal! v0k$d<CR>", { desc = "til prev line", silent = true, noremap = true }) -- delete to start of upper line
 map("n", "dJ", ":normal! d$J<CR>", { desc = "til next line", silent = true, noremap = true }) -- delete to end of lower line
 map("n", "<leader>J", ":normal! J<CR>", { silent = true, noremap = true })
