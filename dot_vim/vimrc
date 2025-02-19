@@ -17,7 +17,7 @@ source ~/.vim/keymaps.vim
 source ~/.vim/plugins.vim
 
 " autocmds
-source ~/.vim/autocmd.vim
+source ~/.vim/autocmds.vim
 
 " colorscheme
 colorscheme habamax
