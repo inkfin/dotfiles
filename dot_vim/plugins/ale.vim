@@ -38,12 +38,17 @@ let g:ale_echo_msg_format = '[%linter%] (%code) %%s [%severity%]'
 " enable airline support
 let g:airline#extensions#ale#enabled = 1
 
-highlight ALEWarning ctermbg=DarkMagenta
+highlight ALEErrorSign ctermbg=DarkMagenta ctermfg=red
+highlight ALEError ctermfg=red cterm=underline
+highlight ALEWarning ctermfg=yellow cterm=underline
 
-nnoremap K <CMD>ALEHover<CR>
-nnoremap gd <CMD>ALEGoToDefinition<CR>
-nnoremap gr <CMD>ALEFindReferences<CR>
-nnoremap <leader>ca <CMD>ALECodeAction<CR>
-nnoremap <leader>rn <CMD>ALERename<CR>
-nnoremap <leader>rf <CMD>ALEFix<CR>
+nmap <silent> K <CMD>ALEHover<CR>
+nmap <silent> gd <CMD>ALEGoToDefinition<CR>
+nmap <silent> gr <CMD>ALEFindReferences<CR>
+nmap <silent> <leader>ca <CMD>ALECodeAction<CR>
+nmap <silent> <leader>rn <CMD>ALERename<CR>
+nmap <silent> <leader>rf <CMD>ALEFix<CR>
+
+nmap <silent> [d <Plug>(ale_previous_wrap)
+nmap <silent> ]d <Plug>(ale_next_wrap)
 
