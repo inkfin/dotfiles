@@ -44,7 +44,8 @@ nnoremap Q :q<CR>
 map <C-S> :w<CR>
 
 
-nnoremap <silent> <leader>h K
+nmap <silent> <leader>h K
+nnoremap <silent> <leader>K K
 
 " When completion menu is shown, use <cr> to select an item
 " and do not add an annoying newline. Otherwise, <enter> is what it is.
