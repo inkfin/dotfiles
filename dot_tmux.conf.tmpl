@@ -28,7 +28,7 @@ set -g default-terminal "screen-256color"
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
 
 # Address vim mode switching delay (http://superuser.com/a/252717/65504)
-set -s escape-time 0
+set -sg escape-time 10
 # Increase scrollback buffer size from 2000 to 50000 lines
 set -g history-limit 50000
 # Increase tmux messages display duration from 750ms to 4s
@@ -159,3 +159,5 @@ set -g @resurrect-strategy-nvim 'session'
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run -b '~/.tmux/plugins/tpm/tpm'
 
+
+# vim: set filetype=tmux:
