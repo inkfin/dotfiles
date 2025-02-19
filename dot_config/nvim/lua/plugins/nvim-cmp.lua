@@ -15,6 +15,30 @@ return {
         dependencies = {
             { "hrsh7th/cmp-emoji" },
         },
+        init = function()
+            local cmp = require("cmp")
+            function SetAutoCmp(enabled)
+                if enabled then
+                    cmp.setup({
+                        completion = {
+                            autocomplete = { require("cmp.types").cmp.TriggerEvent.TextChanged },
+                        },
+                    })
+                else
+                    cmp.setup({
+                        completion = {
+                            autocomplete = false,
+                        },
+                    })
+                end
+            end
+
+            -- enable automatic completion popup on typing
+            vim.cmd("command AutoCmpOn lua SetAutoCmp(true)")
+
+            -- disable automatic competion popup on typing
+            vim.cmd("command AutoCmpOff lua SetAutoCmp(false)")
+        end,
         opts = function(_, opts)
             local has_words_before = function()
                 unpack = unpack or table.unpack

@@ -116,6 +116,10 @@ opt.fillchars = {
     eob = " ",
 }
 
+-- signature help
+vim.lsp.handlers["textDocument/signatureHelp"] =
+    vim.lsp.with(vim.lsp.handlers.signature_help, { silent = true, focusable = false })
+
 -- Folding
 if vim.fn.has("nvim-0.10") == 1 then
     opt.smoothscroll = true
