@@ -61,9 +61,8 @@ Set-Alias -Name lg -Value 'lazygit'
 # Set-Alias -Name ra -Value 'lf'
 # Set-Alias -Name nvim -Value 'nn'
 Set-Alias -Name v -Value 'nvim'
-Set-Alias -Name vim -Value 'nvim'
-# Set-Alias -Name nvi -Value 'neovide' # nv is occupied by New-Variable
-function nvi { param($file) Start-Process -NoNewWindow neovide $file }
+# Set-Alias -Name vim -Value 'nvim'
+function nvi { param($file) Start-Process -NoNewWindow neovide $file }  # nv is occupied by New-Variable
 function vcn { param($file) nvim --cmd 'let rime=1' $file }
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
