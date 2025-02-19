@@ -24,7 +24,11 @@ set -g status-interval 5
 set-option -g status-position bottom
 setw -g monitor-activity on # 非当前窗口有内容更新时在状态栏通知
 
-set -g default-terminal "screen-256color"
+set -g default-terminal "tmux-256color"
+{{ if eq .chezmoi.os "darwin" }}
+# add italic support on iTerm2 (https://weibeld.net/terminals-and-shells/italics.html)
+set -as terminal-overrides ',xterm*:sitm=\E[3m'
+{{ end }}
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
 
 # Address vim mode switching delay (http://superuser.com/a/252717/65504)
