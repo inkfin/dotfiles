@@ -3,7 +3,7 @@
 """"""""""""""""""""""""""
 
 " Preferences
-if exists('g:minimal_vimrc') && !g:minimal_vimrc
+if !exists('g:minimal_vimrc') || !g:minimal_vimrc
     let transparent=0
 endif
 
@@ -144,6 +144,9 @@ if exists('&termguicolors')
     " colors, for example, https://github.com/sickill/vim-monokai
     set notermguicolors
 endif
+
+" colorscheme
+colorscheme habamax
 
 if exists('g:transparent') && g:transparent
     augroup TransparentColorscheme

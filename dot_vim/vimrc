@@ -13,11 +13,12 @@ source ~/.vim/options.vim
 " Key mappings
 source ~/.vim/keymaps.vim
 
-" Plugins
-source ~/.vim/plugins.vim
-
 " autocmds
 source ~/.vim/autocmds.vim
 
-" colorscheme
-colorscheme habamax
+" project specific settings
+source ~/.vim/projectloader.vim
+
+" Plugins
+source ~/.vim/plugins.vim
+

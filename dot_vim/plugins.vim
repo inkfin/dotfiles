@@ -16,6 +16,8 @@ call plug#begin()
 " plug self
 Plug 'junegunn/vim-plug'
 
+Plug 'habamax/vim-habamax'
+
 for f in glob('~/.vim/plugins/*.vim', 0, 1)
     execute 'source' f
 endfor
