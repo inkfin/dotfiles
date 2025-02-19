@@ -55,6 +55,11 @@ nmap <silent> <leader>ca <CMD>ALECodeAction<CR>
 nmap <silent> <leader>rn <CMD>ALERename<CR>
 nmap <silent> <leader>rf <CMD>ALEFix<CR>
 
+nmap <silent> <leader>ud <CMD>ALEToggle<CR>
+nmap <silent> <leader>uD <CMD>ALEToggleBuffer<CR>
+nnoremap <leader>uf <CMD>let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Global]ALE Fix on Save: " . g:ale_fix_on_save<CR>
+nnoremap <leader>uF <CMD>let b:ale_fix_on_save = get(b:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Buffer]ALE Fix on Save: " . b:ale_fix_on_save<CR>
+
 nmap <silent> [d <Plug>(ale_previous_wrap)
 nmap <silent> ]d <Plug>(ale_next_wrap)
 
