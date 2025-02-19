@@ -38,9 +38,15 @@ let g:ale_echo_msg_format = '[%linter%] (%code) %%s [%severity%]'
 " enable airline support
 let g:airline#extensions#ale#enabled = 1
 
-highlight ALEErrorSign ctermbg=DarkMagenta ctermfg=red
-highlight ALEError ctermfg=red cterm=underline
-highlight ALEWarning ctermfg=yellow cterm=underline
+augroup ALEColorschemePreferences
+  autocmd!
+    autocmd ColorScheme * highlight MatchParen cterm=bold ctermfg=cyan gui=bold guifg=cyan guibg=black
+    autocmd ColorScheme * highlight ALEErrorSign cterm=bold ctermfg=red gui=bold guifg=red
+    autocmd ColorScheme * highlight ALEVirtualTextError cterm=italic ctermfg=magenta gui=italic guifg=red
+    autocmd ColorScheme * highlight ALEWarningSign cterm=bold ctermfg=yellow gui=bold guifg=yellow
+    autocmd ColorScheme * highlight ALEVirtualTextWarning cterm=italic ctermfg=yellow gui=italic guifg=yellow
+    autocmd ColorScheme * highlight ALEInfoSign cterm=bold ctermfg=white gui=bold guifg=white
+augroup END
 
 nmap <silent> K <CMD>ALEHover<CR>
 nmap <silent> gd <CMD>ALEGoToDefinition<CR>

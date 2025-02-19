@@ -137,3 +137,10 @@ if exists('&termguicolors')
     " colors, for example, https://github.com/sickill/vim-monokai
     set notermguicolors
 endif
+
+if exists(g:transparent) && g:transparent
+    augroup TransparentColorscheme
+    autocmd!
+        autocmd ColorScheme * highlight Normal ctermbg=None guibg=NONE
+    augroup END
+endif
