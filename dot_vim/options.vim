@@ -2,6 +2,13 @@
 """ Vim options
 """"""""""""""""""""""""""
 
+" Preferences
+if exists('g:minimal_vimrc') && !g:minimal_vimrc
+    let transparent=0
+endif
+
+
+" encoding
 set encoding=utf-8
 scriptencoding utf-8
 
@@ -138,7 +145,7 @@ if exists('&termguicolors')
     set notermguicolors
 endif
 
-if exists(g:transparent) && g:transparent
+if exists('g:transparent') && g:transparent
     augroup TransparentColorscheme
     autocmd!
         autocmd ColorScheme * highlight Normal ctermbg=None guibg=NONE

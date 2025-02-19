@@ -1,0 +1,49 @@
+"""""""""""""""""
+" MINIMAL VIMRC "
+"""""""""""""""""
+
+" Preferences
+let minimal_vimrc = 1
+let transparent = 0
+
+
+{{ include "dot_vim/options.vim" }}
+
+
+{{ include "dot_vim/keymaps.vim" }}
+
+
+{{ include "dot_vim/basic_statusline.vim" }}
+
+
+{{ include "dot_vim/autocmds.vim" }}
+
+
+" colorscheme
+set background=dark
+colorscheme habamax
+
+
+" various autocommands
+augroup minivimrc
+    autocmd!
+    " automatic location/quickfix window
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost    l* lwindow
+    autocmd VimEnter            * cwindow
+    " various adjustments of the default colorscheme
+    autocmd ColorScheme *
+                \ call execute("hi ModeMsg      cterm=NONE ctermbg=green    ctermfg=black") |
+                \ call execute("hi Search       cterm=NONE ctermbg=yellow   ctermfg=black") |
+                \ call execute("hi StatusLineNC cterm=bold ctermbg=darkgrey") |
+                \ call execute("hi Visual       cterm=NONE ctermbg=white    ctermfg=darkblue")
+    " Git-specific settings
+    " Use { and } to jump between hunks in gitcommit
+    autocmd FileType gitcommit nnoremap <buffer> { ?^@@<CR>|nnoremap <buffer> } /^@@<CR>|setlocal iskeyword+=-
+augroup END
+
+" commands for adjusting indentation rules manually
+command! -nargs=1 Spaces let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " expandtab"   | silent execute "%!expand -it "  . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
+command! -nargs=1 Tabs   let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " noexpandtab" | silent execute "%!unexpand -t " . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
+
+" vim: set ft=vim:
