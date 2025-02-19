@@ -2,8 +2,16 @@
 " MINIMAL VIMRC "
 """""""""""""""""
 
+""""""""""""""""""""""""""
+""" Vim options
+""""""""""""""""""""""""""
+
+let g:minimal_vimrc = 1
+
 set encoding=utf-8
 scriptencoding utf-8
+
+let &t_ut=''
 
 " File and script encoding settings for vim
 set fileencoding=utf-8
@@ -25,10 +33,10 @@ runtime! ftplugin/man.vim
 if !has('nvim')
     " Change cursor shapes based on whether we are in insert mode,
     " see https://vi.stackexchange.com/questions/9131/i-cant-switch-to-cursor-in-insert-mode
-    let &t_SI = "\<esc>[6 q"
-    let &t_EI = "\<esc>[2 q"
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
     if exists('&t_SR')
-        let &t_SR = "\<esc>[4 q"
+        let &t_SR = "\<Esc>]50;CursorShape=2\x7"
     endif
 
     " The number of color to use
@@ -37,17 +45,12 @@ endif
 
 " various settings
 set autoindent
-set number relativenumber
 set ignorecase smartcase
 set backspace=indent,eol,start
 set complete+=d
-set foldlevelstart=999
-set foldmethod=indent
 set hidden
-set incsearch
 set noswapfile
 set path& | let &path .= "**"
-set ruler
 set tags=./tags;,tags;
 set wildcharm=<C-z>
 set wildmenu
@@ -55,6 +58,22 @@ set wildmenu
 set wildmode=list:full
 set splitbelow splitright
 set laststatus=2
+"set autochdir
+
+" visual
+set number relativenumber
+set ruler
+set visualbell
+set virtualedit=block
+
+" search
+set incsearch
+set hlsearch
+exec "nohlsearch"
+
+" fold settings
+set foldlevelstart=999
+set foldmethod=syntax
 
 " General tab settings
 set tabstop=4       " number of visual spaces per TAB
@@ -64,14 +83,22 @@ set expandtab       " expand tab to spaces so that tabs are spaces
 set shiftround
 
 " History
-set history=100
+set history=200
+call mkdir(expand('~/.vim/tmp/backup'), 'p')
+set backupdir=~/.vim/tmp/backup,.
+set directory=~/.vim/tmp/backup,.
+if has('persistent_undo')
+    call mkdir(expand('~/.vim/tmp/undo'), 'p')
+    set undofile
+    set undodir=~/.config/nvim/tmp/undo,.
+endif
 
 " Time in milliseconds to wait for a mapped sequence to complete,
 " see https://unix.stackexchange.com/q/36882/221410 for more info
 set timeoutlen=500
 
 " For CursorHold events
-set updatetime=800
+set updatetime=300
 
 " Clipboard settings, always use clipboard for all delete, yank, change, put
 " operation, see https://stackoverflow.com/q/30691466/6064933
@@ -82,6 +109,10 @@ set clipboard+=unnamedplus
 set linebreak
 " Character to show before the lines that have been soft-wrapped
 set showbreak=↪
+
+" show tabs and trailling spaces
+set list listchars=tab:→\ ,trail:·
+"set list listchars=tab:→\ ,trail:·,space:·
 
 " Show current line where the cursor is
 set cursorline
@@ -94,8 +125,8 @@ set scrolloff=5
 
 " Use mouse to select and resize windows, etc.
 if has('mouse')
-    set mouse=nic  " Enable mouse in several mode
-    set mousemodel=popup  " Set the behaviour of mouse
+    set mouse=a             " Enable mouse in all mode
+    set mousemodel=popup    " Set the behaviour of mouse
 endif
 
 " colorscheme settings
@@ -104,32 +135,11 @@ if exists('&termguicolors')
     " colors, for example, https://github.com/sickill/vim-monokai
     set notermguicolors
 endif
-set background=dark
-colorscheme habamax
 
-" various autocommands
-augroup minivimrc
-    autocmd!
-    " automatic location/quickfix window
-    autocmd QuickFixCmdPost [^l]* cwindow
-    autocmd QuickFixCmdPost    l* lwindow
-    autocmd VimEnter            * cwindow
-    " various adjustments of the default colorscheme
-    autocmd ColorScheme * 
-                \ call execute("hi ModeMsg      cterm=NONE ctermbg=green    ctermfg=black") |
-                \ call execute("hi Search       cterm=NONE ctermbg=yellow   ctermfg=black") |
-                \ call execute("hi StatusLineNC cterm=bold ctermbg=darkgrey") |
-                \ call execute("hi Visual       cterm=NONE ctermbg=white    ctermfg=darkblue")
-    " Git-specific settings
-    " Use { and } to jump between hunks in gitcommit
-    autocmd FileType gitcommit nnoremap <buffer> { ?^@@<CR>|nnoremap <buffer> } /^@@<CR>|setlocal iskeyword+=-
-augroup END
 
-" commands for adjusting indentation rules manually
-command! -nargs=1 Spaces let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " expandtab"   | silent execute "%!expand -it "  . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
-command! -nargs=1 Tabs   let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " noexpandtab" | silent execute "%!unexpand -t " . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
-
-" Key mappings
+""""""""""""""""""""
+" Keymaps
+""""""""""""""""""""
 
 let g:mapleader = " "
 let g:maplocalleader = ","
@@ -162,6 +172,8 @@ nnoremap <silent> <M-up> <C-W>+
 nnoremap <silent> H <CMD>bp<CR>
 nnoremap <silent> L <CMD>bn<CR>
 nnoremap <silent> <leader>bd <CMD>bd<CR>
+nnoremap <silent> ]t <CMD>tabn<CR>
+nnoremap <silent> [t <CMD>tabp<CR>
 
 nnoremap <leader>\| :vs<CR>
 nnoremap <leader>- :sp<CR>
@@ -178,7 +190,7 @@ nnoremap <silent> <leader>h K
 " https://unix.stackexchange.com/q/162528/221410
 inoremap <expr> <cr> ((pumvisible())?("\<C-Y>"):("\<cr>"))
 " Use <esc> to close auto-completion menu
-inoremap <expr> <esc> ((pumvisible())?("\<C-e>"):("\<esc>"))
+"inoremap <expr> <esc> ((pumvisible())?("\<C-e>"):("\<esc>"))
 
 " Use <tab> to navigate down the completion menu.
 inoremap <expr> <tab>  pumvisible()?"\<C-n>":"\<tab>"
@@ -206,8 +218,10 @@ endif
 nnoremap <silent> <leader><enter> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 
+""""""""""""""""""""
+" a basic statusline
+""""""""""""""""""""
 
-" statusline settings
 let g:currentmode={
        \ 'n'  : 'NORMAL ',
        \ 'v'  : 'VISUAL ',
@@ -322,3 +336,38 @@ function! StatuslineTabWarning()
 
     return b:statusline_tab_warning
 endfunction
+
+
+""""""""""""""""""""
+""" Autocmd
+""""""""""""""""""""
+
+" Run chezmoi apply whenever a dotfile is saved
+autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
+
+" colorscheme
+set background=dark
+colorscheme habamax
+
+
+" various autocommands
+augroup minivimrc
+    autocmd!
+    " automatic location/quickfix window
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost    l* lwindow
+    autocmd VimEnter            * cwindow
+    " various adjustments of the default colorscheme
+    autocmd ColorScheme *
+                \ call execute("hi ModeMsg      cterm=NONE ctermbg=green    ctermfg=black") |
+                \ call execute("hi Search       cterm=NONE ctermbg=yellow   ctermfg=black") |
+                \ call execute("hi StatusLineNC cterm=bold ctermbg=darkgrey") |
+                \ call execute("hi Visual       cterm=NONE ctermbg=white    ctermfg=darkblue")
+    " Git-specific settings
+    " Use { and } to jump between hunks in gitcommit
+    autocmd FileType gitcommit nnoremap <buffer> { ?^@@<CR>|nnoremap <buffer> } /^@@<CR>|setlocal iskeyword+=-
+augroup END
+
+" commands for adjusting indentation rules manually
+command! -nargs=1 Spaces let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " expandtab"   | silent execute "%!expand -it "  . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?
+command! -nargs=1 Tabs   let b:wv = winsaveview() | execute "setlocal tabstop=" . <args> . " noexpandtab" | silent execute "%!unexpand -t " . <args> . "" | call winrestview(b:wv) | setlocal ts? sw? sts? et?

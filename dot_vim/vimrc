@@ -1,0 +1,23 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""
+"  __  ____   ____     _____ __  __ ____   ____  "
+" |  \/  \ \ / /\ \   / /_ _|  \/  |  _ \ / ___| "
+" | |\/| |\ V /  \ \ / / | || |\/| | |_) | |     "
+" | |  | | | |    \ V /  | || |  | |  _ <| |___  "
+" |_|  |_| |_|     \_/  |___|_|  |_|_| \_\\____| "
+"                                                "
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" basic options
+source ~/.vim/options.vim
+
+" Key mappings
+source ~/.vim/keymaps.vim
+
+" Plugins
+source ~/.vim/plugins.vim
+
+" autocmds
+source ~/.vim/autocmd.vim
+
+" colorscheme
+colorscheme habamax
