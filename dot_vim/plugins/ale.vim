@@ -1,8 +1,9 @@
 " ale
 
-if (v:version >= 910)
+if v:version >= 900 && !g:force_use_ale
     finish
 endif
+let use_ale = 1
 
 let g:ale_completion_enabled = 1
 Plug 'dense-analysis/ale'

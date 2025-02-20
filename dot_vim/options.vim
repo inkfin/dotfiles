@@ -4,7 +4,9 @@
 
 " Preferences
 if !exists('g:minimal_vimrc') || !g:minimal_vimrc
-    let transparent=0
+    let transparent = 0
+    let enable_lsp = 0
+    let force_use_ale = 1
 endif
 
 
@@ -99,7 +101,7 @@ set directory=~/.vim/tmp/backup,.
 if has('persistent_undo')
     call mkdir(expand('~/.vim/tmp/undo'), 'p')
     set undofile
-    set undodir=~/.config/nvim/tmp/undo,.
+    set undodir=~/.vim/tmp/undo,.
 endif
 
 " Time in milliseconds to wait for a mapped sequence to complete,

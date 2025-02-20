@@ -16,6 +16,9 @@ source ~/.vim/keymaps.vim
 " autocmds
 source ~/.vim/autocmds.vim
 
+" local config
+source ~/.vim/local_config.vim
+
 " project specific settings
 source ~/.vim/projectloader.vim
 

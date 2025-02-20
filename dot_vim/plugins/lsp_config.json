@@ -1,0 +1,17 @@
+{
+    "vim-language-server": {
+        "install_method": "bun",
+        "package_name": "vim-language-server",
+        "bin_name": "vim-language-server"
+    },
+    "prettierd": {
+        "install_method": "bun",
+        "package_name": "@fsouza/prettierd",
+        "bin_name": "prettierd"
+    },
+    "pyright": {
+        "install_method": "bun",
+        "package_name": "pyright",
+        "bin_name": "pyright-langserver"
+    }
+}
