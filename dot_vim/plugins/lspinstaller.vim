@@ -1,4 +1,4 @@
-if !has("vim9script") || v:version < 900
+if !has("vim9script") || v:version < 900 || !g:enable_lsp || g:force_use_ale
     finish
 endif
 vim9script

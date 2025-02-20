@@ -25,3 +25,6 @@ source ~/.vim/projectloader.vim
 " Plugins
 source ~/.vim/plugins.vim
 
+" colorscheme
+colorscheme habamax
+

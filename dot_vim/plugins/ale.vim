@@ -9,14 +9,14 @@ let g:ale_completion_enabled = 1
 Plug 'dense-analysis/ale'
 
 let g:ale_fixers = {
-\   'javascript': ['prettier', 'eslint'],
-\   'cpp': ['clangd'],
-\}
+    \ 'javascript': ['prettier', 'eslint'],
+    \ 'cpp': ['clangd'],
+    \ }
 let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['eslint'],
-\   'cpp': ['clang-format', 'clangtidy'],
-\}
+    \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+    \ 'javascript': ['eslint'],
+    \ 'cpp': ['clang-format', 'clangtidy'],
+    \ }
 
 let g:ale_cpp_cc_options = '-std=c++20 -Wall -Wextra'
 

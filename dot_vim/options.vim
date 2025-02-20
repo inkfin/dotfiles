@@ -147,9 +147,6 @@ if exists('&termguicolors')
     set notermguicolors
 endif
 
-" colorscheme
-colorscheme habamax
-
 if exists('g:transparent') && g:transparent
     augroup TransparentColorscheme
     autocmd!
