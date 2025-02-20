@@ -43,7 +43,7 @@ vim.g.maplocalleader = ","
 vim.g.tex_flavor = "latex"
 
 -- Enable LazyVim auto format
-vim.g.autoformat = true
+vim.g.autoformat = false
 
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
@@ -55,6 +55,12 @@ vim.g.loaded_perl_provider = 0
 -- * a function with signature `function(buf) -> string|string[]`
 vim.g.root_spec =
     { "lsp", { ".git", "lua", "node_modules", "Makefile", ".vscode", ".root", ".vim", ".vs", ".idea" }, "cwd" }
+
+vim.g.lazyvim_picker = "telescope"
+vim.g.lazyvim_cmp = "nvim-cmp"
+-- if the completion engine supports the AI source,
+-- use that instead of inline suggestions
+vim.g.ai_cmp = false
 
 local opt = vim.opt
 local indent = 4

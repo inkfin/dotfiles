@@ -52,7 +52,10 @@ return {
             -- nvim-cmp setup
             local cmp = require("cmp")
 
-            opts.completion.completeopt = "menu,menuone" --,noinsert,noselect
+            -- no preselect
+            local auto_select = false
+            opts.completion.completeopt = "menu,menuone" .. (auto_select and "" or ",noselect") --,noinsert
+            opts.preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None
 
             opts.mapping = cmp.mapping.preset.insert({
                 -- changing scrolling keymap from <C-b/f> to <C-u/d>
@@ -91,15 +94,18 @@ return {
                     end
                 end, { "i", "s" }),
             })
-            opts.sources = cmp.config.sources({
-                { name = "luasnip" },
-                { name = "nvim_lsp" },
-                { name = "copilot" },
-                { name = "emoji" },
-                { name = "path" },
-                { name = "dictionary" },
-                { name = "buffer" },
-            })
+            local source_list = {
+                { name = "luasnip", group_index = 1 },
+                { name = "nvim_lsp", group_index = 1 },
+                { name = "emoji", group_index = 1 },
+                { name = "path", group_index = 2 },
+                { name = "buffer", group_index = 2 },
+                { name = "dictionary", group_index = 3 },
+            }
+            if not _G.disable_plugins.copilot then
+                table.insert(source_list, { name = "copilot" })
+            end
+            opts.sources = cmp.config.sources(source_list)
 
             local compare = require("cmp.config.compare")
             opts.sorting = {
@@ -115,5 +121,9 @@ return {
                 },
             }
         end,
+        -- stylua: ignore
+        keys = {
+            { "<C-x><C-o>", mode = {"i"}, function() require("cmp").complete() end, desc = "trigger cmp complete", },
+        },
     },
 }

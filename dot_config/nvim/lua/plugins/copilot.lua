@@ -10,11 +10,29 @@ return {
             { "<leader>cE", "<cmd>Copilot enable<CR>", mode = "n", desc = "Enable Copilot" },
         },
         opts = {
-            suggestion = { enabled = false },
-            panel = { enabled = false },
+            suggestion = {
+                enabled = true,
+                auto_trigger = true,
+                hide_during_completion = false,
+                keymap = {
+                    accept = "<M-l>",
+                    accept_word = "<M-right>",
+                    next = "<M-]>",
+                    prev = "<M-[>",
+                    dismiss = "<C-]>",
+                },
+            },
+            panel = {
+                enabled = false,
+                auto_refresh = true,
+            },
             filetypes = {
                 markdown = true,
             },
         },
+    },
+    {
+        "zbirenbaum/copilot-cmp",
+        enabled = false,
     },
 }
