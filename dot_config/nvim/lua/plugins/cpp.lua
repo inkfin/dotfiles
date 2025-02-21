@@ -143,9 +143,6 @@ return {
     {
         "p00f/clangd_extensions.nvim",
         opts = {
-            inlay_hints = {
-                inline = vim.fn.has("nvim-0.10") == 1,
-            },
             -- ast = {
             --     -- These are unicode, should be available in any font
             --     role_icons = {
