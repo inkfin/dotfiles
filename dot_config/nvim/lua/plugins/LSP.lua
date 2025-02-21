@@ -34,4 +34,40 @@ return {
             keys[#keys + 1] = { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } }
         end,
     },
+    {
+        "chrisgrieser/nvim-lsp-endhints",
+        enabled = vim.fn.has("nvim-0.10") == 1 and vim.g.legacy_inlay_hints == true,
+        event = "LspAttach",
+        opts = {
+            label = {
+                truncateAtChars = 20,
+                padding = 1,
+                marginLeft = 0,
+                sameKindSeparator = ", ",
+            },
+            icons = {
+                type = "󰜁 ",
+                parameter = "󰏪 ",
+                offspec = " ", -- hint kind not defined in official LSP spec
+                unknown = "",
+            },
+        },
+        keys = {
+            -- stylua: ignore
+            { "<leader>uL", mode = "n", function() require("lsp-endhints").toggle() end, desc = "toggle endhints" },
+        },
+    },
+    -- {
+    --     "felpafel/inlay-hint.nvim",
+    --     enabled = vim.fn.has("nvim-0.10") == 1 and vim.g.legacy_inlay_hints == true,
+    --     event = "LspAttach",
+    --     opts = {
+    --         -- Position of virtual text. Possible values:
+    --         -- 'eol': right after eol character (default).
+    --         -- 'right_align': display right aligned in the window.
+    --         -- 'inline': display at the specified column, and shift the buffer
+    --         -- text to the right as needed.
+    --         virt_text_pos = "eol",
+    --     },
+    -- },
 }

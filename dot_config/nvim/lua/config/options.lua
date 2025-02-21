@@ -61,6 +61,7 @@ vim.g.lazyvim_cmp = "nvim-cmp"
 -- if the completion engine supports the AI source,
 -- use that instead of inline suggestions
 vim.g.ai_cmp = false
+vim.g.legacy_inlay_hints = true
 
 local opt = vim.opt
 local indent = 4
