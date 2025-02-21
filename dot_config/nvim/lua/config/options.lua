@@ -61,6 +61,8 @@ vim.g.lazyvim_cmp = "nvim-cmp"
 -- if the completion engine supports the AI source,
 -- use that instead of inline suggestions
 vim.g.ai_cmp = false
+-- enable tailed inlay hints plugins
+-- note: project specific settings won't work for this setting
 vim.g.legacy_inlay_hints = true
 
 local opt = vim.opt

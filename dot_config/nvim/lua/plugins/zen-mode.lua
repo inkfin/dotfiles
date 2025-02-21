@@ -3,8 +3,8 @@ return {
         "folke/zen-mode.nvim",
         keys = {
             { "<leader>uz", mode = { "n" }, "<Cmd>ZenMode<CR>", desc = "ZenMode" },
-            { "<leader>uW", mode = { "n" }, ":let g:zen_width = 0.", desc = "Set ZenMode width" },
-            { "<leader>uH", mode = { "n" }, ":let g:zen_height = 0.", desc = "Set ZenMode height" },
+            -- { "<leader>uW", mode = { "n" }, ":let g:zen_width = 0.", desc = "Set ZenMode width" },
+            -- { "<leader>uH", mode = { "n" }, ":let g:zen_height = 0.", desc = "Set ZenMode height" },
         },
         opts = {
             window = {

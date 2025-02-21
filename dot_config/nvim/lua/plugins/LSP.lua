@@ -51,10 +51,11 @@ return {
                 offspec = " ", -- hint kind not defined in official LSP spec
                 unknown = "",
             },
+            autoEnableHints = true,
         },
         keys = {
             -- stylua: ignore
-            { "<leader>uL", mode = "n", function() require("lsp-endhints").toggle() end, desc = "toggle endhints" },
+            { "<leader>ul", mode = "n", function() require("lsp-endhints").toggle() end, desc = "toggle endhints" },
         },
     },
     -- {
