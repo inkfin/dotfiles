@@ -36,7 +36,7 @@ map({ "n", "x" }, "W", "5w", { silent = true })
 map({ "n", "x" }, "E", "5e", { silent = true })
 map({ "n", "x" }, "B", "5b", { silent = true })
 map({ "v", "o" }, "H", "^", { desc = "Use 'H' as '^'" })
-map({ "v", "o" }, "L", "$", { desc = "Use 'L' as '$'" })
+map({ "v", "o" }, "L", "$<left>", { desc = "Use 'L' as '$'" })
 
 -- Move to window using the \ hjkl keys
 map("n", "\\h", "<C-w>h", { desc = "Go to left window", remap = true })
@@ -81,7 +81,7 @@ map(
 
 map({ "n", "x" }, "gw", "", {})
 
--- change 'Hover' action to <leader>h, cancel mapping in ../plugins/LSP.lua
+-- expand default hover behavior
 function Show_documentation()
     for _, v in pairs({ "vim", "help" }) do
         if v == vim.bo.filetype then
@@ -93,8 +93,9 @@ function Show_documentation()
 end
 
 -- configure it here so it is active all the time
+map({ "n" }, "K", Show_documentation, { desc = "hover" })
 map({ "n" }, "<leader>h", Show_documentation, { desc = "hover" })
--- vim.keymap.del("n", "<leader>K")
+-- <leader>K for vim show doc behavior
 
 -- save file
 map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })

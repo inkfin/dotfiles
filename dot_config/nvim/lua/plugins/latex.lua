@@ -29,8 +29,6 @@ return {
         ft = "tex",
         -- stylua: ignore
         keys = {
-            -- { "K", mode = { "n" }, "5gk", silent = true },
-
             { "<localleader>t", mode = { "n" }, "<Plug>(vimtex-toc-open)", desc = "Open TOC", ft = "tex"},
             { "<localleader>e", mode = { "n" }, "<Plug>(vimtex-errors)", desc = "Show errors", ft = "tex" },
             { "<localleader>c", mode = { "n" }, "<Cmd>write<CR><Cmd>VimtexCompile<CR>", desc = "Compile", ft = "tex" },
@@ -107,7 +105,6 @@ return {
                     .. ' -inverse-search "wt -w 0 \\"\\" nvim --headless -c \\"VimtexInverseSearch %l \'%f\'\\""'
             end
 
-            -- vim.g.vimtex_mappings_disable = { ["n"] = { "K" } }
             vim.g.vimtex_quickfix_method = vim.fn.executable("pplatex") == 1 and "pplatex" or "latexlog"
 
             vim.g.vimtex_quickfix_mode = 0 -- quickfix auto pop up

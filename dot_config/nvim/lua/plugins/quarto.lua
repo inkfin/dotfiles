@@ -32,7 +32,7 @@ return {
                     default_method = "molten",
                 },
                 keymap = {
-                    hover = "<leader>h",
+                    hover = "K",
                     definition = "gd",
                     type_definition = "gD",
                     rename = "<leader>rn",

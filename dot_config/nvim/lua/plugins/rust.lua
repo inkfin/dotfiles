@@ -13,26 +13,7 @@ return {
                     return true
                 end,
             },
-            servers = {
-                -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-                -- Ensure mason installs the server
-                taplo = {
-                    keys = {
-                        {
-                            "<leader>h",
-                            function()
-                                if vim.fn.expand("%:t") == "Cargo.toml" and require("crates").popup_available() then
-                                    require("crates").show_popup()
-                                else
-                                    vim.lsp.buf.hover()
-                                end
-                            end,
-                            desc = "Show Crate Documentation",
-                        },
-                        -- { "K", false },
-                    },
-                },
-            },
+            servers = {},
         },
     },
     -- rustfmt: https://rust-lang.github.io/rustfmt/
@@ -48,10 +29,6 @@ return {
         opts = {
             server = {
                 on_attach = function(client, bufnr)
-                    vim.keymap.set("n", "<leader>h", function()
-                        vim.cmd.RustLsp({ "hover", "actions" })
-                    end, { desc = "Hover Actions (Rust)", buffer = bufnr })
-
                     vim.keymap.set("n", "<leader>ca", function()
                         vim.cmd.RustLsp("codeAction")
                     end, { desc = "Code Action", buffer = bufnr })
