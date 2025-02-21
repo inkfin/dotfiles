@@ -4,7 +4,7 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         version = false, -- last release is way too old and doesn't work on Windows
-        build = ":TSUpdate",
+        build = vim.g.potato_computer and "" or ":TSUpdate",
 
         ---@type TSConfig
         opts = function(_, opts)
