@@ -49,6 +49,7 @@ require("lazy").setup({
         -- version = "*", -- try installing the latest stable version for plugins that support semver
     },
     install = { colorscheme = { "tokyonight", "habamax" } },
+    concurrency = jit.os:find("Windows") and (vim.uv.available_parallelism() * 2) or vim.g.maximum_concurrency,
 
     -- Constantly fetch Github for updates, has network issue
     checker = { enabled = false }, -- automatically check for plugin updates

@@ -43,4 +43,7 @@ _G.disable_plugins = {
     --image = true,
 }
 
+-- maximum_concurrency
+-- vim.g.maximum_concurrency = 1
+
 --------------------------
