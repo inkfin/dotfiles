@@ -12,6 +12,13 @@ return {
                 -- Ensure mason installs the server
                 -- clangd configurations: https://clangd.llvm.org/config
                 clangd = {
+                    InlayHints = {
+                        Designators = true,
+                        Enabled = true,
+                        ParameterNames = true,
+                        DeducedTypes = true,
+                    },
+                    fallbackFlags = { "-std=c++20" },
                     keys = {
                         { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
                     },

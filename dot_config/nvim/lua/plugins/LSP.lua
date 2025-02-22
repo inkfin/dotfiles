@@ -10,6 +10,7 @@ return {
             -- provide the inlay hints.
             inlay_hints = {
                 enabled = vim.fn.has("nvim-0.10") == 1,
+                exclude = {},
             },
             -- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
             -- Be aware that you also will need to properly configure your LSP server to
