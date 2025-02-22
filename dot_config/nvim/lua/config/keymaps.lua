@@ -101,7 +101,7 @@ map({ "n" }, "<leader>h", Show_documentation, { desc = "hover" })
 map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 -- quit current file
-map("n", "Q", "<cmd>q<cr><esc>", { desc = "quit file" })
+map("n", "Q", vim.g.safequit and "<cmd>SafeQuit<cr>" or "<cmd>q<cr><esc>", { desc = "quit file" })
 
 wk.add({
     { "cs", group = "+surrounds" },

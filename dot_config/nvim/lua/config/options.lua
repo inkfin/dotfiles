@@ -249,6 +249,7 @@ if vim.g.neovide then
     vim.o.guifont = "FiraCode Nerd Font Mono:h16"
     vim.o.linespace = 0 -- Controls spacing between lines, may also be negative.
     vim.g.neovide_scale_factor = 1.0
+    vim.g.neovide_detach_on_quit = "always_detach"
 
     -- Window Blur (Currently macOS only)
     if vim.fn.has("mac") == 1 then
@@ -260,7 +261,7 @@ if vim.g.neovide then
 
     -- Windows configuration
     if vim.fn.has("win32") == 1 then
-        vim.g.neovide_fullscreen = true
+        vim.g.neovide_fullscreen = false
         vim.g.neovide_padding_top = 10
         vim.g.neovide_padding_bottom = 10
         vim.g.neovide_padding_right = 10

@@ -14,6 +14,25 @@ vim.g.file_exists = function(name)
     return f ~= nil and io.close(f)
 end
 
+---Check if there's more than two tuis
+---@return boolean
+vim.g.has_tui = function()
+    return #vim.api.nvim_list_uis() > 1
+end
+
+---Check if this is the last window
+---@return boolean
+vim.g.is_last_normal_window = function()
+    local win_count = 0
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local info = vim.api.nvim_win_get_config(win)
+        if not info.relative or info.relative == "" then
+            win_count = win_count + 1
+        end
+    end
+    return win_count == 1
+end
+
 ---Convert a snake_case string to camelCase
 ---@param str string?
 ---@return string?

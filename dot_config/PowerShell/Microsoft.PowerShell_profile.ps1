@@ -61,9 +61,11 @@ Set-Alias -Name lg -Value 'lazygit'
 # Set-Alias -Name ra -Value 'lf'
 # Set-Alias -Name nvim -Value 'nn'
 Set-Alias -Name v -Value 'nvim'
-# Set-Alias -Name vim -Value 'nvim'
+Set-Alias -Name vim -Value 'nvim'
 function nvi { param($file) Start-Process -NoNewWindow neovide $file }  # nv is occupied by New-Variable
 function vcn { param($file) nvim --cmd 'let rime=1' $file }
+function nvs { nvim --listen localhost:6789 --cmd "let safequit=v:true" @args }
+function nvc { nvim --server localhost:6789 --remote-ui }
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function pwshrc { nvim "$HOME\.local\share\chezmoi\dot_config\Powershell\Microsoft.PowerShell_profile.ps1" }
