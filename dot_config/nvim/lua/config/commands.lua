@@ -16,6 +16,10 @@ vim.api.nvim_create_user_command("Format", function(args)
   require("conform").format({ async = true, lsp_fallback = true, range = range })
 end, { range = true })
 
+vim.api.nvim_create_user_command("ChangeProjectRoot", function()
+    vim.cmd("lcd " .. LazyVim.root())
+end, { nargs = 0, desc = "Change project root to LazyVim.root()" })
+
 -- Detach from remote (close the last UI)
 -- drop in replacement for :detach on windows
 -- on unix we can use <C-z> or :detach
