@@ -8,6 +8,13 @@
 --     command = "normal zx zR", -- FIXME: Manually fold and unfold file, strange issue: https://github.com/nvim-treesitter/nvim-treesitter/issues/1226
 -- })
 
+-- Set working directory when enter
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        vim.cmd("lcd " .. LazyVim.root())
+    end,
+})
+
 -- Don't auto commenting new lines
 vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "",
