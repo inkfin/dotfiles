@@ -1,0 +1,21 @@
+# https://clangd.llvm.org/config
+---
+If:
+  PathMatch:
+    - Plugins/.*\.(cpp|h)
+    - Source/.*\.(cpp|h)
+CompileFlags:
+  CompilationDatabase: .
+  Add: [
+    -std=c++17,
+  ]
+  Compiler: C:\Program Files\LLVM\bin\clangd.exe
+InlayHints:
+  Enabled: true
+  DeducedTypes: true
+  ParameterNames: true
+  Designators: true
+  BlockEnd: true
+Hover:
+  ShowAKA: true
+

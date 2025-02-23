@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
+    <BuildConfiguration>
+        <bAllowFASTBuild>false</bAllowFASTBuild>
+    </BuildConfiguration>
+    <FASTBuild>
+        <FBuildExecutablePath>C:\dev\UnrealEngine\FBuild\FBuild.exe</FBuildExecutablePath>
+        <bStopOnError>true</bStopOnError>
+        <bEnableCaching>true</bEnableCaching>
+        <CacheMode>ReadWrite</CacheMode>
+        <bEnableDistribution>false</bEnableDistribution>
+        <FBuildBrokeragePath>C:\dev\UnrealEngine\FBuildBrokerage</FBuildBrokeragePath>
+        <FBuildCachePath>C:\dev\UnrealEngine\FBuildCache</FBuildCachePath>
+    </FASTBuild>
+    <ParallelExecutor>
+        <MaxProcessorCount>12</MaxProcessorCount>
+        <ProcessorCountMultiplier>20</ProcessorCountMultiplier>
+        <ProcessPriority>Normal</ProcessPriority>
+    </ParallelExecutor>
+    <WindowsPlatform>
+        <bAllowClangLinker>false</bAllowClangLinker>
+        <Compiler>Clang</Compiler>
+        <CompilerVersion>16.0.4</CompilerVersion>
+		<!--       <Compiler>MSVC</Compiler> -->
+		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
+    </WindowsPlatform>
+    <ProjectFileGenerator>
+        <Format>CMake</Format>
+        <bGenerateIntelliSenseData>true</bGenerateIntelliSenseData>
+        <bIncludeEngineSource>true</bIncludeEngineSource>
+        <bIncludeShaderSource>true</bIncludeShaderSource>
+        <bIncludeConfigFiles>true</bIncludeConfigFiles>
+        <bIncludeEnginePrograms>true</bIncludeEnginePrograms>
+    </ProjectFileGenerator>
+    <RiderProjectFileGenerator>
+        <bIncludeDotNetPrograms>true</bIncludeDotNetPrograms>
+    </RiderProjectFileGenerator>
+</Configuration>
