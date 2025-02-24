@@ -24,3 +24,8 @@ run = "git"
 id = "git"
 name = "*/"
 run = "git"
+
+# max-preview
+[preview]
+max_width  = 1000
+max_height = 1000
