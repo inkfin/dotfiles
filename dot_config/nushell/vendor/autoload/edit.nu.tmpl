@@ -13,13 +13,15 @@ alias nvc = nvim --server localhost:6789 --remote-ui
 ## edit config
 let nvim_config = $env.chezmoi-dir | path join "dot_config" "nvim" "init.lua"
 alias vimrc = nvim $nvim_config
+let nu_config = $env.chezmoi-dir | path join "dot_config" "nushell" "config.nu"
+alias vimnu = nvim $nu_config
 
 # tmux
-alias tksv = tmux kill-server
 alias tl = tmux list-sessions
 alias ta = tmux attach -t
 alias tad = tmux attach -d -t
 alias ts = tmux new-session -s
 alias tkss = tmux kill-session -t
+alias tksv = tmux kill-server
 
 # vim: ft=nu

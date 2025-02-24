@@ -47,6 +47,15 @@ alias la = lsd -al
 alias lt = lsd --tree
 alias pwd = echo $env.PWD
 alias ra = yazi
+def --env rag [...args] {
+	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
+	yazi ...$args --cwd-file $tmp
+	let cwd = (open $tmp)
+	if $cwd != "" and $cwd != $env.PWD {
+		cd $cwd
+	}
+	rm -fp $tmp
+}
 
 # chezmoi
 alias cz = chezmoi
