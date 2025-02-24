@@ -11,10 +11,21 @@ on = [ "<Enter>" ]
 run = "plugin smart-enter"
 desc = "smart enter"
 
+{{ if eq .chezmoi.os "windows" -}}
+
+[[manager.prepend_keymap]]
+on = [ "S" ]
+run = 'shell "nu.exe" --block --confirm'
+desc = "enter shell (cwd)"
+
+{{- else -}}
+
 [[manager.prepend_keymap]]
 on = [ "S" ]
 run = 'shell "$SHELL" --block --confirm'
 desc = "enter shell (cwd)"
+
+{{- end }}
 
 [[manager.prepend_keymap]]
 on   = "T"
@@ -50,3 +61,5 @@ desc = "Delete all bookmarks"
 # on = "<C-y>"
 # run = ["plugin system-clipboard"]
 # desc = "Copy to system clipboard"
+
+# vi: ft=toml
