@@ -1,0 +1,48 @@
+# git
+alias gst = git status
+alias lg = lazygit
+
+{{ if eq .chezmoi.os "darwin" -}}
+# macos has open command
+alias o = ^open
+{{- end }}
+
+# C++ environment
+## cmake config
+alias cmc = cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B
+def cmcv [...args] {
+    let toolchain_file = ($env.VCPKG_ROOT | path join ("scripts/buildsystems/vcpkg.cmake" | path expand))
+    cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$toolchain_file -B ...$args
+}
+alias cmb = cmake --build
+## toolset
+$env.CC = ""
+$env.CXX = ""
+{{ if eq .chezmoi.os "windows" -}}
+$env.CC_GCC = "~/scoop/apps/mingw/current/bin/gcc.EXE" | path expand
+$env.CXX_GCC = "~/scoop/apps/mingw/current/bin/g++.EXE" | path expand
+$env.CC_CLANG = "~/scoop/apps/llvm/current/bin/clang.EXE" | path expand
+$env.CXX_CLANG = "~/scoop/apps/llvm/current/bin/clang++.EXE" | path expand
+{{- end }}
+
+## vcpkg
+{{ if eq .chezmoi.os "windows" -}}
+$env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
+$env.PATH = $env.PATH | append (safe_expand_path $env.VCPKG_ROOT)
+$env.LLVMInstallDir = "~/scoop/apps/llvm/current" | path expand
+{{- else -}}
+$env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
+{{- end }}
+
+
+# CUDA environment
+{{ if eq .chezmoi.os "windows" -}}
+$env.CUDA_PATH_V12_1 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1" | path expand
+$env.CUDA_PATH_V11_2 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2" | path expand
+$env.CUDA_PATH = $env.CUDA_PATH_V12_1
+$env.PATH = $env.PATH | append (safe_expand_path ($env.CUDA_PATH | path join "bin"))
+$env.PATH = $env.PATH | append (safe_expand_path ($env.CUDA_PATH | path join "libnvvp"))
+{{- end }}
+
+
+# vim: ft=nu

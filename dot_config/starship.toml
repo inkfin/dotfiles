@@ -163,8 +163,9 @@ symbol = "↕️ "
 disabled = false
 bash_indicator = ""
 fish_indicator = '󰈺'
-zsh_indicator = ""
+zsh_indicator = ""
 powershell_indicator = ""
+nu_indicator = ""
 cmd_indicator = ""
 
 [localip]

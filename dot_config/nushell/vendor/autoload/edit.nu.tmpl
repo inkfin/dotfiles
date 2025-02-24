@@ -1,0 +1,25 @@
+# neovim
+alias v = nvim
+alias nvi = neovide
+
+alias vcn = nvim --cmd 'let rime=1'
+alias nvs = nvim --listen localhost:6789 --cmd "let safequit=v:true"
+alias nvc = nvim --server localhost:6789 --remote-ui
+
+## nvim custom build
+# alias nn = $env.home-path | path join ".local" "bin" "nvim"
+# alias nvim = nn
+
+## edit config
+let nvim_config = $env.chezmoi-dir | path join "dot_config" "nvim" "init.lua"
+alias vimrc = nvim $nvim_config
+
+# tmux
+alias tksv = tmux kill-server
+alias tl = tmux list-sessions
+alias ta = tmux attach -t
+alias tad = tmux attach -d -t
+alias ts = tmux new-session -s
+alias tkss = tmux kill-session -t
+
+# vim: ft=nu

@@ -1,0 +1,9 @@
+{{ if eq .chezmoi.os "windows" -}}
+
+let file_exe = "C:/Program Files/Git/usr/bin/file.exe"
+if ($file_exe | path exists) {
+    $env.YAZI_FILE_ONE = $file_exe
+}
+
+# vim: ft=nu
+{{- end }}

@@ -32,6 +32,7 @@ return {
                 geom = "// %s",
                 comp = "// %s",
                 wgsl = "// %s",
+                nu = "# %s",
             },
         },
     },
