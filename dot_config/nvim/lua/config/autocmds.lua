@@ -29,6 +29,7 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
     "typescript",
     "html",
     "css",
+    "nu",
     }, callback = function() vim.g.settab(2) end })
 vim.api.nvim_create_autocmd("FileType", { pattern = {
     "markdown",

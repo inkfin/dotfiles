@@ -11,19 +11,64 @@ alias o = ^open
 ## cmake config
 alias cmc = cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B
 def cmcv [...args] {
-    let toolchain_file = ($env.VCPKG_ROOT | path join ("scripts/buildsystems/vcpkg.cmake" | path expand))
-    cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$toolchain_file -B ...$args
+  let toolchain_file = ($env.VCPKG_ROOT | path join ("scripts/buildsystems/vcpkg.cmake" | path expand))
+  cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$toolchain_file -B ...$args
 }
 alias cmb = cmake --build
 ## toolset
 $env.CC = ""
 $env.CXX = ""
-{{ if eq .chezmoi.os "windows" -}}
-$env.CC_GCC = "~/scoop/apps/mingw/current/bin/gcc.EXE" | path expand
-$env.CXX_GCC = "~/scoop/apps/mingw/current/bin/g++.EXE" | path expand
-$env.CC_CLANG = "~/scoop/apps/llvm/current/bin/clang.EXE" | path expand
-$env.CXX_CLANG = "~/scoop/apps/llvm/current/bin/clang++.EXE" | path expand
+
+set_cc empty
+
+def cc_types [] {[
+  "gcc",
+  "clang",
+{{- if eq .chezmoi.os "windows" }}
+  "clang-llvm",
 {{- end }}
+  "empty",
+]}
+
+def set_cc --env [cc: string@cc_types, silent?: bool = true] {
+  let new_env = if $cc == "gcc" {
+    {
+{{- if eq .chezmoi.os "windows" }}
+      CC: ("~/scoop/apps/mingw/current/bin/gcc.EXE" | path expand)
+      CXX: ("~/scoop/apps/mingw/current/bin/g++.EXE" | path expand)
+{{- else }}
+      CC: "gcc"
+      CXX: "g++"
+{{- end }}
+    }
+  } else if $cc == "clang" {
+    {
+{{- if eq .chezmoi.os "windows" }}
+      CC: ("~/scoop/apps/llvm/current/bin/clang.EXE" | path expand)
+      CXX: ("~/scoop/apps/llvm/current/bin/clang++.EXE" | path expand)
+{{- else }}
+      CC: "clang"
+      CXX: "clang++"
+{{- end }}
+    }
+{{- if eq .chezmoi.os "windows" }}
+  } else if $cc == "clang-llvm" {
+    {
+      CC: ("C:/Program Files/LLVM/bin/clang.exe" | path expand)
+      CXX: ("C:/Program Files/LLVM/bin/clang++.exe" | path expand)
+    }
+{{- end }}
+  } else {
+    {
+      CC: ""
+      CXX: ""
+    }
+  }
+  if not $silent {
+    print $"Setting env to ($new_env)"
+  }
+  load-env $new_env
+}
 
 ## vcpkg
 {{ if eq .chezmoi.os "windows" -}}

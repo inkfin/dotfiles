@@ -63,6 +63,11 @@ $env.chezmoi-dir = "~/.local/share/chezmoi" | path expand
 
 alias ee = exit
 
+# load completions
+const NU_LIB_DIRS = [
+  ($nu.data-dir | path join "completions"),
+]
+
 # initialization
 mkdir ($nu.data-dir | path join "vendor/autoload")
 

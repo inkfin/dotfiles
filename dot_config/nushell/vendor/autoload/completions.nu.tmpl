@@ -1,0 +1,10 @@
+source bat-completions.nu
+source git-completions.nu
+source ssh-completions.nu
+source rg-completions.nu
+source docker-completions.nu
+{{- if eq .chezmoi.os "windows" }}
+source scoop-completions.nu
+{{- end }}
+
+# vim: ft=nu
