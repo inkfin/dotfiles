@@ -41,7 +41,6 @@ $env:EDITOR = "nvim"
 # Set-Alias -Name ll -value list-files -Option AllScope -Description 'List directory contents in long format'
 # function list-hidden-files { param($file) Get-ChildItem -Hidden $file | Format-Table } 
 # Set-Alias -Name la -value list-hidden-files -Option AllScope -Description 'List directory contents including hidden files'
-Set-Alias -Name ls -Value 'lsd'
 Set-Alias -Name l -Value 'ls'
 function ll  { lsd -l }
 function la  { lsd -la }
@@ -68,8 +67,8 @@ function nvs { & nvim --listen localhost:6789 --cmd "let safequit=v:true" @args 
 function nvc { & nvim --server localhost:6789 --remote-ui }
 Set-Alias -Name cz -Value 'chezmoi'
 function vimrc { & nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
-function pwshrc { & nvim "$HOME\.local\share\chezmoi\dot_config\Powershell\Microsoft.PowerShell_profile.ps1" }
-function rimerc { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custom.yaml" }
+function vimpwsh { & nvim "$HOME\.local\share\chezmoi\dot_config\Powershell\Microsoft.PowerShell_profile.ps1" }
+function vimrime { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custom.yaml" }
 function custom_phrase { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom_phrase.txt" }
 
 function nn {

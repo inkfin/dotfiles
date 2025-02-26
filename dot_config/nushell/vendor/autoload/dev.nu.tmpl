@@ -72,11 +72,13 @@ def set_cc --env [cc: string@cc_types, silent?: bool = true] {
 
 ## vcpkg
 {{ if eq .chezmoi.os "windows" -}}
-$env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
+if not ('VCPKG_ROOT' in $env) {
+  $env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
+}
 $env.PATH = $env.PATH | append (safe_expand_path $env.VCPKG_ROOT)
-$env.LLVMInstallDir = "~/scoop/apps/llvm/current" | path expand
 {{- else -}}
 $env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
+$env.PATH = $env.PATH | append (safe_expand_path $env.VCPKG_ROOT)
 {{- end }}
 
 
