@@ -2,6 +2,7 @@
 <Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
     <BuildConfiguration>
         <bAllowFASTBuild>false</bAllowFASTBuild>
+        <bUseUBTMakefiles>true</bUseUBTMakefiles>
     </BuildConfiguration>
     <FASTBuild>
         <FBuildExecutablePath>C:\dev\UnrealEngine\FBuild\FBuild.exe</FBuildExecutablePath>
@@ -18,10 +19,10 @@
         <ProcessPriority>Normal</ProcessPriority>
     </ParallelExecutor>
     <WindowsPlatform>
-        <bAllowClangLinker>false</bAllowClangLinker>
-        <Compiler>Clang</Compiler>
-        <CompilerVersion>16.0.4</CompilerVersion>
-		<!--       <Compiler>MSVC</Compiler> -->
+        <!-- <bAllowClangLinker>false</bAllowClangLinker> -->
+        <!-- <Compiler>Clang</Compiler> -->
+        <!-- <CompilerVersion>16.0.4</CompilerVersion> -->
+        <!-- <Compiler>VisualStudio2022</Compiler> -->
 		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
     </WindowsPlatform>
     <ProjectFileGenerator>

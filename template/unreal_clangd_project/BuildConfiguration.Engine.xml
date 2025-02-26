@@ -3,4 +3,11 @@
 	<BuildConfiguration>
 		<DefaultWarningLevel>Off</DefaultWarningLevel>
 	</BuildConfiguration>
+    <WindowsPlatform>
+        <!-- <bAllowClangLinker>false</bAllowClangLinker> -->
+        <!-- <Compiler>Clang</Compiler> -->
+        <!-- <CompilerVersion>16.0.4</CompilerVersion> -->
+        <!-- <Compiler>VisualStudio2022</Compiler> -->
+		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
+    </WindowsPlatform>
 </Configuration>

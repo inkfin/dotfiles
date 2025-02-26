@@ -1,0 +1,154 @@
+diff --git a/Engine/Source/Programs/UnrealBuildTool/Executors/Experimental/FASTBuild.cs b/Engine/Source/Programs/UnrealBuildTool/Executors/Experimental/FASTBuild.cs
+index cad45810a..13c471d54 100644
+--- a/Engine/Source/Programs/UnrealBuildTool/Executors/Experimental/FASTBuild.cs
++++ b/Engine/Source/Programs/UnrealBuildTool/Executors/Experimental/FASTBuild.cs
+@@ -931,64 +931,65 @@ namespace UnrealBuildTool
+ 				}
+ 				else
+ 				{
+-					AddText($"\t.Executable = '$Root$\\{VCEnv.CompilerPath.GetFileName()}'\n");
++					AddText($"\t.Executable = '$Root$\\clang-cl.exe'\n");
++					//AddText($"\t.Executable = '$Root$\\{VCEnv.CompilerPath.GetFileName()}'\n");
+ 				}
+-				AddText($"\t.ExtraFiles =\n\t{{\n");
+-				if (UsingCLFilter)
+-				{
+-					AddText($"\t\t'$Root$/cl.exe'\n");
+-				}
+-				AddText($"\t\t'$Root$/c1.dll'\n");
+-				AddText($"\t\t'$Root$/c1xx.dll'\n");
+-				AddText($"\t\t'$Root$/c2.dll'\n");
+-
+-				FileReference? cluiDllPath = null;
+-				string cluiSubDirName = "1033";
+-				if (File.Exists(VCEnv.GetToolPath() + "{cluiSubDirName}/clui.dll")) //Check English first...
+-				{
+-					if (UsingCLFilter)
+-					{
+-						AddText("\t\t'$CLFilterRoot$/{cluiSubDirName}/clui.dll'\n");
+-					}
+-					else
+-					{
+-						AddText("\t\t'$Root$/{cluiSubDirName}/clui.dll'\n");
+-					}
+-					cluiDllPath = new FileReference(VCEnv.GetToolPath() + "{cluiSubDirName}/clui.dll");
+-				}
+-				else
+-				{
+-					IEnumerable<string> numericDirectories = Directory.GetDirectories(VCEnv.GetToolPath().ToString()).Where(d => Path.GetFileName(d).All(Char.IsDigit));
+-					IEnumerable<string> cluiDirectories = numericDirectories.Where(d => Directory.GetFiles(d, "clui.dll").Any());
+-					if (cluiDirectories.Any())
+-					{
+-						cluiSubDirName = Path.GetFileName(cluiDirectories.First());
+-						if (UsingCLFilter)
+-						{
+-							AddText(String.Format("\t\t'$CLFilterRoot$/{0}/clui.dll'\n", cluiSubDirName));
+-						}
+-						else
+-						{
+-							AddText(String.Format("\t\t'$Root$/{0}/clui.dll'\n", cluiSubDirName));
+-						}
+-						cluiDllPath = new FileReference(cluiDirectories.First() + "/clui.dll");
+-					}
+-				}
+-
+-				// FASTBuild only preserves the directory structure of compiler files for files in the same directory or sub-directories of the primary executable
+-				// Since our primary executable is cl-filter.exe and we need clui.dll in a sub-directory on the worker, we need to copy it to cl-filter's subdir
+-				if (UsingCLFilter && cluiDllPath != null)
+-				{
+-					Directory.CreateDirectory(Path.Combine(CLFilterDirectory.FullName, cluiSubDirName));
+-					File.Copy(cluiDllPath.FullName, Path.Combine(CLFilterDirectory.FullName, cluiSubDirName, "clui.dll"), true);
+-				}
+-
+-				AddText("\t\t'$Root$/mspdbsrv.exe'\n");
+-				AddText("\t\t'$Root$/mspdbcore.dll'\n");
+-
+-				AddText($"\t\t'$Root$/mspft{platformVersionNumber}.dll'\n");
+-				AddText($"\t\t'$Root$/msobj{platformVersionNumber}.dll'\n");
+-				AddText($"\t\t'$Root$/mspdb{platformVersionNumber}.dll'\n");
++				//AddText($"\t.ExtraFiles =\n\t{{\n");
++				//if (UsingCLFilter)
++				//{
++				//	AddText($"\t\t'$Root$/cl.exe'\n");
++				//}
++				//AddText($"\t\t'$Root$/c1.dll'\n");
++				//AddText($"\t\t'$Root$/c1xx.dll'\n");
++				//AddText($"\t\t'$Root$/c2.dll'\n");
++
++				//FileReference? cluiDllPath = null;
++				//string cluiSubDirName = "1033";
++				//if (File.Exists(VCEnv.GetToolPath() + "{cluiSubDirName}/clui.dll")) //Check English first...
++				//{
++				//	if (UsingCLFilter)
++				//	{
++				//		AddText("\t\t'$CLFilterRoot$/{cluiSubDirName}/clui.dll'\n");
++				//	}
++				//	else
++				//	{
++				//		AddText("\t\t'$Root$/{cluiSubDirName}/clui.dll'\n");
++				//	}
++				//	cluiDllPath = new FileReference(VCEnv.GetToolPath() + "{cluiSubDirName}/clui.dll");
++				//}
++				//else
++				//{
++				//	IEnumerable<string> numericDirectories = Directory.GetDirectories(VCEnv.GetToolPath().ToString()).Where(d => Path.GetFileName(d).All(Char.IsDigit));
++				//	IEnumerable<string> cluiDirectories = numericDirectories.Where(d => Directory.GetFiles(d, "clui.dll").Any());
++				//	if (cluiDirectories.Any())
++				//	{
++				//		cluiSubDirName = Path.GetFileName(cluiDirectories.First());
++				//		if (UsingCLFilter)
++				//		{
++				//			AddText(String.Format("\t\t'$CLFilterRoot$/{0}/clui.dll'\n", cluiSubDirName));
++				//		}
++				//		else
++				//		{
++				//			AddText(String.Format("\t\t'$Root$/{0}/clui.dll'\n", cluiSubDirName));
++				//		}
++				//		cluiDllPath = new FileReference(cluiDirectories.First() + "/clui.dll");
++				//	}
++				//}
++
++				//// FASTBuild only preserves the directory structure of compiler files for files in the same directory or sub-directories of the primary executable
++				//// Since our primary executable is cl-filter.exe and we need clui.dll in a sub-directory on the worker, we need to copy it to cl-filter's subdir
++				//if (UsingCLFilter && cluiDllPath != null)
++				//{
++				//	Directory.CreateDirectory(Path.Combine(CLFilterDirectory.FullName, cluiSubDirName));
++				//	File.Copy(cluiDllPath.FullName, Path.Combine(CLFilterDirectory.FullName, cluiSubDirName, "clui.dll"), true);
++				//}
++
++				//AddText("\t\t'$Root$/mspdbsrv.exe'\n");
++				//AddText("\t\t'$Root$/mspdbcore.dll'\n");
++
++				//AddText($"\t\t'$Root$/mspft{platformVersionNumber}.dll'\n");
++				//AddText($"\t\t'$Root$/msobj{platformVersionNumber}.dll'\n");
++				//AddText($"\t\t'$Root$/mspdb{platformVersionNumber}.dll'\n");
+ 
+ 				List<String> PotentialMSVCRedistPaths = new List<String>(Directory.EnumerateDirectories(String.Format("{0}/Redist/MSVC", VCEnv.GetVCInstallDirectory())));
+ 				string? PrefferedMSVCRedistPath = null;
+@@ -1028,17 +1029,18 @@ namespace UnrealBuildTool
+ 					FinalMSVCRedistPath = PrefferedMSVCRedistPath;
+ 				}
+ 
+-				{
+-					AddText($"\t\t'$Root$/msvcp{platformVersionNumber}.dll'\n");
+-					AddText(String.Format("\t\t'{0}/vccorlib{1}.dll'\n", FinalMSVCRedistPath, platformVersionNumber));
+-					AddText($"\t\t'$Root$/tbbmalloc.dll'\n");
++				//{
++				//	AddText($"\t\t'$Root$/msvcp{platformVersionNumber}.dll'\n");
++				//	AddText(String.Format("\t\t'{0}/vccorlib{1}.dll'\n", FinalMSVCRedistPath, platformVersionNumber));
++				//	AddText($"\t\t'$Root$/tbbmalloc.dll'\n");
+ 
+-					//AddText(string.Format("\t\t'{0}/Redist/MSVC/{1}/x64/Microsoft.VC141.CRT/vccorlib{2}.dll'\n", VCEnv.GetVCInstallDirectory(), VCEnv.ToolChainVersion, platformVersionNumber));
+-				}
++				//	//AddText(string.Format("\t\t'{0}/Redist/MSVC/{1}/x64/Microsoft.VC141.CRT/vccorlib{2}.dll'\n", VCEnv.GetVCInstallDirectory(), VCEnv.ToolChainVersion, platformVersionNumber));
++				//}
+ 
+-				AddText("\t}\n"); //End extra files
++				//AddText("\t}\n"); //End extra files
+ 
+-				AddText($"\t.CompilerFamily = 'msvc'\n");
++				//AddText($"\t.CompilerFamily = 'msvc'\n");
++				AddText($"\t.CompilerFamily = 'clang-cl'\n");
+ 				AddText("}\n\n"); //End compiler
+ 			}
+ 
