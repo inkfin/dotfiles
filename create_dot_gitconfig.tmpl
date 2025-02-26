@@ -29,7 +29,8 @@
     cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
 
 [core]
-	autocrlf = input
+	autocrlf = true
+    safecrlf = true
 	excludesfile = ~/.gitignore_global
 [commit]
 	template = ~/.gitmessage
