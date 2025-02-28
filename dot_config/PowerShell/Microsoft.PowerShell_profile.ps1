@@ -23,7 +23,7 @@ function Set-EnvironmentVariable($Name, $Val) {
 function Append-UserPath($Path) {
     $ENVPATH = [Environment]::GetEnvironmentVariable("Path", "User")
     if ($ENVPATH -notlike "*$Path*") {
-        $ENVPATH = $ENVPATH + $PATH + [IO.Path]::PathSeparator
+        $ENVPATH = $ENVPATH + [IO.Path]::PathSeparator + $PATH
         # Write-Host "$ENVPATH"
         $env:PATH = $ENVPATH
         [Environment]::SetEnvironmentVariable( "Path", $ENVPATH, "User" )
