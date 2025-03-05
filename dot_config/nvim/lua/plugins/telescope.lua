@@ -13,6 +13,9 @@ return {
                     },
                 },
                 file_ignore_patterns = {
+                    ".git",
+                    ".svn",
+                    ".cache",
                     "node_modules",
                     "spell", -- nvim dictionaries
                 },
