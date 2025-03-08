@@ -246,7 +246,16 @@ vim.cmd([[
 
 --- Neovide Configurations
 if vim.g.neovide then
-    vim.o.guifont = "FiraCode Nerd Font Mono:h16"
+    local guifont = "FiraCode Nerd Font Mono"
+    local guifontsize = 16
+    function _G.AdjustFontSize(amount)
+        guifontsize = guifontsize + amount
+        vim.o.guifont = guifont .. ":h" .. guifontsize
+    end
+    vim.o.guifont = AdjustFontSize(0)
+    vim.keymap.set("n", "<D-=>", function() AdjustFontSize(1) end, { noremap = true, silent = true })
+    vim.keymap.set("n", "<D-->", function() AdjustFontSize(-1) end, { noremap = true, silent = true })
+
     vim.o.linespace = 0 -- Controls spacing between lines, may also be negative.
     vim.g.neovide_scale_factor = 1.0
     vim.g.neovide_detach_on_quit = "always_detach"
