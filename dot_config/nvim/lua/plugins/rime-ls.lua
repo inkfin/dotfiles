@@ -40,9 +40,9 @@ if filename:sub(-3) == "-cn" then
     bDisableChinese = false
 end
 
--- check vim modeline 'let rime=1'
--- nvim filename.md --cmd 'let rime=1'
-if vim.g.rime then
+-- check vim modeline 'let g:rime=v:true'
+-- nvim filename.md --cmd 'let g:rime=v:true'
+if vim.g.rime == true then
     bDisableChinese = false
 end
 
@@ -56,7 +56,7 @@ return {
     -- https://github.com/liubianshi/cmp-lsp-rimels
     {
         "liubianshi/cmp-lsp-rimels",
-        enabled = not (vim.g.rime and vim.g.rime == "off"),
+        enabled = vim.g.rime == true,
         ft = { "markdown", "org", "text" },
         dependencies = {
             "neovim/nvim-lspconfig",
