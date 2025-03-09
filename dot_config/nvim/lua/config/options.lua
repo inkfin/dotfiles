@@ -253,8 +253,12 @@ if vim.g.neovide then
         vim.o.guifont = guifont .. ":h" .. guifontsize
     end
     vim.o.guifont = AdjustFontSize(0)
-    vim.keymap.set("n", "<D-=>", function() AdjustFontSize(1) end, { noremap = true, silent = true })
-    vim.keymap.set("n", "<D-->", function() AdjustFontSize(-1) end, { noremap = true, silent = true })
+    vim.keymap.set("n", "<D-=>", function()
+        AdjustFontSize(1)
+    end, { noremap = true, silent = true })
+    vim.keymap.set("n", "<D-->", function()
+        AdjustFontSize(-1)
+    end, { noremap = true, silent = true })
 
     vim.o.linespace = 0 -- Controls spacing between lines, may also be negative.
     vim.g.neovide_scale_factor = 1.0

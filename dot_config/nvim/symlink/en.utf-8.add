@@ -110,3 +110,4 @@ cmake
 structs
 platformer
 Keymaps
+parallelizable

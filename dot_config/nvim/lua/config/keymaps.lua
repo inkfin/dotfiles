@@ -19,6 +19,14 @@ local function map(mode, lhs, rhs, opts)
     end
 end
 
+if vim.g.neovide then
+    vim.keymap.set("n", "<D-s>", "<CMD>w<CR>", { noremap = true, silent = true }) -- Save
+    vim.keymap.set("v", "<D-c>", '"+y', { noremap = true, silent = true }) -- Copy
+    vim.keymap.set({ "n", "v" }, "<D-v>", '"+P', { noremap = true, silent = true }) -- Paste normal/visual mode
+    vim.keymap.set({"c", "t"}, "<D-v>", "<C-R>+", { noremap = true, silent = true }) -- Paste command mode
+    vim.keymap.set("i", "<D-v>", '<ESC>"+pa', { noremap = true, silent = true }) -- Paste insert mode
+end
+
 -- handy keymaps
 map("n", "dK", ":normal! v0k$d<CR>", { desc = "til prev line", silent = true, noremap = true }) -- delete to start of upper line
 map("n", "dJ", ":normal! d$J<CR>", { desc = "til next line", silent = true, noremap = true }) -- delete to end of lower line
@@ -28,8 +36,8 @@ map("n", "<leader>J", ":normal! J<CR>", { silent = true, noremap = true })
 map("v", "p", '"_dP', { silent = true })
 
 -- better movements
-map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+-- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 -- map({ "n", "x" }, "J", "5gj", { silent = true, noremap = true })
 -- map({ "n", "x" }, "K", "5gk", { silent = true, noremap = true })
 map({ "n", "x" }, "W", "5w", { silent = true })
