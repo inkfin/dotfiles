@@ -24,6 +24,7 @@ return {
             -- lsp keymaps customization
 
             local keys = require("lazyvim.plugins.lsp.keymaps").get()
+            keys[#keys + 1] = { "K", false }
             -- cancel <leader>cr from rename
             keys[#keys + 1] = { "<leader>cr", false } -- disable default rename
             keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, desc = "Rename", mode = { "n" } }

@@ -14,10 +14,10 @@ vnoremap <silent> p "_dP
 vnoremap <silent> Y "+y
 
 vnoremap <silent> H ^
-vnoremap <silent> L $
-noremap <silent> W 5w
-noremap <silent> B 5b
-noremap <silent> E 5e
+vnoremap <silent> L $<left>
+noremap  <silent> W 5w
+noremap  <silent> B 5b
+noremap  <silent> E 5e
 
 " Navigate between windows
 nnoremap <silent> <C-H> <C-w>h
@@ -45,13 +45,13 @@ nnoremap <silent> ]t <CMD>tabn<CR>
 nnoremap <silent> [t <CMD>tabp<CR>
 
 nnoremap <leader>\| :vs<CR>
-nnoremap <leader>- :sp<CR>
+nnoremap <leader>-  :sp<CR>
 
-nnoremap Q :q<CR>
-map <C-S> :w<CR>
+nnoremap <silent> Q     :q<CR>
+nnoremap <silent> <C-S> :w<CR>
 
 
-nmap <silent> <leader>h K
+nmap     <silent> <leader>h K
 nnoremap <silent> <leader>K K
 
 " When completion menu is shown, use <cr> to select an item

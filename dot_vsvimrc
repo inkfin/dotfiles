@@ -51,20 +51,20 @@ let g:maplocalleader=","
 noremap <LEADER><CR> <CMD>nohlsearch<CR>
 
 nmap Q :q<CR>
-nmap W 5w
-nmap B 5b
-nmap E 5e
+noremap  W 5w
+noremap  B 5b
+noremap  E 5e
+
+nnoremap H :vsc Window.PreviousTab<CR>
+nnoremap L :vsc Window.NextTab<CR>
 
 vnoremap H ^
-vnoremap L $
+vnoremap L $<left>
 
 vnoremap Y "+y
 vnoremap <C-X> "+x
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
-
-nnoremap H :vsc Window.PreviousTab<CR>
-nnoremap L :vsc Window.NextTab<CR>
 
 " Split screen
 nnoremap <Leader>| <C-W>v

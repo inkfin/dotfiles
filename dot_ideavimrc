@@ -64,19 +64,21 @@ sethandler <C-L> a:vim
 sethandler <A-J> a:vim
 
 " Custom mapping
-map J 5j
-map K 5k
-map W 5w
-map B 5b
-map E 5e
+noremap  W 5w
+noremap  B 5b
+noremap  E 5e
 
 nnoremap H gT
 nnoremap L gt
+vnoremap H ^
+vnoremap L $<left>
+
+" Buffers
 nnoremap [b gT
 nnoremap ]b gt
 nnoremap <Leader>tmh :tabm -<CR>
 nnoremap <Leader>tml :tabm +<CR>
-nnoremap <Leader>bd :action CloseContent<CR>
+nnoremap <Leader>bd  :action CloseContent<CR>
 
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
@@ -84,13 +86,13 @@ vnoremap <silent> p "_dP
 nnoremap <A-j> :action MoveLineDown<CR>
 nnoremap <A-k> :action MoveLineUp<CR>
 
-map Q :action CloseContent<CR>
-map <C-S> :w<cr>
+nmap <silent> Q     :action CloseContent<CR>
+nmap <silent> <C-S> :w<cr>
 
 " Split screen
 nnoremap <Leader>| <C-W>v
 nnoremap <Leader>- <C-W>s
-noremap <C-h> <C-W>h
+nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
@@ -119,7 +121,7 @@ nnoremap [d :<C-u>action GotoPreviousError<CR>
 
 " search
 nnoremap <Leader><Leader> :<C-u>action GotoFile<CR>
-nnoremap <Leader>/ :<C-u>action FindInPath<CR>
+nnoremap <Leader>/  :<C-u>action FindInPath<CR>
 nnoremap <Leader>ff :<C-u>action FindInPath<CR>
 nnoremap <Leader>sf :<C-u>action GotoFile<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
@@ -156,8 +158,8 @@ nnoremap <Leader>dc :<C-u>action ChooseRunConfiguration<CR>
 
 " Bookmark
 nnoremap mm :action ToggleBookmark<cr>
-noremap m] :<C-u>action GotoNextBookmark<CR>
-noremap m[ :<C-u>action GotoPreviousBookmark<CR>
+nnoremap m] :<C-u>action GotoNextBookmark<CR>
+nnoremap m[ :<C-u>action GotoPreviousBookmark<CR>
 
 
 " code editing
