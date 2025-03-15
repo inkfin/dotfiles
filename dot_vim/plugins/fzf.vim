@@ -10,13 +10,13 @@ let g:fzf_action = {
 \   'ctrl-x': 'split',
 \   'ctrl-v': 'vsplit',
 \}
-nnoremap <leader><leader> <CMD>Files<CR>
-nnoremap <leader>/ <CMD>Rg<CR>
-nnoremap <leader>sm <CMD>Marks<CR>
-nnoremap <leader>sh <CMD>Helptags<CR>
-nnoremap <leader>sc <CMD>Commands<CR>
-nnoremap <leader>sb <CMD>Buffers<CR>
-nnoremap <leader>sr <CMD>History<CR>
-nnoremap <leader>sw <CMD>Windows<CR>
+nnoremap <silent> <leader><leader> <CMD>Files<CR>
+nnoremap <silent> <leader>/  <CMD>Rg<CR>
+nnoremap <silent> <leader>sm <CMD>Marks<CR>
+nnoremap <silent> <leader>sh <CMD>Helptags<CR>
+nnoremap <silent> <leader>sc <CMD>Commands<CR>
+nnoremap <silent> <leader>sb <CMD>Buffers<CR>
+nnoremap <silent> <leader>sr <CMD>History<CR>
+nnoremap <silent> <leader>sw <CMD>Windows<CR>
 " fix fzf twindow exit to normal mode
 tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"

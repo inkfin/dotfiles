@@ -7,7 +7,7 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 
 let g:undotree_DiffAutoOpen = 0
 let g:undotree_SetFocusWhenToggle = 1
-nnoremap U <CMD>UndotreeToggle<CR>
+nnoremap <silent> U <CMD>UndotreeToggle<CR>
 
 
 " indentLine
