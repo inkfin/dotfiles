@@ -42,7 +42,7 @@ end
 
 -- check vim modeline 'let g:rime=v:true'
 -- nvim filename.md --cmd 'let g:rime=v:true'
-if vim.g.rime == true then
+if vim.g.rime then
     bDisableChinese = false
 end
 
