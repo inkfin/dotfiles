@@ -34,6 +34,7 @@ _G.disable_plugins = {
 
     --- input method
     rime = true,
+    --im_select = true,
 
     --- UI
     --noise = true, -- input command

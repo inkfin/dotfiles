@@ -74,7 +74,7 @@ return {
     },
     {
         "keaising/im-select.nvim",
-        enabled = _G.disable_plugins.rime and vim.fn.executable("im-select") == 1,
+        enabled = _G.disable_plugins.rime and (not _G.disable_plugins.im_select) and vim.fn.executable("im-select") == 1,
         config = function()
             -- download im-select executable if don't exists
             -- Windows:
