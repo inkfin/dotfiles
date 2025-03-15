@@ -11,6 +11,7 @@ tnoremap <silent> <C-/> <C-\><C-n><CMD>FloatermToggle<CR>
 nnoremap <silent> <leader>gg <CMD>FloatermNew --width=0.8 --height=0.8 --wintype='float' lazygit<CR>
 " yazi
 nnoremap <silent> <leader>ff <CMD>FloatermNew --width=0.8 --height=0.8 --wintype='float' yazi<CR>
+nnoremap <silent> <leader>yy <CMD>FloatermNew --width=0.8 --height=0.8 --wintype='float' yazi<CR>
 " no need to confirm before exit vim
 autocmd ExitPre * silent! FloatermKill<CR>
 
