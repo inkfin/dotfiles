@@ -246,7 +246,9 @@ vim.cmd([[
 
 --- Neovide Configurations
 if vim.g.neovide then
-    local guifont = "FiraCode Nerd Font Mono"
+    -- local guifont = "FiraCode Nerd Font Mono"
+    -- local guifont = "JetBrainsMono Nerd Font"
+    local guifont = "FantasqueSansM Nerd Font Mono"
     local guifontsize = 16
     function _G.AdjustFontSize(amount)
         guifontsize = guifontsize + amount
