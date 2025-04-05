@@ -24,6 +24,12 @@
   (setq mac-option-modifier 'super)
   (setq mac-right-control-modifier 'alt))
 
+(when *is-windows*
+  (setq w32-alt-is-meta t)
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  ;(setq w32-apps-modifier 'alt)
+  )
 
 (prefer-coding-system 'utf-8)
 (unless *is-windows*
@@ -55,17 +61,17 @@
 (savehist-mode 1)                            ; （可选）打开 Buffer 历史记录保存
 (setq display-line-numbers-type 'relative)   ; （可选）显示相对行号
 (add-to-list 'default-frame-alist '(width . 100))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
-(add-to-list 'default-frame-alist '(height . 50)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
+(add-to-list 'default-frame-alist '(height . 30)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 (xterm-mouse-mode t)
 (setq custom-enabled-themes '(tango-dark))
 
 (cond
   ( *is-mac*
     (add-to-list 'default-frame-alist
-                 '(font . "JetBrainsMono Nerd Font Mono-18:weight=medium")))
+                 '(font . "JetBrainsMono Nerd Font Mono-16:weight=medium")))
   ( *is-windows*
     (add-to-list 'default-frame-alist
-                 '(font . "Sarasa Term SC Nerd Font-18:weight=medium")))
+                 '(font . "Sarasa Term SC Nerd Font-16:weight=medium")))
 )
 
 (require 'keybindings-config)
@@ -81,10 +87,7 @@
 (setq org-pretty-table-charset "╒╕╘╛╤╡╧╞╪═│")
 
 
-(if *is-windows*
-    (setq custom-file "~/.emacs.d/custom.el")
-  ; else
-  (setq custom-file "~/.config/emacs/custom.el"))
+(setq custom-file "~/.config/emacs/custom.el") 
 ;; create custom-file if not exists
 (unless (file-exists-p custom-file)
   (with-temp-buffer (write-file custom-file)))

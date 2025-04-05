@@ -3,6 +3,13 @@
 #SingleInstance  ; Allow only one instance of this script to be running.
 Persistent
 
+;;===========Swap LAlt and LWin===========
+;LWin::LAlt
+;LAlt::LWin
+;LAlt & Tab::AltTab
+;LWin & Tab::AltTab
+;AppsKey & Tab::AltTab
+
 ;==============CapsLock 改键==============
 ; 短按 CapsLock 为 Esc, 长按 CapsLock 为 Ctrl
 
