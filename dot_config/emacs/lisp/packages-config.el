@@ -29,12 +29,22 @@
   (setq use-package-verbose t))
 
 
-;;; load all the plugins
+;;; plugin priorities
+;;; lower number means higher priority, default is 999
+(setq my-plugin-priorities '(
+    ("companymode-config.el" . 1)
+))
 
+;; load all the plugins
 (let ((plugin-dir (expand-file-name "lisp/plugins" user-emacs-directory)))
   (when (file-directory-p plugin-dir)
-    (dolist (file (directory-files plugin-dir t "\\.el$"))
-      (load file nil 'nomessage))))
+    (let ((files (directory-files plugin-dir t "\\.el$")))
+      (dolist (file (sort files
+                           (lambda (f1 f2)
+                             (let ((p1 (or (cdr (assoc (file-name-nondirectory f1) my-plugin-priorities)) 999))
+                                   (p2 (or (cdr (assoc (file-name-nondirectory f2) my-plugin-priorities)) 999)))
+                               (< p1 p2)))))
+        (load file nil 'nomessage)))))
 
 (provide 'packages-config)
 
