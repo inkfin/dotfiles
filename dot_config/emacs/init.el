@@ -12,7 +12,8 @@
 (when (version< emacs-version "26.1")
   (message "Your Emacs is old, and some functionality in this config will be disabled. Please upgrade if possible."))
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)) ; 设定源码加载路径
+;; source directories
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (defconst *spell-check-support-enabled* t) ;; Enable with t if you prefer
 (defconst *is-mac* (eq system-type 'darwin))
@@ -20,16 +21,19 @@
 (defconst *is-windows* (memq system-type '(ms-dos windows-nt cygwin)))
 
 (when *is-mac*
-  (setq mac-command-modifier 'meta)
-  (setq mac-option-modifier 'super)
-  (setq mac-right-control-modifier 'alt))
+  (setq mac-command-modifier 'super)
+  (setq mac-option-modifier 'meta)
+  (setq mac-right-control-modifier 'alt)
+)
 
 (when *is-windows*
-  (setq w32-alt-is-meta t)
+  (setq w32-alt-is-meta nil)
+  (setq w32-lalt-modifier 'super)
+  (setq w32-ralt-modifier 'alt)
   (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
+  (setq w32-lwindow-modifier 'meta)
   ;(setq w32-apps-modifier 'alt)
-  )
+)
 
 (prefer-coding-system 'utf-8)
 (unless *is-windows*
