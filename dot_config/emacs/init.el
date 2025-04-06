@@ -27,12 +27,11 @@
 )
 
 (when *is-windows*
-  (setq w32-alt-is-meta nil)
-  (setq w32-lalt-modifier 'super)
-  (setq w32-ralt-modifier 'alt)
+  (setq w32-alt-is-meta t)
   (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'meta)
-  ;(setq w32-apps-modifier 'alt)
+  (setq w32-lwindow-modifier 'super)
+  (w32-register-hot-key [s-])
+  (setq w32-apps-modifier 'alt)
 )
 
 (prefer-coding-system 'utf-8)

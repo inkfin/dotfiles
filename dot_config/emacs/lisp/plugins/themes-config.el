@@ -1,7 +1,7 @@
-(use-package evil
+(use-package dracula-theme
   :ensure t
-  :config
-  (load-theme 'dracula t))
+)
+(load-theme 'dracula t)
 
 ;; mode line prettier
 (use-package smart-mode-line
