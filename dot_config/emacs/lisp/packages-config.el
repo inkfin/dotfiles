@@ -32,7 +32,7 @@
 ;;; plugin priorities
 ;;; lower number means higher priority, default is 999
 (setq my-plugin-priorities '(
-    ("companymode-config.el" . 1)
+    ("plug-companymode.el" . 1)
 ))
 
 ;; load all the plugins
