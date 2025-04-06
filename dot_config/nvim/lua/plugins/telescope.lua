@@ -18,6 +18,7 @@ return {
                     ".cache",
                     "node_modules",
                     "spell", -- nvim dictionaries
+                    "elpa", -- emacs packages
                 },
             },
         },
