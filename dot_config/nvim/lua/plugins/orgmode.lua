@@ -34,10 +34,12 @@ return {
                 ["core.defaults"] = {},
                 -- https://github.com/nvim-neorg/neorg/wiki/Concealer
                 ["core.concealer"] = {
-                    icon_preset = "basic",
-                    icons = {
-                        code_block = {
-                            spell_check = false,
+                    config = {
+                        icon_preset = "basic",
+                        icons = {
+                            code_block = {
+                                spell_check = false,
+                            },
                         },
                     },
                 },
@@ -51,21 +53,29 @@ return {
                 },
                 -- completion
                 ["core.completion"] = {
-                    engine = "nvim-cmp",
+                    config = {
+                        engine = "nvim-cmp",
+                    },
                 },
                 -- exporting
                 ["core.export"] = {
-                    export_dir = "dist",
+                    config = {
+                        export_dir = "dist",
+                    },
                 },
                 ["core.export.markdown"] = {
-                    extensions = "all",
+                    config = {
+                        extensions = "all",
+                    },
                 },
                 -- cool features
             }
 
             if _G.disable_plugins.image then
                 opts.load["core.latex.renderer"] = {
-                    render_on_enter = true,
+                    config = {
+                        render_on_enter = true,
+                    },
                 }
             end
 
