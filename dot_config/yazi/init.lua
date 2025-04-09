@@ -1,6 +1,5 @@
 -- install
 -- ya pack -a yazi-rs/plugins:smart-enter
--- ya pack -a yazi-rs/plugins:max-preview
 
 ---Load plugins
 ---@param name string @plugin name
@@ -24,7 +23,7 @@ safe_load_plugins("git", "yazi-rs/plugins:git", {})
 
 safe_load_plugins("smart-enter", "yazi-rs/plugins:smart-enter", {})
 
-safe_load_plugins("max-preview", "yazi-rs/plugins:max-preview", {}, true)
+safe_load_plugins("toggle-pane", "yazi-rs/plugins:toggle-pane", {}, true)
 
 safe_load_plugins("full-border", "yazi-rs/plugins:full-border", {
     -- Available values: ui.Border.PLAIN, ui.Border.ROUNDED
