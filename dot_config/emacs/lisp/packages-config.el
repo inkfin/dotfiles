@@ -33,6 +33,7 @@
 ;;; lower number means higher priority, default is 999
 (setq my-plugin-priorities '(
     ("plug-companymode.el" . 1)
+    ("plug-evilmode.el" . 2)
 ))
 
 ;; load all the plugins
