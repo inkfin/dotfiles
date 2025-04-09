@@ -7,4 +7,4 @@ pandoc_:
   - template: eisvogel
 ---
 
-<*>
+<++>
