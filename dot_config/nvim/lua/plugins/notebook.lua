@@ -43,8 +43,7 @@ return {
             vim.keymap.set("n", "<localleader>mx", ":MoltenOpenInBrowser<CR>", { desc = "open output in browser", silent = true, buffer = true })
             end
 
-            local wk = require("which-key")
-            wk.add({
+            require("which-key").add({
                 buffer = true,
                 mode = { "n", "v" },
                 { "<localleader>m", group = "molten" },
@@ -115,6 +114,8 @@ return {
             -- vim.b.slime_cell_delimiter = "# %%"
 
             require("which-key").add({
+                buffer = true,
+                mode = { "n", "v" },
                 { "<localleader>r", desc = "Quarto Run" },
                 { "<localleader>t", desc = "Slime Terminal" },
                 { "<localleader>tm", mark_terminal, desc = "slime mark terminal" },

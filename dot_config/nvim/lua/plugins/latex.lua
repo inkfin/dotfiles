@@ -149,6 +149,9 @@ return {
             })
 
             require("which-key").add({
+                buffer = true,
+                cond = function() return vim.bo.filetype == "tex" end,
+                mode = { "n" },
                 { "<localLeader>l", group = "vimtex" },
                 { "<localLeader>o", group = "open" },
                 { "<localLeader>p", group = "plugin" },

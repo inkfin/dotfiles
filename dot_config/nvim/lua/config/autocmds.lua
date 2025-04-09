@@ -103,6 +103,15 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     end,
 })
 
+-- Set foldlevel and conceallevel for norg files
+vim.api.nvim_create_autocmd({ "FileType" }, {
+    pattern = { "norg" },
+    callback = function()
+        vim.wo.foldlevel = 99
+        vim.wo.conceallevel = 2
+    end,
+})
+
 -- Change LspInlayHint color
 vim.api.nvim_create_autocmd("ColorScheme", {
     pattern = "*",
