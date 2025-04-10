@@ -79,18 +79,20 @@ return {
                 }
             end
 
-            require("which-key").add({
-                buffer = true,
-                cond = function()
-                    return vim.bo.filetype == "norg"
+            vim.api.nvim_create_autocmd({ "FileType" }, {
+                pattern = { "norg" },
+                callback = function()
+                    require("which-key").add({
+                        buffer = true,
+                        mode = { "n", "v" },
+                        { "<localleader>t", group = "norg [T]ask" },
+                        { "<localleader>i", group = "norg [I]nsert" },
+                        { "<localleader>o", group = "norg [O]pen" },
+                        { "<localleader>c", group = "norg [C]ode block" },
+                        { "<localleader>n", group = "norg [N]ew" },
+                        { "<localleader>l", group = "norg [L]ist" },
+                    })
                 end,
-                mode = { "n", "v" },
-                { "<localleader>t", group = "norg [T]ask" },
-                { "<localleader>i", group = "norg [I]nsert" },
-                { "<localleader>o", group = "norg [O]pen" },
-                { "<localleader>c", group = "norg [C]ode block" },
-                { "<localleader>n", group = "norg [N]ew" },
-                { "<localleader>l", group = "norg [L]ist" },
             })
         end,
         -- stylua: ignore

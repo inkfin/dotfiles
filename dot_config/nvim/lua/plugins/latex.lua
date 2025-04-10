@@ -148,13 +148,17 @@ return {
                 callback = tex_focus_vim,
             })
 
-            require("which-key").add({
-                buffer = true,
-                cond = function() return vim.bo.filetype == "tex" end,
-                mode = { "n" },
-                { "<localLeader>l", group = "vimtex" },
-                { "<localLeader>o", group = "open" },
-                { "<localLeader>p", group = "plugin" },
+            vim.api.nvim_create_autocmd({ "FileType" }, {
+                pattern = { "tex" },
+                callback = function()
+                    require("which-key").add({
+                        buffer = true,
+                        mode = { "n" },
+                        { "<localLeader>l", group = "vimtex" },
+                        { "<localLeader>o", group = "open" },
+                        { "<localLeader>p", group = "plugin" },
+                    })
+                end,
             })
         end,
     },

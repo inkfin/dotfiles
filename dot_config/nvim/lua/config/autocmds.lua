@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
     "python",
     "rust",
     "cmake",
+    "norg",
     }, callback = function() vim.g.settab(4) end })
 -- stylua: ignore end
 
