@@ -60,7 +60,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ## ---- bun ----
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
 export BUN_HOME="$HOME/.bun"
 prepend_to_path PATH "$BUN_HOME/bin"
 {{- end }}
