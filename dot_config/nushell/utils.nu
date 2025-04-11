@@ -16,6 +16,13 @@ def safe_expand_path [path: string] {
     if not $exists { $path } else { null }
 }
 
+def safe_append_path --env [path: string] {
+    let exists = ($path | path expand) in $env.PATH
+    if not $exists {
+        $env.PATH = $env.PATH | append ($path | path expand)
+    }
+}
+
 def env_contains [path_name: string, path_value: string, quiet?: bool = true] {
     let paths = $env | get $path_name
     let exists = ($path_value | path expand) in $paths
@@ -31,6 +38,14 @@ def safe_expand_env [path_name: string, path_value: string] {
     let paths = $env | get $path_name
     let exists = ($path_value | path expand) in $paths
     if not $exists { $path_value } else { null }
+}
+
+def safe_append_env --env [path_name: string, path_value: string] {
+    let paths = $env | get $path_name
+    let exists = ($path_value | path expand) in $paths
+    if not $exists {
+        $env.$path_name = $env.$path_name | append ($path_value | path expand)
+    }
 }
 
 # vim: ft=nu

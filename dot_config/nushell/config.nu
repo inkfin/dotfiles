@@ -35,8 +35,8 @@ $env.config.history = {
 $env.config.show_banner = false
 
 # paths
-$env.PATH = $env.PATH | append (safe_expand_path "~/bin")
-$env.PATH = $env.PATH | append (safe_expand_path "~/.local/bin")
+safe_append_path "~/bin"
+safe_append_path "~/.local/bin"
 
 #=========
 # Aliases

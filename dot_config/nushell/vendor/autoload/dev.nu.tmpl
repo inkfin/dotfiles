@@ -75,10 +75,10 @@ def set_cc --env [cc: string@cc_types, silent?: bool = true] {
 if not ('VCPKG_ROOT' in $env) {
   $env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
 }
-$env.PATH = $env.PATH | append (safe_expand_path $env.VCPKG_ROOT)
+safe_append_path $env.VCPKG_ROOT
 {{- else -}}
 $env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
-$env.PATH = $env.PATH | append (safe_expand_path $env.VCPKG_ROOT)
+safe_append_path $env.VCPKG_ROOT
 {{- end }}
 
 
@@ -87,9 +87,12 @@ $env.PATH = $env.PATH | append (safe_expand_path $env.VCPKG_ROOT)
 $env.CUDA_PATH_V12_1 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1" | path expand
 $env.CUDA_PATH_V11_2 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2" | path expand
 $env.CUDA_PATH = $env.CUDA_PATH_V12_1
-$env.PATH = $env.PATH | append (safe_expand_path ($env.CUDA_PATH | path join "bin"))
-$env.PATH = $env.PATH | append (safe_expand_path ($env.CUDA_PATH | path join "libnvvp"))
+safe_append_path ($env.CUDA_PATH | path join "bin")
+safe_append_path ($env.CUDA_PATH | path join "libnvvp")
 {{- end }}
 
+
+# bun
+safe_append_path "~/.bun/bin"
 
 # vim: ft=nu
