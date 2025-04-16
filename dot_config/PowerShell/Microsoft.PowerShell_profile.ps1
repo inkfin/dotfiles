@@ -156,3 +156,7 @@ Append-UserPath $env:VCPKG_ROOT
 $env:LLVMInstallDir = "$HOME\scoop\apps\llvm\current"
 Import-Module (Join-Path $env:VCPKG_ROOT "\scripts\posh-vcpkg")
 Import-Module scoop-completion
+
+# Rust
+Init-EnvironmentVariable RUSTUP_HOME "$HOME\scoop\persist\rustup\.rustup"
+Init-EnvironmentVariable CARGO_HOME "$HOME\scoop\persist\rustup\.cargo"
