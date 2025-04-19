@@ -65,6 +65,8 @@ alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_ubuntu"
 alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_fedora"
 {{   else if eq .chezmoi.osRelease.id "opensuse-tumbleweed" }}
 alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_opensuse"
+{{   else if eq .chezmoi.osRelease.id "arch" }}
+alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_arch"
 {{   end }}
 {{ end }}
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
