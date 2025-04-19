@@ -27,6 +27,7 @@ return {
         opts = {
             scroll = { enabled = false },
             zen = { enabled = false },
+            explorer = { enabled = false },
         },
     },
     {
