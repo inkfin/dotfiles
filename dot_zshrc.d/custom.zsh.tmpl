@@ -57,14 +57,14 @@ alias cze="chezmoi edit "
 
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 {{ if eq .chezmoi.os "darwin" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.conf/zshrc_darwin"
+alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_darwin"
 {{ else if eq .chezmoi.os "linux" }}
 {{   if eq .chezmoi.osRelease.id "ubuntu" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.conf/zshrc_ubuntu"
+alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_ubuntu"
 {{   else if eq .chezmoi.osRelease.id "fedora" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.conf/zshrc_fedora"
+alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_fedora"
 {{   else if eq .chezmoi.osRelease.id "opensuse-tumbleweed" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.conf/zshrc_opensuse"
+alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_opensuse"
 {{   end }}
 {{ end }}
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
@@ -80,7 +80,7 @@ alias rimerc="nvim ~/.local/share/chezmoi/dot_config/Rime/squirrel.custom.yaml"
 # ==== User configurations ====
 
 ## zsh history
-HISTFILE=~/.zshrc.conf/.histfile
+HISTFILE=~/.zshrc.d/.histfile
 HISTSIZE=5000
 SAVEHIST=5000
 ## emacs like keybinds

@@ -1,7 +1,7 @@
-# zshrc openSUSE
+# zshrc Linux
 
 
-ZSHCONF_HOME="$HOME/.zshrc.conf"
+ZSHCONF_HOME="$HOME/.zshrc.d"
 
 # ==== Includes ====
 
@@ -34,6 +34,5 @@ source $ZSHCONF_HOME/local.zsh
 
 ## === Aliases ====
 
-alias pac="sudo zypper "
-
+alias pac="brew"
 

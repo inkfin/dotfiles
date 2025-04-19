@@ -1,7 +1,7 @@
-# zshrc Ubuntu
+# zshrc Fedora
 
 
-ZSHCONF_HOME="$HOME/.zshrc.conf"
+ZSHCONF_HOME="$HOME/.zshrc.d"
 
 # ==== Includes ====
 
@@ -34,7 +34,7 @@ source $ZSHCONF_HOME/local.zsh
 
 ## === Aliases ====
 
-alias pac="sudo apt-get "
+alias pac="sudo dnf "
 alias mok="~/modikeys.sh"
 
 

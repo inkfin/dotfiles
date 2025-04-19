@@ -1,7 +1,7 @@
-# zshrc Linux
+# zshrc Ubuntu
 
 
-ZSHCONF_HOME="$HOME/.zshrc.conf"
+ZSHCONF_HOME="$HOME/.zshrc.d"
 
 # ==== Includes ====
 
@@ -34,5 +34,7 @@ source $ZSHCONF_HOME/local.zsh
 
 ## === Aliases ====
 
-alias pac="brew"
+alias pac="sudo apt-get "
+alias mok="~/modikeys.sh"
+
 
