@@ -108,14 +108,18 @@ message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 
 # cmake build time copy
 # file(GLOB DLLS_TO_COPY "${CMAKE_SOURCE_DIR}/lib/*.dll")
-# add_custom_command(
-#     TARGET ${BINARY_NAME}
-#     POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#     ${DLLS_TO_COPY}
-#     $<TARGET_FILE_DIR:${BINARY_NAME}>
-#     COMMENT "Copying dlls to target directory..."
-# )
+# if(DLLS_TO_COPY)
+#     add_custom_command(
+#         TARGET ${BINARY_NAME}
+#         POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         ${DLLS_TO_COPY}
+#         $<TARGET_FILE_DIR:${BINARY_NAME}>
+#         COMMENT "Copying dlls to target directory..."
+#     )
+# else()
+#     message(STATUS "No dlls to copy")
+# endif()
 
 
 #======================================
