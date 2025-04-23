@@ -16,7 +16,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(ImGui)
 
-message(STATUS "📌 ImGui will be available at ${ImGui_SOURCE_DIR}")
+set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/third_party/imgui)
+message(STATUS "📌 ImGui will be available at ${IMGUI_DIR}")
 
 
 ## Configurations
@@ -26,14 +27,12 @@ option(IMGUI_BACKEND_GLFW_OPENGL3   "Use GLFW + OpenGL3 backend for ImGui" OFF)
 option(IMGUI_BACKEND_GLFW_VULKAN    "Use GLFW + Vulkan backend for ImGui" OFF)
 option(IMGUI_BACKEND_GLFW_WGPU      "Use GLFW + WebGPU backend for ImGui" OFF)
 
-set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/third_party/imgui)
-
-include_directories(
+# ---- IMGUI Core ----
+set(IMGUI_INCLUDE_DIRS
     ${IMGUI_DIR}
     ${IMGUI_DIR}/backends
 )
-
-# ---- IMGUI Core ----
+include_directories(${IMGUI_INCLUDE_DIRS})
 set(IMGUI_SOURCES
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
