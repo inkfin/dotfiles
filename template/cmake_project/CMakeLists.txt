@@ -44,9 +44,10 @@ endif()
 set(BINARY_NAME ${PROJECT_NAME})
 
 
-#===== SubModules ======================
+#===== Dependencies ====================
 
-# add_subdirectory(math)
+# include(cmake/use_googletest.cmake)
+# add_subdirectory(third_party/googletest)
 
 
 #===== Source Files ====================
@@ -59,31 +60,6 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
 include_directories(include)
 
 add_executable(${BINARY_NAME} ${SOURCE_FILES})
-
-
-#===== GoogleTest =======================
-
-# enable_testing()
-
-# if(WIN32)
-#     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-# endif()
-
-# add_library(${BINARY_NAME}_lib STATIC ${SOURCE_FILES})
-
-# file(GLOB_RECURSE TEST_FILES CONFIGURE_DEPENDS
-#     LIST_DIRECTORIES false
-#     test/*.cpp test/*.h
-# )
-
-# add_executable(gtest ${TEST_FILES})
-
-# find_package(GTest CONFIG REQUIRED)
-# target_link_libraries(gtest PRIVATE ${BINARY_NAME}_lib
-#     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
-
-# include(GoogleTest)
-# gtest_discover_tests(gtest)
 
 
 #===== Target Build Options ============
