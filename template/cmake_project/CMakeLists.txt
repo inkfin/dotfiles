@@ -49,6 +49,7 @@ set(BINARY_NAME ${PROJECT_NAME})
 # include(cmake/use_googletest.cmake)
 # add_subdirectory(third_party/googletest)
 
+# find_package(Eigen3 COMPONENTS Eigen REQUIRED)
 
 #===== Source Files ====================
 
@@ -77,9 +78,8 @@ target_compile_options(${BINARY_NAME} PRIVATE
 # endif()
 
 
-#===== Find Packages ===================
+#===== Link Libraries ==================
 
-# find_package(Eigen3 COMPONENTS Eigen REQUIRED)
 # target_link_libraries(${BINARY_NAME} PUBLIC Eigen3::Eigen)
 
 
