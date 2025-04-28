@@ -1,0 +1,3 @@
+{{- if ne .chezmoi.os "windows" -}}
+{{ include "scripts/cmake/helpers.cmake" }}
+{{- end -}}
