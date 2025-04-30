@@ -43,6 +43,18 @@ vim.api.nvim_create_autocmd("FileType", { pattern = {
     }, callback = function() vim.g.settab(4) end })
 -- stylua: ignore end
 
+-- Disable autoformat for some filetypes
+vim.api.nvim_create_autocmd({ "FileType" }, {
+    pattern = {
+        "cpp",
+        "c",
+        "cmake",
+    },
+    callback = function()
+        vim.b.autoformat = false
+    end,
+})
+
 -- Copy template files
 local template_dirs = {
     vim.fn.expand("$HOME/.config/nvim/template"),
