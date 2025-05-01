@@ -71,7 +71,7 @@ return {
                 -- cool features
             }
 
-            if _G.disable_plugins.image then
+            if not _G.disable_plugins.image then
                 opts.load["core.latex.renderer"] = {
                     config = {
                         render_on_enter = true,
