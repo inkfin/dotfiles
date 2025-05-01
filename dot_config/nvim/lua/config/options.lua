@@ -303,3 +303,9 @@ if vim.g.neovide then
     vim.g.neovide_scroll_animation_length = 0.3
     vim.g.neovide_cursor_vfx_mode = "sonicboom"
 end
+
+-- image
+vim.g.support_image = not _G.disable_plugins.image -- image support
+    and not vim.wo.diff -- disable this plugin if in diff mode
+    and vim.fn.has("win32") ~= 1 -- sorry, no windows for now
+    and not vim.g.neovide -- neovide doesn't support image

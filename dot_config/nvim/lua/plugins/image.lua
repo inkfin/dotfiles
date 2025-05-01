@@ -2,22 +2,16 @@ local is_term_support_kitty = -- only enable in supported terms
     vim.fn.getenv("TERM_PROGRAM") == "WezTerm" -- Wezterm supports kitty
     or vim.fn.getenv("TERM_PROGRAM") == "Kitty"
 
-local is_term_support_ueberzug = -- ueberzug for other terms
-    vim.fn.getenv("TERM_PROGRAM") == "iTerm.app" -- iTerm2
+-- local is_term_support_ueberzug = -- ueberzug for other terms
+--     vim.fn.getenv("TERM_PROGRAM") == "iTerm.app" -- iTerm2
 
-local enable_image = not _G.disable_plugins.image
-    and not vim.wo.diff -- disable this plugin if in diff mode
-    and vim.fn.has("win32") == 1 -- sorry, no windows for now
-    and not vim.g.neovide
-    and (
-        is_term_support_kitty -- kitty native support
-        or (is_term_support_ueberzug and vim.fn.executable("ueberzug") == 1)
-    )
+local is_term_in_tmux = -- tmux support
+    vim.fn.getenv("TMUX") ~= ""
 
 return {
     {
         "3rd/image.nvim",
-        enabled = enable_image,
+        enabled = vim.g.support_image,
         build = not (is_term_support_kitty or vim.fn.executable("magick") == 1), -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
         opts = {
             backend = is_term_support_kitty and "kitty" or "ueberzug",
@@ -44,7 +38,7 @@ return {
         "folke/snacks.nvim",
         opts = {
             image = {
-                enabled = enable_image and is_term_support_kitty,
+                enabled = vim.g.support_image and is_term_support_kitty,
                 img_dirs = { "img", "images", "assets", "static", "public", "media", "attachments" },
             },
         },
