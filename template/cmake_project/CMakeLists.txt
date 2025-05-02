@@ -17,6 +17,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(HelloWorld LANGUAGES CXX VERSION 0.1)
 
+set(BINARY_NAME ${PROJECT_NAME})
+
 if(PROJECT_BINARY_DIR STREQUAL PROJECT_SOURCE_DIR)
     message(SEND_ERROR "The binary directory of CMake cannot be the same as source directory!")
 endif()
@@ -30,18 +32,36 @@ if(WIN32)
     add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 endif()
 
-if(NOT MSVC)
+option(USE_CCACHE "Use ccache for compilation" ON)
+if(USE_CCACHE)
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
         message(STATUS "Found CCache: ${CCACHE_PROGRAM}")
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE_PROGRAM})
+        if(NOT MSVC)
+            set_property(GLOBAL PROPERTY C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+            set_property(GLOBAL PROPERTY CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+        else()
+            # Masquerade cl.exe with ccache
+            #   ref: <https://github.com/ccache/ccache/wiki/MS-Visual-Studio#usage-with-cmake>
+            #file(COPY_FILE
+            #${ccache_exe} ${CMAKE_BINARY_DIR}/cl.exe
+            #ONLY_IF_DIFFERENT)
+
+            # By default Visual Studio generators will use /Zi which is not compatible
+            # with ccache, so tell Visual Studio to use /Z7 instead.
+            message(STATUS "Setting MSVC debug information format to 'Embedded'")
+            set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+
+            set(CMAKE_VS_GLOBALS
+                "CLToolExe=cl.exe"
+                "CLToolPath=${CMAKE_BINARY_DIR}"
+                "UseMultiToolTask=true"
+                "DebugInformationFormat=OldStyle")
+        endif()
     endif()
 endif()
 
 # message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-
-set(BINARY_NAME ${PROJECT_NAME})
 
 
 #===== Dependencies ====================
@@ -86,18 +106,16 @@ target_compile_options(${BINARY_NAME} PRIVATE
 
 #===== Output Directories ==============
 
-set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/target/Release)
-set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_SOURCE_DIR}/target/Debug)
-if(WIN32)
-    set_target_properties(${BINARY_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/target/Debug)
-elseif(UNIX)
-endif()
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/target/Release)
-else() # Debug
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/target/Debug)
-endif()
-message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+set_target_properties(${BINARY_NAME} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/target/$<CONFIG>"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/target/$<CONFIG>"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/target/$<CONFIG>"
+    ## Visual Studio specific
+    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${BINARY_NAME}>"
+    VS_DEBUGGER_COMMAND           "$<TARGET_FILE:${BINARY_NAME}>"
+    VS_DEBUGGER_ENVIRONMENT       "PATH=%PATH%"
+)
+message(STATUS "Set ${BINARY_NAME} binary output directory to ${CMAKE_SOURCE_DIR}/target")
 
 
 #===== Copy Commands ===================
@@ -108,19 +126,18 @@ message(STATUS "Set binary output directory to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 # endif()
 
 # cmake build time copy
-# file(GLOB DLLS_TO_COPY "${CMAKE_SOURCE_DIR}/lib/*.dll")
-# if(DLLS_TO_COPY)
-#     add_custom_command(
-#         TARGET ${BINARY_NAME}
-#         POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#         ${DLLS_TO_COPY}
-#         $<TARGET_FILE_DIR:${BINARY_NAME}>
-#         COMMENT "Copying dlls to target directory..."
-#     )
-# else()
-#     message(STATUS "No dlls to copy")
-# endif()
+file(GLOB EXTRA_DLLS_TO_COPY "${CMAKE_SOURCE_DIR}/lib/*.dll")
+add_custom_command(
+    TARGET ${BINARY_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND}
+            -E copy
+            -t $<TARGET_FILE_DIR:${BINARY_NAME}>
+            ${EXTRA_DLLS_TO_COPY}
+            $<TARGET_RUNTIME_DLLS:${BINARY_NAME}>
+    COMMAND_EXPAND_LISTS
+    COMMENT "Copying dlls to target directory..."
+)
 
 
 #======================================
