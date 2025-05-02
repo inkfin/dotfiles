@@ -31,6 +31,6 @@ export HOMEBREW_NO_AUTO_UPDATE=
 
 append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/include"
 append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/lib -Wl,-rpath,${HOMEBREW_PREFIX}/lib"
-append_to_flag PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/lib/pkgconfig"
-append_to_flag CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}"
+append_to_path PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/lib/pkgconfig"
+append_to_path CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}"
 
