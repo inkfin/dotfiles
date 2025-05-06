@@ -20,7 +20,8 @@ set number
 :set number relativenumber
 
 set backspace=indent,eol,start  "backspace wrap to previous/next line
-set clipboard=unnamed   "enable clipboard
+" Sometimes slow, see https://github.com/VsVim/VsVim/issues/2035
+"set clipboard=unnamed   "enable clipboard
 set history=1000        "set history size
 
 
@@ -58,13 +59,17 @@ nmap E 5e
 vnoremap H ^
 vnoremap L $<left>
 
-vnoremap Y "+y
+" clipboard work around, see https://github.com/VsVim/VsVim/issues/3116
+noremap Y :vsc Edit.Copy<CR>
+vnoremap y :vsc Edit.Copy<CR>gv"0y
+noremap x "_x
 vnoremap <C-X> "+x
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
 
 nnoremap H :vsc Window.PreviousTab<CR>
 nnoremap L :vsc Window.NextTab<CR>
+nnoremap <Leader>bd :vsc File.Close<CR>
 
 " Split screen
 nnoremap <Leader>| <C-W>v
