@@ -43,9 +43,7 @@ if(USE_CCACHE)
         else()
             # Masquerade cl.exe with ccache
             #   ref: <https://github.com/ccache/ccache/wiki/MS-Visual-Studio#usage-with-cmake>
-            #file(COPY_FILE
-            #${ccache_exe} ${CMAKE_BINARY_DIR}/cl.exe
-            #ONLY_IF_DIFFERENT)
+            #file(COPY_FILE ${CCACHE_PROGRAM} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
 
             # By default Visual Studio generators will use /Zi which is not compatible
             # with ccache, so tell Visual Studio to use /Z7 instead.
@@ -66,8 +64,7 @@ endif()
 
 #===== Dependencies ====================
 
-include(cmake/helpers.cmake)
-# include(cmake/use_googletest.cmake)
+# include(cmake/helpers.cmake)
 # add_subdirectory(third_party/googletest)
 
 # find_package(Eigen3 COMPONENTS Eigen REQUIRED)
