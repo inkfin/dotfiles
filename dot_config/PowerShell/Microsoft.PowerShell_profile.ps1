@@ -70,6 +70,7 @@ function vimrc { & nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
 function vimpwsh { & nvim "$HOME\.local\share\chezmoi\dot_config\Powershell\Microsoft.PowerShell_profile.ps1" }
 function vimrime { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custom.yaml" }
 function custom_phrase { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom_phrase.txt" }
+function vimtmpl { & nvim "$HOME\.local\share\chezmoi\template"}
 
 function nn {
     & "$HOME\.local\neovim\bin\nvim.exe" $args
