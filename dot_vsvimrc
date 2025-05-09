@@ -49,7 +49,7 @@ set wrapscan    "loop search
 let g:mapleader=" "
 let g:maplocalleader=","
 
-noremap <LEADER><CR> <CMD>nohlsearch<CR>
+noremap <LEADER><CR> :nohlsearch<CR>
 
 nmap Q :q<CR>
 nmap W 5w
@@ -62,7 +62,6 @@ vnoremap L $<left>
 " clipboard work around, see https://github.com/VsVim/VsVim/issues/3116
 noremap Y :vsc Edit.Copy<CR>
 vnoremap y :vsc Edit.Copy<CR>gv"0y
-noremap x "_x
 vnoremap <C-X> "+x
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
