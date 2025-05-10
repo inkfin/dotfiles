@@ -5,13 +5,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-#===== VCPKG ===========================
-
-# if(NOT CMAKE_TOOLCHAIN_FILE)
-#     set(CMAKE_TOOLCHAIN_FILE "vcpkg/scripts/buildsystems/vcpkg.cmake"
-#         CACHE FILEPATH "Path to vcpkg toolchain file" FORCE)
-# endif()
-
 
 #===== Project Build Options ===========
 
@@ -73,7 +66,9 @@ endif()
 
 # aux_source_directory(src SOURCE_FILES)
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
-    src/*.cpp src/*.h include/*.h
+    include/*.h
+    src/*.h
+    src/*.cpp
 )
 
 include_directories(include)
@@ -83,9 +78,10 @@ add_executable(${BINARY_NAME} ${SOURCE_FILES})
 
 #===== Target Build Options ============
 
-target_compile_options(${BINARY_NAME} PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/W4>
-  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+target_compile_options(${BINARY_NAME}
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/W4>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
 
 # option(WITH_TBB "set to ON to enable TBB, OFF to disable TBB." ON)
@@ -108,9 +104,9 @@ set_target_properties(${BINARY_NAME} PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/target/$<CONFIG>"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/target/$<CONFIG>"
     ## Visual Studio specific
-    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${BINARY_NAME}>"
+    # VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${BINARY_NAME}>"
     VS_DEBUGGER_COMMAND           "$<TARGET_FILE:${BINARY_NAME}>"
-    VS_DEBUGGER_ENVIRONMENT       "PATH=%PATH%"
+    # VS_DEBUGGER_ENVIRONMENT       "PATH=%PATH%"
 )
 message(STATUS "Set ${BINARY_NAME} binary output directory to ${CMAKE_SOURCE_DIR}/target")
 
@@ -128,10 +124,10 @@ add_custom_command(
     TARGET ${BINARY_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND}
-            -E copy
-            -t $<TARGET_FILE_DIR:${BINARY_NAME}>
+            -E copy_if_different
             ${EXTRA_DLLS_TO_COPY}
             $<TARGET_RUNTIME_DLLS:${BINARY_NAME}>
+            $<TARGET_FILE_DIR:${BINARY_NAME}> # target
     COMMAND_EXPAND_LISTS
     COMMENT "Copying dlls to target directory..."
 )

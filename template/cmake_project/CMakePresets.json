@@ -7,17 +7,27 @@
   },
   "configurePresets": [
     {
-      "name": "default",
-      "displayName": "Default",
-      "description": "Default configuration",
+      "name": "base",
       "binaryDir": "${sourceDir}/build/${presetName}",
+      "hidden": true,
       "cacheVariables": {
+        "USE_CCACHE": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
+      "name": "vcpkg",
+      "displayName": "Vcpkg Config",
+      "description": "Vcpkg configuration for CMake",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      },
+      "environment": {}
+    },
+    {
       "name": "ninja",
-      "inherits": "default",
+      "inherits": "base",
       "hidden": true,
       "generator": "Ninja",
       "cacheVariables": {}
@@ -44,26 +54,16 @@
       "name": "ninja-multi",
       "displayName": "Ninja Multi-Config",
       "description": "Ninja Multi-Config configuration",
-      "inherits": "default",
+      "inherits": "base",
       "generator": "Ninja Multi-Config",
       "binaryDir": "${sourceDir}/build/multi",
       "cacheVariables": {}
     },
     {
-      "name": "vcpkg",
-      "displayName": "Vcpkg Config",
-      "description": "Vcpkg configuration for CMake",
-      "inherits": "default",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      },
-      "environment": {}
-    },
-    {
       "name": "MSVC",
       "displayName": "MSVC configuration",
       "description": "Visual Studio 2022 configuration",
-      "inherits": "default",
+      "inherits": "base",
       "generator": "Visual Studio 17 2022",
       "condition": {
         "type": "equals",
@@ -74,19 +74,12 @@
   ],
   "buildPresets": [
     {
-      "name": "default",
-      "hidden": true,
-      "configurePreset": "default"
-    },
-    {
-      "name": "ninja-debug",
-      "inherits": "default",
+      "name": "build-debug",
       "configurePreset": "ninja-multi",
       "configuration": "Debug"
     },
     {
-      "name": "ninja-release",
-      "inherits": "default",
+      "name": "build-release",
       "configurePreset": "ninja-multi",
       "configuration": "Release"
     }
@@ -94,7 +87,7 @@
   "testPresets": [
     {
       "name": "default",
-      "configurePreset": "default",
+      "configurePreset": "ninja-multi",
       "output": { "outputOnFailure": true },
       "execution": { "noTestsAction": "error", "stopOnFailure": true }
     }
@@ -109,7 +102,7 @@
         },
         {
           "type": "build",
-          "name": "ninja-debug"
+          "name": "build-debug"
         }
       ]
     },
@@ -122,7 +115,7 @@
         },
         {
           "type": "build",
-          "name": "ninja-release"
+          "name": "build-release"
         }
       ]
     }
