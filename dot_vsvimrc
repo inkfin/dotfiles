@@ -94,12 +94,15 @@ nmap <C-]> :vsc Edit.GoToDefinition<CR>
 nmap gr :vsc Edit.FindAllReferences<CR>
 
 " toggle header/source file
-nmap ch :vsc EditorContextMenus.CodeWindow.ToggleHeaderCodeFile<CR>
+nmap <leader>ch :vsc EditorContextMenus.CodeWindow.ToggleHeaderCodeFile<CR>
 " show code actions
-nmap ca :vsc Edit.ShowCodeLensMenu<CR>
+"nmap <leader>ca :vsc Edit.ShowCodeLensMenu<CR>
+nmap <leader>ca :vsc View.QuickActions<CR>
 
-nmap ]d :vsc View.NextError
-nmap [d :vsc View.PreviousError
+nmap [d :vsc Edit.GoToPreviousIssueinFile<CR>
+nmap ]d :vsc Edit.GoToNextIssueinFile<CR>
+nmap [e :vsc View.PreviousError<CR>
+nmap ]e :vsc View.NextError<CR>
 
 nnoremap <leader><leader> :vsc Edit.GotoFile<CR>
 nnoremap <leader>ff :vsc Edit.FindinFiles<CR>
