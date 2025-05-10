@@ -1,0 +1,18 @@
+[[row]]
+    [[row.child]]
+        type = "cpu"
+    [[row.child]]
+        type = "mem"
+[[row]]
+    ratio = 2
+    [[row.child]]
+        ratio = 3
+        [[row.child.child]]
+            ratio = 2
+            type = "net"
+        [[row.child.child]]
+            type = "disk"
+    [[row.child]]
+        ratio = 4
+        type = "proc"
+
