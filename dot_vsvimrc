@@ -88,6 +88,9 @@ nmap <leader>h :vsc Edit.QuickInfo<CR>
 
 nmap gd :vsc Edit.GoToDefinition<CR>
 nmap gD :vsc Edit.GoToDeclaration<CR>
+nmap gI :vsc Edit.GoToImplementation<CR>
+nmap gy :vsc Edit.GoToTypeDefinition<CR>
+nmap gK :vsc Edit.PeekDefinition<CR>
 nmap gm :vsc Edit.GoToMember<CR>
 nmap gH :vsc EditorContextMenus.CodeWindow.ViewCallHierarchy<CR>
 nmap <C-]> :vsc Edit.GoToDefinition<CR>
@@ -107,6 +110,7 @@ nmap ]e :vsc View.NextError<CR>
 nnoremap <leader><leader> :vsc Edit.GotoFile<CR>
 nnoremap <leader>ff :vsc Edit.FindinFiles<CR>
 nnoremap <leader>/ :vsc Edit.FindinFiles<CR>
+nnoremap <leader>, :vsc Edit.GoToRecentFile<CR>
 nnoremap <leader>f/ :vsc Edit.Find<CR>
 
 nnoremap <leader>ss :vsc Edit.GoToSymbol<CR>

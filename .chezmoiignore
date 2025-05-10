@@ -33,6 +33,7 @@ modikeys.sh
 .vsvimrc
 .wslconfig
 .config/AutoHotkey/
+.config/VisualStudio/
 Documents/
 AppData/
 install-packages.ps1
