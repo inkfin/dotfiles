@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- BuildConfiguration.Engine.xml -->
+<!-- This file is used to configure the **Engine Specific** build system for Unreal Engine projects. It specifies settings for FASTBuild, parallel execution, and project file generation. -->
+<!-- Located in $EngineRoot\Engine\Saved\UnrealBuildTool\BuildConfiguration.xml -->
+<!-- Document: https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configuration-for-unreal-engine -->
 <Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
 	<BuildConfiguration>
-		<DefaultWarningLevel>Off</DefaultWarningLevel>
+        <bAllowFASTBuild>true</bAllowFASTBuild>
+        <bUseUBTMakefiles>true</bUseUBTMakefiles>
+		<!-- <DefaultWarningLevel>Off</DefaultWarningLevel> -->
 	</BuildConfiguration>
+    <FASTBuild>
+        <FBuildExecutablePath>C:\dev\UnrealEngine\FBuild\FBuild.exe</FBuildExecutablePath>
+        <bStopOnError>true</bStopOnError>
+        <bEnableCaching>true</bEnableCaching>
+        <CacheMode>ReadWrite</CacheMode>
+        <bEnableDistribution>false</bEnableDistribution>
+        <FBuildBrokeragePath>C:\dev\UnrealEngine\FBuildBrokerage</FBuildBrokeragePath>
+        <FBuildCachePath>C:\dev\UnrealEngine\FBuildCache</FBuildCachePath>
+    </FASTBuild>
     <WindowsPlatform>
-        <!-- <bAllowClangLinker>false</bAllowClangLinker> -->
+        <Compiler>VisualStudio2022</Compiler>
+        <CompilerVersion>14.38.33130</CompilerVersion>
+		<WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion>
         <!-- <Compiler>Clang</Compiler> -->
+        <!-- <bAllowClangLinker>false</bAllowClangLinker> -->
         <!-- <CompilerVersion>16.0.4</CompilerVersion> -->
         <!-- <Compiler>VisualStudio2022</Compiler> -->
 		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
     </WindowsPlatform>
+    <ProjectFileGenerator>
+    </ProjectFileGenerator>
 </Configuration>

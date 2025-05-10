@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- BuildConfiguration.Global.xml -->
+<!-- This file is used to configure the **GLOBAL** build system for Unreal Engine projects. It specifies settings for FASTBuild, parallel execution, and project file generation. -->
+<!-- Located in $HOME\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml -->
+<!-- Document: https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configuration-for-unreal-engine -->
 <Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
     <BuildConfiguration>
-        <bAllowFASTBuild>false</bAllowFASTBuild>
+        <!-- Should be enabled in engine specific files, put here for reference -->
+        <bAllowFASTBuild>false</bAllowFASTBuild> 
         <bUseUBTMakefiles>true</bUseUBTMakefiles>
     </BuildConfiguration>
     <FASTBuild>
@@ -19,19 +24,18 @@
         <ProcessPriority>Normal</ProcessPriority>
     </ParallelExecutor>
     <WindowsPlatform>
-        <!-- <bAllowClangLinker>false</bAllowClangLinker> -->
-        <!-- <Compiler>Clang</Compiler> -->
-        <!-- <CompilerVersion>16.0.4</CompilerVersion> -->
-        <!-- <Compiler>VisualStudio2022</Compiler> -->
-		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
+        <Compiler>VisualStudio2022</Compiler>
+        <CompilerVersion>Latest</CompilerVersion>
+		<WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion>
     </WindowsPlatform>
     <ProjectFileGenerator>
-        <Format>CMake</Format>
-        <bGenerateIntelliSenseData>true</bGenerateIntelliSenseData>
-        <bIncludeEngineSource>true</bIncludeEngineSource>
-        <bIncludeShaderSource>true</bIncludeShaderSource>
-        <bIncludeConfigFiles>true</bIncludeConfigFiles>
-        <bIncludeEnginePrograms>true</bIncludeEnginePrograms>
+        <!-- <Format>CMake</Format> -->
+        <!-- <Format>VisualStudioCode</Format> -->
+        <!-- <bGenerateIntelliSenseData>true</bGenerateIntelliSenseData> -->
+        <!-- <bIncludeEngineSource>true</bIncludeEngineSource> -->
+        <!-- <bIncludeShaderSource>true</bIncludeShaderSource> -->
+        <!-- <bIncludeConfigFiles>true</bIncludeConfigFiles> -->
+        <!-- <bIncludeEnginePrograms>true</bIncludeEnginePrograms> -->
     </ProjectFileGenerator>
     <RiderProjectFileGenerator>
         <bIncludeDotNetPrograms>true</bIncludeDotNetPrograms>
