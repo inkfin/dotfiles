@@ -29,5 +29,12 @@
 		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
     </WindowsPlatform>
     <ProjectFileGenerator>
+        <!-- <Format>CMake</Format> -->
+        <!-- <Format>VisualStudioCode</Format> -->
+        <!-- <bGenerateIntelliSenseData>true</bGenerateIntelliSenseData> -->
+        <!-- <bIncludeEngineSource>true</bIncludeEngineSource> -->
+        <!-- <bIncludeShaderSource>true</bIncludeShaderSource> -->
+        <!-- <bIncludeConfigFiles>true</bIncludeConfigFiles> -->
+        <!-- <bIncludeEnginePrograms>true</bIncludeEnginePrograms> -->
     </ProjectFileGenerator>
 </Configuration>

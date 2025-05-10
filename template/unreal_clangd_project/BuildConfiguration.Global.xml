@@ -3,11 +3,12 @@
 <!-- This file is used to configure the **GLOBAL** build system for Unreal Engine projects. It specifies settings for FASTBuild, parallel execution, and project file generation. -->
 <!-- Located in $HOME\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml -->
 <!-- Document: https://dev.epicgames.com/documentation/en-us/unreal-engine/build-configuration-for-unreal-engine -->
+<!-- [!!Warning!!] This global file will override any engine specific settings. -->
 <Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
     <BuildConfiguration>
-        <!-- Should be enabled in engine specific files, put here for reference -->
-        <bAllowFASTBuild>false</bAllowFASTBuild> 
-        <bUseUBTMakefiles>true</bUseUBTMakefiles>
+        <!-- [Note] Should be enabled in engine specific files, put here for reference -->
+        <!-- <bAllowFASTBuild>false</bAllowFASTBuild>  -->
+        <!-- <bUseUBTMakefiles>true</bUseUBTMakefiles> -->
     </BuildConfiguration>
     <FASTBuild>
         <FBuildExecutablePath>C:\dev\UnrealEngine\FBuild\FBuild.exe</FBuildExecutablePath>
@@ -24,9 +25,10 @@
         <ProcessPriority>Normal</ProcessPriority>
     </ParallelExecutor>
     <WindowsPlatform>
-        <Compiler>VisualStudio2022</Compiler>
-        <CompilerVersion>Latest</CompilerVersion>
-		<WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion>
+        <!-- [Note] Should be enabled in engine specific files, put here for reference -->
+        <!-- <Compiler>VisualStudio2022</Compiler> -->
+        <!-- <CompilerVersion>Latest</CompilerVersion> -->
+		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
     </WindowsPlatform>
     <ProjectFileGenerator>
         <!-- <Format>CMake</Format> -->
