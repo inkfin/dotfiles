@@ -58,6 +58,7 @@ return {
             opts.preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None
 
             opts.mapping = cmp.mapping.preset.insert({
+                ["<C-Space>"] = cmp.mapping.complete(),
                 -- changing scrolling keymap from <C-b/f> to <C-u/d>
                 ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
                 ["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
