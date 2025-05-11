@@ -16,8 +16,8 @@
         <bEnableCaching>true</bEnableCaching>
         <CacheMode>ReadWrite</CacheMode>
         <bEnableDistribution>false</bEnableDistribution>
-        <FBuildBrokeragePath>C:\dev\UnrealEngine\FBuildBrokerage</FBuildBrokeragePath>
-        <FBuildCachePath>C:\dev\UnrealEngine\FBuildCache</FBuildCachePath>
+        <!-- <FBuildBrokeragePath>C:\dev\UnrealEngine\.cache\FBuild\Brokerage</FBuildBrokeragePath> -->
+        <!-- <FBuildCachePath>C:\dev\UnrealEngine\.cache\FBuild\Cache</FBuildCachePath> -->
     </FASTBuild>
     <ParallelExecutor>
         <MaxProcessorCount>12</MaxProcessorCount>
