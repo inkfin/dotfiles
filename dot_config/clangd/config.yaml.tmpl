@@ -1,0 +1,11 @@
+InlayHints:
+  BlockEnd: true
+Hover:
+  ShowAKA: true
+
+CompileFlags:
+  Add: [
+{{- if eq .chezmoi.os "darwin" }}
+    -isystem/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include,
+{{- end }}
+  ]
