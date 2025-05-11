@@ -11,17 +11,17 @@
         <!-- <bUseUBTMakefiles>true</bUseUBTMakefiles> -->
     </BuildConfiguration>
     <FASTBuild>
-        <FBuildExecutablePath>C:\dev\UnrealEngine\FBuild\FBuild.exe</FBuildExecutablePath>
+        <FBuildExecutablePath>Z:\UE\FBuild\FBuild.exe</FBuildExecutablePath>
         <bStopOnError>true</bStopOnError>
         <bEnableCaching>true</bEnableCaching>
         <CacheMode>ReadWrite</CacheMode>
         <bEnableDistribution>false</bEnableDistribution>
-        <!-- <FBuildBrokeragePath>C:\dev\UnrealEngine\.cache\FBuild\Brokerage</FBuildBrokeragePath> -->
-        <!-- <FBuildCachePath>C:\dev\UnrealEngine\.cache\FBuild\Cache</FBuildCachePath> -->
+        <!-- <FBuildBrokeragePath>Z:\UE\.cache\FBuild\Brokerage</FBuildBrokeragePath> -->
+        <!-- <FBuildCachePath>Z:\UE\.cache\FBuild\Cache</FBuildCachePath> -->
     </FASTBuild>
     <ParallelExecutor>
         <MaxProcessorCount>12</MaxProcessorCount>
-        <ProcessorCountMultiplier>20</ProcessorCountMultiplier>
+        <ProcessorCountMultiplier>5</ProcessorCountMultiplier>
         <ProcessPriority>Normal</ProcessPriority>
     </ParallelExecutor>
     <WindowsPlatform>
