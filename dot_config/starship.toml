@@ -179,6 +179,12 @@ format = "$symbol"
 symbols.Ubuntu = ""
 symbols.Windows = ""
 symbols.Macos = "󰀵"
+symbols.Arch = ""
+symbols.CentOS = ""
+symbols.Fedora = ""
+symbols.Debian = ""
+symbols.openSUSE = ""
+symbols.Android = ""
 
 [sudo]
 disabled = false
