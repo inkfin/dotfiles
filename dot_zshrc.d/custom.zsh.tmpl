@@ -29,13 +29,16 @@ alias gc="git commit"
 alias gp="git pull"
 alias gP="git push"
 alias lg="lazygit"
-# alias vim="nvim"
-alias nvi="neovide"
-alias v="nvim"
 alias ee="exit"
 
+# alias vim="nvim"
 # alias nn="~/.local/neovim/bin/nvim"
 # alias nvim="nn"
+alias nvi="neovide"
+alias v="nvim"
+# nvim server / client
+alias nvs='nvim --listen localhost:6789 --cmd "let safequit=v:true"'
+alias nvc='nvim --server localhost:6789 --remote-ui'
 
 USE_RIME_CONF="--cmd \"let g:rime=v:true\""
 alias vc="v $USE_RIME_CONF"
