@@ -11,13 +11,13 @@
         <!-- <bUseUBTMakefiles>true</bUseUBTMakefiles> -->
     </BuildConfiguration>
     <FASTBuild>
-        <FBuildExecutablePath>Z:\UE\FBuild\FBuild.exe</FBuildExecutablePath>
+        <FBuildExecutablePath>Z:\FBuild\FBuild.exe</FBuildExecutablePath>
         <bStopOnError>true</bStopOnError>
         <bEnableCaching>true</bEnableCaching>
         <CacheMode>ReadWrite</CacheMode>
         <bEnableDistribution>false</bEnableDistribution>
-        <!-- <FBuildBrokeragePath>Z:\UE\.cache\FBuild\Brokerage</FBuildBrokeragePath> -->
-        <!-- <FBuildCachePath>Z:\UE\.cache\FBuild\Cache</FBuildCachePath> -->
+        <!-- <FBuildCachePath>${EngineRoot}\.fbcache</FBuildCachePath> -->
+        <!-- <FBuildBrokeragePath>\\INK_DESKTOP\Brokerage</FBuildBrokeragePath> -->
     </FASTBuild>
     <ParallelExecutor>
         <MaxProcessorCount>12</MaxProcessorCount>

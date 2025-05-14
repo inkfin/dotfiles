@@ -8,15 +8,19 @@
         <bAllowFASTBuild>true</bAllowFASTBuild>
         <bUseUBTMakefiles>true</bUseUBTMakefiles>
 		<!-- <DefaultWarningLevel>Off</DefaultWarningLevel> -->
+        <!-- [Experimental]: Disable UE 5.5+ Unreal Build Accelerator to use C++ Dynamic Debugging -->
+        <!--   reference: https://learn.microsoft.com/en-us/visualstudio/debugger/cpp-dynamic-debugging?view=vs-2022#enable-c-dynamic-debugging-in-unreal-engine -->
+		<bAllowUBAExecutor>false</bAllowUBAExecutor>
+		<bAllowUBALocalExecutor>false</bAllowUBALocalExecutor>
 	</BuildConfiguration>
     <FASTBuild>
-        <FBuildExecutablePath>Z:\UE\FBuild\FBuild.exe</FBuildExecutablePath>
+        <FBuildExecutablePath>Z:\FBuild\FBuild.exe</FBuildExecutablePath>
         <bStopOnError>true</bStopOnError>
         <bEnableCaching>true</bEnableCaching>
         <CacheMode>ReadWrite</CacheMode>
         <bEnableDistribution>false</bEnableDistribution>
-        <!-- <FBuildBrokeragePath>Z:\UE\.cache\FBuild\Brokerage</FBuildBrokeragePath> -->
-        <!-- <FBuildCachePath>Z:\UE\.cache\FBuild\Cache</FBuildCachePath> -->
+        <FBuildCachePath>${EngineRoot}\.fbcache</FBuildCachePath>
+        <!-- <FBuildBrokeragePath>\\INK_DESKTOP\Brokerage</FBuildBrokeragePath> -->
     </FASTBuild>
     <ParallelExecutor>
         <!-- <MaxProcessorCount>6</MaxProcessorCount> -->
@@ -32,6 +36,8 @@
         <!-- <CompilerVersion>16.0.4</CompilerVersion> -->
         <!-- <Compiler>VisualStudio2022</Compiler> -->
 		<!-- <WindowsSdkVersion>10.0.22621.0</WindowsSdkVersion> -->
+        <!-- [Experimental]: Disable UE 5.5+ Unreal Build Accelerator to use C++ Dynamic Debugging -->
+        <!-- <bDynamicDebugging>true</bDynamicDebugging> -->
     </WindowsPlatform>
     <ProjectFileGenerator>
         <!-- <Format>CMake</Format> -->
