@@ -103,6 +103,7 @@ return {
             -- Neorg prefix
             { "<localleader>;",  mode = { "n" }, ":Neorg ",                 desc = "Neorg command",     ft = "norg" },
             -- workspaces
+            { "<leader>on", mode = { "n" }, "<CMD>Neorg workspace worknotes<CR>", desc = "Norg worknotes"},
             { "<localleader>or", mode = { "n" }, "<CMD>Neorg return<CR>",   desc = "Norg return",       ft = "norg" },
             { "<localleader>ow", mode = { "n" }, ":Neorg workspace ",       desc = "Norg workspace",    ft = "norg" },
             { "<localleader>oi", mode = { "n" }, "<CMD>Neorg index<CR>",    desc = "Norg index",        ft = "norg" },
