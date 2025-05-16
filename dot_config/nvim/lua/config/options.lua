@@ -124,6 +124,8 @@ opt.fillchars = {
     diff = "╱",
     eob = " ",
 }
+-- display dots for spaces
+vim.opt.listchars:append("space:·")
 
 -- signature help
 vim.lsp.handlers["textDocument/signatureHelp"] =

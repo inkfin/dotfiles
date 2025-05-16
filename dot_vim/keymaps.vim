@@ -8,10 +8,11 @@ let g:maplocalleader = ","
 " Jump to matching pairs easily in normal mode
 nnoremap <Tab> %
 
+vnoremap <silent> Y "+y
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
-
-vnoremap <silent> Y "+y
+" Delete to black hole register with x
+noremap <silent> x "_x
 
 vnoremap <silent> H ^
 vnoremap <silent> L $<left>

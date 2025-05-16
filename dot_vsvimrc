@@ -63,8 +63,11 @@ vnoremap L $<left>
 noremap Y :vsc Edit.Copy<CR>
 vnoremap y :vsc Edit.Copy<CR>gv"0y
 vnoremap <C-X> "+x
+noremap P :vsc Edit.Paste<CR>
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
+" Delete to the black hole register with x
+noremap x "_x
 
 nnoremap H :vsc Window.PreviousTab<CR>
 nnoremap L :vsc Window.NextTab<CR>

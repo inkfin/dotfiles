@@ -86,6 +86,8 @@ set number relativenumber
 set ruler
 set visualbell
 set virtualedit=block
+" display dots for spaces
+set lcs+=space:·
 
 " search
 set incsearch

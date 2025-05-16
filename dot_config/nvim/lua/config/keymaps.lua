@@ -23,7 +23,7 @@ if vim.g.neovide then
     vim.keymap.set("n", "<D-s>", "<CMD>w<CR>", { noremap = true, silent = true }) -- Save
     vim.keymap.set("v", "<D-c>", '"+y', { noremap = true, silent = true }) -- Copy
     vim.keymap.set({ "n", "v" }, "<D-v>", '"+P', { noremap = true, silent = true }) -- Paste normal/visual mode
-    vim.keymap.set({"c", "t"}, "<D-v>", "<C-R>+", { noremap = true, silent = true }) -- Paste command mode
+    vim.keymap.set({ "c", "t" }, "<D-v>", "<C-R>+", { noremap = true, silent = true }) -- Paste command mode
     vim.keymap.set("i", "<D-v>", '<ESC>"+pa', { noremap = true, silent = true }) -- Paste insert mode
 end
 
@@ -34,6 +34,8 @@ map("n", "<leader>J", ":normal! J<CR>", { silent = true, noremap = true })
 
 -- Paste over currently selected text without yanking it
 map("v", "p", '"_dP', { silent = true })
+-- delete to blackhole register with x
+map("n", "x", '"_x', { silent = true })
 
 -- better movements
 -- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
