@@ -268,12 +268,19 @@ if vim.g.neovide then
     vim.g.neovide_scale_factor = 1.0
     vim.g.neovide_detach_on_quit = "always_detach"
 
-    -- Window Blur (Currently macOS only)
     if vim.fn.has("mac") == 1 then
-        vim.g.neovide_transparency = 0.6
+        vim.g.neovide_opacity = 0.8
+        vim.g.neovide_normal_opacity = 0.8
+        -- MacOS specific
         vim.g.neovide_window_blurred = true
     else
-        vim.g.neovide_transparency = 0.8
+        vim.g.neovide_opacity = 0.8
+        vim.g.neovide_normal_opacity = 0.8
+        -- Win32 specific
+        vim.g.neovide_title_background_color =
+            string.format("%x", vim.api.nvim_get_hl(0, { id = vim.api.nvim_get_hl_id_by_name("Normal") }).bg)
+
+        vim.g.neovide_title_text_color = "pink"
     end
 
     -- Windows configuration
@@ -302,7 +309,7 @@ if vim.g.neovide then
     vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 
     -- Animations
-    vim.g.neovide_scroll_animation_length = 0.3
+    vim.g.neovide_scroll_animation_length = 0.15
     vim.g.neovide_cursor_vfx_mode = "sonicboom"
 end
 
