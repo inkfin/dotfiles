@@ -1,0 +1,4 @@
+# https://github.com/neocmakelsp/neocmakelsp?tab=readme-ov-file#lint-form-6027
+command_upcase = "ignore"          # "upcase", "lowercase", "ignore"
+enable_external_cmake_lint = false
+line_max_words = 120
