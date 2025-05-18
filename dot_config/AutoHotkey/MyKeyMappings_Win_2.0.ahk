@@ -9,6 +9,7 @@ Persistent
 ;LAlt & Tab::AltTab
 ;LWin & Tab::AltTab
 ;AppsKey & Tab::AltTab
+LWin & L::!L
 
 ;==============CapsLock 改键==============
 ; 短按 CapsLock 为 Esc, 长按 CapsLock 为 Ctrl
@@ -109,30 +110,30 @@ WatchCursor()
 
 
 ;==============Hotkey Window============
-;;; Ctrl + Win + ` toggle terminal window
-^#`:: {
-    DetectHiddenWindows True
-    ; alacritty executable:
-    exeName := "alacritty.exe"
-    ; there's no $HOME (eww...)
-    exeArgs := " --config-file " . A_AppData . "/../../.config/alacritty/profiles/windows/transparent_fullscreen.toml"
-
-    terminalTitle := "popup" ; detect exact window title
-    ;terminalTitle := "ahk_exe " exeName ; detect all backgroud exe
-    if WinExist(terminalTitle) { ; Check if a window with your program exists
-        DetectHiddenWindows False ; Disable hidden window check to see if is currently hidden, otherwise won't work
-        if WinActive(terminalTitle) { ; Check if the window is active
-            WinHide(terminalTitle) ; If the window is active, hide it
-        } else {
-            WinShow(terminalTitle) ; If the window is not active (hidden or in the background), show it
-            WinActivate(terminalTitle) ; Activate the window
-        }
-    } else {
-        Run(exeName " " exeArgs) ; If the window does not exist, launch the program
-    }
-    DetectHiddenWindows False
-    return
-}
+;;; Ctrl + Win + a toggle terminal window
+;^#a:: {
+;    DetectHiddenWindows True
+;    ; alacritty executable:
+;    exeName := "alacritty.exe"
+;    ; there's no $HOME (eww...)
+;    exeArgs := " --config-file " . A_AppData . "/../../.config/alacritty/profiles/windows/transparent_fullscreen.toml"
+;
+;    terminalTitle := "popup" ; detect exact window title
+;    ;terminalTitle := "ahk_exe " exeName ; detect all backgroud exe
+;    if WinExist(terminalTitle) { ; Check if a window with your program exists
+;        DetectHiddenWindows False ; Disable hidden window check to see if is currently hidden, otherwise won't work
+;        if WinActive(terminalTitle) { ; Check if the window is active
+;            WinHide(terminalTitle) ; If the window is active, hide it
+;        } else {
+;            WinShow(terminalTitle) ; If the window is not active (hidden or in the background), show it
+;            WinActivate(terminalTitle) ; Activate the window
+;        }
+;    } else {
+;        Run(exeName " " exeArgs) ; If the window does not exist, launch the program
+;    }
+;    DetectHiddenWindows False
+;    return
+;}
 
 
 ;=======================================
