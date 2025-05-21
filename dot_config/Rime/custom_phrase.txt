@@ -62,3 +62,6 @@ gone	gone
 Go程	gocheng
 code	code
 SOHO	soho
+
+冇	mou
+冇問題	moumantai
