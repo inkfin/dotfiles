@@ -2,7 +2,7 @@ if (-not (Test-Path "$HOME\.init_flag")) {
 
 Write-host "Installing WINGET packages ..." -f Green
 
-winget install SomePythonThings.WingetUIStore
+winget install MartiCliment.UniGetUI
 winget install Yuanli.uTools
 winget install XP89DCGQ3K6VLD  # Powertoys
 winget install AgileBits.1Password
@@ -13,7 +13,7 @@ winget install Valve.Steam
 # winget install JanDeDobbeleer.OhMyPosh -s winget
 
 winget install Microsoft.PowerShell
-winget install --id Microsoft.WindowsTerminal -e
+winget install --id Microsoft.WindowsTerminal.Preview -e
 
 # Update PowershellGet for pwsh < 5.1
 Install-Module -Name PowerShellGet -Force
