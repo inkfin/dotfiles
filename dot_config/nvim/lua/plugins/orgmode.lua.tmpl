@@ -47,7 +47,10 @@ return {
                 ["core.dirman"] = {
                     config = {
                         workspaces = {
+                            -- {{ if eq .profile "work" }}
                             worknotes = "~/Documents/WorkNotes",
+                            -- {{ end }}
+                            studynotes = "~/Documents/StudyNotes",
                         },
                     },
                 },
@@ -116,3 +119,5 @@ return {
         },
     },
 }
+
+-- vim: set ft=lua:
