@@ -3,6 +3,11 @@ if _G.disable_plugins.copilot then
 end
 
 return {
+    -- {{ if eq .profile "work" }}
+    {
+        "git@git.woa.com:aurorani/gongfeng-copilot.git",
+    },
+    -- {{ else }}
     {
         "zbirenbaum/copilot.lua",
         keys = {
@@ -35,4 +40,7 @@ return {
         "zbirenbaum/copilot-cmp",
         enabled = false,
     },
+    -- {{ end }}
 }
+
+-- vim: set ft=lua:
