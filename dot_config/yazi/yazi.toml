@@ -1,7 +1,7 @@
 # https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/yazi-default.toml
 "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
-[manager]
+[mgr]
 sort_by = "natural"
 linemode = "size"
 show_hidden = false
