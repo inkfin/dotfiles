@@ -48,7 +48,11 @@ return {
                     config = {
                         workspaces = {
                             -- {{ if eq .profile "work" }}
+                            -- {{ if eq .chezmoi.os "darwin" }}
+                            worknotes = "~/LocalDocuments/WorkNotes",
+                            -- {{ else }}
                             worknotes = "~/Documents/WorkNotes",
+                            -- {{ end }}
                             -- {{ end }}
                             studynotes = "~/Documents/StudyNotes",
                         },
