@@ -29,7 +29,11 @@
     cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
 
 [core]
+{{- if eq .chezmoi.os "windows" }}
 	autocrlf = true
+{{- else }}
+	autocrlf = input
+{{- end }}
     safecrlf = true
 	excludesfile = ~/.gitignore_global
 [commit]
