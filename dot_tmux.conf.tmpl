@@ -31,6 +31,9 @@ set -as terminal-overrides ',xterm*:sitm=\E[3m'
 {{ end }}
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
 
+# Default to zsh (some platform can't recognize default shell)
+set-option -g default-shell /bin/zsh
+
 # Address vim mode switching delay (http://superuser.com/a/252717/65504)
 set -sg escape-time 10
 # Increase scrollback buffer size from 2000 to 50000 lines
