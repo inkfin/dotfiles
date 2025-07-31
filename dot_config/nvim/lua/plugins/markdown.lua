@@ -46,6 +46,7 @@ return {
             code = {
                 sign = true,
                 width = "block",
+                border = "thick",
                 left_pad = 0,
                 right_pad = 4,
                 min_width = 45,
