@@ -7,6 +7,7 @@ FIXME
 GAN
 GDC
 Gouraud
+Impl
 KITTI
 Keymaps
 LaTeX
@@ -90,6 +91,7 @@ parallelizable
 platformer
 powershell
 pre-processing
+protobuf
 pts
 pytorch
 rgb
