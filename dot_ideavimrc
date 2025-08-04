@@ -117,6 +117,8 @@ nnoremap gi :<C-u>action GotoImplementation<CR>
 nnoremap gr :<C-u>action ShowUsages<CR>
 nnoremap gt :<C-u>action GotoTest<CR>
 
+nnoremap <Leader>ch :<C-u>action SwitchHeaderSource<CR>
+
 nnoremap ]d :<C-u>action GotoNextError<CR>
 nnoremap [d :<C-u>action GotoPreviousError<CR>
 
@@ -146,6 +148,7 @@ nnoremap <Leader>rv :<C-u>action IntroduceVariable<CR>
 nnoremap <Leader>cr :<C-u>action CopyReference<CR>
 nnoremap <Leader>re :<C-u>action ExtractMethod<CR>
 nnoremap <Leader>sw :<C-u>action SurroundWith<CR>
+nnoremap <Leader>cs :<C-u>action ChangeSignature<CR>
 
 " reformat
 nnoremap <Leader>rf :<C-u>action ReformatCode<CR>
