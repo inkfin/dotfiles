@@ -47,6 +47,8 @@ set ignorecase
 " set ide handler
 sethandler <C-A> a:vim
 sethandler <C-C> a:vim
+sethandler <C-U> a:vim
+sethandler <C-D> a:vim
 sethandler <C-V> a:vim
 sethandler <C-S> a:vim
 sethandler <C-E> a:vim
