@@ -98,11 +98,10 @@ Append-UserPath("$HOME\.local\neovim\bin")
 # Init-EnvironmentVariable COMSPEC "pwsh.exe"
 
 # CUDA environment
-Init-EnvironmentVariable CUDA_PATH_V12_1 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1"
-Init-EnvironmentVariable CUDA_PATH_V11_2 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2"
-Init-EnvironmentVariable CUDA_PATH "$env:CUDA_PATH_V12_1"
+# Init-EnvironmentVariable CUDA_PATH_V13_0 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.0"
+Init-EnvironmentVariable CUDA_PATH_V12_9 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9"
+Init-EnvironmentVariable CUDA_PATH "$env:CUDA_PATH_V12_9"
 Append-UserPath "$env:CUDA_PATH\bin"
-Append-UserPath "$env:CUDA_PATH\libnvvp"
 
 # C++ environment
 #
