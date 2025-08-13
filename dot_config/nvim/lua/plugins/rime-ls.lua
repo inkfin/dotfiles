@@ -47,6 +47,7 @@ if vim.g.rime then
 end
 
 local cmp_cache = { keymaps = {}, cmp_sources = {} }
+local filetypes = { "markdown", "quarto", "org", "norg", "text" }
 
 return {
     -- rime-ls
@@ -57,7 +58,7 @@ return {
     {
         "liubianshi/cmp-lsp-rimels",
         enabled = vim.g.rime == true,
-        ft = { "markdown", "org", "text" },
+        ft = filetypes,
         dependencies = {
             "neovim/nvim-lspconfig",
             "hrsh7th/nvim-cmp",
@@ -145,13 +146,16 @@ return {
     },
     {
         "noearc/jieba.nvim",
-        ft = { "markdown", "text" },
-        dependencies = { { "noearc/jieba-lua", ft = { "markdown", "text" } } },
+        ft = filetypes,
+        dependencies = { { "noearc/jieba-lua" } },
         keys = {
             -- stylua: ignore start
-            -- { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
-            -- { "W", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_W() end end, silent = true, noremap = true, },
-            -- { "E", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_E() end end, silent = true, noremap = true, },
+            { "b", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_b() end, silent = true, noremap = true, },
+            { "w", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_w() end, silent = true, noremap = true, },
+            { "e", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_e() end, silent = true, noremap = true, },
+            { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
+            { "W", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_W() end end, silent = true, noremap = true, },
+            { "E", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_E() end end, silent = true, noremap = true, },
 
             { "ciw", mode = { "n" }, function() require("jieba_nvim").change_w() end, silent = true, noremap = false, },
             { "diw", mode = { "n" }, function() require("jieba_nvim").delete_w() end, },

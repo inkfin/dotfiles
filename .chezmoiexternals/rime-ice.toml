@@ -1,6 +1,0 @@
-[".config/Rime"]
-    type = "archive"
-    url = "https://github.com/iDvel/rime-ice/releases/latest/download/full.zip"
-    refreshPeriod = "336h"
-    stripComponents = 1
-    exclude = ["*/custom_phrase.txt"]

@@ -2,11 +2,14 @@
 
 {{ $profile := promptString "profile" "personal" -}}
 {{ $email := promptString "email" "inkfinite@qq.com" -}}
+{{ $rime_ls := promptBool "external.rime_ls" true }}
 
 [data]
     email = {{ $email | quote }}
     name = "inkfin"
     profile = {{ $profile | quote }}
+[data.external]
+    rime_ls = {{ $rime_ls | quote }}
 [git]
     autoCommit = false
     autoPush = false

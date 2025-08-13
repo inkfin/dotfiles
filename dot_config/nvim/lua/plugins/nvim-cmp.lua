@@ -59,6 +59,7 @@ return {
 
             opts.mapping = cmp.mapping.preset.insert({
                 ["<C-Space>"] = cmp.mapping.complete(),
+                ["<C-\\>"] = cmp.mapping.complete(),
                 -- changing scrolling keymap from <C-b/f> to <C-u/d>
                 ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
                 ["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down

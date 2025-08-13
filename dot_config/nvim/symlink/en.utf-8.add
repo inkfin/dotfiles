@@ -91,6 +91,7 @@ parallelizable
 platformer
 powershell
 pre-processing
+proto
 protobuf
 pts
 pytorch
@@ -118,3 +119,6 @@ workgroup
 workgroups
 yaml
 zhihu
+cli
+Kubernetes
+LGTM
