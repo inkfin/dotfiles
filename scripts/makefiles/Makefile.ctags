@@ -1,0 +1,16 @@
+.PHONY: tags tags-fast tags-changed clean
+
+# 全量：只索引 Git 追踪的文件
+tags:
+	git ls-files | ctags -L - -f tags
+
+# 更快一点：跳过被忽略的大目录（可选）
+tags-fast:
+	git ls-files | ctags -L - -f tags --exclude=build --exclude=dist --exclude=.git
+
+# 仅索引本分支相对上一次提交的修改文件（增量更新）
+tags-changed:
+	git diff --name-only HEAD | ctags -L - -f tags
+
+clean:
+	rm -f tags
