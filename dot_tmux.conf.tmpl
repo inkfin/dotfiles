@@ -24,13 +24,18 @@ set -g status-interval 5
 set-option -g status-position bottom
 setw -g monitor-activity on # 非当前窗口有内容更新时在状态栏通知
 
+# use tmux instead of screen to enable italics and fzf support
 set -g default-terminal "tmux-256color"
 {{ if eq .chezmoi.os "darwin" }}
 # add italic support on iTerm2 (https://weibeld.net/terminals-and-shells/italics.html)
 set -as terminal-overrides ',xterm*:sitm=\E[3m'
 {{ end }}
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
-
+{{- if eq .chezmoi.os "darwin" }}
+# compatability options for macos (pre 2.6), but the sensible setting has issue
+# See: https://github.com/tmux-plugins/tmux-sensible/issues/74
+set -g default-command "reattach-to-user-namespace -l $SHELL"
+{{- end }}
 # Default to zsh (some platform can't recognize default shell)
 set-option -g default-shell /bin/zsh
 
@@ -40,10 +45,6 @@ set -sg escape-time 10
 set -g history-limit 50000
 # Increase tmux messages display duration from 750ms to 4s
 set -g display-time 4000
-{{ if eq .chezmoi.os "darwin" }}
-# (OS X) Fix pbcopy/pbpaste for old tmux versions (pre 2.6)
-#set -g default-command "reattach-to-user-namespace -l $SHELL"
-{{ end }}
 # Emacs key bindings in tmux command prompt (prefix + :)
 set -g status-keys emacs
 # Super useful when using "grouped sessions" and multi-monitor setup
