@@ -14,22 +14,28 @@ return {
         enabled = vim.g.support_image,
         build = not (is_term_support_kitty or vim.fn.executable("magick") == 1), -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
         opts = {
-            backend = is_term_support_kitty and "kitty" or "ueberzug",
+            backend = "ueberzug", --is_term_support_kitty and "kitty" or "ueberzug",
             processor = vim.fn.executable("magick") == 1 and "magick_cli" or "magick_rock",
             max_width = 100,
             max_height = 12,
+            scale_factor = 1.0,
             max_height_window_percentage = math.huge, -- requirement from molten-nvim
             max_width_window_percentage = math.huge,
             window_overlap_clear_enabled = true,
-            window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" }, -- copied from molten-nvim
+            window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign", "" },
             integrations = {
                 markdown = {
                     enabled = true,
                     clear_in_insert_mode = false,
                     download_remote_images = true,
                     only_render_image_at_cursor = false,
+                    only_render_image_at_cursor_mode = "popup", -- when opening side window (e.g., nerdtree), the image offset wrong
                     floating_windows = false, -- if true, images will be rendered in floating markdown windows
                     filetypes = { "markdown", "quarto", "vimwiki" },
+                },
+                neorg = {
+                    enabled = true,
+                    filetypes = { "neorg" },
                 },
             },
         },
