@@ -69,9 +69,9 @@ prepend_to_path PATH "$BUN_HOME/bin"
 ## ---- llvm ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-# prepend_to_path PATH     "${HOMEBREW_PREFIX}/opt/llvm/bin"
-# append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -Wl,-rpath,${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -L${HOMEBREW_PREFIX}/opt/llvm/lib"
-# append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/opt/llvm/include"
+prepend_to_path PATH     "${HOMEBREW_PREFIX}/opt/llvm/bin"
+append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -Wl,-rpath,${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -L${HOMEBREW_PREFIX}/opt/llvm/lib"
+append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/opt/llvm/include"
 
 {{- end }}
 
