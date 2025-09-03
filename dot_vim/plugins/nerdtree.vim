@@ -10,8 +10,7 @@ nunmap <silent> <leader>e
 nnoremap <silent> <leader>e <CMD>NERDTreeToggle<CR>
 nnoremap <silent> <leader>E <CMD>ProjectRootExe NERDTreeFind<CR>
 
-else
-
-Plug 'tpope/vim-vinegar'
-
 endif
+
+" always include vim-vinegar to enhance open folders experience
+Plug 'tpope/vim-vinegar'

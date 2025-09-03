@@ -4,5 +4,5 @@
 let g:lsp_package_manager="bun"
 
 " file explorer style
-"  'nerdtree'|'vinegar'
+"  'nerdtree'|'netrw'
 let g:explorer_type="nerdtree"
