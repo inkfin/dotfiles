@@ -80,9 +80,9 @@ xnoremap <silent> > >gv
 " Decrease indent level in insert mode with shift+tab
 inoremap <S-Tab> <ESC><<i
 
-" Use Esc to quit builtin terminal
+" Use <C-q> to quit builtin terminal
 if exists(':tnoremap')
-    tnoremap <ESC>   <C-\><C-n>
+    tnoremap <C-q>   <C-\><C-n>
 endif
 
 " Clear highlighting
@@ -90,3 +90,12 @@ nnoremap <silent> <leader><enter> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate'
 
 " lazygit
 nnoremap <silent> <leader>gg :!lazygit<CR>
+
+" file explorer
+function! OpenNetrwLeft()
+  topleft vsplit
+  :Explore
+endfunction
+
+" bind <leader>e
+nnoremap <silent> <Leader>e :call OpenNetrwLeft()<CR>
