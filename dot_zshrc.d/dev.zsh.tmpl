@@ -137,6 +137,12 @@ export DOTNET_ROOT="${HOMEBREW_PREFIX}/opt/dotnet/libexec"
 append_to_path PATH "$DOTNET_ROOT"
 append_to_path PATH "$DOTNET_ROOT/tools"
 
+{{ else if eq .chezmoi.os "linux" -}}
+
+export DOTNET_ROOT="${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+append_to_path PATH "$DOTNET_ROOT"
+append_to_path PATH "$DOTNET_ROOT/tools"
+
 {{- end }}
 
 
