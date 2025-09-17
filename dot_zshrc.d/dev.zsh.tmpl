@@ -87,6 +87,8 @@ append_to_path PATH "$DOCKER_PATH"
 
 {{- end }}
 
+alias lzd=lazydocker
+
 ## ---- Vulkan ----
 {{ if eq .chezmoi.os "darwin" -}}
 
