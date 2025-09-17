@@ -9,6 +9,7 @@
 
 [diff]
 	tool = code
+	algorithm = histogram
 [difftool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE
 [difftool "code"]
@@ -47,6 +48,8 @@
 [pull]
 	ff = true
 	reabase = true
+[pack]
+	threads = 8
 
 [credential "helperselector"]
 	selected = manager
