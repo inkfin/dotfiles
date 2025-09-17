@@ -149,8 +149,9 @@ append_to_path PATH "$DOTNET_ROOT/tools"
 # ==== Utility aliases ====
 
 ## ---- CMake ----
-alias cmc="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
-alias cmcv="cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -B"
+alias cmc="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
+alias cmcp="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --preset "
+alias cmcv="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -B"
 alias cmb="cmake --build "
 
 ## ---- Redis ----

@@ -66,8 +66,9 @@ function Invoke-Starship-PreCommand {
 }
 
 # cmake commands
-function cmc  { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B $args }
-function cmcv { cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
+function cmc  { cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B $args }
+function cmc  { cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --preset $args }
+function cmcv { cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
 function cmb  { cmake --build $args }
 
 function preview {
