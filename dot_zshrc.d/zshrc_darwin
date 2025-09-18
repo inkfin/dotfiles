@@ -43,7 +43,7 @@ source $ZSHCONF_HOME/local.zsh
 ## ==== MacOS Specific ====
 
 ## ---- 1Password ----
-# export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
 ## translate-shell
 export HOME_LANG="zh-CN"
