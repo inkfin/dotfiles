@@ -181,6 +181,9 @@ vnoremap gc :<C-u>action CommentByLineComment<CR>
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 Plug 'machakann/vim-highlightedyank'
 
+" idea join
+set ideajoin
+
 " Plugins
 set easymotion
 "map , <Plug>(easymotion-prefix)

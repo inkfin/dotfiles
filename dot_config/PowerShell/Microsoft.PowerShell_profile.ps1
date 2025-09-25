@@ -135,6 +135,9 @@ Append-UserPath $env:VCPKG_ROOT
 $env:LLVMInstallDir = "$HOME\scoop\apps\llvm\current"
 Import-Module (Join-Path $env:VCPKG_ROOT "\scripts\posh-vcpkg")
 
+# CPM
+Init-EnvironmentVariable CPM_SOURCE_CACHE "$HOME\.cache\CPM"
+
 # Scoop
 Init-EnvironmentVariable SCOOP_HOME "$HOME\scoop"
 Init-EnvironmentVariable SCOOP_CONFIG_PATH "$env:SCOOP_HOME\persist"
