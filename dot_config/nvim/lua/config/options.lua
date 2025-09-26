@@ -58,7 +58,7 @@ vim.g.loaded_perl_provider = 0
 -- * a pattern or array of patterns like `.git` or `lua`.
 -- * a function with signature `function(buf) -> string|string[]`
 vim.g.root_spec =
-    { "lsp", { ".git", "lua", "node_modules", "Makefile", ".vscode", ".root", ".vim", ".vs", ".idea" }, "cwd" }
+    { { ".git", "lua", "node_modules", "Makefile", ".vscode", ".root", ".vim", ".vs", ".idea" }, "lsp", "cwd" }
 
 vim.g.lazyvim_picker = "telescope"
 vim.g.lazyvim_cmp = "nvim-cmp"

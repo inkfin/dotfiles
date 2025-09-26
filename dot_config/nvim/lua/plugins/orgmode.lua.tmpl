@@ -27,6 +27,9 @@ return {
         "nvim-neorg/neorg",
         lazy = false,
         ft = "norg",
+        dependencies = {
+            "nvim-neorg/lua-utils.nvim",
+        },
         opts = function(_, opts)
             opts.load = {
                 -- editing

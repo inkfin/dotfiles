@@ -75,6 +75,20 @@ return {
         end,
     },
     {
+        'MagicDuck/grug-far.nvim',
+        enabled = false,
+        keys = {
+            { '<leader>sr', function() require("grug-far").open({
+                prefills = { search = vim.fn.expand("<cword>") },
+                visualSelectionUsage = "operate-within-range",
+            }) end, mode = {'n'}, desc = 'Search and Replace Current Buffer' },
+            { '<leader>sr', function() require("grug-far").open({
+                visualSelectionUsage = "operate-within-range",
+            }) end, mode = {'x', 'v'}, desc = 'Search and Replace in Range' },
+            { '<leader>sR', function() require("grug-far").open() end, mode = {'n', 'x'}, desc = 'Search and Replace Global' },
+        }
+    },
+    {
         "keaising/im-select.nvim",
         enabled = _G.disable_plugins.rime == true and not _G.disable_plugins.im_select and (vim.fn.executable(
             "im-select"
