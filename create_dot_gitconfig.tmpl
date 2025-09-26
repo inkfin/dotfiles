@@ -18,7 +18,7 @@
 	difftool = true
 
 [merge]
-	tool = nvimdiff
+    tool = nvimdiff
 {{ if eq .chezmoi.os "windows" }}
 [mergetool "nvimdiff"]
     cmd = nvim -d $REMOTE $LOCAL $BASE $MERGED -c '$wincmd w' -c 'wincmd J'
