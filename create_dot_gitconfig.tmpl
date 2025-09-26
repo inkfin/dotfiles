@@ -37,8 +37,14 @@
 {{- end }}
     safecrlf = true
 	excludesfile = ~/.gitignore_global
+	pager = delta
 [commit]
 	template = ~/.gitmessage
+[delta]
+	navigate = true
+    dark = true
+    line-numbers = true
+    side-by-side = true
 	
 [filter "lfs"]
 	clean = git-lfs clean -- %f
