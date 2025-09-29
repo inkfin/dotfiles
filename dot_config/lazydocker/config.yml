@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lazydocker.json
+gui:
+  returnImmediately: true
+logs:
+  timestamps: true
+
+customCommands:
+  containers:
+    - name: "bash"
+      attach: true
+      command: "docker exec -it {{ .Container.ID }} bash"
+      serviceNames: []
+
+replacements:
+  imageNamePrefixes:
+    "mirrors.tencent.com": "<tx>"
+    "mirrors.tencent.com/morefun_engine_center": "<searle>"
