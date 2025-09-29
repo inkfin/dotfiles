@@ -15,9 +15,9 @@
     url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-x86_64-unknown-linux-gnu.tar.gz"
     refreshPeriod = "336h"
 {{ else if eq .chezmoi.os "windows"}}
-[".local/bin"]
-    type = "archive"
-    url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-x86_64-pc-windows-msvc.7z"
-    refreshPeriod = "336h"
+# [".local/bin"]
+#     type = "archive"
+#     url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-x86_64-pc-windows-msvc.7z"
+#     refreshPeriod = "336h"
 {{ end }}
 {{ end }}
