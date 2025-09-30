@@ -3,7 +3,7 @@ Config = Config or {}
 local act = wezterm.action
 local t = require("tools")
 
-Config.leader = { key = "a", mods = "CTRL" }
+Config.leader = { key = "a", mods = "ALT" }
 
 t.add_key({
 	key = "+", -- + is shift + "="
