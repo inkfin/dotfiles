@@ -104,9 +104,9 @@ return {
                 { name = "buffer", group_index = 2 },
                 { name = "dictionary", group_index = 3 },
             }
-            if not _G.disable_plugins.copilot then
-                table.insert(source_list, { name = "copilot" })
-            end
+            -- if not _G.disable_plugins.copilot then
+            --     table.insert(source_list, { name = "copilot" })
+            -- end
             opts.sources = cmp.config.sources(source_list)
 
             local compare = require("cmp.config.compare")
