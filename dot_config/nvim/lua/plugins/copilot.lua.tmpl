@@ -3,13 +3,19 @@ if _G.disable_plugins.copilot then
 end
 
 return {
-    -- {{ if eq .profile "work" }}
+    -- {{- if eq .profile "work" }}
     {
         "git@git.woa.com:aurorani/gongfeng-copilot.git",
     },
-    -- {{ else }}
+    -- {{- else }}
     {
         "zbirenbaum/copilot.lua",
+        dependencies = {
+            {
+                "zbirenbaum/copilot-cmp",
+                -- enabled = false,
+            },
+        },
         keys = {
             { "<leader>cD", "<cmd>Copilot disable<CR>", mode = "n", desc = "Disable Copilot" },
             { "<leader>cE", "<cmd>Copilot enable<CR>", mode = "n", desc = "Enable Copilot" },
@@ -36,11 +42,7 @@ return {
             },
         },
     },
-    {
-        "zbirenbaum/copilot-cmp",
-        enabled = false,
-    },
-    -- {{ end }}
+    -- {{- end }}
 }
 
 -- vim: set ft=lua:

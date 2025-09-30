@@ -35,8 +35,8 @@ require("lazy").setup({
             -- { import = "lazyvim.plugins.extras.ui.edgy" },
             -- {{ if ne .profile "work" }}
         not _G.disable_plugins.copilot and { import = "lazyvim.plugins.extras.ai.copilot" } or {},
+            -- {{ end }}
         not _G.disable_plugins.copilot and { import = "lazyvim.plugins.extras.ai.copilot-chat" } or {},
-        -- {{ end }}
         { import = "lazyvim.plugins.extras.coding.nvim-cmp" },
         { import = "lazyvim.plugins.extras.coding.luasnip" },
         { import = "lazyvim.plugins.extras.coding.mini-comment" },
