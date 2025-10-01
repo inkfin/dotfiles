@@ -1,6 +1,6 @@
 return {
     {
-        "echasnovski/mini.comment",
+        "nvim-mini/mini.comment",
         opts = {
             options = {
                 ignore_blank_line = true,
@@ -37,7 +37,7 @@ return {
         },
     },
     {
-        "echasnovski/mini.surround",
+        "nvim-mini/mini.surround",
         opts = {
             mappings = {
                 add = "gsa", -- Add surrounding in Normal and Visual modes
