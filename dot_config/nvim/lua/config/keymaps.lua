@@ -37,6 +37,9 @@ map("v", "p", '"_dP', { silent = true })
 -- delete to blackhole register with x
 map("n", "x", '"_x', { silent = true })
 
+-- Yank to system clipboard with Y
+map("v", "Y", '"+y', { silent = true, noremap = true })
+
 -- better movements
 -- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 -- map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
