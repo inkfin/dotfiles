@@ -19,6 +19,13 @@ return {
                 enabled = false,
                 -- enabled = vim.fn.has("nvim-0.10") == 1,
             },
+            -- Add a border to the diagnostics window or popup
+            -- https://github.com/LazyVim/LazyVim/discussions/2825#discussioncomment-8914135
+            diagnostics = {
+                float = {
+                    border = "rounded",
+                },
+            },
         },
         init = function()
             -- lsp keymaps customization

@@ -1,21 +1,14 @@
 if _G.disable_plugins.harper then
-    local registry = require("mason-registry")
-    local names = registry.get_installed_package_names()
-    for _, v in ipairs(names) do
-        if v == "harper-ls" then
-            return {
-                "neovim/nvim-lspconfig",
-                opts = {
-                    servers = {
-                        harper_ls = {
-                            autostart = false,
-                        },
-                    },
+    return {
+        "neovim/nvim-lspconfig",
+        opts = {
+            servers = {
+                harper_ls = {
+                    enabled = false,
                 },
-            }
-        end
-    end
-    return {}
+            },
+        },
+    }
 end
 
 -- TODO: https://blob42.xyz/blog/neovim-diagnostic-filtering/
@@ -33,7 +26,8 @@ return {
                                 ForceStable = true,
                             },
                             linters = {
-                                SpellCheck = false,  -- use vim spellcheck
+                                ToDoHyphen = false,
+                                SpellCheck = false, -- use vim spellcheck
                                 SpelledNumbers = false,
                                 AnA = true,
                                 SentenceCapitalization = false,
@@ -44,6 +38,11 @@ return {
                                 Spaces = true,
                                 Matcher = true,
                                 CorrectNumberSuffix = true,
+                            },
+                            markdown = {
+                                -- [ignores this part]()
+                                -- [[ also ignores my marksman links ]]
+                                IgnoreLinkTitle = true,
                             },
                         },
                     },
