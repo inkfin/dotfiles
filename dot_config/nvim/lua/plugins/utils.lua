@@ -5,13 +5,15 @@ return {
         "folke/todo-comments.nvim",
         opts = {
             highlight = {
-                -- pattern = {
-                --     [[.*<(KEYWORDS)\s*:]], -- TODO: this matches
-                --     [[.*<(KEYWORDS)\s*\(\w*\)\s*:]], -- TODO(author): this also matches
-                -- },
-                pattrern = [[\b(KEYWORDS)(\(\w+\))?:]],
+                pattern = {
+                    -- TODO: match the keyword
+                    -- TODO(author): this also matches
+                    [[.*<((KEYWORDS)(\(\w*\))?)\s*:]],
+                },
             },
-            search = { pattern = [[\b(TODO)\s*(\(\w*\))?\s*:]] },
+            search = {
+                pattern = [[\b(KEYWORDS)(?:\(\w+\))?\s*:]],
+            },
         },
         -- stylua: ignore
         keys = {
