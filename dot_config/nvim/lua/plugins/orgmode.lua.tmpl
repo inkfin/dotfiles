@@ -50,12 +50,10 @@ return {
                 ["core.dirman"] = {
                     config = {
                         workspaces = {
-                            -- {{ if eq .profile "work" }}
                             -- {{ if eq .chezmoi.os "darwin" }}
-                            worknotes = "~/LocalDocuments/WorkNotes",
+                            worknotes = "~/LocalDocuments/WorkNotes", -- macos
                             -- {{ else }}
-                            worknotes = "~/Documents/WorkNotes",
-                            -- {{ end }}
+                            worknotes = "~/Documents/WorkNotes", -- windows/linux
                             -- {{ end }}
                             studynotes = "~/Documents/StudyNotes",
                         },
