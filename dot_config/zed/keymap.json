@@ -23,11 +23,13 @@
     "bindings": {}
   },
   {
-    "context": "Editor && vim_mode == insert || vim_mode == normal",
+    "context": "Editor && vim_mode == normal || vim_mode == visual",
     "bindings": {
       "¬": "agent::AcceptSuggestedContext",
       "H": "vim::GoToPreviousTab",
       "L": "vim::GoToTab",
+      "space b d": "pane::CloseActiveItem",
+      "space b p": "pane::TogglePinTab",
       "W": ["workspace::SendKeystrokes", "w w w w w"],
       "B": ["workspace::SendKeystrokes", "b b b b b"],
       "space space": "file_finder::Toggle",
@@ -42,15 +44,20 @@
   {
     "context": "Editor && vim_mode == normal",
     "bindings": {
+      "g r": "editor::FindAllReferences",
       "space h": "editor::Hover",
-      "space r n": "editor::Rename"
+      "space r n": "editor::Rename",
+      "space r f": "editor::Format",
+      "space c a": "editor::ToggleCodeActions",
+      "space e": "vim::ToggleProjectPanelFocus"
     }
   },
   {
     "context": "Editor && vim_mode == visual",
     "bindings": {
       "L": "editor::SelectToEndOfLine",
-      "H": "editor::SelectToBeginningOfLine"
+      "H": "editor::SelectToBeginningOfLine",
+      "space r f": "editor::FormatSelections"
     }
   }
 ]
