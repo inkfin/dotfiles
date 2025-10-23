@@ -1,0 +1,56 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-s": "workspace::Save"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert || vim_mode == normal || vim_mode == visual",
+    "bindings": {}
+  },
+  {
+    "context": "Editor && vim_mode == insert || vim_mode == normal",
+    "bindings": {
+      "¬": "agent::AcceptSuggestedContext",
+      "H": "vim::GoToPreviousTab",
+      "L": "vim::GoToTab",
+      "W": ["workspace::SendKeystrokes", "w w w w w"],
+      "B": ["workspace::SendKeystrokes", "b b b b b"],
+      "space space": "file_finder::Toggle",
+      "space /": "project_search::SearchInNew",
+      "space a a": "agent::ToggleFocus"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {}
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "space h": "editor::Hover",
+      "space r n": "editor::Rename"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "L": "editor::SelectToEndOfLine",
+      "H": "editor::SelectToBeginningOfLine"
+    }
+  }
+]
