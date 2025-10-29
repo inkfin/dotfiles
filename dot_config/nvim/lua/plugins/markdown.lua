@@ -97,11 +97,18 @@ return {
         ft = { "markdown" },
         opts = {
             default = {
-                dir_path = "assets",
+                dir_path = function()
+                    return "assets"
+                    -- return vim.g.get_root() .. "/assets"
+                end,
+                relative_to_current_file = true,
+                show_dir_path_in_prompt = true,
             },
             file_types = {
-                markdown = {
-                    template = "![$CURSOR]($FILE_PATH)",
+                norg = {
+                    url_encode_path = true,
+                    template = ".image $FILE_PATH",
+                    download_images = false,
                 },
             },
         },
