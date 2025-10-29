@@ -7,6 +7,30 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "ink.devcloud.woa.com",
+      "username": "finkzhang",
+      "port": 36000,
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/data/workspace"
+          ]
+        },
+        {
+          "paths": [
+            "/data/workspace/kihan/training/./"
+          ]
+        }
+      ]
+    }
+  ],
+  "git_panel": {
+    "sort_by_path": true
+  },
+  "show_whitespaces": "selection",
   "preview_tabs": {
     "enable_preview_from_code_navigation": true,
     "enable_preview_from_file_finder": true
@@ -72,9 +96,16 @@
       "settings": {
         "typeCheckingMode": "basic",
         "ignore": ["**/BUILD", "**/WORKSPACE"],
+        "exclude": [
+          "**/node_modules",
+          "**/__pycache__",
+          "src/experimental",
+          "src/typestubs"
+        ],
         "analysis": {
           "diagnosticMode": "workspace"
-        }
+        },
+        "reportOptionalSubscript": false
       }
     },
     "ruff": {
