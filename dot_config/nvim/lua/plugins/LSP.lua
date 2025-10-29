@@ -26,22 +26,24 @@ return {
                     border = "rounded",
                 },
             },
+            servers = {
+                ["*"] = {
+                    -- lsp keymaps customization
+                    keys = {
+                        { "K", false },
+                        -- cancel <leader>cr from rename
+                        { "<leader>cr", false }, -- disable default rename
+                        { "<leader>rn", vim.lsp.buf.rename, desc = "Rename" },
+                        -- unmap <leader>cl from Lsp Info
+                        { "<leader>cl", false }, -- disable default LspInfo
+                        { "<leader>uL", function() Snacks.picker.lsp_config() end, desc = "Lsp Info" },
+                        -- map <leader>cl
+                        { "<leader>cc", false }, -- disable default codelens
+                        { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "x" }, has = "codeLens" },
+                    },
+                },
+            },
         },
-        init = function()
-            -- lsp keymaps customization
-
-            local keys = require("lazyvim.plugins.lsp.keymaps").get()
-            keys[#keys + 1] = { "K", false }
-            -- cancel <leader>cr from rename
-            keys[#keys + 1] = { "<leader>cr", false } -- disable default rename
-            keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, desc = "Rename", mode = { "n" } }
-            -- unmap <leader>cl from Lsp Info
-            keys[#keys + 1] = { "<leader>cl", false } -- disable default LspInfo
-            keys[#keys + 1] = { "<leader>uL", "<Cmd>LspInfo<CR>", desc = "Lsp Info", mode = { "n" } }
-            -- map <leader>cl
-            keys[#keys + 1] = { "<leader>cc", false, mode = { "n", "v" } } -- disable default codelens
-            keys[#keys + 1] = { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } }
-        end,
     },
     {
         "chrisgrieser/nvim-lsp-endhints",

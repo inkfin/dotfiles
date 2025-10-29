@@ -1,3 +1,3 @@
 return {
-    { "folke/lazy.nvim", version = "15.x" },
+    { "folke/LazyVim", version = "15.x" },
 }
