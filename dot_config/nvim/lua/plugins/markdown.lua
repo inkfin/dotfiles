@@ -5,6 +5,7 @@ return {
         "iamcco/markdown-preview.nvim",
         ft = "markdown",
         lazy = true,
+        build = "cd app && npm install",
         config = function()
             -- options for markdown render
             vim.g.mkdp_preview_options = {
