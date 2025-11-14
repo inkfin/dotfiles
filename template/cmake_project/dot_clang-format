@@ -1,7 +1,13 @@
 ﻿---
-BasedOnStyle: WebKit
-AlignArrayOfStructures: Left
-SortIncludes: Never
+BasedOnStyle: Google
+IndentWidth: 4
+UseTab: Never
+TabWidth: 4
+AccessModifierOffset: -3
+ColumnLimit: 120
+SortIncludes:
+  Enabled: false
+AlignArrayOfStructures: Right
 AlignConsecutiveDeclarations:
   Enabled: true
   AcrossComments: true
