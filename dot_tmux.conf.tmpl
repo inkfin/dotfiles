@@ -31,11 +31,6 @@ set -g default-terminal "tmux-256color"
 set -as terminal-overrides ',xterm*:sitm=\E[3m'
 {{ end }}
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
-{{- if and (eq .chezmoi.os "darwin") (ne .profile "work") }}
-# compatability options for macos (pre 2.6), but the sensible setting has issue
-# See: https://github.com/tmux-plugins/tmux-sensible/issues/74
-set -g default-command "reattach-to-user-namespace -l $SHELL"
-{{- end }}
 # Default to zsh (some platform can't recognize default shell)
 set-option -g default-shell /bin/zsh
 
