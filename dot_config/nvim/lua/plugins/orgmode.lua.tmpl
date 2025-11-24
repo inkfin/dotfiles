@@ -31,7 +31,13 @@ return {
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
             "nvim-neorg/lua-utils.nvim",
+            "nvim-neorg/tree-sitter-norg",
         },
+        -- treesitter fix <https://github.com/nvim-neorg/neorg/issues/1715#issuecomment-3524433687>
+        build = function()
+            -- run command manually
+            -- ln -sf ~/.local/share/nvim/lazy-rocks/tree-sitter-norg/lib/lua/5.1/parser/norg.so ~/.local/share/nvim/site/parser/norg.so
+        end,
         opts = function(_, opts)
             opts.load = {
                 -- editing
