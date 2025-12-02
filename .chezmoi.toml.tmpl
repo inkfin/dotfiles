@@ -21,9 +21,9 @@
     args = ["-d", {{`"{{ .Destination }}"`}}, {{`"{{ .Source }}"`}}]
 {{- if eq .chezmoi.os "windows" }}
 [cd]
-    # command = "pwsh.EXE"
-    # args = ["-NoLogo"]
-    command = "nu"
-    args = []
+    command = "pwsh.EXE"
+    args = ["-NoLogo"]
+    # command = "nu"
+    # args = []
 {{- end}}
 
