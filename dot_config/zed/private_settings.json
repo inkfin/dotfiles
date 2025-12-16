@@ -71,7 +71,7 @@
     "disabled_globs": ["*.log"]
   },
   "features": {
-    "edit_prediction_provider": "copilot"
+    "edit_prediction_provider": "zed"
   },
   "icon_theme": "Zed (Default)",
   "base_keymap": "VSCode",

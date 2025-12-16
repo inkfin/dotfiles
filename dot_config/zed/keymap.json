@@ -19,13 +19,12 @@
     }
   },
   {
-    "context": "Editor && vim_mode == insert || vim_mode == normal || vim_mode == visual",
+    "context": "Editor && (vim_mode == insert || vim_mode == normal || vim_mode == visual)",
     "bindings": {}
   },
   {
-    "context": "Editor && vim_mode == normal || vim_mode == visual",
+    "context": "Editor && (vim_mode == normal || vim_mode == visual)",
     "bindings": {
-      "¬": "agent::AcceptSuggestedContext",
       "H": "vim::GoToPreviousTab",
       "L": "vim::GoToTab",
       "space b d": "pane::CloseActiveItem",
@@ -35,6 +34,13 @@
       "space space": "file_finder::Toggle",
       "space /": "project_search::SearchInNew",
       "space a a": "agent::ToggleFocus"
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && (edit_prediction || edit_prediction_conflict)",
+    "bindings": {
+      "¬": "editor::AcceptEditPrediction",
+      "alt-l": "editor::AcceptEditPrediction"
     }
   },
   {
