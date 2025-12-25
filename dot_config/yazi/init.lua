@@ -31,12 +31,12 @@ safe_load_plugins("full-border", "yazi-rs/plugins:full-border", {
 })
 
 safe_load_plugins("bookmarks", "dedukun/bookmarks", {
-    last_directory = { enable = false, persist = false },
-    persist = "none",
-    desc_format = "full",
-    file_pick_mode = "hover",
+    last_directory = { enable = true, persist = false },
+    persist = "vim",
+    file_pick_mode = "parent",
+    show_keys = true,
     notify = {
-        enable = false,
+        enable = true,
         timeout = 1,
         message = {
             new = "New bookmark '<key>' -> '<folder>'",

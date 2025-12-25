@@ -65,3 +65,5 @@ SOHO	soho
 
 冇	mou
 冇問題	moumantai
+
+加训	jiaxun
