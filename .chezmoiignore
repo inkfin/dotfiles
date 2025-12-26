@@ -50,3 +50,7 @@ install-packages.sh
 .zshrc.conf/
 {{ end }}
 
+# Input methods
+{{ if .external.rime }}
+.config/Rime/
+{{ end }}

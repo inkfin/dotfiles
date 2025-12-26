@@ -1,9 +1,9 @@
+{{ if .external.rime }}
 [".config/Rime"]
     type = "archive"
     url = "https://github.com/iDvel/rime-ice/releases/latest/download/full.zip"
     refreshPeriod = "336h"
     exclude = ["custom_phrase.txt"]
-{{ if .external.rime_ls }}
 {{ if eq .chezmoi.os "darwin" }}
 [".local/bin"]
     type = "archive"
