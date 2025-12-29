@@ -7,6 +7,19 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "wsl_connections": [
+    {
+      "distro_name": "Ubuntu",
+      "user": null,
+      "projects": [
+        {
+          "paths": [
+            "/home/inkfin/Code/cpp"
+          ]
+        }
+      ]
+    }
+  ],
   "ssh_connections": [
     {
       "host": "ink.devcloud.woa.com",
@@ -32,7 +45,7 @@
   },
   "show_whitespaces": "selection",
   "preview_tabs": {
-    "enable_preview_from_code_navigation": true,
+    "enable_keep_preview_on_code_navigation": true,
     "enable_preview_from_file_finder": true
   },
   "tabs": {
