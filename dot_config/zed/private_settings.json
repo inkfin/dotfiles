@@ -69,7 +69,7 @@
   "remove_trailing_whitespace_on_save": false,
   "format_on_save": "off",
   "terminal": {
-    "font_family": "UbuntuMono Nerd Font Mono"
+    "font_family": "FiraCode Nerd Font Mono"
   },
   "agent": {
     "default_profile": "ask",
