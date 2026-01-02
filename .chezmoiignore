@@ -51,6 +51,6 @@ install-packages.sh
 {{ end }}
 
 # Input methods
-{{ if .external.rime }}
+{{ if not .external.rime }}
 .config/Rime/
 {{ end }}
