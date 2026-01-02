@@ -2,13 +2,6 @@
 """ Vim options
 """"""""""""""""""""""""""
 
-" Preferences
-if !exists('g:minimal_vimrc') || !g:minimal_vimrc
-    let transparent = 0
-    let enable_lsp = 0
-    let force_use_ale = 1
-endif
-
 
 " encoding
 set encoding=utf-8
@@ -84,7 +77,7 @@ set laststatus=2
 " visual
 set number relativenumber
 set ruler
-set visualbell
+set novisualbell
 set virtualedit=block
 " display dots for spaces
 set lcs+=space:·
