@@ -27,15 +27,6 @@ runtime! ftplugin/man.vim
 
 " Cursor shape: prefer guicursor; fallback to t_SI/t_EI/t_SR (DECSCUSR)
 if !has('nvim')
-  " Vim8+
-  "if exists('+guicursor')
-  "  set guicursor=
-  "        \n-v-c:block,
-  "        \i-ci-ve:ver25,
-  "        \r-cr:hor20,
-  "        \o:hor50,
-  "        \a:blinkon0
-  "endif
   " The good old ways
   " DECSCUSR: 2=block, 5=bar, 4=underline (stable variants)
   let &t_EI = "\<Esc>[2 q"   " Normal: block
