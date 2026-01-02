@@ -10,6 +10,10 @@
 
 {{ .chezmoi.homeDir }}/.zshrc.d/zshrc_ubuntu
 
+{{-     else if eq .chezmoi.osRelease.id "debian" -}}
+
+{{ .chezmoi.homeDir }}/.zshrc.d/zshrc_clean
+
 {{-     else if eq .chezmoi.osRelease.id "fedora" -}}
 
 {{ .chezmoi.homeDir }}/.zshrc.d/zshrc_fedora
