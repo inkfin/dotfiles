@@ -27,6 +27,8 @@ setw -g monitor-activity on # 非当前窗口有内容更新时在状态栏通�
 
 # use tmux instead of screen to enable italics and fzf support
 set -g default-terminal "tmux-256color"
+# make sure terminal passes cursor style (Ss, Se means set/reset cursor style)
+set -as terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
 {{ if eq .chezmoi.os "darwin" }}
 # add italic support on iTerm2 (https://weibeld.net/terminals-and-shells/italics.html)
 set -as terminal-overrides ',xterm*:sitm=\E[3m'

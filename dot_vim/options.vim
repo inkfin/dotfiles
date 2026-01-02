@@ -25,28 +25,24 @@ runtime! macros/matchit.vim
 runtime! ftplugin/man.vim
 "}
 
-" change cursor shape
+" Cursor shape: prefer guicursor; fallback to t_SI/t_EI/t_SR (DECSCUSR)
 if !has('nvim')
-    " Change cursor shapes based on whether we are in insert mode,
-    " see https://vi.stackexchange.com/questions/9131/i-cant-switch-to-cursor-in-insert-mode
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    if exists('&t_SR')
-        let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-    endif
-
-    if exists('$TMUX')
-        "let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-        "let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-        let &t_SI = "\<esc>[5 q"
-        let &t_EI = "\<esc>[2 q"
-        if exists('&t_SR')
-            let &t_SR = "\<esc>[3 q"
-        endif
-    endif
-
-    " The number of color to use
-    set t_Co=256
+  " Vim8+
+  "if exists('+guicursor')
+  "  set guicursor=
+  "        \n-v-c:block,
+  "        \i-ci-ve:ver25,
+  "        \r-cr:hor20,
+  "        \o:hor50,
+  "        \a:blinkon0
+  "endif
+  " The good old ways
+  " DECSCUSR: 2=block, 5=bar, 4=underline (stable variants)
+  let &t_EI = "\<Esc>[2 q"   " Normal: block
+  let &t_SI = "\<Esc>[6 q"   " Insert: bar
+  if exists('&t_SR')
+    let &t_SR = "\<Esc>[4 q" " Replace: underline
+  endif
 endif
 " fix macos switch delay
 set ttimeout

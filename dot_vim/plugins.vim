@@ -9,6 +9,11 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Global disable helper funcitons
+function! PluginDisabled(name) abort
+  return exists('g:plugin_disable_' . a:name)
+endfunction
+
 " Plugin configurations
 
 call plug#begin()
@@ -18,9 +23,7 @@ Plug 'junegunn/vim-plug'
 
 Plug 'habamax/vim-habamax'
 
-for f in glob('~/.vim/plugins/*.vim', 0, 1)
-    execute 'source' f
-endfor
+runtime! plugins-decl/*.vim
 
 call plug#end()
 
