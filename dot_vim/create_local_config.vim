@@ -3,8 +3,9 @@
 " theme
 let g:transparent = 0
 
-" lsp
-let g:lsp_mode = "ale"
+" diagnostic backend
+"  'ale'|'lsp'|'vimcomplete'
+let g:diag_backend = "ale"
 
 " file explorer style
 "  'nerdtree'|'netrw'

@@ -1,9 +1,7 @@
-if !has("vim9script") || v:version < 900 || !g:enable_lsp
+if g:diag_backend !=# "lsp"
     finish
 endif
 vim9script
-
-Plug 'yegappan/lsp'
 
 var lspOpts = {
     autoHighlightDiags: true,

@@ -1,5 +1,6 @@
 " find project root
-Plug 'dbakker/vim-projectroot'
+
+if !PluginDisabled("projectroot")
 
 let g:rootmarkers = ['.projectroot', '.git', '.jj', '.hg','.svn',
             \ '.root', '.vscode', '.vs', '.vim', '.idea']
@@ -18,3 +19,4 @@ endfunction
 
 autocmd BufEnter * call <SID>AutoProjectRootCD()
 
+endif

@@ -1,5 +1,9 @@
 " any-jump with rg or ag
-Plug 'pechorin/any-jump.vim'
+
+if PluginDisabled("any-jump")
+    finish
+endif
+
 
 " Normal mode: Jump to definition under cursor
 nnoremap <leader>j :AnyJump<CR>

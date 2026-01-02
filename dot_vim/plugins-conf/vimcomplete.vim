@@ -1,13 +1,9 @@
 " vimcomplete.vim
 
-if !has("vim9script") || v:version < 900 || g:force_use_ale
+if g:diag_backend !=# "vimcomplete"
     finish
 endif
 vim9script
-
-const g:use_vimcomplete = 1
-
-Plug 'girishji/vimcomplete'
 
 # behavior
 g:vimcomplete_tab_enable = 1

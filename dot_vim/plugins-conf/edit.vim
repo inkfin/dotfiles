@@ -1,19 +1,18 @@
 " completion of delimiter
-Plug 'jiangmiao/auto-pairs'
+"  its too basic and always needed
 
+
+" auto-pairs
 let g:AutoPairsMapCh = 0
 let g:AutoPairs= {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
 
 
 " vim-surround
-Plug 'tpope/vim-surround'
-
 " tutorials: <https://github.com/tpope/vim-surround>
 
 
 " comment line
-Plug 'scrooloose/nerdcommenter'
-
+"  scrooloose/nerdcommenter
 let g:NERDCreateDefaultMappings = 0
 let g:NERDCommentEmptyLines = 0
 let g:NERDToggleCheckAllLines = 0
@@ -25,8 +24,7 @@ vmap <silent> gc  <Plug>NERDCommenterToggle
 
 
 " navigate
-Plug 'easymotion/vim-easymotion'
-
+"  easymotion/vim-easymotion
 map \\ <Plug>(easymotion-prefix)
 " <Leader>f{char} to move to {char}
 map  <Leader>m <Plug>(easymotion-bd-f)
@@ -39,4 +37,16 @@ nmap <Leader>L <Plug>(easymotion-overwin-line)
 " Move to word
 map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+
+" undo Tree
+let g:undotree_DiffAutoOpen = 0
+let g:undotree_SetFocusWhenToggle = 1
+nnoremap <silent> U <CMD>UndotreeToggle<CR>
+
+
+" indentLine
+let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
+let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩进
+let g:indentLine_fileTypeExclude = ['coc-explorer', 'which_key']
 

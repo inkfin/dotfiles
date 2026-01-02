@@ -1,6 +1,6 @@
 " fzf
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+
+if !PluginDisabled("fzf")
 
 let g:fzf_vim = {}
 let g:fzf_vim.buffers_jump = 1
@@ -20,3 +20,5 @@ nnoremap <silent> <leader>sr <CMD>History<CR>
 nnoremap <silent> <leader>sw <CMD>Windows<CR>
 " fix fzf twindow exit to normal mode
 "tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
+
+endif

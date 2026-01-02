@@ -1,12 +1,8 @@
 " ale
 
-if v:version >= 900 && !g:force_use_ale
+if g:diag_backend !=# "ale"
     finish
 endif
-let use_ale = 1
-
-let g:ale_completion_enabled = 1
-Plug 'dense-analysis/ale'
 
 let g:ale_fixers = {
     \ 'javascript': ['prettier', 'eslint'],
@@ -40,7 +36,7 @@ let g:ale_echo_msg_format = '[%linter%] (%code) %%s [%severity%]'
 let g:airline#extensions#ale#enabled = 1
 
 augroup ALEColorschemePreferences
-  autocmd!
+autocmd!
     autocmd ColorScheme * highlight MatchParen cterm=bold ctermfg=cyan gui=bold guifg=cyan guibg=black
     autocmd ColorScheme * highlight ALEErrorSign cterm=bold ctermfg=red gui=bold guifg=red
     autocmd ColorScheme * highlight ALEVirtualTextError cterm=italic ctermfg=magenta gui=italic guifg=red

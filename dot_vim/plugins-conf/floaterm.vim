@@ -1,5 +1,6 @@
 " terminal & float window
-Plug 'voldikss/vim-floaterm'
+
+if !PluginDisabled("floaterm")
 
 let g:floaterm_height=0.4
 let g:floaterm_wintype="split"
@@ -15,4 +16,4 @@ nnoremap <silent> <leader>yy <CMD>FloatermNew --width=0.8 --height=0.8 --wintype
 " no need to confirm before exit vim
 autocmd ExitPre * silent! FloatermKill<CR>
 
-
+endif
