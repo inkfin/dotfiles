@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# init fnm env (don't rely on shell rc)
+eval "$(fnm env --shell bash)"
+
+exec /usr/local/bin/nvim "$@"
