@@ -1,15 +1,19 @@
 # vi: ft=toml
 
-{{ $profile := promptString "profile" "personal" -}}
-{{ $email := promptString "email" "inkfinite@qq.com" -}}
-{{ $rime := promptBool "external.rime" true }}
+{{- $profiles   := list "personal" "work" "server" -}}
+
+{{- $profile    := promptChoiceOnce . "data.profile" "Which profile should we apply" $profiles -}}
+{{- $name       := promptStringOnce . "data.name" "What's your name" "inkfin" -}}
+{{- $email      := promptStringOnce . "data.email" "What's your email" "inkfinite@qq.com" -}}
+{{- $rime       := promptBoolOnce   . "data.external.rime" "Should we pull rime" false }}
 
 [data]
-    email = {{ $email | quote }}
-    name = "inkfin"
     profile = {{ $profile | quote }}
+    name = {{ $name | quote }}
+    fullname = "Ink Zhang"
+    email = {{ $email | quote }}
 [data.external]
-    rime = {{ $rime | quote }}
+    rime = {{ $rime }}
 [git]
     autoCommit = false
     autoPush = false
@@ -19,11 +23,11 @@
 [merge]
     command = "nvim"
     args = ["-d", {{`"{{ .Destination }}"`}}, {{`"{{ .Source }}"`}}]
-{{- if eq .chezmoi.os "windows" }}
+{{- if eq .chezmoi.os "windows" -}}
 [cd]
     command = "pwsh.EXE"
     args = ["-NoLogo"]
     # command = "nu"
     # args = []
-{{- end}}
+{{- end -}}
 
