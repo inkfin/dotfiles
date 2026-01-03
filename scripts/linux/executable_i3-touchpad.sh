@@ -11,7 +11,7 @@ set -eu
 # =========================
 
 # Pointer speed and acceleration
-TP_ACCEL_SPEED="-0.2"          # [-1.0, 1.0], negative = slower, more precise
+TP_ACCEL_SPEED="0.0"          # [-1.0, 1.0], negative = slower, more precise
 PROFILE="adaptive"             # adaptive | flat
 
 # Scrolling
