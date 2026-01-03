@@ -1,3 +1,4 @@
+[general]
 import = ["~/.config/alacritty/keybindings/keybindings_win32.toml"]
 
 [mouse]

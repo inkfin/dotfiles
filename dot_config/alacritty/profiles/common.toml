@@ -1,7 +1,10 @@
-live_config_reload = true
-
-[shell]
+[terminal.shell]
 program = "pwsh"
 
 [window]
 option_as_alt = "OnlyLeft"
+
+[general]
+live_config_reload = true
+
+[terminal]
