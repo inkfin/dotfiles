@@ -1,21 +1,21 @@
 # vi: ft=toml
 
 [user]
-	name = "{{ .name }}"
-	email = "{{ .email }}"
+    name = "{{ .name }}"
+    email = "{{ .email }}"
 
 [include]
-	path = ~/.config/gitalias.txt
+    path = ~/.config/gitalias.txt
 
 [diff]
-	tool = nvimdiff
-	algorithm = histogram
+    tool = nvimdiff
+    algorithm = histogram
 [difftool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE
 [difftool "code"]
     cmd = code --wait --diff $LOCAL $REMOTE
 [pager]
-	difftool = false
+    difftool = false
 
 [merge]
     tool = nvimdiff
@@ -31,38 +31,38 @@
 
 [core]
 {{- if eq .chezmoi.os "windows" }}
-	autocrlf = true
+    autocrlf = true
 {{- else }}
-	autocrlf = input
+    autocrlf = input
 {{- end }}
     safecrlf = true
-	excludesfile = ~/.gitignore_global
-	pager = delta
+    excludesfile = ~/.gitignore_global
+    pager = delta
 [commit]
-	template = ~/.gitmessage
+    template = ~/.gitmessage
 [delta]
-	navigate = true
+    navigate = true
     dark = true
     line-numbers = true
     side-by-side = true
-	
+
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 [pull]
-	ff = true
-	reabase = true
+    ff = true
+    reabase = true
 [pack]
-	threads = 8
+    threads = 8
 
 [credential "helperselector"]
-	selected = manager
+    selected = manager
 [credential "https://git.overleaf.com"]
-	provider = generic
+    provider = generic
 [credential "https://codeup.aliyun.com"]
-	provider = generic
+    provider = generic
 [credential]
-	helper = store
+    helper = store
 
