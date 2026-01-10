@@ -49,13 +49,13 @@ prepend_to_path PATH "$CARGO_HOME/bin/"
 ## ---- cuda ----
 {{ if eq .chezmoi.os "linux" -}}
 
-export CUDA_12_6_HOME="/usr/local/cuda-12.6"
-export CUDA_12_8_HOME="/usr/local/cuda-12.8"
-export CUDA_HOME="$CUDA_12_6_HOME"
+export CUDA_HOME="/usr/local/cuda"
 
-prepend_to_path PATH "$CUDA_HOME/bin"
-prepend_to_path LD_LIBRARY_PATH "$CUDA_HOME/lib64"
-prepend_to_path CMAKE_PREFIX_PATH "$CUDA_HOME"
+if [[ -d "$CUDA_HOME" ]]; then
+    prepend_to_path PATH "$CUDA_HOME/bin"
+    prepend_to_path LD_LIBRARY_PATH "$CUDA_HOME/lib64"
+    prepend_to_path CMAKE_PREFIX_PATH "$CUDA_HOME"
+fi
 
 {{- end }}
 
@@ -69,18 +69,18 @@ export FNM_DIR="$HOME/.local/fnm"
 
 ## ---- bun ----
 export BUN_HOME="$HOME/.bun"
-prepend_to_path PATH "$BUN_HOME/bin"
+if [[ -f "$BUN_HOME" ]]; then
+    prepend_to_path PATH "$BUN_HOME/bin"
+fi
 
-{{ if .external.emsdk -}}
 ## ---- emsdk ----
 
 export EMSDK_HOME="$HOME/dev/emsdk"
-prepend_to_path PATH "$EMSDK_HOME"
 if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
+    prepend_to_path PATH "$EMSDK_HOME"
     export EMSDK_QUIET=1
     source "$EMSDK_HOME/emsdk_env.sh"
 fi
-{{- end }}
 
 ## ---- llvm ----
 {{ if eq .chezmoi.os "darwin" -}}

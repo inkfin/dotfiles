@@ -1,6 +1,7 @@
-{{- if .external.emsdk -}}
 #!/usr/bin/env bash
 set -euo pipefail
+
+EMSDK_HOME="${EMSDK_HOME:-$HOME/dev/emsdk}"
 
 if [ -z "$EMSDK_HOME" ]; then
     echo "[emsdk] EMSDK_HOME not set, aborting"
@@ -16,4 +17,3 @@ fi
 echo "[emsdk] cloning into $EMSDK_HOME"
 git clone https://github.com/emscripten-core/emsdk.git "$EMSDK_HOME"
 
-{{- end -}}

@@ -3,5 +3,3 @@
 zsh = true
 # input method
 rime = false
-# sdks
-emsdk = false

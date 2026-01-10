@@ -1,11 +1,11 @@
 {{- if .external.zsh -}}
-{{- if not stat (joinPath .chezmoi.homeDir ".oh-my-zsh") -}}
+{{- if not (stat (joinPath .chezmoi.homeDir ".oh-my-zsh")) -}}
 #!/usr/bin/env bash
 
-{{- if not findPath "zsh" -}}
-echo "Zsh is not installed, please install zsh first."
-exit 1
-{{ end }}
+if [[ -z "$(command -v zsh)" ]]; then
+    echo "Zsh is not installed, please install zsh first."
+    exit 1
+fi
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
