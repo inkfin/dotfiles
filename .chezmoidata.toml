@@ -1,3 +1,7 @@
-name = "inkfin"
-email = "inkfinite@qq.com"
-config = "home"
+[external]
+# shell
+zsh = true
+# input method
+rime = false
+# sdks
+emsdk = false

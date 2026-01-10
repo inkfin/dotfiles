@@ -1,0 +1,19 @@
+{{- if .external.vcpkg -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -z "$VCPKG_ROOT" ]; then
+    echo "[vcpkg] VCPKG_ROOT not set, aborting"
+    exit 1
+fi
+
+mkdir -p "$VCPKG_ROOT"
+
+if [ -d "$VCPKG_ROOT/.git" ]; then
+    exit 0
+fi
+
+echo "[vcpkg] cloning into $VCPKG_ROOT"
+git clone https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+
+{{- end -}}

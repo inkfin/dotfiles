@@ -1,4 +1,6 @@
-{{- if ne .chezmoi.os "windows" }}
+{{- if ne .chezmoi.os "windows" -}}
+{{- if .external.zsh -}}
+{{- if stat (joinPath .chezmoi.homeDir ".oh-my-zsh") -}}
 
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
     type = "git-repo"
@@ -21,11 +23,6 @@
     exact = true
     refreshPeriod = "168h"
 
-
-{{- end }}
-
-# [".oh-my-zsh/custom/themes/powerlevel10k"]
-#     type = "git-repo"
-#     url = "https://github.com/romkatv/powerlevel10k.git"
-#     exact = true
-#     refreshPeriod = "168h"
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -68,11 +68,10 @@ export NVM_DIR="$HOME/.nvm"
 export FNM_DIR="$HOME/.local/fnm"
 
 ## ---- bun ----
-{{ if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
 export BUN_HOME="$HOME/.bun"
 prepend_to_path PATH "$BUN_HOME/bin"
-{{- end }}
 
+{{ if .external.emsdk -}}
 ## ---- emsdk ----
 
 export EMSDK_HOME="$HOME/dev/emsdk"
@@ -81,19 +80,21 @@ if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
     export EMSDK_QUIET=1
     source "$EMSDK_HOME/emsdk_env.sh"
 fi
+{{- end }}
 
 ## ---- llvm ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-prepend_to_path PATH     "${HOMEBREW_PREFIX}/opt/llvm/bin"
 append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -Wl,-rpath,${HOMEBREW_PREFIX}/opt/llvm/lib/c++ -L${HOMEBREW_PREFIX}/opt/llvm/lib"
 append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/opt/llvm/include"
 
 {{- end }}
 
+{{ if lookPath "cmake" -}}
 ## ---- CMake ----
 append_to_path CMAKE_INCLUDE_PATH "${HOMEBREW_PREFIX}/include"
 append_to_path CMAKE_LIBRARY_PATH "${HOMEBREW_PREFIX}/lib"
+{{- end }}
 
 ## ---- DOCKER ----
 {{ if eq .chezmoi.os "darwin" -}}
@@ -103,7 +104,9 @@ append_to_path PATH "$DOCKER_PATH"
 
 {{- end }}
 
+{{ if lookPath "lazydocker" -}}
 alias lzd=lazydocker
+{{- end }}
 
 ## ---- Vulkan ----
 {{ if eq .chezmoi.os "darwin" -}}
@@ -120,10 +123,6 @@ fi
 export JAVA_20_HOME="${HOMEBREW_PREFIX}/opt/openjdk@20/libexec/openjdk.jdk/Contents/Home"
 export JAVA_11_HOME="${HOMEBREW_PREFIX}/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
 export JAVA_8_HOME="${HOMEBREW_PREFIX}/opt/openjdk@8/libexec/openjdk.jdk/Contents/Home"
-
-export JAVA_HOME=$JAVA_20_HOME
-append_to_flag CPPFLAGS "-I$JAVA_HOME/include"
-append_to_path PATH "$JAVA_HOME/bin"
 
 {{- end }}
 
