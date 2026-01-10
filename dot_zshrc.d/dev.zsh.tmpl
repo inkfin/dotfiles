@@ -73,6 +73,15 @@ export BUN_HOME="$HOME/.bun"
 prepend_to_path PATH "$BUN_HOME/bin"
 {{- end }}
 
+## ---- emsdk ----
+
+export EMSDK_HOME="$HOME/dev/emsdk"
+prepend_to_path PATH "$EMSDK_HOME"
+if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
+    export EMSDK_QUIET=1
+    source "$EMSDK_HOME/emsdk_env.sh"
+fi
+
 ## ---- llvm ----
 {{ if eq .chezmoi.os "darwin" -}}
 
