@@ -8,88 +8,108 @@
 # ======================================
 
 
-# ==== Helper Functions ====
+# ==== Path Operations ====
+# Generic helper to add/remove a token (path entry or flag) to/from a delimited variable.
+# Examples:
+#   var_token_add PATH "/usr/local/bin" ":" append
+#   var_token_add PATH "/opt/bin" ":" prepend
+#   var_token_remove PATH "/opt/bin" ":"
+#   var_token_add CXXFLAGS "-O3" " " append
 
-append_to_path() {
-    local path_var="$1"
-    local new_dir="$2"
-    local silent="${3:-true}"
+var_token_add() {
+  local var="$1"
+  local token="$2"
+  local sep="$3"              # ":" for PATH-like vars, " " for flag vars
+  local mode="${4:-append}"   # append | prepend
+  local silent="${5:-true}"
 
-    # Ensure that the path variable exists
-    if [[ -z "${(P)path_var}" ]]; then
-        eval "export $path_var='$new_dir'"
-        [[ "$silent" != "true" ]] && echo "Directory '$new_dir' has been set as the initial value of '$path_var'."
-    elif [[ ":${(P)path_var}:" != *":$new_dir:"* ]]; then
-        eval "export $path_var=\${$path_var}:$new_dir"
-        [[ "$silent" != "true" ]] && echo "Directory '$new_dir' has been appended to '${(P)path_var}'."
+  # Current value of the variable (indirect expansion)
+  local cur="${(P)var}"
+  local -a parts
+  local exists=false
+
+  # Split the current value into tokens
+  if [[ -n "$cur" ]]; then
+    if [[ "$sep" == ":" ]]; then
+      parts=("${(s/:/)cur}")
     else
-        [[ "$silent" != "true" ]] && echo "Directory '$new_dir' is already in '${(P)path_var}'."
+      # Word-splitting for space-separated flags
+      parts=(${=cur})
     fi
 
-    [[ "$silent" != "true" ]] && echo "Updated path: ${(P)path_var}"
-}
+    # Check if the token already exists
+    local p
+    for p in "${parts[@]}"; do
+      if [[ "$p" == "$token" ]]; then
+        exists=true
+        break
+      fi
+    done
+  fi
 
-prepend_to_path() {
-    local path_var="$1"
-    local new_dir="$2"
-    local silent="${3:-true}"
+  # Do nothing if the token is already present
+  if [[ "$exists" == true ]]; then
+    [[ "$silent" != "true" ]] && echo "Token already exists in '$var': $token"
+    return 0
+  fi
 
-    # Ensure that the path variable exists
-    if [[ -z "${(P)path_var}" ]]; then
-        eval "export $path_var='$new_dir'"
-        [[ "$silent" != "true" ]] && echo "Directory '$new_dir' has been set as the initial value of '$path_var'."
-    elif [[ ":${(P)path_var}:" != *":$new_dir:"* ]]; then
-        eval "export $path_var=$new_dir:\${$path_var}"
-        [[ "$silent" != "true" ]] && echo "Directory '$new_dir' has been prepended to '${(P)path_var}'."
+  # Construct the new value
+  if [[ -z "$cur" ]]; then
+    eval "export $var=\$token"
+  else
+    if [[ "$mode" == "prepend" ]]; then
+      eval "export $var=\$token\$sep\${(P)var}"
     else
-        [[ "$silent" != "true" ]] && echo "Directory '$new_dir' is already in '${(P)path_var}'."
+      eval "export $var=\${(P)var}\$sep\$token"
     fi
+  fi
 
-    [[ "$silent" != "true" ]] && echo "Updated path: ${(P)path_var}"
+  [[ "$silent" != "true" ]] && echo "Updated $var: ${(P)var}"
 }
 
-remove_from_path() {
-    local path_var="$1"
-    local remove_dir="$2"
-    local silent="${3:-true}"
+var_token_remove() {
+  local var="$1"
+  local token="$2"
+  local sep="$3"
+  local silent="${4:-true}"
 
-    if [[ -z "${(P)path_var}" ]]; then
-        [[ "$silent" != "true" ]] && echo "The path variable '$path_var' is empty or does not exist."
-        return
-    fi
+  # Current value
+  local cur="${(P)var}"
+  if [[ -z "$cur" ]]; then
+    [[ "$silent" != "true" ]] && echo "'$var' is empty."
+    return 0
+  fi
 
-    local new_path
-    new_path=$(echo "${(P)path_var}" | awk -v RS=':' -v ORS=':' -v remove_dir="$remove_dir" '$0 != remove_dir {print}' | sed 's/:$//')
+  # Split into tokens
+  local -a parts out
+  if [[ "$sep" == ":" ]]; then
+    parts=("${(s/:/)cur}")
+  else
+    parts=(${=cur})
+  fi
 
-    eval "export $path_var='$new_path'"
+  # Rebuild without the target token
+  local p
+  for p in "${parts[@]}"; do
+    [[ "$p" == "$token" ]] && continue
+    out+=("$p")
+  done
 
-    if [[ "$silent" != "true" ]]; then
-        if [[ "$new_path" == *"$remove_dir"* ]]; then
-            echo "Failed to remove '$remove_dir' from '$path_var'."
-        else
-            echo "Directory '$remove_dir' has been removed from '$path_var'."
-            echo "Updated path: ${(P)path_var}"
-        fi
-    fi
+  # Join back
+  if [[ "$sep" == ":" ]]; then
+    eval "export $var='${(j/:/)out}'"
+  else
+    eval "export $var='${(j: :)out}'"
+  fi
+
+  [[ "$silent" != "true" ]] && echo "Updated $var: ${(P)var}"
 }
 
-append_to_flag() {
-    local flag_var="$1"
-    local new_flag="$2"
-    local silent="${3:-true}"
+# Thin wrappers for PATH-like variables
+append_to_path()   { var_token_add "$1" "$2" ":" append  "${3:-true}"; }
+prepend_to_path()  { var_token_add "$1" "$2" ":" prepend "${3:-true}"; }
+remove_from_path() { var_token_remove "$1" "$2" ":"      "${3:-true}"; }
 
-    # Ensure that the flag variable exists
-    if [[ -z "${(P)flag_var}" ]]; then
-        eval "$flag_var='$new_flag'"
-        export $flag_var
-        [[ "$silent" != "true" ]] && echo "Flag '$new_flag' has been set as the initial value of '$flag_var'."
-    elif [[ " ${${(P)flag_var}} " != *" $new_flag "* ]]; then
-        eval "$flag_var='${(P)flag_var} $new_flag'"
-        export $flag_var
-        [[ "$silent" != "true" ]] && echo "Flag '$new_flag' has been appended to '${(P)flag_var}'."
-    else
-        [[ "$silent" != "true" ]] && echo "Flag '$new_flag' is already in '${(P)flag_var}'."
-    fi
-
-    [[ "$silent" != "true" ]] && echo "Updated flags: ${(P)flag_var}"
-}
+# Thin wrapper for flag-like variables (space-separated)
+append_to_flag()   { var_token_add "$1" "$2" " " append  "${3:-true}"; }
+remove_from_flag() { var_token_remove "$1" "$2" " "      "${3:-true}"; }
