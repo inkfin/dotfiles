@@ -8,7 +8,7 @@ if [ -z "$version" ]; then
     exit 1
 fi
 mode=${2:-RelWithDebInfo}
-binary_dir=${ROOT}/builds/${mode}
+binary_dir=${ROOT}/builds/${version}/${mode}
 
 cmake \
     -S ${version} \
