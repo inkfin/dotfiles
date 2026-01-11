@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 version=$1
 if [ -z "$version" ]; then
@@ -6,8 +8,14 @@ if [ -z "$version" ]; then
     exit 1
 fi
 mode=${2:-RelWithDebInfo}
-binary_dir=${version}/build/${mode}
+binary_dir=${ROOT}/builds/${mode}
 
-cmake -S ${version} -B ${binary_dir} -DDAWN_FETCH_DEPENDENCIES=ON -DDAWN_ENABLE_INSTALL=ON -DCMAKE_BUILD_TYPE=${mode} -GNinja
+cmake \
+    -S ${version} \
+    -B ${binary_dir} \
+    -DDAWN_FETCH_DEPENDENCIES=ON \
+    -DDAWN_ENABLE_INSTALL=ON \
+    -DCMAKE_BUILD_TYPE=${mode} \
+    -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
-cmake --build ${binary_dir}
+cmake --build ${binary_dir} --parallel
