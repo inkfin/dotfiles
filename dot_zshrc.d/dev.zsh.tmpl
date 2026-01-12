@@ -78,8 +78,10 @@ fi
 export EMSDK_HOME="$HOME/dev/emsdk"
 if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
     prepend_to_path PATH "$EMSDK_HOME"
+{{- if .external.emsdk }}
     export EMSDK_QUIET=1
     source "$EMSDK_HOME/emsdk_env.sh"
+{{- end }}
 fi
 
 ## ---- llvm ----

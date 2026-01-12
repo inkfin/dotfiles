@@ -5,7 +5,6 @@
 {{- $profile    := promptChoiceOnce . "data.profile" "Which profile should we apply" $profiles }}
 {{- $name       := promptStringOnce . "data.name" "What's your name" "inkfin" }}
 {{- $email      := promptStringOnce . "data.email" "What's your email" "inkfinite@qq.com" }}
-{{- $rime       := promptBoolOnce   . "data.external.rime" "Should we pull rime" false }}
 
 [data]
     profile = {{ $profile | quote }}
