@@ -2,6 +2,15 @@ return {
     -- { "folke/neoconf.nvim", cmd = "Neoconf" },
     -- "folke/neodev.nvim",
     {
+        "junegunn/vim-easy-align",
+        init = function()
+            vim.g.easy_align_bypass_fold = 1
+        end,
+        keys = {
+            { "<leader>A", "<Plug>(EasyAlign)", mode = { "x", "v" }, desc = "Align" },
+        },
+    },
+    {
         "folke/todo-comments.nvim",
         opts = {
             highlight = {

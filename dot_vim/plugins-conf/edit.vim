@@ -50,3 +50,9 @@ let g:indent_guides_guide_size      = 1  " 指定对齐线的尺寸
 let g:indent_guides_start_level     = 2  " 从第二层开始可视化显示缩进
 let g:indentLine_fileTypeExclude = ['coc-explorer', 'which_key']
 
+" Easy Align
+let g:easy_align_bypass_fold = 1
+"   Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap <leader>A <Plug>(EasyAlign)
+"   Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap <leader>A <Plug>(EasyAlign)

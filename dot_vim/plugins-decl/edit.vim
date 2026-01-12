@@ -20,3 +20,5 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 " indentLine
 Plug 'Yggdroot/indentLine'
 
+" Easy Align
+Plug 'junegunn/vim-easy-align'
