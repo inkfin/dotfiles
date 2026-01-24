@@ -15,16 +15,13 @@ let g:ale_fixers = {
 \ 'cpp': ['clang-format', 'clangtidy'],
 \}
 
-let g:ale_c_cc_options = '-std=c11 -Wall -Wextra'
-let g:ale_cpp_cc_options = '-std=c++20 -Wall -Wextra'
-
 let g:ale_fix_on_save = 0
 let g:ale_completion_enabled = 1
 let g:ale_completion_autoimport = 1
 let g:ale_list_window_size = 5
 
 let g:ale_hover_cursor = 1
-let g:ale_echo_cursor=1
+let g:ale_echo_cursor = 1
 let g:ale_floating_preview = 1
 let g:ale_hover_to_floating_preview = 1
 let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
@@ -55,6 +52,8 @@ nmap     <silent> <leader>ca <CMD>ALECodeAction<CR>
 nmap     <silent> <leader>rn <CMD>ALERename<CR>
 nmap     <silent> <leader>rf <CMD>ALEFix<CR>
 
+inoremap <silent> <C-Space> <Cmd>ALEComplete<CR>
+
 function! ALESearchSymbolPrompt()
     let l:sym = input("SymbolToSearch: ")
     if !empty(l:sym)
@@ -62,12 +61,18 @@ function! ALESearchSymbolPrompt()
     endif
 endfunction
 
-nmap     <silent> <leader>ss <CMD>call ALESearchSymbolPrompt()<CR>
+if get(g:, "ale_completion_enabled", 0)
+    if exists("*ale#completion#OmniFunc")
+        setlocal omnifunc=ale#completion#OmniFunc
+    endif
+endif
 
-nmap     <silent> <leader>ud <CMD>ALEToggle<CR>
-nmap     <silent> <leader>uD <CMD>ALEToggleBuffer<CR>
+nnoremap <silent> <leader>ss <CMD>call ALESearchSymbolPrompt()<CR>
+
+nnoremap <silent> <leader>ud <CMD>ALEToggle<CR>
+nnoremap <silent> <leader>uD <CMD>ALEToggleBuffer<CR>
 nnoremap          <leader>uf <CMD>let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Global]ALE Fix on Save: " . g:ale_fix_on_save<CR>
 nnoremap          <leader>uF <CMD>let b:ale_fix_on_save = get(b:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Buffer]ALE Fix on Save: " . b:ale_fix_on_save<CR>
 
-nmap     <silent> [d         <Plug>(ale_previous_wrap)
-nmap     <silent> ]d         <Plug>(ale_next_wrap)
+nnoremap <silent> [d         <Plug>(ale_previous_wrap)
+nnoremap <silent> ]d         <Plug>(ale_next_wrap)
