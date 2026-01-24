@@ -144,9 +144,24 @@ if exists('&termguicolors')
     set notermguicolors
 endif
 
-if exists('g:transparent') && g:transparent
+if get(g:, 'transparent', 0)
     augroup TransparentColorscheme
     autocmd!
-        autocmd ColorScheme * highlight Normal ctermbg=None guibg=NONE
+        autocmd ColorScheme * highlight Normal  ctermbg=None guibg=NONE
+        autocmd ColorScheme * highlight Comment ctermfg=DarkGrey ctermbg=Black guifg=#a8a8a8 guibg=#1b1b1b
+
     augroup END
 endif
+
+" Disable spell highlight
+augroup SpellHighlight
+    autocmd!
+        autocmd ColorScheme * highlight clear SpellCap
+        autocmd ColorScheme * highlight clear SpellRare
+        autocmd ColorScheme * highlight clear SpellLocal
+        autocmd ColorScheme * highlight SpellBad
+            \ cterm=underline ctermfg=NONE ctermbg=NONE
+            \ gui=undercurl guifg=NONE guibg=NONE
+augroup END
+
+
