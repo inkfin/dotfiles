@@ -8,6 +8,19 @@
 # ======================================
 
 
+# ==== Define Variables ====
+
+# Export a variable only if it is not already defined.
+export_if_undefined() {
+  local var="$1"
+  local value="$2"
+
+  if [[ -z "${(P)var}" ]]; then
+    eval "export $var='$value'"
+  fi
+}
+
+
 # ==== Path Operations ====
 # Generic helper to add/remove a token (path entry or flag) to/from a delimited variable.
 # Examples:

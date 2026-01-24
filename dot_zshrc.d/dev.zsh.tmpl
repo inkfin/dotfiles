@@ -31,11 +31,11 @@ prepend_to_path DYLD_LIBRARY_PATH "$HOME/.local/lib:/usr/local/lib/"
 {{- end }}
 
 ## ---- vcpkg ----
-export VCPKG_ROOT="$HOME/vcpkg"
+export_if_undefined VCPKG_ROOT "$HOME/vcpkg"
 prepend_to_path PATH "$VCPKG_ROOT"
 
 ## ---- rustup ----
-export RUSTUP_HOME="$HOME/.rustup"
+export_if_undefined RUSTUP_HOME "$HOME/.rustup"
 prepend_to_path PATH "${HOMEBREW_PREFIX}/opt/rustup/bin/"
 
 # rustup mirrors
@@ -43,13 +43,13 @@ export RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
 export RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup/rustup
 
 ## ---- cargo ----
-export CARGO_HOME="$HOME/.cargo"
+export_if_undefined CARGO_HOME "$HOME/.cargo"
 prepend_to_path PATH "$CARGO_HOME/bin/"
 
 ## ---- cuda ----
 {{ if eq .chezmoi.os "linux" -}}
 
-export CUDA_HOME="/usr/local/cuda"
+export_if_undefined CUDA_HOME "/usr/local/cuda"
 
 if [[ -d "$CUDA_HOME" ]]; then
     prepend_to_path PATH "$CUDA_HOME/bin"
@@ -60,28 +60,26 @@ fi
 {{- end }}
 
 ## ---- nvm ----
-export NVM_DIR="$HOME/.nvm"
+export_if_undefined NVM_DIR "$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ## ---- fnm ----
-export FNM_DIR="$HOME/.local/fnm"
+export_if_undefined FNM_DIR "$HOME/.local/fnm"
 
 ## ---- bun ----
-export BUN_HOME="$HOME/.bun"
+export_if_undefined BUN_HOME "$HOME/.bun"
 if [[ -f "$BUN_HOME" ]]; then
     prepend_to_path PATH "$BUN_HOME/bin"
 fi
 
 ## ---- emsdk ----
 
-export EMSDK_HOME="$HOME/dev/emsdk"
+export_if_undefined EMSDK_HOME "$HOME/dev/emsdk"
 if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
     prepend_to_path PATH "$EMSDK_HOME"
-{{- if .external.emsdk }}
     export EMSDK_QUIET=1
     source "$EMSDK_HOME/emsdk_env.sh"
-{{- end }}
 fi
 
 ## ---- llvm ----
@@ -152,13 +150,15 @@ append_to_path PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/opt/ruby/lib/pkgconfig"
 
 export DOTNET6_ROOT="${HOMEBREW_PREFIX}/opt/dotnet@6/libexec"
 export DOTNET8_ROOT="${HOMEBREW_PREFIX}/opt/dotnet@8/libexec"
-export DOTNET_ROOT="${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+export_if_undefined DOTNET_ROOT "${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+
 append_to_path PATH "$DOTNET_ROOT"
 append_to_path PATH "$DOTNET_ROOT/tools"
 
 {{ else if eq .chezmoi.os "linux" -}}
 
-export DOTNET_ROOT="${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+export_if_undefined DOTNET_ROOT "${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+
 append_to_path PATH "$DOTNET_ROOT"
 append_to_path PATH "$DOTNET_ROOT/tools"
 
