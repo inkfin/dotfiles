@@ -53,6 +53,6 @@ let g:indentLine_fileTypeExclude = ['coc-explorer', 'which_key']
 " Easy Align
 let g:easy_align_bypass_fold = 1
 "   Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap <leader>A <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 "   Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap <leader>A <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)

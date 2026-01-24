@@ -71,6 +71,9 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 " indentLine
 Plug 'Yggdroot/indentLine'
 
+" easy align
+Plug 'junegunn/vim-easy-align'
+
 " find project root
 Plug 'dbakker/vim-projectroot'
 
