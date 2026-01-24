@@ -53,7 +53,10 @@ nnoremap <silent> <C-S> :w<CR>
 
 
 nmap     <silent> <leader>h K
-nnoremap <silent> <leader>K K
+nnoremap <silent> <leader>K :normal! K<CR>
+" omnifunc
+imap     <silent> <C-Space> <C-x><C-o>
+imap     <silent> <C-@>     <C-x><C-o>
 
 " When completion menu is shown, use <cr> to select an item
 " and do not add an annoying newline. Otherwise, <enter> is what it is.
@@ -99,3 +102,4 @@ endfunction
 
 " bind <leader>e
 nnoremap <silent> <Leader>e :call OpenNetrwLeft()<CR>
+

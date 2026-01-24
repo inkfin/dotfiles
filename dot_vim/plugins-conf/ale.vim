@@ -15,22 +15,140 @@ let g:ale_fixers = {
 \ 'cpp': ['clang-format', 'clangtidy'],
 \}
 
+let s:ale_omni_filetypes = [
+\ 'javascript', 'typescript',
+\ 'c', 'cpp'
+\]
+
 let g:ale_fix_on_save = 0
-let g:ale_completion_enabled = 1
+" show omnifunc completion while typing
+let g:ale_completion_enabled = get(g:, 'ale_completion_enabled', 1)
+" import completion results from external modules
 let g:ale_completion_autoimport = 1
 let g:ale_list_window_size = 5
+
+" only register ale omnifunc in some languages, triggered with <C-x><C-o>
+augroup AleOmni
+  autocmd!
+  execute 'autocmd FileType ' .. join(s:ale_omni_filetypes, ',') .. ' call s:AleSetOmni()'
+augroup END
+
+function! s:AleSetOmni() abort
+    if exists('g:loaded_ale')
+        setlocal omnifunc=ale#completion#OmniFunc
+    endif
+endfunction
+
+
+""""""""""""""""""""
+" KEYMAPS
+""""""""""""""""""""
+
+nmap     <silent> K          <CMD>ALEHover<CR>
+nmap     <silent> gd         <CMD>ALEGoToDefinition<CR>
+nmap     <silent> gr         <CMD>ALEFindReferences<CR>
+nmap     <silent> <leader>ca <CMD>ALECodeAction<CR>
+nmap     <silent> <leader>rn <CMD>ALERename<CR>
+nmap     <silent> <leader>rf <CMD>ALEFix<CR>
+
+imap     <silent> <C-Space> <Plug>(ale_complete)
+imap     <silent> <C-@>     <Plug>(ale_complete)
+
+function! ALESearchSymbolPrompt()
+    let l:sym = input("SymbolToSearch: ")
+    if !empty(l:sym)
+        execute "ALESymbolSearch " . l:sym
+    endif
+endfunction
+
+nnoremap <silent> <leader>ss <CMD>call ALESearchSymbolPrompt()<CR>
+
+nnoremap <silent> <leader>ud <CMD>ALEToggle<CR>
+nnoremap <silent> <leader>uD <CMD>ALEToggleBuffer<CR>
+nnoremap          <leader>uf <CMD>let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Global]ALE Fix on Save: " . g:ale_fix_on_save<CR>
+nnoremap          <leader>uF <CMD>let b:ale_fix_on_save = get(b:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Buffer]ALE Fix on Save: " . b:ale_fix_on_save<CR>
+
+nnoremap <silent> [d         <Plug>(ale_previous_wrap)<Plug>(ale_detail)
+nnoremap <silent> ]d         <Plug>(ale_next_wrap)<Plug>(ale_detail)
+
+
+""""""""""""""""""""
+" APPEARANCE
+""""""""""""""""""""
 
 let g:ale_hover_cursor = 1
 let g:ale_echo_cursor = 1
 let g:ale_floating_preview = 1
 let g:ale_hover_to_floating_preview = 1
 let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
-
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
+let g:ale_sign_column_always = 1
 let g:ale_echo_msg_format = '[%linter%] (%code) %%s [%severity%]'
+
+if get(g:, "use_nerdfont", 0)
+    let g:ale_sign_error         = '✘'
+    let g:ale_sign_warning       = '▲'
+    let g:ale_sign_info          = '●'
+    let g:ale_sign_style_error   = '✎'
+    let g:ale_sign_style_warning = '✎'
+    let g:ale_echo_msg_error_str   = ''
+    let g:ale_echo_msg_warning_str = ''
+    let g:ale_echo_msg_info_str    = ''
+
+    let g:ale_completion_symbols = {
+    \ 'text':          '',
+    \ 'method':        '󰆧',
+    \ 'function':      '󰊕',
+    \ 'constructor':   '󰆧',
+    \ 'field':         '󰜢',
+    \ 'variable':      '󰀫',
+    \ 'class':         '󰠱',
+    \ 'struct':        '󰙅',
+    \ 'interface':     '󰜰',
+    \ 'module':        '󰆧',
+    \ 'property':      '󰜢',
+    \ 'unit':          '󰑭',
+    \ 'value':         '󰎠',
+    \ 'enum':          '󰕘',
+    \ 'enum_member':   '󰕘',
+    \ 'constant':      '󰏿',
+    \ 'keyword':       '󰌋',
+    \ 'snippet':       '󰅩',
+    \ 'color':         '󰏘',
+    \ 'file':          '󰈙',
+    \ 'folder':        '󰉋',
+    \ 'reference':     '󰈇',
+    \ 'event':         '󰉁',
+    \ 'operator':      '󰆕',
+    \ 'type_parameter':'󰊄',
+    \ '<default>':     ''
+    \ }
+else
+    let g:ale_sign_error         = '>>'
+    let g:ale_sign_warning       = '++'
+    let g:ale_sign_info          = '~~'
+    let g:ale_sign_style_error   = 'S'
+    let g:ale_sign_style_warning = 's'
+    let g:ale_echo_msg_error_str   = 'E'
+    let g:ale_echo_msg_warning_str = 'W'
+    let g:ale_echo_msg_info_str    = 'I'
+
+    let g:ale_completion_symbols = {
+    \ 'function':      'f',
+    \ 'method':        'm',
+    \ 'variable':      'v',
+    \ 'field':         'f',
+    \ 'class':         'C',
+    \ 'struct':        'S',
+    \ 'enum':          'E',
+    \ 'enum_member':   'e',
+    \ 'constant':      'K',
+    \ 'module':        'M',
+    \ 'keyword':       'k',
+    \ 'file':          'F',
+    \ 'folder':        'D',
+    \ '<default>':     '?'
+    \ }
+endif
 
 " enable airline support
 let g:airline#extensions#ale#enabled = 1
@@ -45,34 +163,3 @@ autocmd!
     autocmd ColorScheme * highlight ALEInfoSign cterm=bold ctermfg=white gui=bold guifg=white
 augroup END
 
-nmap     <silent> K          <CMD>ALEHover<CR>
-nmap     <silent> gd         <CMD>ALEGoToDefinition<CR>
-nmap     <silent> gr         <CMD>ALEFindReferences<CR>
-nmap     <silent> <leader>ca <CMD>ALECodeAction<CR>
-nmap     <silent> <leader>rn <CMD>ALERename<CR>
-nmap     <silent> <leader>rf <CMD>ALEFix<CR>
-
-inoremap <silent> <C-Space> <Cmd>ALEComplete<CR>
-
-function! ALESearchSymbolPrompt()
-    let l:sym = input("SymbolToSearch: ")
-    if !empty(l:sym)
-        execute "ALESymbolSearch " . l:sym
-    endif
-endfunction
-
-if get(g:, "ale_completion_enabled", 0)
-    if exists("*ale#completion#OmniFunc")
-        setlocal omnifunc=ale#completion#OmniFunc
-    endif
-endif
-
-nnoremap <silent> <leader>ss <CMD>call ALESearchSymbolPrompt()<CR>
-
-nnoremap <silent> <leader>ud <CMD>ALEToggle<CR>
-nnoremap <silent> <leader>uD <CMD>ALEToggleBuffer<CR>
-nnoremap          <leader>uf <CMD>let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Global]ALE Fix on Save: " . g:ale_fix_on_save<CR>
-nnoremap          <leader>uF <CMD>let b:ale_fix_on_save = get(b:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Buffer]ALE Fix on Save: " . b:ale_fix_on_save<CR>
-
-nnoremap <silent> [d         <Plug>(ale_previous_wrap)
-nnoremap <silent> ]d         <Plug>(ale_next_wrap)

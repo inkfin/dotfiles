@@ -86,6 +86,10 @@ set shiftwidth=4    " number of spaces to use for autoindent
 set expandtab       " expand tab to spaces so that tabs are spaces
 set shiftround
 
+" Spell
+set spell
+set spelllang=en_us,cjk
+
 " History
 set history=200
 call mkdir(expand('~/.vim/tmp/backup'), 'p')
