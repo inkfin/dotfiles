@@ -49,6 +49,7 @@ set autoindent
 set ignorecase smartcase
 set backspace=indent,eol,start
 set complete+=d
+set completeopt=menu,menuone,noselect
 set hidden
 set noswapfile
 set path& | let &path .= "**"

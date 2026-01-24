@@ -4,19 +4,22 @@ if g:diag_backend !=# "ale"
     finish
 endif
 
-let g:ale_fixers = {
-    \ 'javascript': ['prettier', 'eslint'],
-    \ 'cpp': ['clangd'],
-    \ }
-let g:ale_fixers = {
-    \ '*': ['remove_trailing_lines', 'trim_whitespace'],
-    \ 'javascript': ['eslint'],
-    \ 'cpp': ['clang-format', 'clangtidy'],
-    \ }
+let g:ale_linters = {
+\ 'javascript': ['eslint'],
+\ 'cpp': ['clangd'],
+\}
 
+let g:ale_fixers = {
+\ '*': ['remove_trailing_lines', 'trim_whitespace'],
+\ 'javascript': ['prettier', 'eslint'],
+\ 'cpp': ['clang-format', 'clangtidy'],
+\}
+
+let g:ale_c_cc_options = '-std=c11 -Wall -Wextra'
 let g:ale_cpp_cc_options = '-std=c++20 -Wall -Wextra'
 
 let g:ale_fix_on_save = 0
+let g:ale_completion_enabled = 1
 let g:ale_completion_autoimport = 1
 let g:ale_list_window_size = 5
 
