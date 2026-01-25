@@ -27,13 +27,19 @@ runtime! ftplugin/man.vim
 
 " Cursor shape: prefer guicursor; fallback to t_SI/t_EI/t_SR (DECSCUSR)
 if !has('nvim')
-  " The good old ways
-  " DECSCUSR: 2=block, 5=bar, 4=underline (stable variants)
-  let &t_EI = "\<Esc>[2 q"   " Normal: block
-  let &t_SI = "\<Esc>[6 q"   " Insert: bar
-  if exists('&t_SR')
-    let &t_SR = "\<Esc>[4 q" " Replace: underline
-  endif
+    " DECSCUSR: 2=block, 5=bar, 4=underline (stable variants)
+    if exists('$TMUX')
+        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>[2 q\<Esc>\\"
+        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>[6 q\<Esc>\\"
+        let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>[4 q\<Esc>\\"
+    else
+        let &t_EI = "\<Esc>[2 q"  " Normal: block
+        let &t_SI = "\<Esc>[6 q"  " Insert: bar
+        let &t_SR = "\<Esc>[4 q"  " Replace: underline
+    endif
+
+    " cursor mode shape
+    set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkon0
 endif
 " fix macos switch delay
 set ttimeout
@@ -65,10 +71,14 @@ set laststatus=2
 " visual
 set number relativenumber
 set ruler
-set novisualbell
 set virtualedit=block
 " display dots for spaces
 set lcs+=space:·
+
+" bell
+set noerrorbells
+set novisualbell
+set t_vb=
 
 " search
 set incsearch
@@ -87,7 +97,7 @@ set expandtab       " expand tab to spaces so that tabs are spaces
 set shiftround
 
 " Spell
-set spell
+set nospell
 set spelllang=en_us,cjk
 
 " History

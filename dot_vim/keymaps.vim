@@ -8,14 +8,16 @@ let g:maplocalleader = ","
 " Jump to matching pairs easily in normal mode
 nnoremap <Tab> %
 
-vnoremap <silent> Y "+y
+if has('clipboard')
+xnoremap <silent> Y "+y
+endif
 " Paste over currently selected text without yanking it
-vnoremap <silent> p "_dP
+xnoremap <silent> p "_dP
 " Delete to black hole register with x
-noremap <silent> x "_x
+noremap  <silent> x "_x
 
-vnoremap <silent> H ^
-vnoremap <silent> L $<left>
+xnoremap <silent> H ^
+xnoremap <silent> L $<left>
 noremap  <silent> W 5w
 noremap  <silent> B 5b
 noremap  <silent> E 5e
@@ -28,10 +30,10 @@ nnoremap <silent> <C-L> <C-w>l
 
 " Resize windows using <Alt> and arrow keys, inspiration from
 " https://vim.fandom.com/wiki/Fast_window_resizing_with_plus/minus_keys (bottom page).
-nnoremap <silent> <M-left> <C-w><
+nnoremap <silent> <M-left>  <C-w><
 nnoremap <silent> <M-right> <C-w>>
-nnoremap <silent> <M-down> <C-W>-
-nnoremap <silent> <M-up> <C-W>+
+nnoremap <silent> <M-down>  <C-W>-
+nnoremap <silent> <M-up>    <C-W>+
 
 " quickfix window
 nnoremap <silent> <leader>xq <CMD>copen<CR>
@@ -39,11 +41,11 @@ nnoremap <silent> <leader>xl <CMD>lopen<CR>
 nnoremap <silent> <leader>xx <CMD>lopen<CR>
 
 " navigate between buffers & tabs
-nnoremap <silent> H <CMD>bp<CR>
-nnoremap <silent> L <CMD>bn<CR>
+nnoremap <silent> H          <CMD>bp<CR>
+nnoremap <silent> L          <CMD>bn<CR>
 nnoremap <silent> <leader>bd <CMD>bd<CR>
-nnoremap <silent> ]t <CMD>tabn<CR>
-nnoremap <silent> [t <CMD>tabp<CR>
+nnoremap <silent> ]t         <CMD>tabn<CR>
+nnoremap <silent> [t         <CMD>tabp<CR>
 
 nnoremap <leader>\| :vs<CR>
 nnoremap <leader>-  :sp<CR>
@@ -89,7 +91,7 @@ if exists(':tnoremap')
 endif
 
 " Clear highlighting
-nnoremap <silent> <leader><enter> <CMD>nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <leader><enter> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 " lazygit
 nnoremap <silent> <leader>gg <CMD>!lazygit<CR>

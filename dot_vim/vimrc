@@ -10,6 +10,9 @@
 " local config
 source ~/.vim/local_config.vim
 
+" utility functions
+source ~/.vim/utils.vim
+
 " basic options
 source ~/.vim/options.vim
 
