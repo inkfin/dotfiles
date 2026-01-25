@@ -16,7 +16,7 @@ _G.disable_plugins = {
     --cmake = true,
 
     --python = true,
-    --typescript = true,
+    typescript = true,
     rust = true,
     go = true,
     tex = true,
@@ -29,8 +29,8 @@ _G.disable_plugins = {
     --overseer = true,
 
     --- AI
-    --copilot = true,
-    --harper = true,
+    copilot = true,
+    harper = true,
 
     --- input method
     rime = true,
@@ -41,7 +41,7 @@ _G.disable_plugins = {
     --notify = true, -- notification
 
     --wakatime = true,
-    --image = true,
+    image = true,
 }
 
 -- vim.g.potato_computer = true

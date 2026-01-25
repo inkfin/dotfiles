@@ -4,7 +4,7 @@ end
 
 return {
     {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
         opts = function(_, opts)
             -- install sonarlint-language-server
             if type(opts.ensure_installed) == "table" then

@@ -6,7 +6,6 @@ return {
         version = false, -- last release is way too old and doesn't work on Windows
         build = vim.g.potato_computer and "" or ":TSUpdate",
 
-        ---@type TSConfig
         opts = function(_, opts)
             vim.list_extend(opts.ensure_installed, {
                 "bash",

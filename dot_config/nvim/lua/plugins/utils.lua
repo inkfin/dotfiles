@@ -7,7 +7,7 @@ return {
             vim.g.easy_align_bypass_fold = 1
         end,
         keys = {
-            { "<leader>A", "<Plug>(EasyAlign)", mode = { "x", "v" }, desc = "Align" },
+            { "ga", "<Plug>(EasyAlign)", mode = { "x", "v" }, desc = "Align" },
         },
     },
     {
