@@ -41,8 +41,37 @@ function rag() {
 }
 
 ## ---- Clash ----
-alias setproxy="export https_proxy=http://127.0.0.1:7890;export http_proxy=http://127.0.0.1:7890;export all_proxy=socks5://127.0.0.1:7890"
-alias unsetproxy="unset https_proxy;unset http_proxy;unset all_proxy"
+export_if_undefined proxy_ip "127.0.0.1"
+
+function _setproxy {
+  export http_proxy="socks5://${proxy_ip}:7890"; export https_proxy="socks5://${proxy_ip}:7890"; export all_proxy="socks5://${proxy_ip}:7890";
+  export HTTP_PROXY="socks5://${proxy_ip}:7890"; export HTTPS_PROXY="socks5://${proxy_ip}:7890"; export ALL_PROXY="socks5://${proxy_ip}:7890";
+  echo -e "proxy on"
+}
+alias setproxy=_setproxy
+
+function _unsetproxy {
+  unset http_proxy https_proxy all_proxy
+  unset HTTP_PROXY HTTPS_PROXY ALL_PROXY
+  echo -e "proxy off"
+}
+alias unsetproxy=_unsetproxy
+
+function _setgitproxy {
+  git config --global https.proxy socks5://${proxy_ip}:7890
+  git config --global http.proxy socks5://${proxy_ip}:7890
+  git config --global ssh.proxy socks5://${proxy_ip}:7890
+  echo -e "git: proxy on"
+}
+alias setgitproxy=_setgitproxy
+
+function _unsetgitproxy {
+  git config --global --unset https.proxy
+  git config --global --unset http.proxy
+  git config --global --unset ssh.proxy
+  echo -e "git: proxy off"
+}
+alias unsetgitproxy=_unsetgitproxy
 
 ## ---- Pandoc ----
 {{ if eq .chezmoi.os "darwin" -}}
