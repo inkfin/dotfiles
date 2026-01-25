@@ -89,10 +89,10 @@ if exists(':tnoremap')
 endif
 
 " Clear highlighting
-nnoremap <silent> <leader><enter> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <leader><enter> <CMD>nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 " lazygit
-nnoremap <silent> <leader>gg :!lazygit<CR>
+nnoremap <silent> <leader>gg <CMD>!lazygit<CR>
 
 " file explorer
 function! OpenNetrwLeft()
@@ -101,5 +101,7 @@ function! OpenNetrwLeft()
 endfunction
 
 " bind <leader>e
-nnoremap <silent> <Leader>e :call OpenNetrwLeft()<CR>
+nnoremap <silent> <Leader>e  <CMD>call OpenNetrwLeft()<CR>
 
+" toggle spell
+nnoremap <silent> <Leader>us <CMD>set spell!<CR>
