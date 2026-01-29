@@ -15,7 +15,8 @@ desc = "smart enter"
 
 [[mgr.prepend_keymap]]
 on = [ "S" ]
-run = 'shell "nu.exe" --block --confirm'
+# run = 'shell "nu.exe" --block --confirm'
+run = 'shell "pwsh.exe --NoLogo" --block --confirm'
 desc = "enter shell (cwd)"
 
 {{- else -}}

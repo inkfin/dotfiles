@@ -1,5 +1,5 @@
 -- install
--- ya pack -a yazi-rs/plugins:smart-enter
+-- ya pkg add yazi-rs/plugins:smart-enter
 
 ---Load plugins
 ---@param name string @plugin name
@@ -14,10 +14,12 @@ local function safe_load_plugins(name, remote, opts, nosetup)
         end
 	else
 		print("Failed to load " .. name .. " module.\nTrying to install with: `ya pack -a " .. remote)
-		local ret = os.execute("ya pack -a " .. remote)
+		local ret = os.execute("ya pkg add " .. remote)
 		print("finish, ret:", ret)
 	end
 end
+
+-- print("Installing tokyo-night finish, ret:", os.execute("ya pkg add BennyOe/tokyo-night"))
 
 safe_load_plugins("git", "yazi-rs/plugins:git", {})
 

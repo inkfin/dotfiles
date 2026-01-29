@@ -1,3 +1,4 @@
+{{- if ne .chezmoi.os "windows" }}
 {{- if .external.zsh -}}
 {{- if not (stat (joinPath .chezmoi.homeDir ".oh-my-zsh")) -}}
 #!/usr/bin/env bash
@@ -9,5 +10,6 @@ fi
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+{{- end -}}
 {{- end -}}
 {{- end -}}
