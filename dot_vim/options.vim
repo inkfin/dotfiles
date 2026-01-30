@@ -121,7 +121,22 @@ set updatetime=800
 " Clipboard settings, always use clipboard for all delete, yank, change, put
 " operation, see https://stackoverflow.com/q/30691466/6064933
 if get(g:, "use_system_clipboard", 0)
-    set clipboard^=unnamed,unnamedplus
+    if exists("unnamedplus")
+        set clipboard^=unnamed,unnamedplus
+    elseif executable("clip.exe")
+        let g:clipboard = {
+        \    'name': 'wsl-clipboard',
+        \    'copy': {
+        \        '+': 'clip.exe',
+        \        '*': 'clip.exe',
+        \    },
+        \    'paste': {
+        \        '+': 'powershell.exe -NoProfile -Command Get-Clipboard',
+        \        '*': 'powershell.exe -NoProfile -Command Get-Clipboard',
+        \    },
+        \    'cache_enabled': 0,
+        \}
+    endif
 endif
 
 " Break line at predefined characters
