@@ -7,7 +7,7 @@ let s:last_loaded = {}
 " }
 
 function! projectloader#LoadSettings() abort
-    let l:file = getcwd() .. '/.vim/projectsettings.vim'
+    let l:file = getcwd() .. '/.vimrc'
     if !filereadable(l:file)
         return
     endif
@@ -18,7 +18,8 @@ function! projectloader#LoadSettings() abort
         return
     endif
 
-    execute 'silent source' fnameescape(l:file)
+    " avoid execute arbitrary code
+    sandbox silent source `=l:file`
     let s:last_loaded = {'cwd': getcwd(), 'mtime': l:mtime}
 
     echo 'Loaded project settings from ' .. l:file

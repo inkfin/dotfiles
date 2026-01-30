@@ -14,8 +14,10 @@ let g:explorer_type = get(g:, "explorer_type", "nerdtree")
 
 " Global disable helper funcitons
 function! PluginDisabled(name) abort
-    return exists('g:plugin_disable_' . a:name)
+    return get(g:, 'plugin_disable_' . a:name, 0)
 endfunction
+
+runtime! plugins-conf/*.vim
 
 " Plugin configurations
 
@@ -118,4 +120,3 @@ endif
 
 call plug#end()
 
-runtime! plugins-conf/*.vim

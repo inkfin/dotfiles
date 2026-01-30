@@ -120,8 +120,9 @@ set updatetime=800
 
 " Clipboard settings, always use clipboard for all delete, yank, change, put
 " operation, see https://stackoverflow.com/q/30691466/6064933
-set clipboard+=unnamed
-set clipboard+=unnamedplus
+if get(g:, "use_system_clipboard", 0)
+    set clipboard^=unnamed,unnamedplus
+endif
 
 " Break line at predefined characters
 set linebreak

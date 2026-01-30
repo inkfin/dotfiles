@@ -4,6 +4,9 @@
 let g:transparent = 0
 let g:use_nerdfont = 1
 
+" edit
+"let g:use_system_clipboard = 1
+
 " diagnostic backend
 "  'ale'|'ctags'|'lsp'|'vimcomplete'
 let g:diag_backend = "ale"
