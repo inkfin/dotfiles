@@ -84,6 +84,8 @@ nnoremap <Leader>bd  :action CloseContent<CR>
 
 " Paste over currently selected text without yanking it
 vnoremap <silent> p "_dP
+" Delete to black hole register with x
+noremap  <silent> x "_x
 
 nnoremap <A-j> :action MoveLineDown<CR>
 nnoremap <A-k> :action MoveLineUp<CR>
