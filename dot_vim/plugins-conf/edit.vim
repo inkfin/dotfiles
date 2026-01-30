@@ -17,7 +17,7 @@ let g:NERDCreateDefaultMappings = 0
 let g:NERDCommentEmptyLines = 0
 let g:NERDToggleCheckAllLines = 0
 let g:NERDCustomDelimiters = {
-\    'c': { 'left': '//' }
+\    'c': { 'left': '// ' }
 \}
 nmap <silent> gcc <Plug>NERDCommenterToggle
 vmap <silent> gc  <Plug>NERDCommenterToggle

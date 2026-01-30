@@ -2,8 +2,6 @@
 
 " theme
 let g:transparent = 0
-
-" fonts
 let g:use_nerdfont = 1
 
 " diagnostic backend
@@ -14,6 +12,8 @@ let g:diag_backend = "ale"
 "" ale
 " auto display completion (sometimes annoying)
 "let g:ale_completion_enabled = 0
+let g:ale_linters = {}
+let g:ale_fixers = {}
 
 " file explorer style
 "  'nerdtree'|'netrw'

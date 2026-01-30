@@ -3,7 +3,7 @@
 """"""""""""""""""""
 
 " Run chezmoi apply whenever a dotfile is saved
-if get(g:, 'minimal_vimrc', 0)
+if !get(g:, 'minimal_vimrc', 0)
     autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 endif
 

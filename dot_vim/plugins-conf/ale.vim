@@ -4,21 +4,59 @@ if g:diag_backend !=# "ale"
     finish
 endif
 
-let g:ale_linters = {
-\ 'javascript': ['eslint'],
-\ 'cpp': ['clangd'],
-\}
+""""""""""""""""""""
+" LINTERS
+""""""""""""""""""""
 
-let g:ale_fixers = {
-\ '*': ['remove_trailing_lines', 'trim_whitespace'],
-\ 'javascript': ['prettier', 'eslint'],
-\ 'cpp': ['clang-format', 'clangtidy'],
-\}
+let g:ale_hover_cursor = 1
+let g:ale_echo_cursor = 1
+let g:ale_floating_preview = 1
+let g:ale_hover_to_floating_preview = 1
 
-let s:ale_omni_filetypes = [
-\ 'javascript', 'typescript',
-\ 'c', 'cpp'
-\]
+" avoid searching for executable locally (which is slow)
+let g:ale_use_global_executables = get(g:, 'ale_use_global_executables', 1)
+" avoid stuck when editing files by only lint on save
+let g:ale_lint_on_text_changed = 0
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_save = 1
+
+" disable all other linters
+let g:ale_linters_explicit = get(g:, 'ale_linters_explicit', 1)
+" allow local.vim overrride
+let g:ale_linters = get(g:, 'ale_linters', {})
+call extend(g:ale_linters, {
+\   'javascript': ['eslint'],
+\   'c':   ['cc', 'clangd', 'clangtidy'],
+\   'cpp': ['cc', 'clangd', 'clangtidy'],
+\   'python': ['ruff', 'pyright'],
+\}, 'keep')
+
+" cc options
+let g:ale_c_cc_options = '-std=c11 -Wall -Wextra'
+let g:ale_cpp_cc_options = '-std=c++20 -Wall -Wextra'
+
+
+""""""""""""""""""""
+" FIXERS
+""""""""""""""""""""
+
+let g:ale_fixers = get(g:, 'ale_fixers', {})
+call extend(g:ale_fixers, {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['prettier', 'eslint'],
+\   'c':   ['clang-format', 'clangtidy'],
+\   'cpp': ['clang-format', 'clangtidy'],
+\   'python': ['ruff'],
+\   'lua': ['luafmt'],
+\}, 'keep')
+
+" clang-format
+let g:ale_c_clangformat_use_local_file = 1
+
+
+""""""""""""""""""""
+" COMPLETIONS
+""""""""""""""""""""
 
 let g:ale_fix_on_save = 0
 " show omnifunc completion while typing
@@ -27,14 +65,39 @@ let g:ale_completion_enabled = get(g:, 'ale_completion_enabled', 1)
 let g:ale_completion_autoimport = 1
 let g:ale_list_window_size = 5
 
+" set linter name aliases
+let g:ale_linter_aliases = get(g:, 'ale_linter_aliases', {})
+call extend(g:ale_linter_aliases, {
+\   'Dockerfile': 'dockerfile',
+\   'bash': 'sh',
+\   'csh': 'sh',
+\   'javascriptreact': ['javascript', 'jsx'],
+\   'plaintex': 'tex',
+\   'ps1': 'powershell',
+\   'rmarkdown': 'r',
+\   'rmd': 'r',
+\   'systemverilog': 'verilog',
+\   'typescriptreact': ['typescript', 'tsx'],
+\   'vader': ['vim', 'vader'],
+\   'verilog_systemverilog': ['verilog_systemverilog', 'verilog'],
+\   'vimwiki': 'markdown',
+\   'vue': ['vue', 'javascript'],
+\   'xsd': ['xsd', 'xml'],
+\   'xslt': ['xslt', 'xml'],
+\   'zsh': 'sh',
+\}, 'keep')
+
 " only register ale omnifunc in some languages, triggered with <C-x><C-o>
 augroup AleOmni
   autocmd!
-  execute 'autocmd FileType ' .. join(s:ale_omni_filetypes, ',') .. ' call s:AleSetOmni()'
+  autocmd FileType * call s:AleSetOmni()
 augroup END
 
 function! s:AleSetOmni() abort
-    if exists('g:loaded_ale')
+    let loaded_ale = get(g:, 'loaded_ale', 0) " ale internal flag
+    let ft_mapped = get(g:ale_linter_aliases, &filetype, &filetype)
+    let ft_enabled = has_key(g:ale_linters, ft_mapped)
+    if loaded_ale && ft_enabled
         setlocal omnifunc=ale#completion#OmniFunc
     endif
 endfunction
@@ -51,8 +114,8 @@ nmap     <silent> <leader>ca <CMD>ALECodeAction<CR>
 nmap     <silent> <leader>rn <CMD>ALERename<CR>
 nmap     <silent> <leader>rf <CMD>ALEFix<CR>
 
-imap     <silent> <C-Space> <Plug>(ale_complete)
-imap     <silent> <C-@>     <Plug>(ale_complete)
+inoremap <silent> <C-Space> <C-\><C-O>:ALEComplete<CR>
+inoremap <silent> <C-@>     <C-\><C-O>:ALEComplete<CR>
 
 function! ALESearchSymbolPrompt()
     let l:sym = input("SymbolToSearch: ")
@@ -76,10 +139,6 @@ nnoremap <silent> ]d         <Plug>(ale_next_wrap)<Plug>(ale_detail)
 " APPEARANCE
 """"""""""""""""""""
 
-let g:ale_hover_cursor = 1
-let g:ale_echo_cursor = 1
-let g:ale_floating_preview = 1
-let g:ale_hover_to_floating_preview = 1
 let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
 let g:ale_sign_column_always = 1
 let g:ale_echo_msg_format = '[%linter%] (%code) %%s [%severity%]'
