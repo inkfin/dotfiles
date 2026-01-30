@@ -118,5 +118,13 @@ if !PluginDisabled("any-jump")
 endif
 
 
+"" AI
+if get(g:, "enable_AI", 0) && v:version >= 900
+
+    Plug 'github/copilot.vim'
+
+endif
+
+
 call plug#end()
 

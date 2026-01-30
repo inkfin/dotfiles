@@ -22,6 +22,9 @@ let g:ale_fixers = {}
 "  'nerdtree'|'netrw'
 let g:explorer_type="nerdtree"
 
+" AI
+let g:enable_AI = 0
+
 " Plugins switch on/off
 "  let g:disable_plugin_{name} = v:true
 
