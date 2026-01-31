@@ -1,0 +1,71 @@
+{
+    "colors.enable": true,
+    "codeLens.enable": true,
+    "codeLens.separator": ":-:",
+    "cursors.nextKey": "<C-j>",
+    "cursors.previousKey": "<C-k>",
+    "explorer.icon.enableNerdfont": true,
+    "explorer.openAction.select.filter":{
+        "filetypes": [
+            "vista",
+            "vista_kind",
+            "qf",
+            "tagbar",
+            "coctree",
+            "minimap"
+        ]
+    },
+    "suggest.floatConfig": {
+        "border": true,
+        "rounded": true,
+        "winblend": 20,
+        "shadow": true
+    },
+    "diagnostic.floatConfig": {
+        "focusable": true,
+        "winblend": 30,
+        "shadow": true
+    },
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextCurrentLineOnly": false,
+    "diagnostic.virtualTextFormat": " %message",
+    "diagnostic.virtualTextLimitInOneLine": 30,
+    "diagnostic.errorSign": "",
+    "diagnostic.warningSign": "⚠",
+    "diagnostic.infoSign": "",
+    "diagnostic.hintSign": "",
+    "links.highlight": true,
+    "links.tooltip": true,
+    "list.floatPreview": true,
+    "suggest.noselect": true,
+    "suggest.virtualText": true,
+    "workspace.rootPatterns": [".git", ".svn", ".hg", ".vscode", ".project", ".root", ".idea", ".vim", ".cargo"],
+    "workspace.bottomUpFiletypes": ["*"],
+    "workspace.ignoredFiletypes": [".DS_Store"],
+    "workspace.ignoredFolders": [
+        "$HOME",
+        "$HOME/.cargo/**",
+        "$HOME/.rustup/**"
+    ],
+    "clangd.compilationDatabaseCandidates": ["${cwd}/.vscode", "${cwd}/build"],
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+    "coc.preferences.enableMessageDialog": true,
+    "coc.preferences.extensionUpdateCheck": "weekly",
+    "snippet.highlight": true,
+    "snippets.ultisnips.pythonPrompt": false,
+    "python.pythonPath": "$HOME/.config/nvim/execute_python.sh",
+    {{if eq .chezmoi.os "darwin" -}}
+    "python.venvPath": "/opt/miniforge/envs",
+    "webview.openCommand": "open -a Safari \"%u\"",
+    {{- end }}
+    {{- if eq .chezmoi.os "linux" -}}
+    "webview.openCommand": "open \"%u\"",
+    {{- end }}
+    "leetcode.enabled": true,
+    "leetcode.language": "cpp",
+    "markdown-preview-enhanced.mathRenderingOption": "MathJax",
+    "markdown-preview-enhanced.previewTheme": "one-dark.css",
+    "markdown-preview-enhanced.mermaidTheme": "default",
+    "translator.engines": ["bing","google","youdao","haici"],
+    "coc.source.vimtex.enable": true
+}
