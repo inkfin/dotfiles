@@ -11,7 +11,7 @@ alias nvc = nvim --server localhost:6789 --remote-ui
 # alias nvim = nn
 
 ## edit config
-let nvim_config = $env.chezmoi-dir | path join "dot_config" "nvim" "init.lua"
+let nvim_config = $env.chezmoi-dir | path join "dot_config" "nvim.lazyvim" "init.lua"
 alias vimrc = nvim $nvim_config
 let nu_config = $env.chezmoi-dir | path join "dot_config" "nushell" "config.nu"
 alias vimnu = nvim $nu_config

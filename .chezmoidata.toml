@@ -3,3 +3,5 @@
 zsh = true
 # input method
 rime = false
+# neovim config dir
+neovim_dir = "nvim.lazyvim"

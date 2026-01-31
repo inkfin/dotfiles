@@ -66,7 +66,7 @@ function vcn { param($file) nvim --cmd 'let g:rime=v:true' $file }
 function nvs { & nvim --listen localhost:6789 --cmd "let safequit=v:true" @args }
 function nvc { & nvim --server localhost:6789 --remote-ui }
 Set-Alias -Name cz -Value 'chezmoi'
-function vimrc { & nvim "$HOME\.local\share\chezmoi\dot_config\nvim\init.lua" }
+function vimrc { & nvim "$HOME\.local\share\chezmoi\dot_config\nvim.lazyvim\init.lua" }
 function vimpwsh { & nvim "$HOME\.local\share\chezmoi\dot_config\Powershell\Microsoft.PowerShell_profile.ps1" }
 function vimrime { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\default.custom.yaml" }
 function custom_phrase { & nvim "$HOME\.local\share\chezmoi\dot_config\Rime\custom_phrase.txt" }

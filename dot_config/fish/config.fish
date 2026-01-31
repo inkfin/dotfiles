@@ -164,7 +164,7 @@ alias cd.. "cd .."
 
 alias matrix "cmatrix -sna"
 
-alias vimrc "vim ~/.local/share/chezmoi/dot_config/nvim/init.lua"
+alias vimrc "nvim ~/.local/share/chezmoi/dot_config/nvim.lazyvim/init.lua"
 alias vimfish "vim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 alias vimzsh "vim ~/.local/share/chezmoi/.zshrc_darwin"
 alias sourcefish "source ~/.config/fish/config.fish"
