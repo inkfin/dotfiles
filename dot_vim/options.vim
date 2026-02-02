@@ -28,15 +28,9 @@ runtime! ftplugin/man.vim
 " Cursor shape: prefer guicursor; fallback to t_SI/t_EI/t_SR (DECSCUSR)
 if !has('nvim')
     " DECSCUSR: 2=block, 5=bar, 4=underline (stable variants)
-    if exists('$TMUX')
-        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>[2 q\<Esc>\\"
-        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>[6 q\<Esc>\\"
-        let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>[4 q\<Esc>\\"
-    else
-        let &t_EI = "\<Esc>[2 q"  " Normal: block
-        let &t_SI = "\<Esc>[6 q"  " Insert: bar
-        let &t_SR = "\<Esc>[4 q"  " Replace: underline
-    endif
+    let &t_EI = "\<Esc>[2 q"  " Normal: block
+    let &t_SI = "\<Esc>[6 q"  " Insert: bar
+    let &t_SR = "\<Esc>[4 q"  " Replace: underline
 
     " cursor mode shape
     set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkon0
