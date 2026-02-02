@@ -8,8 +8,12 @@ endif
 " LINTERS
 """"""""""""""""""""
 
-let g:ale_hover_cursor = 1
-let g:ale_echo_cursor = 1
+let g:ale_echo_cursor  = 1 " show err in echo
+let g:ale_hover_cursor = 0 " show type info in echo
+if !exists('textprop') " no virtual-text
+    let g:ale_virtualtext_cursor = 1  " virtual text
+endif
+" show info in balloons
 let g:ale_floating_preview = 1
 let g:ale_hover_to_floating_preview = 1
 
@@ -114,8 +118,12 @@ nmap     <silent> <leader>ca <CMD>ALECodeAction<CR>
 nmap     <silent> <leader>rn <CMD>ALERename<CR>
 nmap     <silent> <leader>rf <CMD>ALEFix<CR>
 
-inoremap <silent> <C-Space> <C-\><C-O>:ALEComplete<CR>
-inoremap <silent> <C-@>     <C-\><C-O>:ALEComplete<CR>
+" diagnostic
+nmap     <silent> <leader>dd <Plug>(ale_detail)
+
+imap     <silent> <C-Space>  <Plug>(ale_complete)
+imap     <silent> <C-@>      <Plug>(ale_complete)
+
 
 function! ALESearchSymbolPrompt()
     let l:sym = input("SymbolToSearch: ")
@@ -131,8 +139,8 @@ nnoremap <silent> <leader>uD <CMD>ALEToggleBuffer<CR>
 nnoremap          <leader>uf <CMD>let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Global]ALE Fix on Save: " . g:ale_fix_on_save<CR>
 nnoremap          <leader>uF <CMD>let b:ale_fix_on_save = get(b:, 'ale_fix_on_save', 0) ? 0 : 1 \| echo "[Buffer]ALE Fix on Save: " . b:ale_fix_on_save<CR>
 
-nnoremap <silent> [d         <Plug>(ale_previous_wrap)<Plug>(ale_detail)
-nnoremap <silent> ]d         <Plug>(ale_next_wrap)<Plug>(ale_detail)
+nmap     <silent> [d         <Plug>(ale_previous_wrap)
+nmap     <silent> ]d         <Plug>(ale_next_wrap)
 
 
 """"""""""""""""""""
