@@ -1,4 +1,9 @@
-Host github.com
+# ssh config
+#
+# Note:
+#   When using * matching, remember put them first since latter match will overwrite it
+
+Host *.github.com
   User git
   IdentityFile ~/.ssh/id_ed25519
   IdentitiesOnly yes
