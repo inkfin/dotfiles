@@ -243,6 +243,8 @@ if vim.fn.has("wsl") == 1 then
         }
     end
 end
+-- wsl open links with `wslview`
+--  For debian install wslu
 
 --- mouse menus
 vim.cmd([[

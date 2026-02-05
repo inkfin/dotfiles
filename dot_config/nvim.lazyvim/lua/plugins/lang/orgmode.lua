@@ -58,12 +58,9 @@ return {
                 ["core.dirman"] = {
                     config = {
                         workspaces = {
-                            -- {{ if eq .chezmoi.os "darwin" }}
-                            worknotes = "~/LocalDocuments/WorkNotes", -- macos
-                            -- {{ else }}
-                            worknotes = "~/Documents/WorkNotes", -- windows/linux
-                            -- {{ end }}
-                            studynotes = "~/Documents/StudyNotes",
+                            homenotes = "~/Notes/HomeNotes",
+                            worknotes = "~/Notes/WorkNotes",
+                            studynotes = "~/Notes/StudyNotes",
                         },
                     },
                 },
@@ -130,7 +127,7 @@ return {
             -- Neorg prefix
             { "<localleader>;",  mode = { "n" }, ":Neorg ",                 desc = "Neorg command",     ft = "norg" },
             -- workspaces
-            { "<leader>on", mode = { "n" }, "<CMD>Neorg workspace worknotes<CR>", desc = "Norg worknotes"},
+            { "<leader>on",      mode = { "n" }, "<CMD>Neorg workspace homenotes<CR>", desc = "Norg worknotes"},
             { "<localleader>or", mode = { "n" }, "<CMD>Neorg return<CR>",   desc = "Norg return",       ft = "norg" },
             { "<localleader>ow", mode = { "n" }, ":Neorg workspace ",       desc = "Norg workspace",    ft = "norg" },
             { "<localleader>oi", mode = { "n" }, "<CMD>Neorg index<CR>",    desc = "Norg index",        ft = "norg" },
