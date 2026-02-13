@@ -182,15 +182,6 @@ vim.g.zen_height = 1
 
 --- MacOS ---
 if vim.fn.has("mac") == 1 then
-    -- specify the python parser path
-    local intel_brew = "/usr/local/bin/python3"
-    local arm_brew = "/opt/homebrew/bin/python3"
-    if vim.g.file_exists(arm_brew) then
-        vim.g.python3_host_prog = arm_brew
-    else
-        vim.g.python3_host_prog = intel_brew
-    end
-
     -- " === ybian/smartim ===
     -- "    some people reported that it is slow while editing with vim-multiple-cursors, to fix this, put this in .vimrc:
     -- let g:smartim_default = 'com.apple.keylayout.ABC'
