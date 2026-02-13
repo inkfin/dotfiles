@@ -8,9 +8,10 @@ end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
-    -- rocks = {
-    --     hererocks = true,
-    -- },
+    rocks = {
+        -- disable hererocks on windows cauz its not usable
+        hererocks = vim.fn.has("win32") == 0,
+    },
     spec = {
         -- add LazyVim and import its plugins
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
