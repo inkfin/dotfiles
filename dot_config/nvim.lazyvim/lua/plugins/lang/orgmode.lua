@@ -25,7 +25,7 @@ return {
     },
     {
         "nvim-neorg/neorg",
-        version = false,
+        version = "*",
         lazy = false,
         ft = "norg",
         dependencies = {

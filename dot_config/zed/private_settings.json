@@ -38,6 +38,13 @@
           ]
         }
       ]
+    },
+    {
+      "host": "ink.devcloud.woa.com",
+      "username": "finkzhang",
+      "port": 36000,
+      "args": [],
+      "projects": []
     }
   ],
   "git_panel": {
@@ -83,10 +90,8 @@
   },
   "restore_on_startup": "last_session",
   "edit_predictions": {
+    "provider": "zed",
     "disabled_globs": ["*.log"]
-  },
-  "features": {
-    "edit_prediction_provider": "zed"
   },
   "icon_theme": "Zed (Default)",
   "base_keymap": "VSCode",
