@@ -8,11 +8,17 @@ SRC_DIRS := src
 INCLUDE_DIR := include
 TARGET_NAME := app
 
-CFLAGS_COMMON := -Wall -Wextra -Wpedantic -std=c11
-CFLAGS_DEBUG := -O0 -g -ggdb -fsanitize=address
+CFLAGS := -std=c11 -Wall -Wextra
+CFLAGS_DEBUG := -O0 -g -ggdb \
+				-fsanitize=address,undefined \
+			    -fno-omit-frame-pointer \
+				-fstack-protector-strong \
+				-fno-common
 CFLAGS_RELEASE := -O2 -DNDEBUG
 
 LDFLAGS :=
+LDFLAGS_DEBUG := -fsanitize=address,undefined
+
 LDLIBS :=
 
 
@@ -24,8 +30,8 @@ SRC := $(shell find $(SRC_DIRS) -name '*.c')
 
 BUILD_DIR := target
 OBJ_DIR   := $(BUILD_DIR)/objs
-BIN_DIR   := $(BUILD_DIR)/bin
 DEP_DIR   := $(BUILD_DIR)/deps
+BIN_DIR   := $(BUILD_DIR)
 
 OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst %.c,$(DEP_DIR)/%.d,$(SRC))
@@ -43,10 +49,11 @@ all: debug
 # Build Modes
 # ------------------------------------------------------------
 
-debug:   CFLAGS := $(CFLAGS_COMMON) $(CFLAGS_DEBUG)
-release: CFLAGS := $(CFLAGS_COMMON) $(CFLAGS_RELEASE)
-
+debug:   CFLAGS += $(CFLAGS_DEBUG)
+debug:   LDFLAGS += $(LDFLAGS_DEBUG)
 debug:   $(TARGET)
+
+release: CFLAGS += $(CFLAGS_RELEASE)
 release: $(TARGET)
 
 
