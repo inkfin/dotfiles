@@ -60,6 +60,7 @@ local template_dirs = {
     vim.fn.expand("$HOME/.config/nvim/template"),
     vim.fn.expand("$HOME/template"),
     vim.fn.expand("$HOME/template/cmake_project"),
+    vim.fn.expand("$HOME/template/make_project"),
 }
 
 local function find_template(filepath)
