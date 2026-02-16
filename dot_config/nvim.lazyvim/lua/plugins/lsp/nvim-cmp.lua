@@ -100,9 +100,9 @@ return {
                 { name = "luasnip", group_index = 1 },
                 { name = "nvim_lsp", group_index = 1 },
                 { name = "emoji", group_index = 1 },
-                { name = "path", group_index = 2 },
-                { name = "buffer", group_index = 2 },
-                { name = "dictionary", group_index = 3 },
+                -- { name = "path", group_index = 2 }, -- use <C-x><C-f>
+                -- { name = "buffer", group_index = 2 }, -- use <C-x><C-b>
+                -- { name = "dictionary", group_index = 3 }, -- use <C-x><C-k>
             }
             -- if not _G.disable_plugins.copilot then
             --     table.insert(source_list, { name = "copilot" })
