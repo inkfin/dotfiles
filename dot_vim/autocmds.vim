@@ -12,7 +12,7 @@ if get(g:, 'transparent', 0)
     augroup TransparentColorscheme
         autocmd!
         autocmd ColorScheme * highlight Normal  ctermbg=None guibg=NONE
-        autocmd ColorScheme * highlight Comment ctermfg=DarkGrey ctermbg=Black guifg=#a8a8a8 guibg=#1b1b1b
+        "autocmd ColorScheme * highlight Comment ctermfg=DarkGrey ctermbg=Black guifg=#a8a8a8 guibg=#1b1b1b
         autocmd ColorScheme * hi NormalFloat  ctermbg=NONE guibg=NONE
         autocmd ColorScheme * hi SignColumn   ctermbg=NONE guibg=NONE
         autocmd ColorScheme * hi LineNr       ctermbg=NONE guibg=NONE
