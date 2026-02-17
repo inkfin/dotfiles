@@ -11,6 +11,12 @@ CompileFlags:
     -std=c99,
     -Wall,
     -Wextra,
+    -Wshadow,
+    -Wconversion,
+    -Wformat=2,
+    -Wundef,
+    -Wmissing-prototypes,
+    -Wimplicit-fallthrough,
   ]
   Compiler: clang
 

@@ -8,10 +8,11 @@ SRC_DIRS := src
 INCLUDE_DIR := include
 TARGET_NAME := app
 
-CFLAGS := -std=c11 -Wall -Wextra
-CFLAGS_DEBUG := -O0 -g -ggdb \
+CFLAGS := -std=gnu11 -Wall -Wextra \
+		  -Wall -Wextra -Wshadow -Wconversion -Wformat=2 -Wundef -Wmissing-prototypes -Wimplicit-fallthrough
+CFLAGS_DEBUG := -O0 -g3 -ggdb \
 				-fsanitize=address,undefined \
-			    -fno-omit-frame-pointer \
+				-fno-omit-frame-pointer \
 				-fstack-protector-strong \
 				-fno-common
 CFLAGS_RELEASE := -O2 -DNDEBUG
