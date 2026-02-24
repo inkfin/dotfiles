@@ -143,6 +143,7 @@ return {
         "kkew3/jieba.vim",
         ft = filetypes,
         tag = "v1.0.5",
+        enabled = vim.fn.has("python3") == 1,
         build = "./build.sh",
         init = function()
             vim.g.jieba_vim_lazy = 1
