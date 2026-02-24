@@ -150,12 +150,12 @@ return {
         end,
         keys = {
             -- stylua: ignore start
-            { "b", mode = { "n", "x" }, "<Plug>Jieba_b", silent = true, noremap = true, },
-            { "w", mode = { "n", "x" }, "<Plug>Jieba_w", silent = true, noremap = true, },
-            { "e", mode = { "n", "x" }, "<Plug>Jieba_e", silent = true, noremap = true, },
-            { "B", mode = { "n", "x" }, "<Plug>Jieba_B", silent = true, noremap = true, },
-            { "W", mode = { "n", "x" }, "<Plug>Jieba_W", silent = true, noremap = true, },
-            { "E", mode = { "n", "x" }, "<Plug>Jieba_E", silent = true, noremap = true, },
+            { "b", mode = { "n", "x" }, "<Plug>Jieba_b", silent = true },
+            { "w", mode = { "n", "x" }, "<Plug>Jieba_w", silent = true },
+            { "e", mode = { "n", "x" }, "<Plug>Jieba_e", silent = true },
+            { "B", mode = { "n", "x" }, "5<Plug>Jieba_B", silent = true },
+            { "W", mode = { "n", "x" }, "5<Plug>Jieba_W", silent = true },
+            { "E", mode = { "n", "x" }, "5<Plug>Jieba_E", silent = true },
             -- stylua: ignore end
         },
     },
