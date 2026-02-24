@@ -43,9 +43,9 @@ map("v", "Y", '"+y', { silent = true, noremap = true })
 -- better movements
 -- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 -- map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-map({ "n", "x" }, "W", "5w", { silent = true })
-map({ "n", "x" }, "E", "5e", { silent = true })
-map({ "n", "x" }, "B", "5b", { silent = true })
+-- map({ "n", "x" }, "W", "5w", { silent = true })
+-- map({ "n", "x" }, "E", "5e", { silent = true })
+-- map({ "n", "x" }, "B", "5b", { silent = true })
 map({ "v", "o" }, "H", "^", { desc = "Use 'H' as '^'" })
 map({ "v", "o" }, "L", "$<left>", { desc = "Use 'L' as '$'" })
 

@@ -141,6 +141,7 @@ return {
     },
     {
         "kkew3/jieba.vim",
+        ft = filetypes,
         tag = "v1.0.5",
         build = "./build.sh",
         init = function()
@@ -153,9 +154,9 @@ return {
             { "b", mode = { "n", "x" }, "<Plug>Jieba_b", silent = true },
             { "w", mode = { "n", "x" }, "<Plug>Jieba_w", silent = true },
             { "e", mode = { "n", "x" }, "<Plug>Jieba_e", silent = true },
-            { "B", mode = { "n", "x" }, "5<Plug>Jieba_B", silent = true },
-            { "W", mode = { "n", "x" }, "5<Plug>Jieba_W", silent = true },
-            { "E", mode = { "n", "x" }, "5<Plug>Jieba_E", silent = true },
+            { "B", mode = { "n", "x" }, "<Plug>Jieba_B", silent = true },
+            { "W", mode = { "n", "x" }, "<Plug>Jieba_W", silent = true },
+            { "E", mode = { "n", "x" }, "<Plug>Jieba_E", silent = true },
             -- stylua: ignore end
         },
     },
