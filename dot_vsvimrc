@@ -52,10 +52,10 @@ let g:maplocalleader=","
 noremap <LEADER><CR> :nohlsearch<CR>
 
 nmap Q :q<CR>
-nmap W 5w
-nmap B 5b
-nmap E 5e
 
+"nmap W 5w
+"nmap B 5b
+"nmap E 5e
 vnoremap H ^
 vnoremap L $<left>
 

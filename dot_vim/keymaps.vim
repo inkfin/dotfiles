@@ -16,11 +16,11 @@ xnoremap <silent> p "_dP
 " Delete to black hole register with x
 noremap  <silent> x "_x
 
+"noremap  <silent> W 5w
+"noremap  <silent> B 5b
+"noremap  <silent> E 5e
 xnoremap <silent> H ^
 xnoremap <silent> L $<left>
-noremap  <silent> W 5w
-noremap  <silent> B 5b
-noremap  <silent> E 5e
 
 " Navigate between windows
 nnoremap <silent> <C-H> <C-w>h

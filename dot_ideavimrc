@@ -66,9 +66,9 @@ sethandler <C-L> a:vim
 sethandler <A-J> a:vim
 
 " Custom mapping
-noremap  W 5w
-noremap  B 5b
-noremap  E 5e
+"noremap  W 5w
+"noremap  B 5b
+"noremap  E 5e
 
 nnoremap H gT
 nnoremap L gt
