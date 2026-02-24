@@ -145,22 +145,52 @@ return {
         },
     },
     {
-        "noearc/jieba.nvim",
-        ft = filetypes,
-        dependencies = { { "noearc/jieba-lua" } },
+        "kkew3/jieba.vim",
+        tag = "v1.0.5",
+        build = "./build.sh",
+        init = function()
+            vim.g.jieba_vim_lazy = 1
+            -- vim.g.jieba_vim_user_dict = vim.fn.stdpath("data") .. "/spell/"
+            vim.g.jieba_vim_keymap = 1
+        end,
         keys = {
             -- stylua: ignore start
-            { "b", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_b() end, silent = true, noremap = true, },
-            { "w", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_w() end, silent = true, noremap = true, },
-            { "e", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_e() end, silent = true, noremap = true, },
-            { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
-            { "W", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_W() end end, silent = true, noremap = true, },
-            { "E", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_E() end end, silent = true, noremap = true, },
-
-            { "ciw", mode = { "n" }, function() require("jieba_nvim").change_w() end, silent = true, noremap = false, },
-            { "diw", mode = { "n" }, function() require("jieba_nvim").delete_w() end, },
-            { "viw", mode = { "n" }, function() require("jieba_nvim").select_w() end, },
+            { "b", mode = { "n", "x" }, "<Plug>Jieba_b", silent = true, noremap = true, },
+            { "w", mode = { "n", "x" }, "<Plug>Jieba_w", silent = true, noremap = true, },
+            { "e", mode = { "n", "x" }, "<Plug>Jieba_e", silent = true, noremap = true, },
+            { "B", mode = { "n", "x" }, "<Plug>Jieba_B", silent = true, noremap = true, },
+            { "W", mode = { "n", "x" }, "<Plug>Jieba_W", silent = true, noremap = true, },
+            { "E", mode = { "n", "x" }, "<Plug>Jieba_E", silent = true, noremap = true, },
             -- stylua: ignore end
         },
     },
+    -- {
+    --     "neo451/jieba.nvim",
+    --     ft = filetypes,
+    --     config = function()
+    --         local Jieba = require("jieba.jieba").Jieba
+    --         local Motion = require("wordmotion.jieba").Motion
+    --         local motion = Motion({
+    --             jieba = Jieba({
+    --                 paths = {
+    --                 },
+    --             }),
+    --         })
+    --         motion:set_keymaps()
+    --     end,
+    --     keys = {
+    --         -- stylua: ignore start
+    --         { "b", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_b() end, silent = true, noremap = true, },
+    --         { "w", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_w() end, silent = true, noremap = true, },
+    --         { "e", mode = { "n", "x" }, function() require("jieba_nvim").wordmotion_e() end, silent = true, noremap = true, },
+    --         { "B", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_B() end end, silent = true, noremap = true, },
+    --         { "W", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_W() end end, silent = true, noremap = true, },
+    --         { "E", mode = { "n", "x" }, function() for _ = 1,5 do require("jieba_nvim").wordmotion_E() end end, silent = true, noremap = true, },
+
+    --         { "ciw", mode = { "n" }, function() require("jieba_nvim").change_w() end, silent = true, noremap = false, },
+    --         { "diw", mode = { "n" }, function() require("jieba_nvim").delete_w() end, },
+    --         { "viw", mode = { "n" }, function() require("jieba_nvim").select_w() end, },
+    --         -- stylua: ignore end
+    --     },
+    -- },
 }
