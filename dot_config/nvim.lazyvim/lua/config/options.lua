@@ -131,10 +131,6 @@ opt.fillchars = {
 -- display dots for spaces
 vim.opt.listchars:append("space:·")
 
--- signature help
-vim.lsp.handlers["textDocument/signatureHelp"] =
-    vim.lsp.with(vim.lsp.handlers.signature_help, { silent = true, focusable = false })
-
 -- Folding
 if vim.fn.has("nvim-0.10") == 1 then
     opt.smoothscroll = true
@@ -175,6 +171,7 @@ vim.g.terminal_color_14 = "#9AEDFE"
 
 vim.g.zen_width = 100
 vim.g.zen_height = 1
+
 
 -----------------------------
 -- Platform Specific Settings
@@ -315,3 +312,13 @@ vim.g.support_image = not _G.disable_plugins.image -- image support
     and not vim.wo.diff -- disable this plugin if in diff mode
     and vim.fn.has("win32") ~= 1 -- sorry, no windows for now
     and not vim.g.neovide -- neovide doesn't support image
+
+
+-----------------------------
+-- Language Server Settings
+-----------------------------
+
+-- Set to "basedpyright" to use basedpyright instead of pyright.
+vim.g.lazyvim_python_lsp = "basedpyright"
+
+
