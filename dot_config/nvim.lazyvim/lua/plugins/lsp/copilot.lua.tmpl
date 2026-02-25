@@ -6,6 +6,7 @@ return {
     -- {{- if eq .profile "work" }}
     {
         "git@git.woa.com:aurorani/gongfeng-copilot.git",
+        lazy = false,  -- always load
     },
     -- {{- else }}
     {
