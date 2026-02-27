@@ -20,7 +20,7 @@ return {
                     settings = {
                         basedpyright = {
                             analysis = {
-                                typeCheckingMode = "recommended",
+                                typeCheckingMode = "basic",
                                 diagnosticMode = "workspace",
                             },
                         },
