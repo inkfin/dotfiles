@@ -31,7 +31,7 @@ return {
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
             "nvim-neorg/lua-utils.nvim",
-            "nvim-neorg/tree-sitter-norg",
+            { "nvim-neorg/tree-sitter-norg", enabled = not vim.fn.has("win32") },
         },
         -- treesitter fix <https://github.com/nvim-neorg/neorg/issues/1715#issuecomment-3524433687>
         build = function()
