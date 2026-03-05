@@ -78,6 +78,10 @@ set t_vb=
 set incsearch
 set hlsearch
 exec "nohlsearch"
+if executable('rg')
+    " use rg for grep
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+endif
 
 " fold settings
 set foldlevelstart=999

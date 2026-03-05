@@ -36,9 +36,8 @@ nnoremap <silent> <M-down>  <C-W>-
 nnoremap <silent> <M-up>    <C-W>+
 
 " quickfix window
-nnoremap <silent> <leader>xq <CMD>copen<CR>
-nnoremap <silent> <leader>xl <CMD>lopen<CR>
-nnoremap <silent> <leader>xx <CMD>lopen<CR>
+nnoremap <silent> <leader>xq <CMD>execute getqflist({'winid':1}).winid    ? 'cclose' : 'copen'<CR>
+nnoremap <silent> <leader>xx <CMD>execute getloclist(0,{'winid':1}).winid ? 'lclose' : 'lopen'<CR>
 
 " navigate between buffers & tabs
 nnoremap <silent> H          <CMD>bp<CR>
