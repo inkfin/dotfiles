@@ -1,0 +1,5 @@
+{{- if eq .chezmoi.os "windows" }}
+
+{{ include "dot_config/zed/private_settings.json" }}
+
+{{- end }}
