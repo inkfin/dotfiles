@@ -1,5 +1,7 @@
 {{- if eq .chezmoi.os "windows" }}
+{{- if .external.rime }}
 
 {{ .chezmoi.homeDir }}/.config/Rime/
 
+{{- end}}
 {{- end}}
