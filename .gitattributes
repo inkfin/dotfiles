@@ -1,0 +1,28 @@
+* text=auto eol=lf
+
+# Windows-specific scripts / solutions
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.sln  text eol=crlf
+*.vcxproj text eol=crlf
+
+# binary files: never touch line endings
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.7z   binary
+*.exe  binary
+*.dll  binary
+*.so   binary
+*.dylib binary
+*.a    binary
+*.lib  binary
+*.pdb  binary
+*.ttf  binary
+*.otf  binary
+
