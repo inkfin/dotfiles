@@ -26,20 +26,16 @@
   {
     "context": "Editor && (vim_mode == normal || vim_mode == visual)",
     "bindings": {
-      // clipboard
-      // "x": ["workspace::SendKeystrokes", "\"_x"],
-      // "p": ["workspace::SendKeystrokes", "\"_dP"],
       // Snake
       "s": "vim::PushSneak",
       "Shift-s": "vim::PushSneakBackward",
+      // Tabs
       "H": "vim::GoToPreviousTab",
       "L": "vim::GoToTab",
       "space b d": "pane::CloseActiveItem",
       "space b p": "pane::TogglePinTab",
-      // "W": ["workspace::SendKeystrokes", "w w w w w"],
-      // "B": ["workspace::SendKeystrokes", "b b b b b"],
       "space space": "file_finder::Toggle",
-      "space /": "project_search::ToggleFocus",
+      "space /": "pane::DeploySearch",
       "space a a": "agent::ToggleFocus",
     },
   },
