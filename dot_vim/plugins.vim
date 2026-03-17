@@ -3,9 +3,14 @@
 """"""""""""""""""""
 
 " Install vim-plug if not found
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if has('nvim')
+    let s:plug_path = stdpath('data') . '/site/autoload/plug.vim'
+else
+    let s:plug_path = expand('~/.vim/autoload/plug.vim')
+endif
+if empty(glob(s:plug_path))
+    silent execute '!curl -fLo' . shellescape(s:plug_path) .
+        \ ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
