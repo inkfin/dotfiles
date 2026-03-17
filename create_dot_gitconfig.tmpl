@@ -32,10 +32,11 @@
 [core]
 {{- if eq .chezmoi.os "windows" }}
     autocrlf = true
+    safecrlf = warn
 {{- else }}
     autocrlf = input
-{{- end }}
     safecrlf = true
+{{- end }}
     excludesfile = ~/.gitignore_global
     pager = delta
 [commit]
