@@ -49,12 +49,6 @@ map("v", "Y", '"+y', { silent = true, noremap = true })
 map({ "v", "o" }, "H", "^", { desc = "Use 'H' as '^'" })
 map({ "v", "o" }, "L", "$<left>", { desc = "Use 'L' as '$'" })
 
--- Move to window using the \ hjkl keys
-map("n", "\\h", "<C-w>h", { desc = "Go to left window", remap = true })
-map("n", "\\j", "<C-w>j", { desc = "Go to lower window", remap = true })
-map("n", "\\k", "<C-w>k", { desc = "Go to upper window", remap = true })
-map("n", "\\l", "<C-w>l", { desc = "Go to right window", remap = true })
-
 -- buffers
 if Util.has("bufferline.nvim") then
     map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
@@ -158,4 +152,4 @@ function JumpToNextPlaceholder()
     end
 end
 
-map("n", "]8", JumpToNextPlaceholder, { desc = "Replace next placeholder", noremap = true, silent = true })
+map("n", "]p", JumpToNextPlaceholder, { desc = "Replace next placeholder", noremap = true, silent = true })
