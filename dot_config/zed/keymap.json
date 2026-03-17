@@ -7,63 +7,73 @@
 // from the command palette.
 [
   {
-    "context": "Workspace",
-    "bindings": {
-      // "shift shift": "file_finder::Toggle"
-    }
-  },
-  {
     "context": "Editor",
     "bindings": {
-      "ctrl-s": "workspace::Save"
-    }
+      "ctrl-s": "workspace::Save",
+    },
+  },
+  {
+    "context": "Editor && !menu",
+    "bindings": {
+      "ctrl-shift-c": "editor::Copy",
+      "ctrl-shift-v": "editor::Paste",
+    },
   },
   {
     "context": "Editor && (vim_mode == insert || vim_mode == normal || vim_mode == visual)",
-    "bindings": {}
+    "bindings": {},
   },
   {
     "context": "Editor && (vim_mode == normal || vim_mode == visual)",
     "bindings": {
+      // clipboard
+      // "x": ["workspace::SendKeystrokes", "\"_x"],
+      // "p": ["workspace::SendKeystrokes", "\"_dP"],
+      // Snake
+      "s": "vim::PushSneak",
+      "Shift-s": "vim::PushSneakBackward",
       "H": "vim::GoToPreviousTab",
       "L": "vim::GoToTab",
       "space b d": "pane::CloseActiveItem",
       "space b p": "pane::TogglePinTab",
-      "W": ["workspace::SendKeystrokes", "w w w w w"],
-      "B": ["workspace::SendKeystrokes", "b b b b b"],
+      // "W": ["workspace::SendKeystrokes", "w w w w w"],
+      // "B": ["workspace::SendKeystrokes", "b b b b b"],
       "space space": "file_finder::Toggle",
-      "space /": "project_search::SearchInNew",
-      "space a a": "agent::ToggleFocus"
-    }
+      "space /": "project_search::ToggleFocus",
+      "space a a": "agent::ToggleFocus",
+    },
   },
   {
     "context": "Editor && (vim_mode == normal || vim_mode == visual) && (edit_prediction || edit_prediction_conflict)",
     "bindings": {
       "¬": "editor::AcceptEditPrediction",
-      "alt-l": "editor::AcceptEditPrediction"
-    }
+      "alt-l": "editor::AcceptEditPrediction",
+    },
   },
   {
-    "context": "Editor && vim_mode == insert",
-    "bindings": {}
+    "context": "Editor && (vim_mode == insert)",
+    "bindings": {},
   },
   {
-    "context": "Editor && vim_mode == normal",
+    "context": "Editor && (vim_mode == normal)",
     "bindings": {
+      // cut
+      "x": "editor::Delete",
       "g r": "editor::FindAllReferences",
       "space h": "editor::Hover",
       "space r n": "editor::Rename",
       "space r f": "editor::Format",
       "space c a": "editor::ToggleCodeActions",
-      "space e": "vim::ToggleProjectPanelFocus"
-    }
+      "space s s": "project_symbols::Toggle",
+      "space e": "vim::ToggleProjectPanelFocus",
+    },
   },
   {
-    "context": "Editor && vim_mode == visual",
+    "context": "Editor && (vim_mode == visual)",
     "bindings": {
       "L": "editor::SelectToEndOfLine",
       "H": "editor::SelectToBeginningOfLine",
-      "space r f": "editor::FormatSelections"
-    }
-  }
+      "space r f": "editor::FormatSelections",
+    },
+  },
 ]

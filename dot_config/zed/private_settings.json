@@ -7,6 +7,26 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "indent_guides": {
+    "background_coloring": "disabled",
+    "coloring": "fixed"
+  },
+  "preferred_line_length": 120,
+  "soft_wrap": "bounded",
+  "cursor_blink": false,
+  "scroll_beyond_last_line": "one_page",
+  // vim settings: https://zed.dev/docs/vim
+  // text objects: https://zed.dev/docs/vim#tree-sitter
+  "vim_mode": true,
+  "vim": {
+    "use_smartcase_find": true,
+    "use_system_clipboard": "on_yank",
+    "toggle_relative_line_numbers": true
+  },
+  "command_aliases": {
+    "x": "\"_x",
+    "P": "\"_dP",
+  },
   "wsl_connections": [
     {
       "distro_name": "Ubuntu",
@@ -84,10 +104,10 @@
   },
   "restore_on_startup": "last_session",
   "edit_predictions": {
-    "provider": "zed",
+    "provider": "copilot",
     "disabled_globs": ["*.log"],
   },
-  "icon_theme": "Zed (Default)",
+  "icon_theme": "Material Icon Theme",
   "base_keymap": "VSCode",
   "ui_font_size": 14.0,
   "buffer_font_size": 13.0,
@@ -96,9 +116,6 @@
     "light": "One Light",
     "dark": "One Dark",
   },
-  // vim settings: https://zed.dev/docs/vim
-  // text objects: https://zed.dev/docs/vim#tree-sitter
-  "vim_mode": true,
   "languages": {
     "Python": {
       "language_servers": ["!basedpyright", "!pyright", "ty", "ruff"],
