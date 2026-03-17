@@ -168,3 +168,4 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # scoop
 # . "$($(Get-Item $(Get-Command scoop).Path).Directory.Parent.FullName)\apps\scoop-completion\current\add-profile-content.ps1"
 Import-Module scoop-completion
+. ([ScriptBlock]::Create((& scoop-search --hook | Out-String)))
