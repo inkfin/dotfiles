@@ -6,7 +6,17 @@ return {
         -- cursor flickering bug (trace: https://github.com/folke/noice.nvim/issues/923)
         -- commit = "d9328ef",
         enabled = not (vim.g.started_by_firenvim or _G.disable_plugins.noice),
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
+        },
         opts = {
+            signature = {
+                enabled = true,
+                auto_open = {
+                    enabled = true,
+                },
+            },
             views = {
                 cmdline_popup = {
                     position = {
@@ -21,8 +31,9 @@ return {
                     },
                 },
             },
+            ---@type NoicePresets
             preset = {
-                cmdline_output_to_split = true,
+                bottom_search = true, -- use a classic bottom cmdline for search
             },
             -- disable some messages
             routes = {
@@ -68,7 +79,7 @@ return {
             fps = 60,
             timeout = 3500,
             render = "wrapped-compact", -- default, minimal, simple, compact, wrapped-compact
-            stages = "fade", -- fade_in_slide_out, fade, slide, static
+            stages = "static", -- fade_in_slide_out, fade, slide, static
         },
     },
 }
