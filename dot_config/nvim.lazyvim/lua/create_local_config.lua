@@ -19,6 +19,7 @@ _G.disable_plugins = {
     --cmake = true,
     --python = true,
     --rust = true,
+    c3 = true,
     typescript = true,
     go = true,
     -- shaders
