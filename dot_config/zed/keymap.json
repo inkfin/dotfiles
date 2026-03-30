@@ -40,7 +40,7 @@
     },
   },
   {
-    "context": "Editor && (vim_mode == normal || vim_mode == visual) && (edit_prediction || edit_prediction_conflict)",
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && (edit_prediction || (edit_prediction && (showing_completions || in_leading_whitespace)))",
     "bindings": {
       "¬": "editor::AcceptEditPrediction",
       "alt-l": "editor::AcceptEditPrediction",
@@ -54,7 +54,6 @@
     "context": "Editor && (vim_mode == normal)",
     "bindings": {
       // cut
-      "x": "editor::Delete",
       "g r": "editor::FindAllReferences",
       "space h": "editor::Hover",
       "space r n": "editor::Rename",

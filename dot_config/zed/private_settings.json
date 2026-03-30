@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "agent_ui_font_size": 14.0,
+  "agent_buffer_font_size": 13.0,
+  "buffer_font_weight": 400.0,
   "indent_guides": {
     "background_coloring": "disabled",
     "coloring": "fixed"
@@ -48,17 +51,7 @@
         {
           "paths": ["/data/workspace"],
         },
-        {
-          "paths": ["/data/workspace/kihan/training/./"],
-        },
       ],
-    },
-    {
-      "host": "ink.devcloud.woa.com",
-      "username": "finkzhang",
-      "port": 36000,
-      "args": [],
-      "projects": [],
     },
   ],
   "git_panel": {
@@ -95,6 +88,13 @@
     "font_family": "FiraCode Nerd Font Mono",
   },
   "agent": {
+    "favorite_models": [
+      {
+        "provider": "copilot_chat",
+        "model": "gpt-5-mini",
+        "enable_thinking": false
+      },
+    ],
     "default_profile": "ask",
     "default_model": {
       "provider": "copilot_chat",
@@ -118,7 +118,7 @@
   },
   "languages": {
     "Python": {
-      "language_servers": ["!basedpyright", "!pyright", "ty", "ruff"],
+      "language_servers": ["basedpyright", "!pyright", "!ty", "ruff"],
     },
   },
   "lsp": {
