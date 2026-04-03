@@ -7,15 +7,20 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "document_folding_ranges": "on",
+  "relative_line_numbers": "enabled",
+  "which_key": {
+    "enabled": true,
+  },
   "agent_ui_font_size": 14.0,
   "agent_buffer_font_size": 13.0,
   "buffer_font_weight": 400.0,
   "indent_guides": {
     "background_coloring": "disabled",
-    "coloring": "fixed"
+    "coloring": "fixed",
   },
   "preferred_line_length": 120,
-  "soft_wrap": "bounded",
+  "soft_wrap": "editor_width",
   "cursor_blink": false,
   "scroll_beyond_last_line": "one_page",
   // vim settings: https://zed.dev/docs/vim
@@ -24,7 +29,7 @@
   "vim": {
     "use_smartcase_find": true,
     "use_system_clipboard": "on_yank",
-    "toggle_relative_line_numbers": true
+    "toggle_relative_line_numbers": true,
   },
   "command_aliases": {
     "x": "\"_x",
@@ -119,6 +124,15 @@
   "languages": {
     "Python": {
       "language_servers": ["basedpyright", "!pyright", "!ty", "ruff"],
+    },
+    "Proto": {
+      "tab_size": 2,
+    },
+    "JSON": {
+      "tab_size": 2,
+    },
+    "JSONC": {
+      "tab_size": 2,
     },
   },
   "lsp": {
