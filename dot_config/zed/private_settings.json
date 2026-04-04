@@ -85,9 +85,10 @@
       "enabled": true,
     },
   },
-  "ensure_final_newline_on_save": false,
-  "remove_trailing_whitespace_on_save": false,
+  "ensure_final_newline_on_save": true,
+  "remove_trailing_whitespace_on_save": true,
   "format_on_save": "off",
+  "formatter": "language_server",
   "terminal": {
     "font_size": 11.0,
     "font_family": "FiraCode Nerd Font Mono",
