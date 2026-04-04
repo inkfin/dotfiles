@@ -7,6 +7,9 @@ require("pack").add("https://github.com/echasnovski/mini.nvim")
 -- Guard: on first launch vim.pack downloads asynchronously; skip if not ready yet.
 if not pcall(require, "mini.surround") then return end
 
+local ok_local, local_cfg = pcall(require, "local")
+local_cfg = ok_local and local_cfg or {}
+
 -- mini.surround ─────────────────────────────────────────────────────────────
 require("mini.surround").setup({
     mappings = {
@@ -76,6 +79,7 @@ require("mini.diff").setup({
 
 -- mini.clues ────────────────────────────────────────────────────────────────
 -- Which-key style popup showing available keymap completions.
+if local_cfg.mini_clue ~= false then
 local clues = require("mini.clue")
 clues.setup({
     triggers = {
@@ -114,6 +118,7 @@ clues.setup({
         { mode = "n", keys = "<leader>s",  desc = "+search" },
         { mode = "n", keys = "<leader>t",  desc = "+tab" },
         { mode = "n", keys = "<leader>u",  desc = "+ui" },
+        { mode = "n", keys = "<leader>y",  desc = "+yazi" },
     },
     window = {
         delay     = 300,
@@ -122,6 +127,7 @@ clues.setup({
         scroll_up   = "<C-u>",
     },
 })
+end -- mini_clue
 
 -- mini.statusline ───────────────────────────────────────────────────────────
 require("mini.statusline").setup({ use_icons = true })

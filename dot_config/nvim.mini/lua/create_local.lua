@@ -13,4 +13,8 @@ M.lang = {
     -- go     = true,
 }
 
+-- ─── UI feature switches ─────────────────────────────────────────────────────
+M.transparent = true   -- transparent terminal background
+M.mini_clue   = true   -- which-key style keymap popup (mini.clue)
+
 return M

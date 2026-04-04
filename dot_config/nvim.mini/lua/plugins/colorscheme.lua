@@ -6,10 +6,13 @@ require("pack").add("https://github.com/folke/tokyonight.nvim")
 local ok, tokyonight = pcall(require, "tokyonight")
 if not ok then return end
 
+local ok_local, local_cfg = pcall(require, "local")
+local_cfg = ok_local and local_cfg or {}
+
 tokyonight.setup({
     style         = "night",   -- night | storm | moon | day
     light_style   = "day",
-    transparent   = true,
+    transparent   = local_cfg.transparent == true,
     terminal_colors = true,
 
     styles = {

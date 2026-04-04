@@ -4,6 +4,8 @@
 --   Custom overrides (nvim.lazyvim/lua/config/autocmds.lua)
 
 local cfg = require("config")
+local ok_local, local_cfg = pcall(require, "local")
+local_cfg = ok_local and local_cfg or {}
 
 local function augroup(name)
     return vim.api.nvim_create_augroup("nvim_mini_" .. name, { clear = true })
@@ -232,17 +234,18 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- Keep LspInlayHint readable and enforce transparent background after colorscheme changes
+-- Keep LspInlayHint readable; optionally enforce transparent background
 vim.api.nvim_create_autocmd("ColorScheme", {
     group = augroup("inlay_hint_hl"),
     pattern = "*",
     callback = function()
         vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#87744d", bg = "NONE" })
-        -- Transparent background
-        vim.api.nvim_set_hl(0, "Normal",       { bg = "NONE", ctermbg = "NONE" })
-        vim.api.nvim_set_hl(0, "NormalNC",     { bg = "NONE", ctermbg = "NONE" })
-        vim.api.nvim_set_hl(0, "NormalFloat",  { bg = "NONE", ctermbg = "NONE" })
-        vim.api.nvim_set_hl(0, "SignColumn",   { bg = "NONE", ctermbg = "NONE" })
-        vim.api.nvim_set_hl(0, "EndOfBuffer",  { bg = "NONE", ctermbg = "NONE" })
+        if local_cfg.transparent then
+            vim.api.nvim_set_hl(0, "Normal",      { bg = "NONE", ctermbg = "NONE" })
+            vim.api.nvim_set_hl(0, "NormalNC",    { bg = "NONE", ctermbg = "NONE" })
+            vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE", ctermbg = "NONE" })
+            vim.api.nvim_set_hl(0, "SignColumn",  { bg = "NONE", ctermbg = "NONE" })
+            vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE", ctermbg = "NONE" })
+        end
     end,
 })

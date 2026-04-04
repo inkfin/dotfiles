@@ -7,7 +7,25 @@ require("pack").add({
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/williamboman/mason.nvim",
     "https://github.com/williamboman/mason-lspconfig.nvim",
+    "https://github.com/chrisgrieser/nvim-lsp-endhints",
 })
+
+--------------------------
+-- nvim-lsp-endhints
+--------------------------
+local ok_endhints, endhints = pcall(require, "lsp-endhints")
+if ok_endhints then
+    endhints.setup({
+        icons = {
+            type      = "󰜁 ",
+            parameter = "󰏪 ",
+        },
+        label = {
+            truncateAtChars = 20,
+            padding         = 1,
+        },
+    })
+end
 
 --------------------------
 -- Diagnostics UI
@@ -58,17 +76,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         map("n", "<leader>cd", vim.diagnostic.open_float,                    "Diagnostics float")
         map("n", "[d",         function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
         map("n", "]d",         function() vim.diagnostic.jump({ count =  1 }) end, "Next diagnostic")
-
-        -- Inlay hints toggle (Neovim 0.10+)
-        if vim.lsp.inlay_hint then
-            map("n", "<leader>uh", function()
-                vim.lsp.inlay_hint.enable(
-                    not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }),
-                    { bufnr = bufnr }
-                )
-            end, "Toggle inlay hints")
-            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-        end
     end,
 })
 

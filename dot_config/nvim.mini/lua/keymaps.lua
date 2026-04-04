@@ -58,7 +58,7 @@ map("n", "<leader>tml",     "<cmd>tabm +<cr>",{ desc = "Move tab right"  })
 --------------------------
 -- Search & view
 --------------------------
-map("n", "<leader><CR>",
+map("n", "<Esc><Esc>",
     "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
     { desc = "Clear hlsearch / diff update / redraw" })
 

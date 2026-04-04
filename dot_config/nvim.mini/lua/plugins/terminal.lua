@@ -75,3 +75,31 @@ vim.keymap.set("n", "<leader>gg", function()
     end
     lazygit:toggle()
 end, { silent = true, desc = "Lazygit" })
+
+-- <leader>yy — yazi file manager (centered float)
+local yazi = Terminal:new({
+    cmd       = "yazi",
+    direction = "float",
+    hidden    = true,
+    float_opts = {
+        border = "rounded",
+        width  = function() return math.floor(vim.o.columns * 0.9) end,
+        height = function() return math.floor(vim.o.lines   * 0.85) end,
+    },
+    on_open = function(term)
+        vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>",
+            { buffer = term.bufnr, silent = true })
+    end,
+})
+
+vim.keymap.set("n", "<leader>yy", function()
+    if vim.fn.executable("yazi") == 0 then
+        vim.notify("yazi not found in PATH", vim.log.levels.ERROR)
+        return
+    end
+    yazi:toggle()
+end, { silent = true, desc = "Yazi file manager" })
+
+-- <C-Q> in any terminal buffer — release cursor (exit terminal mode)
+vim.keymap.set("t", "<C-Q>", "<C-\\><C-n>",
+    { silent = true, desc = "Exit terminal mode" })
