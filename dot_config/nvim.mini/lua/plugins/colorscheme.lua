@@ -1,13 +1,15 @@
 -- ~/.config/nvim.mini/lua/plugins/colorscheme.lua
 -- Theme: tokyonight.nvim
 
+require("pack").add("https://github.com/folke/tokyonight.nvim")
+
 local ok, tokyonight = pcall(require, "tokyonight")
 if not ok then return end
 
 tokyonight.setup({
     style         = "night",   -- night | storm | moon | day
     light_style   = "day",
-    transparent   = false,
+    transparent   = true,
     terminal_colors = true,
 
     styles = {

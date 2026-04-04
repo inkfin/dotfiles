@@ -1,6 +1,12 @@
 -- ~/.config/nvim.mini/lua/plugins/neo-tree.lua
 -- nvim-neo-tree/neo-tree.nvim: file explorer
 
+require("pack").add({
+    "https://github.com/MunifTanjim/nui.nvim",
+    "https://github.com/nvim-neo-tree/neo-tree.nvim",
+    "https://github.com/s1n7ax/nvim-window-picker",
+})
+
 local ok, neotree = pcall(require, "neo-tree")
 if not ok then return end
 

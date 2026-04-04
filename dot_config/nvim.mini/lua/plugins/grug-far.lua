@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/grug-far.lua
 -- MagicDuck/grug-far.nvim: search & replace across files
 
+require("pack").add("https://github.com/MagicDuck/grug-far.nvim")
+
 local ok, grugfar = pcall(require, "grug-far")
 if not ok then return end
 grugfar.setup()

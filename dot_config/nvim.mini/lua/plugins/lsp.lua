@@ -3,6 +3,12 @@
 -- Individual servers live in lua/lang/*.lua
 -- Mason installs missing server binaries automatically.
 
+require("pack").add({
+    "https://github.com/neovim/nvim-lspconfig",
+    "https://github.com/williamboman/mason.nvim",
+    "https://github.com/williamboman/mason-lspconfig.nvim",
+})
+
 --------------------------
 -- Diagnostics UI
 --------------------------
@@ -49,9 +55,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end, "Format buffer")
 
         -- Diagnostics
-        map("n", "<leader>cd", vim.diagnostic.open_float, "Diagnostics float")
-        map("n", "[d",         vim.diagnostic.goto_prev,  "Prev diagnostic")
-        map("n", "]d",         vim.diagnostic.goto_next,  "Next diagnostic")
+        map("n", "<leader>cd", vim.diagnostic.open_float,                    "Diagnostics float")
+        map("n", "[d",         function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
+        map("n", "]d",         function() vim.diagnostic.jump({ count =  1 }) end, "Next diagnostic")
 
         -- Inlay hints toggle (Neovim 0.10+)
         if vim.lsp.inlay_hint then
@@ -83,26 +89,11 @@ mason.setup({
             package_pending     = "➜",
             package_uninstalled = "✗",
         },
+        keymaps = {
+            toggle_help = "?",   -- default g? conflicts with mini.clue wait-for-next-key
+        },
     },
 })
-
--- mason-lspconfig bridges Mason package names ↔ lspconfig server names.
--- ensure_installed lists servers Mason should auto-install if missing.
-local ok_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
-if ok_mlsp then
-    mason_lspconfig.setup({
-        ensure_installed = {
-            "basedpyright",
-            "ruff",
-            "lua_ls",
-            "clangd",
-            "neocmake",
-            "rust_analyzer",
-            "gopls",
-        },
-        automatic_installation = true,
-    })
-end
 
 --------------------------
 -- Lang-specific servers
@@ -110,8 +101,36 @@ end
 local ok_lspcfg = pcall(require, "lspconfig")
 if not ok_lspcfg then return end
 
-require("lang.c")
-require("lang.lua_ls")
-require("lang.python")
-require("lang.rust")
-require("lang.go")
+local ok_local, local_cfg = pcall(require, "local")
+local lang = ok_local and local_cfg.lang or {}
+local function enabled(key) return lang[key] == true end
+
+-- mason-lspconfig bridges Mason package names ↔ lspconfig server names.
+-- ensure_installed is filtered by local.lua so Mason only installs what's enabled.
+local ok_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
+if ok_mlsp then
+    -- Map local.lua keys → mason-lspconfig server names
+    local server_map = {
+        c      = { "clangd", "neocmake" },
+        lua_ls = { "lua_ls" },
+        python = { "basedpyright", "ruff" },
+        rust   = { "rust_analyzer" },
+        go     = { "gopls" },
+    }
+    local ensure = {}
+    for key, servers in pairs(server_map) do
+        if enabled(key) then
+            vim.list_extend(ensure, servers)
+        end
+    end
+    mason_lspconfig.setup({
+        ensure_installed    = ensure,
+        automatic_installation = false,
+    })
+end
+
+if enabled("c")      then require("lang.c")       end
+if enabled("lua_ls") then require("lang.lua_ls")  end
+if enabled("python") then require("lang.python")  end
+if enabled("rust")   then require("lang.rust")    end
+if enabled("go")     then require("lang.go")      end

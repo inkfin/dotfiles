@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/undotree.lua
 -- mbbill/undotree: visual undo history tree
 
+require("pack").add("https://github.com/mbbill/undotree")
+
 vim.g.undotree_WindowLayout = 3
 
 -- Enable diff panel only if the system diff binary is available

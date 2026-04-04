@@ -121,7 +121,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 -- Custom autocmds
 --------------------------
 
--- Set lcd to project root on startup (patterns live in config.lua)
 vim.api.nvim_create_autocmd("VimEnter", {
     group = augroup("root_lcd"),
     callback = function()
@@ -233,11 +232,17 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- Keep LspInlayHint readable after colorscheme changes
+-- Keep LspInlayHint readable and enforce transparent background after colorscheme changes
 vim.api.nvim_create_autocmd("ColorScheme", {
     group = augroup("inlay_hint_hl"),
     pattern = "*",
     callback = function()
         vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#87744d", bg = "NONE" })
+        -- Transparent background
+        vim.api.nvim_set_hl(0, "Normal",       { bg = "NONE", ctermbg = "NONE" })
+        vim.api.nvim_set_hl(0, "NormalNC",     { bg = "NONE", ctermbg = "NONE" })
+        vim.api.nvim_set_hl(0, "NormalFloat",  { bg = "NONE", ctermbg = "NONE" })
+        vim.api.nvim_set_hl(0, "SignColumn",   { bg = "NONE", ctermbg = "NONE" })
+        vim.api.nvim_set_hl(0, "EndOfBuffer",  { bg = "NONE", ctermbg = "NONE" })
     end,
 })

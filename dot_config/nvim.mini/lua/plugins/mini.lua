@@ -2,6 +2,8 @@
 -- Configure mini.nvim modules
 -- (mini.nvim is a single repo containing many small, independent plugins)
 
+require("pack").add("https://github.com/echasnovski/mini.nvim")
+
 -- Guard: on first launch vim.pack downloads asynchronously; skip if not ready yet.
 if not pcall(require, "mini.surround") then return end
 

@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/terminal.lua
 -- Float terminals via toggleterm.nvim
 
+require("pack").add("https://github.com/akinsho/toggleterm.nvim")
+
 local ok, toggleterm = pcall(require, "toggleterm")
 if not ok then return end
 

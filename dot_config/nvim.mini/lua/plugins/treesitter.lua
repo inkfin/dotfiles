@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/treesitter.lua
 -- nvim-treesitter: syntax highlighting and folding
 
+require("pack").add("https://github.com/nvim-treesitter/nvim-treesitter")
+
 local ok, configs = pcall(require, "nvim-treesitter.configs")
 if not ok then return end
 

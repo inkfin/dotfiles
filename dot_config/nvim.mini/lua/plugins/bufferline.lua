@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/bufferline.lua
 -- Buffer tab bar via bufferline.nvim
 
+require("pack").add("https://github.com/akinsho/bufferline.nvim")
+
 local ok, bufferline = pcall(require, "bufferline")
 if not ok then return end
 

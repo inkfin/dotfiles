@@ -1,6 +1,9 @@
 -- ~/.config/nvim.mini/lua/options.lua
 -- Core editor settings (ported from nvim.lazyvim/lua/config/options.lua)
 
+vim.g.mapleader      = " "
+vim.g.maplocalleader = ","
+
 local opt = vim.opt
 local indent = 4
 

@@ -1,6 +1,11 @@
 -- ~/.config/nvim.mini/lua/plugins/blink.lua
 -- Saghen/blink.cmp: fast LSP-based completion
 
+require("pack").add({
+    src     = "https://github.com/Saghen/blink.cmp",
+    version = ">=1",
+})
+
 local ok, blink = pcall(require, "blink.cmp")
 if not ok then return end
 

@@ -1,5 +1,7 @@
 -- ~/.config/nvim.mini/lua/plugins/multicursor.lua
--- multicursor.nvim: multi-cursor editing (ported from nvim.lazyvim)
+-- multicursor.nvim: multi-cursor editing
+
+require("pack").add("https://github.com/jake-stewart/multicursor.nvim")
 
 local ok, mc = pcall(require, "multicursor-nvim")
 if not ok then return end

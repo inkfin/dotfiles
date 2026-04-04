@@ -1,6 +1,13 @@
 -- ~/.config/nvim.mini/lua/plugins/telescope.lua
 -- nvim-telescope/telescope.nvim: fuzzy finder
 
+require("pack").add({
+    "https://github.com/nvim-lua/plenary.nvim",
+    "https://github.com/nvim-telescope/telescope.nvim",
+    { src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "https://github.com/jvgrootveld/telescope-zoxide",
+})
+
 local ok, telescope = pcall(require, "telescope")
 if not ok then return end
 

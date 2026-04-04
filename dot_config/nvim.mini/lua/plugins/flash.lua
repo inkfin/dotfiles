@@ -1,5 +1,7 @@
 -- ~/.config/nvim.mini/lua/plugins/flash.lua
--- flash.nvim: fast jump motions (ported from nvim.lazyvim)
+-- flash.nvim: fast jump motions
+
+require("pack").add("https://github.com/folke/flash.nvim")
 
 local ok, flash = pcall(require, "flash")
 if not ok then return end
