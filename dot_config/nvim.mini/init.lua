@@ -1,17 +1,14 @@
 -- init.lua
 -- Minimal Neovim config using built-in vim.pack (Neovim 0.12+)
 
--- Each plugin file registers its own source(s) via pack.add(), then configures
--- the plugin. pack.load() requires them in order and must come first so that
--- all vim.pack.add() calls happen before Neovim resolves the pack paths.
 local pack = require("pack")
 
-pack.load({
-    -- Core editor behaviour (no external plugins needed)
-    "options",
-    "autocmds",
+-- Core editor settings (no plugins, loaded directly)
+require("options")
+require("autocmds")
 
-    -- Plugins (each file calls pack.add() then configures itself)
+-- Plugin modules: each calls pack.add() then configures itself.
+pack.load({
     "plugins.mini",       -- mini.icons must load before snacks dashboard renders
     "plugins.snacks",
     "plugins.noice",
@@ -26,10 +23,10 @@ pack.load({
     "plugins.lsp",
     "plugins.blink",
     "plugins.colorscheme",
-    "plugins.pack_ext",   -- PackUpdate command + pack list UI (stopgap)
+    "plugins.pack_ext",
     "plugins.terminal",
     "plugins.which-key",
-
-    -- Keymaps last so all plugins are available
-    "keymaps",
 })
+
+-- Keymaps last so all plugins are available
+require("keymaps")

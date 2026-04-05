@@ -94,7 +94,12 @@ telescope.setup({
 })
 
 -- Load fzf-native extension if available (must be built first: run `make` in its dir)
-pcall(telescope.load_extension, "fzf")
+if not pcall(telescope.load_extension, "fzf") then
+    vim.schedule(function()
+        vim.notify("telescope: fzf-native not built — run `make` in its pack dir for faster sorting",
+            vim.log.levels.WARN)
+    end)
+end
 
 -- Load zoxide extension if available
 pcall(telescope.load_extension, "zoxide")

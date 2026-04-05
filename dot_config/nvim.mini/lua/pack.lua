@@ -3,121 +3,176 @@
 --
 -- API
 --   pack.add(spec)     – register plugin(s) with vim.pack
---   pack.load(modules) – require a list of modules in order
+--   pack.load(modules) – require a list of plugin modules in two phases
 --
 -- Spec shapes accepted by pack.add():
 --   "https://..."
 --   { src = "https://...", version = ">=1", build = "make" }
 --   { "https://...", { src = "...", build = "make" }, ... }
+--
+-- How two-phase loading works:
+--   Phase 1 (collecting):  each plugin module is required; pack.add() buffers
+--     specs and hooks without calling vim.pack.add(), then raises a sentinel
+--     error so pack.load() marks it for re-running in Phase 2.
+--   Flush: vim.pack.add() is called ONCE with every collected spec. All hooks
+--     are already registered, so PackChanged fires with correct hook data even
+--     for lockfile-based installs triggered by the very first add() call.
+--   Phase 2 (configure):  modules that errored in Phase 1 are re-required.
+--     All plugins are now on disk and in rtp, so require("plugin") succeeds.
 
 local M = {}
 
--- Track every plugin name registered this session.
--- The trailing segment of the URL (e.g. "which-key.nvim" from
--- "https://github.com/folke/which-key.nvim") is the directory name
--- vim.pack uses on disk, so it can be diffed against the pack opt/ folder
--- by :PackClean to find orphaned plugins.
+-- Every plugin name (trailing URL segment) registered this session.
+-- Used by :PackClean to detect orphaned plugin directories.
 M._registered = {}
 
 -- ─── Build-hook infrastructure ───────────────────────────────────────────────
 
-local _hooks = {}          -- plugin-name → string|function
-local _hook_registered = false
+local _hooks     = {}   -- plugin-name → build command or function
+local _all_specs = {}   -- accumulated vim.pack specs (flushed once)
 
--- Lazily register a single PackChanged autocmd the first time any plugin
--- declares a build hook. Fires after vim.pack installs or updates a plugin.
-local function ensure_build_handler()
-    if _hook_registered then return end
-    _hook_registered = true
-    vim.api.nvim_create_autocmd("PackChanged", {
-        callback = function(ev)
-            if ev.data.kind == "delete" then return end
-            local name = ev.data.spec and ev.data.spec.name or ""
-            local hook = _hooks[name]
-            if not hook then return end
+-- PackChanged is registered NOW, before any vim.pack.add() call, so it is
+-- always in place for lockfile-based installs that fire during the first add.
+vim.api.nvim_create_autocmd("PackChanged", {
+    callback = function(ev)
+        if ev.data.kind == "delete" then return end
+        local name  = ev.data.spec and ev.data.spec.name or ""
+        -- Build command travels with the spec (data.build) and is also
+        -- mirrored in _hooks; either source works.
+        local build = (ev.data.spec.data and ev.data.spec.data.build)
+                      or _hooks[name]
+        if not build then return end
 
-            if type(hook) == "function" then
-                -- Lua function hook: called with the plugin's install path
-                hook(ev.data.path)
-            else
-                -- String hook: treated as a shell command (e.g. "make")
-                local cmd = vim.split(hook, "%s+")
-                if vim.fn.executable(cmd[1]) == 0 then
-                    vim.notify(name .. ": build skipped ('" .. cmd[1] .. "' not found)",
-                               vim.log.levels.WARN)
-                    return
-                end
-                vim.notify(name .. ": building…", vim.log.levels.INFO)
-                vim.system(cmd, { cwd = ev.data.path }, function(r)
-                    if r.code == 0 then
-                        vim.notify(name .. ": build succeeded", vim.log.levels.INFO)
-                    else
-                        vim.notify(name .. ": build FAILED\n" .. (r.stderr or ""),
-                                   vim.log.levels.ERROR)
-                    end
-                end)
+        if type(build) == "function" then
+            build(ev.data.path)
+        else
+            local cmd = vim.split(build, "%s+")
+            if vim.fn.executable(cmd[1]) == 0 then
+                vim.notify(name .. ": build skipped ('" .. cmd[1] .. "' not found)",
+                           vim.log.levels.WARN)
+                return
             end
-        end,
-    })
-end
+            vim.notify(name .. ": building…", vim.log.levels.INFO)
+            vim.system(cmd, { cwd = ev.data.path }, function(r)
+                if r.code == 0 then
+                    vim.notify(name .. ": build succeeded", vim.log.levels.INFO)
+                else
+                    vim.notify(name .. ": build FAILED\n" .. (r.stderr or ""),
+                               vim.log.levels.ERROR)
+                end
+            end)
+        end
+    end,
+})
 
--- ─── pack.add ────────────────────────────────────────────────────────────────
+-- ─── Internal state ──────────────────────────────────────────────────────────
 
--- Handle a single spec (string URL or named table).
+-- True while pack.load() is in Phase 1.  pack.add() buffers specs and raises
+-- a sentinel error so the caller knows it must be re-run in Phase 2.
+M._collecting = false
+
+-- ─── pack.add (internal) ─────────────────────────────────────────────────────
+
 local function add_one(spec)
     if type(spec) == "string" then
-        vim.pack.add({ spec })
-        -- Record the trailing URL segment as the on-disk plugin name
         local name = spec:match("([^/]+)$")
         if name then M._registered[name] = true end
+
+        if M._collecting then
+            table.insert(_all_specs, spec)
+        else
+            vim.pack.add({ spec })
+        end
         return
     end
 
     -- Named spec table ─────────────────────────────────────────────────────
-    local pack_spec = { src = spec.src }
     local name = spec.src:match("([^/]+)$")
     if name then M._registered[name] = true end
 
-    -- Optional version constraint: accept a range string (">=1.0") or a
-    -- pre-parsed vim.version range object
+    -- Register hook pre-emptively so PackChanged can find it even before the
+    -- individual add_one() for this plugin runs.
+    if spec.build and name then
+        _hooks[name] = spec.build
+    end
+
+    local pack_spec = { src = spec.src }
+
+    -- Embed build command in spec.data so it travels with the spec and is
+    -- available in ev.data.spec.data inside the PackChanged callback.
+    if spec.build then
+        pack_spec.data = { build = spec.build }
+    end
+
+    -- Optional version constraint
     if spec.version then
         pack_spec.version = type(spec.version) == "string"
             and vim.version.range(spec.version)
             or  spec.version
     end
-    vim.pack.add({ pack_spec })
 
-    -- Optional build hook: run after install/update
-    if spec.build then
-        local bname = spec.src:match("([^/]+)$")
-        if bname then
-            _hooks[bname] = spec.build
-            ensure_build_handler()
-        end
+    if M._collecting then
+        table.insert(_all_specs, pack_spec)
+    else
+        vim.pack.add({ pack_spec })
     end
 end
 
 --- Register one or more plugins with vim.pack.
 function M.add(spec)
-    -- Single URL string or single named-table spec
     if type(spec) == "string" or spec.src then
         add_one(spec)
-        return
+    else
+        -- List of specs: collect all before possibly erroring
+        for _, s in ipairs(spec) do
+            add_one(s)
+        end
     end
-    -- List of specs: iterate and register each one
-    for _, s in ipairs(spec) do
-        add_one(s)
+
+    -- In Phase 1, signal to pack.load() that this module must be re-run in
+    -- Phase 2 (plugins not yet packadd'd so require() would fail).
+    if M._collecting then
+        error("pack: collecting phase — re-run required", 0)
     end
 end
 
 -- ─── pack.load ───────────────────────────────────────────────────────────────
 
---- Require a list of modules in order.
---- Centralises all plugin loading so init.lua stays a flat ordered list.
+--- Load a list of modules in two phases so that build hooks are always
+--- registered before the first vim.pack.add() call.
 --- @param modules string[]
 function M.load(modules)
+    -- ── Phase 1: collect specs & hooks ──────────────────────────────────────
+    -- Require every module.  Modules that call pack.add() will buffer their
+    -- specs and then raise a sentinel error; we catch it with pcall and mark
+    -- those modules for re-running in Phase 2.  Pure config modules (options,
+    -- autocmds, keymaps) succeed and are skipped in Phase 2.
+    local needs_phase2 = {}
+    M._collecting = true
     for _, mod in ipairs(modules) do
-        require(mod)
+        local ok = pcall(require, mod)
+        if not ok then
+            needs_phase2[mod] = true
+        end
+        -- Clear the module cache so Phase 2 can re-require it cleanly.
+        package.loaded[mod] = nil
+    end
+    M._collecting = false
+
+    -- ── Flush: single vim.pack.add() with every spec ─────────────────────────
+    -- All _hooks entries are populated now, so PackChanged (fired for any
+    -- lockfile-based install) will find the correct build command.
+    if #_all_specs > 0 then
+        vim.pack.add(_all_specs)
+    end
+
+    -- ── Phase 2: configure ───────────────────────────────────────────────────
+    -- Re-require only modules that errored in Phase 1.  All plugins are on
+    -- disk and in rtp now, so require("plugin") succeeds.
+    for _, mod in ipairs(modules) do
+        if needs_phase2[mod] then
+            require(mod)
+        end
     end
 end
 
