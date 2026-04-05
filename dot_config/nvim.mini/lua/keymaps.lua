@@ -61,6 +61,9 @@ map("n", "<leader>tml",     "<cmd>tabm +<cr>",{ desc = "Move tab right"  })
 map("n", "<Esc><Esc>",
     "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
     { desc = "Clear hlsearch / diff update / redraw" })
+map("n", "<leader><CR>",
+    "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
+    { desc = "Clear hlsearch / diff update / redraw" })
 
 --------------------------
 -- File operations

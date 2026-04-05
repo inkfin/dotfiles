@@ -61,6 +61,8 @@ local function add_one(spec)
     end
     -- named spec table: { src, version?, build? }
     local pack_spec = { src = spec.src }
+    local name = spec.src:match("([^/]+)$")
+    if name then M._registered[name] = true end
     if spec.version then
         pack_spec.version = type(spec.version) == "string"
             and vim.version.range(spec.version)

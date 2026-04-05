@@ -123,6 +123,7 @@ if ok_mlsp then
         python = { "basedpyright", "ruff" },
         rust   = { "rust_analyzer" },
         go     = { "gopls" },
+        latex  = { "texlab" },
     }
     local ensure = {}
     for key, servers in pairs(server_map) do
@@ -141,3 +142,4 @@ if enabled("lua_ls") then require("lang.lua_ls")  end
 if enabled("python") then require("lang.python")  end
 if enabled("rust")   then require("lang.rust")    end
 if enabled("go")     then require("lang.go")      end
+if enabled("latex")  then require("lang.latex")   end

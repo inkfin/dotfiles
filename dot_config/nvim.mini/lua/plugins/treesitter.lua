@@ -10,9 +10,11 @@ configs.setup({
     -- Install parsers for these languages automatically
     ensure_installed = {
         "bash",
+        "bibtex",
         "c",
         "cpp",
         "go",
+        "latex",
         "lua",
         "markdown",
         "markdown_inline",
@@ -21,6 +23,9 @@ configs.setup({
         "vim",
         "vimdoc",
     },
-    highlight = { enable = true },
+    highlight = {
+        enable   = true,
+        disable  = { "latex" },  -- vimtex provides better latex highlighting
+    },
     indent    = { enable = true },
 })

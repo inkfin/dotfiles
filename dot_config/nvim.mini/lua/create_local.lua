@@ -11,10 +11,10 @@ M.lang = {
     python = true,
     -- rust   = true,
     -- go     = true,
+    -- latex  = true,
 }
 
 -- ─── UI feature switches ─────────────────────────────────────────────────────
 M.transparent = true   -- transparent terminal background
-M.mini_clue   = true   -- which-key style keymap popup (mini.clue)
 
 return M

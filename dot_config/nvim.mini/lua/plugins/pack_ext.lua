@@ -2,7 +2,30 @@
 -- Stopgap extensions for vim.pack until Neovim ships its own plugin UI.
 -- Remove this file once :PackList / :PackUpdate exist natively.
 
--- :PackUpdate  – update all installed plugins
+-- :PackClean  – remove plugins on disk that are no longer registered via pack.add()
+vim.api.nvim_create_user_command("PackClean", function()
+    local pack_root = vim.fn.stdpath("data") .. "/site/pack/core/opt"
+    local dirs = vim.fn.glob(pack_root .. "/*", false, true)
+    local registered = require("pack")._registered
+    local removed = {}
+
+    for _, path in ipairs(dirs) do
+        local name = vim.fn.fnamemodify(path, ":t")
+        if not registered[name] then
+            vim.fn.delete(path, "rf")
+            table.insert(removed, name)
+        end
+    end
+
+    if #removed == 0 then
+        vim.notify("PackClean: nothing to remove", vim.log.levels.INFO)
+    else
+        vim.notify("PackClean: removed " .. #removed .. " plugin(s):\n  " .. table.concat(removed, "\n  "),
+            vim.log.levels.INFO)
+    end
+end, { desc = "Remove plugins no longer registered with pack.add()" })
+
+
 vim.api.nvim_create_user_command("PackUpdate", function()
     vim.notify("vim.pack: updating all plugins…", vim.log.levels.INFO)
     vim.pack.update()

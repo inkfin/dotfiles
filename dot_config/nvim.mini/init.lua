@@ -26,6 +26,7 @@ pack.load({
     "plugins.colorscheme",
     "plugins.pack_ext",   -- PackUpdate command + pack list UI (stopgap)
     "plugins.terminal",
+    "plugins.which-key",
 
     -- Keymaps last so all plugins are available
     "keymaps",

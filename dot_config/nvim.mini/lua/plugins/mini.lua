@@ -7,9 +7,6 @@ require("pack").add("https://github.com/echasnovski/mini.nvim")
 -- Guard: on first launch vim.pack downloads asynchronously; skip if not ready yet.
 if not pcall(require, "mini.surround") then return end
 
-local ok_local, local_cfg = pcall(require, "local")
-local_cfg = ok_local and local_cfg or {}
-
 -- mini.surround ─────────────────────────────────────────────────────────────
 require("mini.surround").setup({
     mappings = {
@@ -76,58 +73,6 @@ require("mini.diff").setup({
         reset = "gH",
     },
 })
-
--- mini.clues ────────────────────────────────────────────────────────────────
--- Which-key style popup showing available keymap completions.
-if local_cfg.mini_clue ~= false then
-local clues = require("mini.clue")
-clues.setup({
-    triggers = {
-        -- Normal mode leaders
-        { mode = "n", keys = "<leader>" },
-        { mode = "n", keys = "g" },
-        { mode = "n", keys = "[" },
-        { mode = "n", keys = "]" },
-        { mode = "n", keys = "z" },
-        { mode = "n", keys = '"' },
-        { mode = "n", keys = "'" },
-        { mode = "n", keys = "`" },
-        -- Visual mode
-        { mode = "x", keys = "<leader>" },
-        { mode = "x", keys = "g" },
-        -- Insert / operator
-        { mode = "i", keys = "<C-x>" },
-        { mode = "o", keys = "a" },
-        { mode = "o", keys = "i" },
-    },
-    clues = {
-        -- Built-in clue groups
-        clues.gen_clues.builtin_completion(),
-        clues.gen_clues.g(),
-        clues.gen_clues.marks(),
-        clues.gen_clues.registers(),
-        clues.gen_clues.windows(),
-        clues.gen_clues.z(),
-        -- Describe <leader> sub-groups
-        { mode = "n", keys = "<leader>b",  desc = "+buffer" },
-        { mode = "n", keys = "<leader>c",  desc = "+code" },
-        { mode = "n", keys = "<leader>f",  desc = "+find" },
-        { mode = "n", keys = "<leader>g",  desc = "+git" },
-        { mode = "n", keys = "<leader>p",  desc = "+pack" },
-        { mode = "n", keys = "<leader>r",  desc = "+refactor" },
-        { mode = "n", keys = "<leader>s",  desc = "+search" },
-        { mode = "n", keys = "<leader>t",  desc = "+tab" },
-        { mode = "n", keys = "<leader>u",  desc = "+ui" },
-        { mode = "n", keys = "<leader>y",  desc = "+yazi" },
-    },
-    window = {
-        delay     = 300,
-        config    = { border = "rounded" },
-        scroll_down = "<C-d>",
-        scroll_up   = "<C-u>",
-    },
-})
-end -- mini_clue
 
 -- mini.statusline ───────────────────────────────────────────────────────────
 require("mini.statusline").setup({ use_icons = true })
