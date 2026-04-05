@@ -34,10 +34,20 @@ snacks.setup({
         enabled = true,
         timeout = 3500,
         style   = "compact",  -- compact | minimal | fancy
+        filter  = function(notif)
+            -- blink.cmp v1.10.x race: scheduled show fires after context cleared
+            if notif.msg and notif.msg:find("Context must be set before getting selection mode") then
+                return false
+            end
+            return true
+        end,
     },
 
     -- Persistent scratch buffers
     scratch = { enabled = true },
+
+    -- LSP-integrated file rename (used by explorer and <leader>fr keymap)
+    rename = { enabled = true },
 
     -- Dashboard shown on startup (no buffers open)
     dashboard = {
@@ -75,13 +85,16 @@ snacks.setup({
     -- Enabled — used by Snacks.lazygit() and Snacks.terminal(); toggleterm
     -- handles the bottom shell (<C-/>) separately
     terminal  = { enabled = true },
-    -- Disabled — we use neo-tree for file browsing
-    explorer  = { enabled = false },
+    -- File explorer (sidebar picker)
+    explorer  = {
+        enabled = true,
+    },
     -- Disabled — personal preference
     scroll    = { enabled = false },
     zen       = { enabled = false },
 })
 
 local map = vim.keymap.set
-map("n", "<leader>.", function() Snacks.scratch() end,        { desc = "Scratch buffer" })
-map("n", "<leader>S", function() Snacks.scratch.select() end, { desc = "Select scratch" })
+map("n", "<leader>.",  function() Snacks.scratch() end,        { desc = "Scratch buffer" })
+map("n", "<leader>S",  function() Snacks.scratch.select() end, { desc = "Select scratch" })
+map("n", "<leader>fr", function() Snacks.rename.rename_file() end, { desc = "Rename file" })

@@ -17,7 +17,6 @@ pack.load({
     "plugins.multicursor",
     "plugins.undotree",
     "plugins.grug-far",
-    "plugins.neo-tree",
     "plugins.telescope",
     "plugins.bufferline",
     "plugins.lsp",
@@ -26,6 +25,8 @@ pack.load({
     "plugins.pack_ext",
     "plugins.terminal",
     "plugins.which-key",
+    "plugins.outline",
+    "plugins.explorer",
     "plugins.dap",
 })
 
