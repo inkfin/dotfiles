@@ -39,6 +39,8 @@ require("mini.pairs").setup()
 
 -- mini.icons ────────────────────────────────────────────────────────────────
 require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
 
 -- mini.align ────────────────────────────────────────────────────────────────
 -- ga  — start align (interactive: pick delimiter, then modifiers)

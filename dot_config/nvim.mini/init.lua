@@ -12,7 +12,9 @@ pack.load({
     "autocmds",
 
     -- Plugins (each file calls pack.add() then configures itself)
-    "plugins.mini",
+    "plugins.mini",       -- mini.icons must load before snacks dashboard renders
+    "plugins.snacks",
+    "plugins.noice",
     "plugins.treesitter",
     "plugins.flash",
     "plugins.multicursor",
