@@ -11,35 +11,36 @@ return {
             "rcarriga/nvim-notify",
         },
         opts = {
+            cmdline = {
+                view = "cmdline", -- use native bottom cmdline instead of floating popup
+            },
             signature = {
                 enabled = true,
                 auto_open = {
                     enabled = true,
                 },
             },
-            views = {
-                cmdline_popup = {
-                    position = {
-                        row = -2,
-                        col = "50%",
-                    },
-                },
-                cmdline_popupmenu = {
-                    position = {
-                        row = -5,
-                        col = "50%",
-                    },
-                },
-            },
             ---@type NoicePresets
-            preset = {
+            presets = {
                 bottom_search = true, -- use a classic bottom cmdline for search
             },
             -- disable some messages
             routes = {
+                -- Hide "written" confirmation after :w
                 {
-                    skip = true,
+                    filter = { event = "msg_show", find = "written" },
+                    opts = { skip = true },
+                },
+                -- Hide "chezmoi" output when auto apply chezmoi
+                {
                     filter = { event = "msg_show", find = ":!chezmoi" },
+                    opts = { skip = true },
+                },
+                -- Show :!cmd shell output in a split with cursor focus
+                {
+                    filter = { event = "msg_show", kind = { "shell_cmd", "shell_out" } },
+                    view = "split",
+                    opts = { enter = true, size = "80%" },
                 },
             },
         },
@@ -69,7 +70,6 @@ return {
                 desc = "Scroll backward",
                 mode = { "i", "n", "s" },
             },
-            { "<leader>fN", "<Cmd>Noice telescope<CR>", silent = true, desc = "Noice messages" },
         },
     },
     {

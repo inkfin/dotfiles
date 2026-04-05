@@ -1,73 +1,53 @@
 -- Auto complete plugin
 
 return {
-    -- Use <tab> for completion and snippets (supertab)
-    -- first: disable default <tab> and <s-tab> behavior in LuaSnip
+    -- Clear default LuaSnip tab keys — Tab/S-Tab are handled via cmp mapping below.
+    -- (lazyvim.plugins.extras.coding.luasnip sets <tab>/<s-tab> in "s" mode;
+    --  returning {} here prevents double-binding)
     {
         "L3MON4D3/LuaSnip",
         keys = function()
             return {}
         end,
     },
-    -- then: setup supertab in cmp
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
             { "hrsh7th/cmp-emoji" },
         },
         init = function()
-            local cmp = require("cmp")
-            function SetAutoCmp(enabled)
-                if enabled then
-                    cmp.setup({
-                        completion = {
-                            autocomplete = { require("cmp.types").cmp.TriggerEvent.TextChanged },
-                        },
-                    })
-                else
-                    cmp.setup({
-                        completion = {
-                            autocomplete = false,
-                        },
-                    })
-                end
-            end
-
-            -- enable automatic completion popup on typing
-            vim.cmd("command AutoCmpOn lua SetAutoCmp(true)")
-
-            -- disable automatic competion popup on typing
-            vim.cmd("command AutoCmpOff lua SetAutoCmp(false)")
+            -- Use nvim_create_user_command so we don't need to pollute _G
+            vim.api.nvim_create_user_command("AutoCmpOn", function()
+                require("cmp").setup({
+                    completion = {
+                        autocomplete = { require("cmp.types").cmp.TriggerEvent.TextChanged },
+                    },
+                })
+            end, { desc = "Enable auto completion popup" })
+            vim.api.nvim_create_user_command("AutoCmpOff", function()
+                require("cmp").setup({
+                    completion = { autocomplete = false },
+                })
+            end, { desc = "Disable auto completion popup" })
         end,
         opts = function(_, opts)
-            local has_words_before = function()
-                unpack = unpack or table.unpack
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0
-                    and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-            end
-
-            -- luasnip setup
             local luasnip = require("luasnip")
-            -- nvim-cmp setup
             local cmp = require("cmp")
 
             -- no preselect
             local auto_select = false
-            opts.completion.completeopt = "menu,menuone" .. (auto_select and "" or ",noselect") --,noinsert
+            opts.completion.completeopt = "menu,menuone" .. (auto_select and "" or ",noselect")
             opts.preselect = auto_select and cmp.PreselectMode.Item or cmp.PreselectMode.None
 
             opts.mapping = cmp.mapping.preset.insert({
                 ["<C-Space>"] = cmp.mapping.complete(),
                 ["<C-\\>"] = cmp.mapping.complete(),
-                -- changing scrolling keymap from <C-b/f> to <C-u/d>
-                ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
-                ["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
+                -- scroll docs with <C-u/d> (mirrors noice.lsp scroll bindings)
+                ["<C-u>"] = cmp.mapping.scroll_docs(-4),
+                ["<C-d>"] = cmp.mapping.scroll_docs(4),
                 ["<C-e>"] = cmp.mapping.abort(),
-                ["<CR>"] = cmp.mapping.confirm({
-                    behavior = cmp.ConfirmBehavior.Replace,
-                    select = true,
-                }),
+                -- LazyVim.cmp.confirm: creates undo point, only fires when popup visible
+                ["<CR>"] = LazyVim.cmp.confirm({ select = auto_select }),
                 ["<Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         if #cmp.get_entries() == 1 then
@@ -77,11 +57,6 @@ return {
                         end
                     elseif luasnip.locally_jumpable(1) then
                         luasnip.jump(1)
-                    -- elseif has_words_before() then
-                    --     cmp.complete()
-                    --     if #cmp.get_entries() == 1 then
-                    --         cmp.confirm({ select = true })
-                    --     end
                     else
                         fallback()
                     end
@@ -96,36 +71,33 @@ return {
                     end
                 end, { "i", "s" }),
             })
-            local source_list = {
-                { name = "luasnip", group_index = 1 },
-                { name = "nvim_lsp", group_index = 1 },
-                { name = "emoji", group_index = 1 },
-                -- { name = "path", group_index = 2 }, -- use <C-x><C-f>
-                -- { name = "buffer", group_index = 2 }, -- use <C-x><C-b>
-                -- { name = "dictionary", group_index = 3 }, -- use <C-x><C-k>
-            }
-            -- if not _G.disable_plugins.copilot then
-            --     table.insert(source_list, { name = "copilot" })
-            -- end
-            opts.sources = cmp.config.sources(source_list)
+
+            -- NOTE: "luasnip" must stay in group 1 here — the rime-ls toggle
+            -- (see rime-ls.lua <leader>rt) reads cmp.get_config().sources and
+            -- removes "luasnip" from the live list when Chinese input is active.
+            opts.sources = cmp.config.sources({
+                { name = "luasnip" },
+                { name = "nvim_lsp" },
+                { name = "emoji" },
+            })
 
             local compare = require("cmp.config.compare")
             opts.sorting = {
                 comparators = {
-                    compare.sort_text,
                     compare.offset,
                     compare.exact,
                     compare.score,
                     compare.recently_used,
                     compare.kind,
                     compare.length,
+                    compare.sort_text, -- LSP-provided sort hint: use as late tiebreaker only
                     compare.order,
                 },
             }
         end,
         -- stylua: ignore
         keys = {
-            { "<C-x><C-o>", mode = {"i"}, function() require("cmp").complete() end, desc = "trigger cmp complete", },
+            { "<C-x><C-o>", mode = { "i" }, function() require("cmp").complete() end, desc = "Trigger cmp complete" },
         },
     },
 }
