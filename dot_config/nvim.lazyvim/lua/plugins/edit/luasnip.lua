@@ -12,9 +12,9 @@ return {
         config = function()
             require("luasnip").filetype_extend("csharp", { "unity" })
             require("luasnip").filetype_extend("cpp", { "unreal" })
-            require("luasnip.loaders.from_vscode").load({ paths = { "./template/snippets" } })
+            require("luasnip.loaders.from_vscode").load({ paths = { "./snippets" } })
             require("luasnip.loaders.from_vscode").load_standalone({
-                path = "./template/snippets/global.code-snippets",
+                path = "./snippets/global.code-snippets",
             })
             require("luasnip.loaders.from_vscode").lazy_load()
         end,
