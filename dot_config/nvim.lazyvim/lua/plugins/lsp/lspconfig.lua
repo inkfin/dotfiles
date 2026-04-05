@@ -59,7 +59,7 @@ return {
     },
     {
         "chrisgrieser/nvim-lsp-endhints",
-        enabled = vim.fn.has("nvim-0.10") == 1 and vim.g.legacy_inlay_hints == true,
+        enabled = vim.fn.has("nvim-0.10") == 1,
         event = "LspAttach",
         opts = {
             label = {

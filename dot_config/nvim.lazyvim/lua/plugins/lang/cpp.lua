@@ -207,7 +207,7 @@ return {
         "mfussenegger/nvim-dap",
         opts = function()
             local dap = require("dap")
-            dap.set_log_level("debug")
+            dap.set_log_level("WARN")
 
             if not dap.adapters["codelldb"] then
                 require("dap").adapters["codelldb"] = {

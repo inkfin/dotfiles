@@ -67,27 +67,28 @@ local function tprintstr(tbl, indent)
     if not indent then
         indent = 0
     end
-    local toprint = string.rep(" ", indent) .. "{\n"
+    local parts = { string.rep(" ", indent) .. "{\n" }
     indent = indent + 2
     for k, v in pairs(tbl) do
-        toprint = toprint .. string.rep(" ", indent)
+        local line = string.rep(" ", indent)
         if type(k) == "number" then
-            toprint = toprint .. "[" .. k .. "] = "
+            line = line .. "[" .. k .. "] = "
         elseif type(k) == "string" then
-            toprint = toprint .. k .. " = "
+            line = line .. k .. " = "
         end
         if type(v) == "number" then
-            toprint = toprint .. v .. ",\n"
+            line = line .. v .. ",\n"
         elseif type(v) == "string" then
-            toprint = toprint .. '"' .. v .. '",\n'
+            line = line .. '"' .. v .. '",\n'
         elseif type(v) == "table" then
-            toprint = toprint .. tprintstr(v, indent + 2) .. ",\n"
+            line = line .. tprintstr(v, indent + 2) .. ",\n"
         else
-            toprint = toprint .. '"' .. tostring(v) .. '",\n'
+            line = line .. '"' .. tostring(v) .. '",\n'
         end
+        parts[#parts + 1] = line
     end
-    toprint = toprint .. string.rep(" ", indent - 2) .. "}"
-    return toprint
+    parts[#parts + 1] = string.rep(" ", indent - 2) .. "}"
+    return table.concat(parts)
 end
 
 ---print a table

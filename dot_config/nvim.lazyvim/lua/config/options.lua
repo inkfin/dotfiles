@@ -17,10 +17,10 @@ local backup_path = vim.fn.stdpath("data") .. "/cache/backup"
 local undo_path = vim.fn.stdpath("data") .. "/cache/undo"
 
 if not is_directory_exists(backup_path) then
-    os.execute(backup_path)
+    vim.fn.mkdir(backup_path, "p")
 end
 if not is_directory_exists(undo_path) then
-    os.execute(undo_path)
+    vim.fn.mkdir(undo_path, "p")
 end
 
 vim.go.backupdir = backup_path
@@ -60,14 +60,11 @@ vim.g.loaded_perl_provider = 0
 vim.g.root_spec =
     { { ".git", "lua", "node_modules", "Makefile", ".vscode", ".root", ".vim", ".vs", ".idea" }, "lsp", "cwd" }
 
-vim.g.lazyvim_picker = "telescope"
+vim.g.lazyvim_picker = "snacks"
 vim.g.lazyvim_cmp = "nvim-cmp"
 -- if the completion engine supports the AI source,
 -- use that instead of inline suggestions
 vim.g.ai_cmp = false
--- enable tailed inlay hints plugins
--- note: project specific settings won't work for this setting
-vim.g.legacy_inlay_hints = true
 
 local opt = vim.opt
 local indent = 4
@@ -132,22 +129,9 @@ opt.fillchars = {
 vim.opt.listchars:append("space:·")
 
 -- Folding
+-- LazyVim sets foldtext="" and manages foldmethod/foldexpr per-buffer via treesitter.
 if vim.fn.has("nvim-0.10") == 1 then
     opt.smoothscroll = true
-    opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-    opt.foldmethod = "expr"
-    opt.foldtext = ""
-else
-    opt.foldmethod = "indent"
-    opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-end
-
--- HACK: causes freezes on <= 0.9, so only enable on >= 0.10 for now
-if vim.fn.has("nvim-0.10") == 1 then
-    vim.opt.foldmethod = "expr"
-    vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-else
-    vim.opt.foldmethod = "indent"
 end
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0

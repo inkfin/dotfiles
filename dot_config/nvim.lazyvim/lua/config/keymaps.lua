@@ -2,7 +2,6 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
-local Util = require("lazyvim.util")
 local wk = require("which-key")
 
 local function map(mode, lhs, rhs, opts)
@@ -50,7 +49,7 @@ map({ "v", "o" }, "H", "^", { desc = "Use 'H' as '^'" })
 map({ "v", "o" }, "L", "$<left>", { desc = "Use 'L' as '$'" })
 
 -- buffers
-if Util.has("bufferline.nvim") then
+if LazyVim.has("bufferline.nvim") then
     map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
     map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
     map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
@@ -87,7 +86,7 @@ map(
 map({ "n", "x" }, "gw", "", {})
 
 -- expand default hover behavior
-function Show_documentation()
+local function show_documentation()
     for _, v in pairs({ "vim", "help" }) do
         if v == vim.bo.filetype then
             vim.cmd("h " .. vim.fn.expand("<cword>"))
@@ -98,8 +97,8 @@ function Show_documentation()
 end
 
 -- configure it here so it is active all the time
-map({ "n" }, "K", Show_documentation, { desc = "hover" })
-map({ "n" }, "<leader>h", Show_documentation, { desc = "hover" })
+map({ "n" }, "K", show_documentation, { desc = "hover" })
+map({ "n" }, "<leader>h", show_documentation, { desc = "hover" })
 -- <leader>K for vim show doc behavior
 
 -- save file
