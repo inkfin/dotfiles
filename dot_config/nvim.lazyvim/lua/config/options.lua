@@ -31,8 +31,10 @@ if vim.fn.has("persistent_undo") == 1 then
     vim.go.undodir = undo_path
 end
 
-if vim.fn.has("nvim") == 1 then
-    vim.cmd([[ let $GIT_EDITOR = 'nvr -cc split --remote-wait' ]])
+if vim.fn.has("nvim") == 1 and vim.env.NVIM then
+    -- Open git commit editor in a split of the existing Neovim instance
+    -- Uses the built-in --server/--remote-wait (replaces nvr)
+    vim.env.GIT_EDITOR = ("nvim --server '%s' --remote-wait-silent"):format(vim.env.NVIM)
 end
 
 -----------------------

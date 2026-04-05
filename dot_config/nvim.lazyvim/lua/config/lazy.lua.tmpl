@@ -17,7 +17,6 @@ require("lazy").setup({
         { "LazyVim/LazyVim", import = "lazyvim.plugins" },
         -- import any extras modules here
         { import = "lazyvim.plugins.extras.editor.outline" },
-        { import = "lazyvim.plugins.extras.editor.neo-tree" },
             -- import languages
         not _G.disable_plugins.cpp and { import = "lazyvim.plugins.extras.lang.clangd" } or {},
         not _G.disable_plugins.cmake and { import = "lazyvim.plugins.extras.lang.cmake" } or {},
@@ -34,15 +33,11 @@ require("lazy").setup({
         { import = "lazyvim.plugins.extras.editor.telescope" },
         { import = "lazyvim.plugins.extras.util.project" },
             -- { import = "lazyvim.plugins.extras.ui.edgy" },
-            -- {{ if ne .profile "work" }}
-        not _G.disable_plugins.copilot and { import = "lazyvim.plugins.extras.ai.copilot" } or {},
-            -- {{ end }}
+            -- 
         not _G.disable_plugins.copilot and { import = "lazyvim.plugins.extras.ai.copilot-chat" } or {},
         { import = "lazyvim.plugins.extras.coding.nvim-cmp" },
         { import = "lazyvim.plugins.extras.coding.luasnip" },
         { import = "lazyvim.plugins.extras.coding.mini-comment" },
-        -- { import = "lazyvim.plugins.extras.ui.mini-animate" },
-        -- { import = "lazyvim.plugins.extras.ui.dashboard-nvim" },
         -- import/override with your plugins
         { import = "plugins" },
         { import = "plugins.ui" },
