@@ -39,6 +39,14 @@ map({ "v", "o" }, "H", "^",       { desc = "H → line start (^)" })
 map({ "v", "o" }, "L", "$<left>", { desc = "L → line end ($)"   })
 
 --------------------------
+-- Window resizing
+--------------------------
+map("n", "<C-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" })
+map("n", "<C-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window height" })
+map("n", "<C-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width"  })
+map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width"  })
+
+--------------------------
 -- Buffer navigation
 -- (cycle/move keymaps live in plugins/bufferline.lua)
 --------------------------
@@ -58,7 +66,7 @@ map("n", "<leader>tml",     "<cmd>tabm +<cr>",{ desc = "Move tab right"  })
 --------------------------
 -- Search & view
 --------------------------
-map("n", "<Esc><Esc>",
+map("n", "<Esc>",
     "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
     { desc = "Clear hlsearch / diff update / redraw" })
 map("n", "<leader><CR>",

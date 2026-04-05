@@ -16,6 +16,9 @@ wk.setup({
         scroll_down = "<C-d>",
         scroll_up   = "<C-u>",
     },
+    filter = function(map)
+        return map.lhs ~= "<Esc>"
+    end,
 })
 
 -- Top-level group labels

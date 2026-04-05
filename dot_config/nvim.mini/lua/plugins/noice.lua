@@ -37,18 +37,22 @@ noice.setup({
         long_message_to_split = true,
     },
 
+    views = {
+        split = { size = "40%" },
+    },
+
     -- Suppress noisy messages
     routes = {
-        -- Hide "written" confirmation after :w
-        {
-            filter = { event = "msg_show", find = "written" },
-            opts   = { skip = true },
-        },
-        -- Hide "chezmoi" output when auto apply chezmoi
-        {
-            filter = { event = "msg_show", find = ":!chezmoi" },
-            opts = { skip = true },
-        },
+        -- -- Hide "written" confirmation after :w
+        -- {
+        --     filter = { event = "msg_show", find = "written" },
+        --     opts   = { skip = true },
+        -- },
+        -- -- Hide "chezmoi" output when auto apply chezmoi
+        -- {
+        --     filter = { event = "msg_show", find = ":!chezmoi" },
+        --     opts = { skip = true },
+        -- },
         -- Show :!cmd shell output in a split with cursor focus
         {
             filter = { event = "msg_show", kind = { "shell_cmd", "shell_out" } },

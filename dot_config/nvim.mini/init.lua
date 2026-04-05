@@ -26,6 +26,7 @@ pack.load({
     "plugins.pack_ext",
     "plugins.terminal",
     "plugins.which-key",
+    "plugins.dap",
 })
 
 -- Keymaps last so all plugins are available

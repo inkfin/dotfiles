@@ -36,6 +36,9 @@ snacks.setup({
         style   = "compact",  -- compact | minimal | fancy
     },
 
+    -- Persistent scratch buffers
+    scratch = { enabled = true },
+
     -- Dashboard shown on startup (no buffers open)
     dashboard = {
         enabled = true,
@@ -69,11 +72,16 @@ snacks.setup({
         },
     },
 
-    -- Disabled — we use toggleterm for terminals
-    terminal  = { enabled = false },
+    -- Enabled — used by Snacks.lazygit() and Snacks.terminal(); toggleterm
+    -- handles the bottom shell (<C-/>) separately
+    terminal  = { enabled = true },
     -- Disabled — we use neo-tree for file browsing
     explorer  = { enabled = false },
     -- Disabled — personal preference
     scroll    = { enabled = false },
     zen       = { enabled = false },
 })
+
+local map = vim.keymap.set
+map("n", "<leader>.", function() Snacks.scratch() end,        { desc = "Scratch buffer" })
+map("n", "<leader>S", function() Snacks.scratch.select() end, { desc = "Select scratch" })

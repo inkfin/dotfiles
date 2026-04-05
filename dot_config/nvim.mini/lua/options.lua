@@ -4,6 +4,16 @@
 vim.g.mapleader      = " "
 vim.g.maplocalleader = ","
 
+-- When running inside a Neovim terminal, forward editor calls to the outer
+-- session instead of opening a nested nvim. vim.env.NVIM is the parent socket,
+-- set automatically by Neovim in every :terminal it spawns.
+-- When running inside a Neovim terminal, forward git commit editor calls to
+-- the outer session (e.g. `git commit` from the bottom shell).
+-- vim.env.NVIM is the parent socket, set by Neovim in every :terminal it spawns.
+if vim.fn.has("nvim") == 1 and vim.env.NVIM then
+    vim.env.GIT_EDITOR = ("nvim --server '%s' --remote-wait-silent"):format(vim.env.NVIM)
+end
+
 local opt = vim.opt
 local indent = 4
 

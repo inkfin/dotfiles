@@ -21,9 +21,9 @@ bufferline.setup({
         diagnostics     = "nvim_lsp",
         diagnostics_indicator = function(_, _, diag)
             local s = ""
-            if diag.error   then s = s .. " " .. diag.error   end
-            if diag.warning then s = s .. " " .. diag.warning end
-            return s
+            if diag.error   then s = s .. "󰅚 " .. diag.error   end
+            if diag.warning then s = s .. "󰀦 " .. diag.warning end
+            return vim.trim(s)
         end,
         offsets = {
             {
