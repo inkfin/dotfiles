@@ -29,9 +29,9 @@ vim.keymap.set("n", "<leader>gg", function()
 end, { silent = true, desc = "Lazygit" })
 
 -- <leader>yy — yazi (--chooser-file integration)
--- Yazi does not call $EDITOR; it writes chosen paths to a tmp file on exit.
--- We open a fresh terminal each invocation (tmp path changes), attach a
--- TermClose listener, then read + open the chosen files in the outer session.
+-- Yazi's opener uses $EDITOR (set in options.lua when inside a parent nvim session).
+-- --chooser-file lets us also open files the user selects with the yazi UI chooser
+-- (q to confirm selection): paths are written to a tmp file which we read on exit.
 vim.keymap.set("n", "<leader>yy", function()
     if vim.fn.executable("yazi") == 0 then
         vim.notify("yazi not found in PATH", vim.log.levels.ERROR)
@@ -40,8 +40,10 @@ vim.keymap.set("n", "<leader>yy", function()
 
     local tmp = vim.fn.tempname()
     local term = Snacks.terminal.open("yazi --chooser-file " .. tmp, {
-        -- unique env makes the tid unique so toggle doesn't reuse a stale instance
         env = { YAZI_TMP = tmp },
+        -- Disable snacks' own TermClose→close() handler so it doesn't wipe the
+        -- buffer and its augroup before our handler below can run.
+        auto_close = false,
         win = {
             position = "float",
             border   = "rounded",
@@ -51,6 +53,7 @@ vim.keymap.set("n", "<leader>yy", function()
     })
     term:on("TermClose", function()
         vim.schedule(function()
+            term:close()
             local ok, lines = pcall(vim.fn.readfile, tmp)
             vim.fn.delete(tmp)
             if ok and lines and #lines > 0 and lines[1] ~= "" then
