@@ -82,15 +82,51 @@ return {
             })
 
             local compare = require("cmp.config.compare")
+
+            -- Detect whether a cmp entry originates from rime_ls
+            local function is_rime_entry(entry)
+                if not entry or entry.source.name ~= "nvim_lsp" then
+                    return false
+                end
+                local ok, client_name = pcall(function()
+                    return entry.source.source.client.name
+                end)
+                return ok and client_name == "rime_ls"
+            end
+
+            -- When both entries come from rime_ls, respect rime's candidate order
+            -- (rime-ls sets sortText to "z001", "z002", …). When only one entry is
+            -- from rime, always sort rime entries before others so that the numbered
+            -- candidates stay at the top of the menu.
+            local function rime_comparator(entry1, entry2)
+                local r1 = is_rime_entry(entry1)
+                local r2 = is_rime_entry(entry2)
+                if r1 and r2 then
+                    -- both rime: sort by sortText (guaranteed set by rime-ls)
+                    local st1 = entry1.completion_item.sortText or ""
+                    local st2 = entry2.completion_item.sortText or ""
+                    if st1 < st2 then return true end
+                    if st1 > st2 then return false end
+                    return nil
+                elseif r1 then
+                    return true  -- rime entry first
+                elseif r2 then
+                    return false -- rime entry first
+                end
+                return nil -- neither is rime, fall through
+            end
+
             opts.sorting = {
+                priority_weight = 2,
                 comparators = {
+                    rime_comparator, -- pin rime candidates to rime's own order
                     compare.offset,
                     compare.exact,
                     compare.score,
                     compare.recently_used,
                     compare.kind,
                     compare.length,
-                    compare.sort_text, -- LSP-provided sort hint: use as late tiebreaker only
+                    compare.sort_text,
                     compare.order,
                 },
             }
