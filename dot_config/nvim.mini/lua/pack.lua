@@ -26,6 +26,16 @@ local M = {}
 -- Used by :PackClean to detect orphaned plugin directories.
 M._registered = {}
 
+local function notify_safe(msg, level)
+    vim.schedule(function()
+        vim.notify(msg, level)
+    end)
+end
+
+local function plugin_name(src)
+    return type(src) == "string" and src:match("([^/]+)$") or nil
+end
+
 -- ─── Build-hook infrastructure ───────────────────────────────────────────────
 
 local _hooks     = {}   -- plugin-name → build command or function
@@ -48,17 +58,17 @@ vim.api.nvim_create_autocmd("PackChanged", {
         else
             local cmd = vim.split(build, "%s+")
             if vim.fn.executable(cmd[1]) == 0 then
-                vim.notify(name .. ": build skipped ('" .. cmd[1] .. "' not found)",
-                           vim.log.levels.WARN)
+                notify_safe(name .. ": build skipped ('" .. cmd[1] .. "' not found)",
+                            vim.log.levels.WARN)
                 return
             end
-            vim.notify(name .. ": building…", vim.log.levels.INFO)
+            notify_safe(name .. ": building...", vim.log.levels.INFO)
             vim.system(cmd, { cwd = ev.data.path }, function(r)
                 if r.code == 0 then
-                    vim.notify(name .. ": build succeeded", vim.log.levels.INFO)
+                    notify_safe(name .. ": build succeeded", vim.log.levels.INFO)
                 else
-                    vim.notify(name .. ": build FAILED\n" .. (r.stderr or ""),
-                               vim.log.levels.ERROR)
+                    notify_safe(name .. ": build FAILED\n" .. (r.stderr or ""),
+                                vim.log.levels.ERROR)
                 end
             end)
         end
@@ -75,7 +85,7 @@ M._collecting = false
 
 local function add_one(spec)
     if type(spec) == "string" then
-        local name = spec:match("([^/]+)$")
+        local name = plugin_name(spec)
         if name then M._registered[name] = true end
 
         if M._collecting then
@@ -87,7 +97,7 @@ local function add_one(spec)
     end
 
     -- Named spec table ─────────────────────────────────────────────────────
-    local name = spec.src:match("([^/]+)$")
+    local name = plugin_name(spec.src)
     if name then M._registered[name] = true end
 
     -- Register hook pre-emptively so PackChanged can find it even before the

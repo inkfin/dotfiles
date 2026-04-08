@@ -15,6 +15,33 @@ local function installed_names()
     return names
 end
 
+local function read_lockfile()
+    local path = vim.fn.stdpath("config") .. "/nvim-pack-lock.json"
+    local fd = vim.uv.fs_open(path, "r", 438)
+    if not fd then
+        return path, {}
+    end
+
+    local stat = vim.uv.fs_fstat(fd)
+    if not stat then
+        vim.uv.fs_close(fd)
+        return path, {}
+    end
+
+    local raw = vim.uv.fs_read(fd, stat.size, 0)
+    vim.uv.fs_close(fd)
+    if not raw or raw == "" then
+        return path, {}
+    end
+
+    local ok, decoded = pcall(vim.json.decode, raw)
+    if not ok or type(decoded) ~= "table" or type(decoded.plugins) ~= "table" then
+        return path, {}
+    end
+
+    return path, decoded.plugins
+end
+
 -- :PackClean  – remove plugins on disk that are no longer registered via pack.add()
 vim.api.nvim_create_user_command("PackClean", function()
     local registered = require("pack")._registered
@@ -69,6 +96,48 @@ vim.api.nvim_create_user_command("PackUpdate", function()
     vim.notify("vim.pack: updating all plugins…", vim.log.levels.INFO)
     vim.pack.update()
 end, { desc = "Update all vim.pack plugins" })
+
+vim.api.nvim_create_user_command("PackDoctor", function()
+    local lock_path, lock_plugins = read_lockfile()
+    local installed = installed_names()
+    local installed_set = {}
+    for _, name in ipairs(installed) do
+        installed_set[name] = true
+    end
+
+    local lock_names = vim.tbl_keys(lock_plugins)
+    table.sort(lock_names)
+
+    local missing = {}
+    for _, name in ipairs(lock_names) do
+        if not installed_set[name] then
+            table.insert(missing, name)
+        end
+    end
+
+    local lines = {
+        "vim.pack diagnostics",
+        "",
+        "NVIM_APPNAME: " .. (vim.env.NVIM_APPNAME or ""),
+        "config:       " .. vim.fn.stdpath("config"),
+        "data:         " .. vim.fn.stdpath("data"),
+        "state:        " .. vim.fn.stdpath("state"),
+        "lockfile:     " .. lock_path,
+        "pack_root:    " .. pack_root,
+        "",
+        ("lock_count:   %d"):format(#lock_names),
+        ("disk_count:   %d"):format(#installed),
+        ("missing:      %d"):format(#missing),
+    }
+
+    if #missing > 0 then
+        table.insert(lines, "")
+        table.insert(lines, "Missing on disk:")
+        vim.list_extend(lines, missing)
+    end
+
+    vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "PackDoctor" })
+end, { desc = "Show vim.pack lockfile and install diagnostics" })
 
 -- <leader>l  – list installed plugins in a float
 vim.keymap.set("n", "<leader>l", function()

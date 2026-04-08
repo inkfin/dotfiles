@@ -26,8 +26,8 @@ local function dir_exists(dir)
     return vim.fn.empty(vim.fn.glob(dir)) == 0
 end
 
-local backup_path = vim.fn.stdpath("data") .. "/nvim.mini/backup"
-local undo_path   = vim.fn.stdpath("data") .. "/nvim.mini/undo"
+local backup_path = vim.fn.stdpath("data") .. "/backup"
+local undo_path   = vim.fn.stdpath("data") .. "/undo"
 
 for _, dir in ipairs({ backup_path, undo_path }) do
     if not dir_exists(dir) then
