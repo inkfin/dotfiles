@@ -6,6 +6,14 @@ require("pack").add("https://github.com/nvim-treesitter/nvim-treesitter")
 local ok, configs = pcall(require, "nvim-treesitter.configs")
 if not ok then return end
 
+local function disable_treesitter(_, buf)
+    -- Keep heavy buffers simple: vimtex handles latex, snacks.nvim marks
+    -- large files as `bigfile`, and diff windows should avoid parser work.
+    return vim.bo[buf].filetype == "latex"  -- vimtex will handle it
+        or vim.bo[buf].filetype == "bigfile"
+        or vim.wo.diff
+end
+
 configs.setup({
     -- Install parsers for these languages automatically
     ensure_installed = {
@@ -25,7 +33,10 @@ configs.setup({
     },
     highlight = {
         enable   = true,
-        disable  = { "latex" },  -- vimtex provides better latex highlighting
+        disable  = disable_treesitter,
     },
-    indent    = { enable = true },
+    indent    = {
+        enable = true,
+        disable = disable_treesitter,
+    },
 })

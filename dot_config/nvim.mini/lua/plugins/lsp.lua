@@ -10,6 +10,29 @@ require("pack").add({
     "https://github.com/chrisgrieser/nvim-lsp-endhints",
 })
 
+local function lsp_disabled(bufnr)
+    -- Big files are tagged by snacks.nvim as filetype=bigfile.
+    -- Diff buffers stay read-focused, so keep LSP off there too.
+    return vim.b[bufnr].lsp_disabled
+        or vim.bo[bufnr].filetype == "bigfile"
+        or vim.wo.diff
+end
+
+local function stop_heavy_buffer_clients(bufnr)
+    if not vim.api.nvim_buf_is_valid(bufnr) or not lsp_disabled(bufnr) then
+        return
+    end
+
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+        pcall(vim.lsp.buf_detach_client, bufnr, client.id)
+        if vim.tbl_isempty(client.attached_buffers or {}) then
+            client:stop()
+        end
+    end
+
+    vim.diagnostic.enable(false, { bufnr = bufnr })
+end
+
 --------------------------
 -- nvim-lsp-endhints
 --------------------------
@@ -54,6 +77,12 @@ vim.diagnostic.config({
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("nvim_mini_lsp_attach", { clear = true }),
     callback = function(ev)
+        -- If a client still attaches in a heavy buffer, drop it immediately.
+        if lsp_disabled(ev.buf) then
+            stop_heavy_buffer_clients(ev.buf)
+            return
+        end
+
         local bufnr = ev.buf
         local map = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
@@ -83,6 +112,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
         map("n", "<leader>cd", vim.diagnostic.open_float,                    "Diagnostics float")
         map("n", "[d",         function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
         map("n", "]d",         function() vim.diagnostic.jump({ count =  1 }) end, "Next diagnostic")
+    end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
+    group = vim.api.nvim_create_augroup("nvim_mini_lsp_heavy_buffers", { clear = true }),
+    callback = function(ev)
+        -- Covers reused clients and buffers that become `bigfile` on FileType.
+        stop_heavy_buffer_clients(ev.buf)
+    end,
+})
+
+vim.api.nvim_create_autocmd("OptionSet", {
+    group = vim.api.nvim_create_augroup("nvim_mini_lsp_diff_toggle", { clear = true }),
+    pattern = "diff",
+    callback = function()
+        -- Diff mode can be toggled after LSP is already attached.
+        stop_heavy_buffer_clients(vim.api.nvim_get_current_buf())
     end,
 })
 

@@ -166,14 +166,15 @@ end
 
 -- Format is always manual — disable autoformat on every buffer.
 -- Flip cfg.autoformat = true in config.lua to re-enable globally.
-if not cfg.autoformat then
-    vim.api.nvim_create_autocmd("BufEnter", {
-        group = augroup("no_autoformat"),
-        callback = function()
-            vim.b.autoformat = false
-        end,
-    })
-end
+vim.g.autoformat = cfg.autoformat
+vim.api.nvim_create_autocmd("BufEnter", {
+    group = augroup("autoformat_state"),
+    callback = function()
+        if vim.b.autoformat == nil then
+            vim.b.autoformat = vim.g.autoformat
+        end
+    end,
+})
 
 -- Template file insertion for new buffers
 local template_dirs = {

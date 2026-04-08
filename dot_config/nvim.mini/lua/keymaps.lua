@@ -86,6 +86,59 @@ map({ "n", "v" }, "<leader>rf", function()
     vim.lsp.buf.format({ async = true })
 end, { desc = "Format buffer" })
 
+map("n", "<leader>uf", function()
+    local enabled = not vim.b.autoformat
+    vim.b.autoformat = enabled
+    vim.notify((enabled and "Enabled" or "Disabled") .. " autoformat for buffer")
+end, { desc = "Toggle autoformat (buffer)" })
+
+map("n", "<leader>uF", function()
+    vim.g.autoformat = not vim.g.autoformat
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) then
+            vim.b[buf].autoformat = vim.g.autoformat
+        end
+    end
+    vim.notify((vim.g.autoformat and "Enabled" or "Disabled") .. " autoformat globally")
+end, { desc = "Toggle autoformat (global)" })
+
+--------------------------
+-- Diagnostics
+--------------------------
+map("n", "<leader>ud", function()
+    local enabled = not vim.diagnostic.is_enabled()
+    vim.diagnostic.enable(enabled)
+    vim.notify((enabled and "Enabled" or "Disabled") .. " diagnostics")
+end, { desc = "Toggle diagnostics" })
+
+map("n", "<leader>uD", function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local enabled = vim.b[bufnr].lsp_disabled == true
+
+    if enabled and (vim.bo[bufnr].filetype == "bigfile" or vim.wo.diff) then
+        vim.notify("LSP stays disabled in diff and bigfile buffers", vim.log.levels.WARN)
+        return
+    end
+
+    vim.b[bufnr].lsp_disabled = not enabled
+
+    if not enabled then
+        for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            pcall(vim.lsp.buf_detach_client, bufnr, client.id)
+            if vim.tbl_isempty(client.attached_buffers or {}) then
+                client:stop()
+            end
+        end
+        vim.diagnostic.enable(false, { bufnr = bufnr })
+        vim.notify("Disabled LSP for buffer")
+        return
+    end
+
+    vim.diagnostic.enable(true, { bufnr = bufnr })
+    vim.api.nvim_exec_autocmds("FileType", { buffer = bufnr, modeline = false })
+    vim.notify("Enabled LSP for buffer")
+end, { desc = "Toggle LSP (buffer)" })
+
 --------------------------
 -- Hover documentation
 --------------------------

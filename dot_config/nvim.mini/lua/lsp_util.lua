@@ -15,9 +15,10 @@ end
 --- @param name string   server name (matches nvim-lspconfig's name)
 --- @param cfg  table    extra config merged on top of capabilities
 function M.setup(name, cfg)
-    vim.lsp.config(name, vim.tbl_deep_extend("force", {
+    cfg = vim.tbl_deep_extend("force", {
         capabilities = M.capabilities(),
-    }, cfg or {}))
+    }, cfg or {})
+    vim.lsp.config(name, cfg)
     vim.lsp.enable(name)
 end
 
