@@ -46,6 +46,7 @@ _G.disable_plugins = {
     --notify = true, -- notification
 
     --wakatime = true,
+    ticktick = true,
     image = true,
 }
 
