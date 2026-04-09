@@ -1,2 +1,4 @@
 .DS_Store
 
+# AI local configs
+**/.claude/*.local.json
