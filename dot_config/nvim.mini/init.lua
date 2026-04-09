@@ -21,6 +21,7 @@ pack.load({
     "plugins.bufferline",
     "plugins.lsp",
     "plugins.blink",
+    "plugins.trouble",
     "plugins.colorscheme",
     "plugins.pack_ext",
     "plugins.terminal",

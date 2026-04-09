@@ -32,5 +32,6 @@ wk.add({
     { "<leader>s",  group = "+search"   },
     { "<leader>t",  group = "+tab"      },
     { "<leader>u",  group = "+ui"       },
+    { "<leader>x",  group = "+diagnostics" },
     { "<leader>y",  group = "+yazi"     },
 })
