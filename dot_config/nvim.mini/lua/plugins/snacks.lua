@@ -18,6 +18,12 @@ snacks.setup({
     -- Replaces vim.ui.input with a nicer floating prompt
     input = { enabled = true },
 
+    -- Picker UI, including vim.ui.select used by LSP code actions
+    picker = {
+        enabled = true,
+        ui_select = true,
+    },
+
     -- Renders the file content before plugins finish loading (faster startup
     -- perceived feel when opening a file directly from the CLI)
     quickfile = { enabled = true },
