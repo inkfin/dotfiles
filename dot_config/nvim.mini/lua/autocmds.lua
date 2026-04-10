@@ -128,7 +128,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
         local root = vim.fs.root(0, cfg.root_patterns)
         if root then
-            vim.cmd("lcd " .. root)
+            vim.cmd("lcd " .. vim.fn.fnameescape(root))
         end
     end,
 })
@@ -178,10 +178,10 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 -- Template file insertion for new buffers
 local template_dirs = {
-    vim.fn.expand("$HOME/.config/nvim/template"),
-    vim.fn.expand("$HOME/template"),
-    vim.fn.expand("$HOME/template/cmake_project"),
-    vim.fn.expand("$HOME/template/make_project"),
+    vim.fs.normalize(vim.fn.expand("$HOME/.config/nvim/template")),
+    vim.fs.normalize(vim.fn.expand("$HOME/template")),
+    vim.fs.normalize(vim.fn.expand("$HOME/template/cmake_project")),
+    vim.fs.normalize(vim.fn.expand("$HOME/template/make_project")),
 }
 
 local function find_template(filepath)
@@ -200,16 +200,17 @@ vim.api.nvim_create_autocmd("BufNewFile", {
     callback = function(event)
         local tmpl = find_template(event.match)
         if tmpl then
-            vim.cmd("silent! 0r " .. tmpl)
+            vim.cmd("silent! 0r " .. vim.fn.fnameescape(tmpl))
         end
     end,
 })
 
 -- Run chezmoi apply when saving a dotfile managed by chezmoi
 if not vim.wo.diff then
+    local chezmoi_source = vim.fs.normalize(vim.fn.expand("~/.local/share/chezmoi/"))
     vim.api.nvim_create_autocmd("BufWritePost", {
         group = augroup("chezmoi"),
-        pattern = vim.fn.expand("~/.local/share/chezmoi/") .. "*",
+        pattern = chezmoi_source .. "*",
         callback = function(event)
             vim.system({ "chezmoi", "apply", "--source-path", event.match })
         end,

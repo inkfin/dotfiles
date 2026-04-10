@@ -193,6 +193,6 @@ map("n", "]p", jump_to_next_placeholder,
 --------------------------
 vim.cmd([[
     command! Edir  call feedkeys(":e <C-R>=expand('%:p:h')<CR>/", 'n')
-    command! CD    execute 'cd' expand('%:p:h')
+    command! CD    execute 'cd' fnameescape(expand('%:p:h'))
     command! Cwd   echo expand('%:p:h')
 ]])

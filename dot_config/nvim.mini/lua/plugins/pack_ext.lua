@@ -2,11 +2,11 @@
 -- Stopgap extensions for vim.pack until Neovim ships its own plugin UI.
 -- Remove this file once :PackList / :PackUpdate exist natively.
 
-local pack_root = vim.fn.stdpath("data") .. "/site/pack/core/opt"
+local pack_root = vim.fs.normalize(vim.fn.stdpath("data") .. "/site/pack/core/opt")
 
 -- Returns names of every directory currently in the pack opt/ folder.
 local function installed_names()
-    local dirs = vim.fn.glob(pack_root .. "/*", false, true)
+    local dirs = vim.fn.glob(vim.fs.joinpath(pack_root, "*"), false, true)
     local names = {}
     for _, path in ipairs(dirs) do
         table.insert(names, vim.fn.fnamemodify(path, ":t"))

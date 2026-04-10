@@ -23,7 +23,7 @@ local indent = 4
 -- Backup & undo paths
 --------------------------
 local function dir_exists(dir)
-    return vim.fn.empty(vim.fn.glob(dir)) == 0
+    return vim.fn.isdirectory(vim.fs.normalize(dir)) == 1
 end
 
 local backup_path = vim.fn.stdpath("data") .. "/backup"
