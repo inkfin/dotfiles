@@ -20,7 +20,7 @@ tokyonight.setup({
         keywords  = { italic = true },
         functions = {},
         variables = {},
-        -- Background for sidebars (neo-tree, telescope, etc.)
+        -- Background for sidebars (neo-tree, fzf-lua, etc.)
         sidebars  = "dark",
         floats    = "dark",
     },

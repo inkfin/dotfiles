@@ -17,7 +17,7 @@ pack.load({
     "plugins.multicursor",
     "plugins.undotree",
     "plugins.grug-far",
-    "plugins.telescope",
+    "plugins.fzf",
     "plugins.bufferline",
     "plugins.lsp",
     "plugins.blink",
