@@ -6,10 +6,9 @@ return {
         version = false,
         config = function()
             require("scope").setup({})
-            require("telescope").load_extension("scope")
 
             vim.keymap.del("n", "<leader>sb")
-            vim.keymap.set("n", "<leader>sb", "<CMD>Telescope scope buffers<CR>", { desc = "Buffer", silent = true })
+            vim.keymap.set("n", "<leader>sb", "<CMD>FzfLua tabs current_tab_only=true<CR>", { desc = "Buffer", silent = true })
         end,
     },
     {
