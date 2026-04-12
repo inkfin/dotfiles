@@ -17,4 +17,9 @@ M.lang = {
 -- ─── UI feature switches ─────────────────────────────────────────────────────
 M.transparent = true   -- transparent terminal background
 
+-- ─── LSP UI switches ─────────────────────────────────────────────────────────
+M.lsp = {
+    references = "loclist", -- `gr`: builtin loclist or fzf-lua picker
+}
+
 return M

@@ -71,6 +71,27 @@ vim.diagnostic.config({
     },
 })
 
+local ok_local, local_cfg = pcall(require, "local")
+local lang = ok_local and local_cfg.lang or {}
+local lsp_ui = ok_local and local_cfg.lsp or {}
+local function enabled(key) return lang[key] == true end
+
+local function show_lsp_references()
+    if lsp_ui.references == "fzf-lua" then
+        local ok_fzf, fzf = pcall(require, "fzf-lua")
+        if ok_fzf then
+            fzf.lsp_references({
+                ignore_current_line = true,
+                jump1 = true,
+            })
+            return
+        end
+    end
+
+    -- Default references go to quickfix; force loclist for the builtin path.
+    vim.lsp.buf.references(nil, { loclist = true })
+end
+
 --------------------------
 -- Global on_attach via LspAttach autocommand
 --------------------------
@@ -92,7 +113,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         map("n", "gd",  vim.lsp.buf.definition,      "Go to definition")
         map("n", "gD",  vim.lsp.buf.declaration,     "Go to declaration")
         map("n", "gi",  vim.lsp.buf.implementation,  "Go to implementation")
-        map("n", "gr",  vim.lsp.buf.references,      "References")
+        map("n", "gr",  show_lsp_references,         "References")
         map("n", "gt",  vim.lsp.buf.type_definition, "Go to type definition")
 
         -- Documentation / hover
@@ -160,10 +181,6 @@ mason.setup({
 --------------------------
 local ok_lspcfg = pcall(require, "lspconfig")
 if not ok_lspcfg then return end
-
-local ok_local, local_cfg = pcall(require, "local")
-local lang = ok_local and local_cfg.lang or {}
-local function enabled(key) return lang[key] == true end
 
 -- mason-lspconfig bridges Mason package names ↔ lspconfig server names.
 -- ensure_installed is filtered by local.lua so Mason only installs what's enabled.
