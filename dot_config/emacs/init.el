@@ -1,101 +1,138 @@
-;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; init.el --- Main runtime entrypoint for the Emacs config -*- lexical-binding: t; -*-
 ;;; Commentary:
-
-;; This file bootstraps the configuration, which is divided into
-;; a number of other files.
-
+;;
+;; `early-init.el' handles boot-time mechanics such as GC, package startup, and
+;; Windows-specific low-level tuning.  This file starts after Emacs has created
+;; the initial frame and is responsible for the human-facing editor behavior.
+;;
+;; The load order is intentional:
+;;
+;; 1. Core load-path setup
+;; 2. Tracked settings from `config.el`
+;; 3. Machine-local overrides from `local.el`
+;; 4. Shared helper functions from `lisp/cfg-core.el`
+;; 5. Package bootstrap and feature modules
+;;
+;; Keeping that boundary sharp makes it much easier to reason about what should
+;; be tracked in chezmoi, what should remain local to a single machine, and what
+;; should stay in reusable modules.
+;;
 ;;; Code:
 
-(let ((minver "25.1"))
+(let ((minver "30.1"))
   (when (version< emacs-version minver)
-    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
-(when (version< emacs-version "26.1")
-  (message "Your Emacs is old, and some functionality in this config will be disabled. Please upgrade if possible."))
+    (error "This config requires Emacs %s or newer" minver)))
 
-;; source directories
+;; Local source directories.  The plugin path is added explicitly so each module
+;; can be loaded by feature name without a directory scan.
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp/plugins" user-emacs-directory))
 
-(defconst *spell-check-support-enabled* t) ;; Enable with t if you prefer
-(defconst *is-mac* (eq system-type 'darwin))
-(defconst *is-linux* (eq system-type 'gnu/linux))
-(defconst *is-windows* (memq system-type '(ms-dos windows-nt cygwin)))
+;; Tracked defaults first, then local overrides.
+(load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
+(load (expand-file-name "local.el" user-emacs-directory) t 'nomessage)
 
-(when *is-mac*
-  (setq mac-command-modifier 'super)
-  (setq mac-option-modifier 'meta)
-  (setq mac-right-control-modifier 'alt)
-)
+(require 'cfg-core)
+(require 'cfg-maintenance)
 
-(when *is-windows*
-  (setq w32-alt-is-meta t)
-  (setq w32-pass-lwindow-to-system nil)
-  (setq w32-lwindow-modifier 'super)
-  (w32-register-hot-key [s-])
-  (setq w32-apps-modifier 'alt)
-)
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(unless (file-exists-p custom-file)
+  (with-temp-buffer
+    (write-file custom-file)))
+(load custom-file 'noerror 'nomessage)
 
-(prefer-coding-system 'utf-8)
-(unless *is-windows*
+;; Platform-specific modifier setup belongs here rather than in `early-init.el'
+;; because it affects interactive editing behavior instead of low-level startup.
+(when cfg/is-mac
+  (setq mac-command-modifier 'super
+        mac-option-modifier 'meta
+        mac-right-control-modifier 'alt))
+
+(when cfg/is-windows
+  (setq w32-alt-is-meta t
+        w32-pass-lwindow-to-system nil
+        w32-lwindow-modifier 'super
+        w32-apps-modifier 'hyper)
+  ;; Reserve a bare Super modifier chord for Emacs so Windows does not try to
+  ;; reinterpret it as a system shortcut. This call is Windows-only and simply
+  ;; does not exist on other platforms.
+  (w32-register-hot-key [s-]))
+
+(prefer-coding-system 'utf-8-unix)
+(set-language-environment "UTF-8")
+(unless cfg/is-windows
   (set-selection-coding-system 'utf-8))
 
-;; Adjust garbage collection thresholds during startup, and thereafter
+;; Global editing defaults.  These are intentionally grouped in one place so
+;; future changes remain discoverable without chasing package declarations.
+(setq confirm-kill-emacs #'y-or-n-p
+      inhibit-startup-message t
+      inhibit-startup-screen t
+      inhibit-startup-echo-area-message user-login-name
+      initial-scratch-message nil
+      ring-bell-function #'ignore
+      make-backup-files nil
+      auto-save-default nil
+      create-lockfiles nil
+      use-dialog-box nil
+      sentence-end-double-space nil
+      scroll-conservatively 101
+      scroll-margin cfg/scrolloff
+      hscroll-margin cfg/sidescrolloff
+      hscroll-step 1
+      tab-always-indent 'complete
+      completion-ignore-case t
+      read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t
+      display-line-numbers-type 'relative
+      frame-resize-pixelwise t
+      use-short-answers t)
 
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+(setq-default indent-tabs-mode nil
+              tab-width 4
+              truncate-lines t)
 
-;; Some basic settings
-(setq confirm-kill-emacs #'yes-or-no-p)      ; 在关闭 Emacs 前询问是否确认关闭，防止误触
-(defalias 'yes-or-no-p 'y-or-n-p)
-(electric-pair-mode t)                       ; 自动补全括号
-(add-hook 'prog-mode-hook #'show-paren-mode) ; 编程模式下，光标在括号上时高亮另一个括号
-(column-number-mode t)                       ; 在 Mode line 上显示列号
-(global-auto-revert-mode t)                  ; 当另一程序修改了文件时，让 Emacs 及时刷新 Buffer
-(delete-selection-mode t)                    ; 选中文本后输入文本会替换文本（更符合我们习惯了的其它编辑器的逻辑）
-(setq inhibit-startup-message t)             ; 关闭启动 Emacs 时的欢迎界面
-(setq make-backup-files nil)                 ; 关闭文件自动备份
-(add-hook 'prog-mode-hook #'hs-minor-mode)   ; 编程模式下，可以折叠代码块
-(global-display-line-numbers-mode 1)         ; 在 Window 显示行号
-(tool-bar-mode -1)                           ; （熟练后可选）关闭 Tool bar
-; (when (display-graphic-p) (toggle-scroll-bar -1)) ; 图形界面时关闭滚动条
+(electric-pair-mode 1)
+(show-paren-mode 1)
+(delete-selection-mode 1)
+(savehist-mode 1)
+(save-place-mode 1)
+(recentf-mode 1)
+(global-auto-revert-mode 1)
+(pixel-scroll-precision-mode 1)
+(column-number-mode 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(when (display-graphic-p)
+  (scroll-bar-mode -1))
+(unless (display-graphic-p)
+  (xterm-mouse-mode 1))
 
-(savehist-mode 1)                            ; （可选）打开 Buffer 历史记录保存
-(setq display-line-numbers-type 'relative)   ; （可选）显示相对行号
-(add-to-list 'default-frame-alist '(width . 100))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
-(add-to-list 'default-frame-alist '(height . 30)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
-(xterm-mouse-mode t)
-(setq custom-enabled-themes '(tango-dark))
+(cfg/add-hooks '(prog-mode-hook) #'hs-minor-mode)
+(cfg/add-hooks '(prog-mode-hook) #'display-line-numbers-mode)
+(cfg/add-hooks '(org-mode-hook
+                 term-mode-hook
+                 shell-mode-hook
+                 eshell-mode-hook
+                 vterm-mode-hook
+                 pdf-view-mode-hook)
+               #'cfg/disable-line-numbers)
 
-(cond
-  ( *is-mac*
-    (add-to-list 'default-frame-alist
-                 '(font . "JetBrainsMono Nerd Font Mono-16:weight=medium")))
-  ( *is-windows*
-    (add-to-list 'default-frame-alist
-                 '(font . "Sarasa Term SC Nerd Font-16:weight=medium")))
-)
+(add-to-list 'default-frame-alist `(width . ,cfg/default-frame-width))
+(add-to-list 'default-frame-alist `(height . ,cfg/default-frame-height))
+(when-let ((font (cfg/default-font)))
+  (add-to-list 'default-frame-alist `(font . ,font)))
 
 (require 'keybindings-config)
-
 (require 'packages-config)
 
-(require 'email-config)
+(when cfg/enable-email
+  (require 'email-config))
 
-(progn
+(with-eval-after-load 'org
   (require 'org-pretty-table)
-  (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
-
-(setq org-pretty-table-charset "╒╕╘╛╤╡╧╞╪═│")
-
-
-(setq custom-file "~/.config/emacs/custom.el") 
-;; create custom-file if not exists
-(unless (file-exists-p custom-file)
-  (with-temp-buffer (write-file custom-file)))
-(load custom-file)
+  (setq org-pretty-table-charset cfg/org-pretty-table-charset)
+  (add-hook 'org-mode-hook #'org-pretty-table-mode))
 
 (provide 'init)
-
 ;;; init.el ends here
