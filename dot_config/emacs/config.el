@@ -67,6 +67,35 @@ Nil means do not force a font from the shared tracked config.")
 (defvar cfg/enable-dashboard t
   "When non-nil, show the dashboard in graphical sessions.")
 
+;; `recentf' is useful, but filesystem cleanup can become a startup tax,
+;; especially on Windows. Keep the policy explicit and configurable instead of
+;; relying on package defaults.
+(defvar cfg/recentf-max-saved-items 200
+  "Maximum number of recent files to persist.")
+
+(defvar cfg/recentf-max-menu-items 25
+  "Maximum number of recent files to expose in menu-oriented UIs.")
+
+(defvar cfg/recentf-auto-cleanup
+  (if cfg/is-windows 'never 'mode)
+  "Automatic cleanup policy for `recentf-mode'.
+
+Windows uses the stricter `never' default because path probing and cleanup tend
+to be noticeably more expensive there. Other platforms use the lighter package
+default-style `mode' behavior.")
+
+(defvar cfg/recentf-exclude
+  '("/tmp/"
+    "/ssh:"
+    "/sudo:"
+    "/scp:"
+    "\\.cache/"
+    "COMMIT_EDITMSG\\'"
+    "bookmarks\\'"
+    "recentf\\'"
+    "eln-cache/")
+  "Patterns that should never be recorded by `recentf'.")
+
 (defvar cfg/enable-email t
   "When non-nil, load mail defaults.
 

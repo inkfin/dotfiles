@@ -92,12 +92,25 @@
               tab-width 4
               truncate-lines t)
 
+;; `recentf' can become a visible startup cost on Windows because cleanup and
+;; path probing are relatively expensive there. Keep its policy explicit and
+;; conservative instead of inheriting package defaults.
+(setq recentf-auto-cleanup cfg/recentf-auto-cleanup
+      recentf-max-saved-items cfg/recentf-max-saved-items
+      recentf-max-menu-items cfg/recentf-max-menu-items
+      recentf-exclude cfg/recentf-exclude)
+
 (electric-pair-mode 1)
 (show-paren-mode 1)
 (delete-selection-mode 1)
 (savehist-mode 1)
 (save-place-mode 1)
 (recentf-mode 1)
+(when cfg/is-windows
+  ;; Windows is the strict path: avoid extra chatter and avoid expensive
+  ;; startup cleanup work. Manual cleanup remains available with
+  ;; `recentf-cleanup' when needed.
+  (setq recentf-keep nil))
 (global-auto-revert-mode 1)
 (pixel-scroll-precision-mode 1)
 (column-number-mode 1)

@@ -82,6 +82,8 @@ Windows gets the most explicit tuning:
 - apps/menu key mapped to `hyper`
 - `w32-register-hot-key [s-]` used so a bare Super chord stays available to
   Emacs instead of being consumed unpredictably by the OS
+- `recentf` runs in a stricter mode: no automatic cleanup at startup, lower
+  retained capacity, and more aggressive exclusion of irrelevant paths
 
 ### macOS
 
@@ -102,6 +104,7 @@ Linux remains the least opinionated platform:
 - no tracked font is forced by default
 - no Linux-specific process or window-system hacks are applied
 - UTF-8 selection coding is enabled normally
+- `recentf` keeps a less strict automatic policy than Windows
 
 This keeps the Linux path conservative and avoids overfitting the config to one
 desktop environment or one distribution.
@@ -141,6 +144,28 @@ you only read the higher-level package declarations:
 
 These settings live in [lisp/packages-config.el](./lisp/packages-config.el) and
 are part of the startup-performance story just as much as `early-init.el`.
+
+## Recentf Policy
+
+`recentf` is enabled because it is genuinely useful, but it is configured with
+startup cost in mind rather than left at package defaults.
+
+### Shared settings
+
+- saved item capacity is capped
+- menu item capacity is capped
+- noisy or low-value paths are excluded
+
+### Platform split
+
+- on Windows, `recentf-auto-cleanup` is set to `never`
+- on non-Windows platforms, `recentf-auto-cleanup` stays at the lighter `mode`
+  behavior
+
+This split exists because Windows filesystem probing is significantly more
+expensive, and `recentf` cleanup is one of the easiest ways to end up staring
+at a startup message that looks like Emacs is stuck when it is really just
+doing file bookkeeping.
 
 ## Settings Model
 

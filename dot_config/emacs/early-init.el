@@ -33,6 +33,14 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
+;; The tracked theme is dark by default. Seed the first frame with a dark
+;; background so the startup screen does not flash white before the full theme
+;; loads in `init.el`.
+(push '(background-color . "#11111b") default-frame-alist)
+(push '(foreground-color . "#f2f2f2") default-frame-alist)
+(push '(background-color . "#11111b") initial-frame-alist)
+(push '(foreground-color . "#f2f2f2") initial-frame-alist)
+(setq-default frame-background-mode 'dark)
 
 ;; Windows-specific startup reductions.  These are chosen because they reduce
 ;; expensive filesystem metadata and process I/O overhead without changing the
