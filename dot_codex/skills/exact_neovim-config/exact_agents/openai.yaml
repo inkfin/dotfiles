@@ -1,0 +1,4 @@
+interface:
+  display_name: "Neovim Config"
+  short_description: "Edit Neovim config via chezmoi"
+  default_prompt: "Use $neovim-config to update the user's Neovim config through chezmoi source and consult local LazyVim only as reference."
