@@ -42,6 +42,50 @@ local function read_lockfile()
     return path, decoded.plugins
 end
 
+local function write_lockfile(path, plugins)
+    local payload = vim.json.encode({ plugins = plugins })
+    if not payload then
+        return false, "failed to encode lockfile JSON"
+    end
+
+    local fd, open_err = vim.uv.fs_open(path, "w", 420)
+    if not fd then
+        return false, open_err or "failed to open lockfile for writing"
+    end
+
+    local ok_write, write_err = vim.uv.fs_write(fd, payload, 0)
+    vim.uv.fs_close(fd)
+    if not ok_write then
+        return false, write_err or "failed to write lockfile"
+    end
+
+    return true
+end
+
+local function remove_from_lockfile(names)
+    if #names == 0 then return 0, nil end
+
+    local lock_path, lock_plugins = read_lockfile()
+    local removed = 0
+    for _, name in ipairs(names) do
+        if lock_plugins[name] ~= nil then
+            lock_plugins[name] = nil
+            removed = removed + 1
+        end
+    end
+
+    if removed == 0 then
+        return 0, nil
+    end
+
+    local ok, err = write_lockfile(lock_path, lock_plugins)
+    if not ok then
+        return 0, err
+    end
+
+    return removed, nil
+end
+
 -- :PackClean  – remove plugins on disk that are no longer registered via pack.add()
 vim.api.nvim_create_user_command("PackClean", function()
     local registered = require("pack")._registered
@@ -54,11 +98,22 @@ vim.api.nvim_create_user_command("PackClean", function()
         end
     end
 
+    local lock_removed, lock_err = remove_from_lockfile(removed)
+
     if #removed == 0 then
         vim.notify("PackClean: nothing to remove", vim.log.levels.INFO)
+    elseif lock_err then
+        vim.notify(
+            "PackClean: removed " .. #removed .. " plugin(s), but failed to update lockfile:\n"
+                .. lock_err .. "\n  " .. table.concat(removed, "\n  "),
+            vim.log.levels.WARN
+        )
     else
-        vim.notify("PackClean: removed " .. #removed .. " plugin(s):\n  " .. table.concat(removed, "\n  "),
-            vim.log.levels.INFO)
+        local suffix = lock_removed > 0 and ("\nlockfile: removed " .. lock_removed .. " entr" .. (lock_removed == 1 and "y" or "ies")) or ""
+        vim.notify(
+            "PackClean: removed " .. #removed .. " plugin(s):\n  " .. table.concat(removed, "\n  ") .. suffix,
+            vim.log.levels.INFO
+        )
     end
 end, { desc = "Remove plugins no longer registered with pack.add()" })
 
@@ -76,6 +131,16 @@ vim.api.nvim_create_user_command("PackRemove", function(opts)
         return
     end
     vim.fn.delete(path, "rf")
+
+    local _, lock_err = remove_from_lockfile({ name })
+    if lock_err then
+        vim.notify(
+            "PackRemove: removed '" .. name .. "', but failed to update lockfile:\n" .. lock_err,
+            vim.log.levels.WARN
+        )
+        return
+    end
+
     vim.notify("PackRemove: removed '" .. name .. "'", vim.log.levels.INFO)
 end, {
     nargs = 1,
