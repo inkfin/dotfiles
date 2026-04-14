@@ -81,10 +81,6 @@
       "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",
       "src": "https://github.com/stevearc/oil.nvim"
     },
-    "outline.nvim": {
-      "rev": "c293eb56db880a0539bf9d85b4a27816960b863e",
-      "src": "https://github.com/hedyhli/outline.nvim"
-    },
     "snacks.nvim": {
       "rev": "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e",
       "src": "https://github.com/folke/snacks.nvim"

@@ -27,7 +27,6 @@ pack.load({
     "plugins.pack_ext",
     "plugins.terminal",
     "plugins.which-key",
-    "plugins.outline",
     "plugins.explorer",
     "plugins.dap",
 })
