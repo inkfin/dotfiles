@@ -19,6 +19,7 @@ pack.load({
     "plugins.grug-far",
     "plugins.fzf",
     "plugins.bufferline",
+    "plugins.lualine",
     "plugins.lsp",
     "plugins.blink",
     "plugins.trouble",

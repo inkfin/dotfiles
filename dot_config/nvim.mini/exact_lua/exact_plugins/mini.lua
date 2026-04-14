@@ -75,6 +75,3 @@ require("mini.diff").setup({
         reset = "gH",
     },
 })
-
--- mini.statusline ───────────────────────────────────────────────────────────
-require("mini.statusline").setup({ use_icons = true })

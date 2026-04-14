@@ -8,6 +8,7 @@ require("pack").add({
     "https://github.com/williamboman/mason.nvim",
     "https://github.com/williamboman/mason-lspconfig.nvim",
     "https://github.com/chrisgrieser/nvim-lsp-endhints",
+    "https://github.com/SmiteshP/nvim-navic",
 })
 
 local function lsp_disabled(bufnr)
@@ -47,6 +48,15 @@ if ok_endhints then
             truncateAtChars = 20,
             padding         = 1,
         },
+    })
+end
+
+local ok_navic, navic = pcall(require, "nvim-navic")
+if ok_navic then
+    navic.setup({
+        highlight = false,
+        separator = " > ",
+        depth_limit = 5,
     })
 end
 
@@ -105,8 +115,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         local bufnr = ev.buf
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
         local map = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
+        end
+
+        if ok_navic and client and client:supports_method("textDocument/documentSymbol") then
+            pcall(navic.attach, client, bufnr)
         end
 
         -- Navigation
