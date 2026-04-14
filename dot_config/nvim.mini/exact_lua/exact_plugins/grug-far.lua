@@ -5,7 +5,14 @@ require("pack").add("https://github.com/MagicDuck/grug-far.nvim")
 
 local ok, grugfar = pcall(require, "grug-far")
 if not ok then return end
-grugfar.setup()
+grugfar.setup({
+    openTargetWindow = {
+        -- Reuse the window that was active before opening grug-far.
+        -- This is more reliable than geometric "left/right" detection when
+        -- navigating matches from the grug-far split.
+        preferredLocation = "prev",
+    },
+})
 
 local map = vim.keymap.set
 
