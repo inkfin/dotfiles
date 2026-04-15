@@ -234,6 +234,7 @@ if ok_mlsp then
     -- Map local.lua keys → mason-lspconfig server names
     local server_map = {
         c      = { "clangd", "neocmake" },
+        c3     = { "c3_lsp" },
         lua_ls = { "lua_ls" },
         python = { "basedpyright", "ruff" },
         rust   = { "rust_analyzer" },
@@ -253,6 +254,7 @@ if ok_mlsp then
 end
 
 if enabled("c")      then require("lang.c")       end
+if enabled("c3")     then require("lang.c3")      end
 if enabled("lua_ls") then require("lang.lua_ls")  end
 if enabled("python") then require("lang.python")  end
 if enabled("rust")   then require("lang.rust")    end

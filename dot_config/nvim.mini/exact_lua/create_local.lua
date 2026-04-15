@@ -7,6 +7,7 @@ local M = {}
 -- ─── Language-server configs (lua/lang/*.lua) ───────────────────────────────
 M.lang = {
     c      = true,
+    -- c3     = true,
     lua_ls = true,
     python = true,
     -- rust   = true,
