@@ -85,7 +85,7 @@ map("n", "Q", "<cmd>q<cr><esc>",                          { desc = "Quit file" }
 -- Formatting
 --------------------------
 map({ "n", "v" }, "<leader>rf", function()
-    vim.lsp.buf.format({ async = true })
+    require("format").format({ async = true })
 end, { desc = "Format buffer" })
 
 map("n", "<leader>uf", function()

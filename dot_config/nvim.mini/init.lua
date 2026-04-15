@@ -20,6 +20,7 @@ pack.load({
     "plugins.fzf",
     "plugins.bufferline",
     "plugins.lualine",
+    "plugins.conform",
     "plugins.lsp",
     "plugins.blink",
     "plugins.trouble",

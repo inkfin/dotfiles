@@ -171,7 +171,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         map({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
         map({ "n", "x" }, "<leader>cl", vim.lsp.codelens.run,    "Run codelens")
         map({ "n", "v" }, "<leader>rf", function()
-            vim.lsp.buf.format({ async = true })
+            require("format").format({ async = true, bufnr = bufnr })
         end, "Format buffer")
 
         -- Diagnostics
