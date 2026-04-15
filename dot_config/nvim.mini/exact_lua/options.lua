@@ -40,6 +40,9 @@ opt.directory  = backup_path
 opt.undodir    = undo_path
 opt.undofile   = true
 opt.undolevels = 10000
+-- Persist marks, command history, registers, and file positions across
+-- Neovim sessions.
+opt.shada      = "!,'100,<50,s10,h"
 
 --------------------------
 -- Basic settings

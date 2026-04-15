@@ -14,6 +14,7 @@ pack.load({
     "plugins.noice",
     "plugins.treesitter",
     "plugins.flash",
+    "plugins.marks",
     "plugins.multicursor",
     "plugins.undotree",
     "plugins.grug-far",

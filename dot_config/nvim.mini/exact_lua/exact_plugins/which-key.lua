@@ -27,6 +27,7 @@ wk.add({
     { "<leader>c",  group = "+code"     },
     { "<leader>f",  group = "+find"     },
     { "<leader>g",  group = "+git"      },
+    { "<leader>m",  group = "+bookmarks" },
     { "<leader>p",  group = "+pack"     },
     { "<leader>r",  group = "+refactor" },
     { "<leader>s",  group = "+search"   },

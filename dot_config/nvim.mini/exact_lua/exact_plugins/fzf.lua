@@ -105,6 +105,7 @@ map("n", "<leader>sh", "<cmd>FzfLua help_tags<cr>",                             
 map("n", "<leader>sH", "<cmd>FzfLua highlights<cr>",                                { desc = "Highlights" })
 map("n", "<leader>sj", "<cmd>FzfLua jumps<cr>",                                     { desc = "Jumplist" })
 map("n", "<leader>sk", "<cmd>FzfLua keymaps<cr>",                                   { desc = "Keymaps" })
+map("n", "<leader>mm", "<cmd>FzfLua marks<cr>",                                     { desc = "Bookmarks" })
 map("n", "<leader>sm", "<cmd>FzfLua marks<cr>",                                     { desc = "Marks" })
 map("n", "<leader>sM", "<cmd>FzfLua man_pages<cr>",                                 { desc = "Man Pages" })
 map("n", "<leader>so", "<cmd>FzfLua nvim_options<cr>",                              { desc = "Vim Options" })
