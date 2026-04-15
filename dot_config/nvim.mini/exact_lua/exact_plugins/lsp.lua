@@ -84,22 +84,48 @@ vim.diagnostic.config({
 local ok_local, local_cfg = pcall(require, "local")
 local lang = ok_local and local_cfg.lang or {}
 local lsp_ui = ok_local and local_cfg.lsp or {}
+local ok_fzf, fzf = pcall(require, "fzf-lua")
 local function enabled(key) return lang[key] == true end
 
-local function show_lsp_references()
-    if lsp_ui.references == "fzf-lua" then
-        local ok_fzf, fzf = pcall(require, "fzf-lua")
-        if ok_fzf then
-            fzf.lsp_references({
-                ignore_current_line = true,
-                jump1 = true,
-            })
+local function use_fzf_lua_lsp_ui()
+    return lsp_ui.references == "fzf-lua"
+end
+
+local function show_lsp_picker(fzf_name, fallback, opts)
+    if use_fzf_lua_lsp_ui() then
+        local picker = ok_fzf and fzf[fzf_name]
+        if type(picker) == "function" then
+            picker(opts or {})
             return
         end
     end
+    fallback()
+end
 
-    -- Default references go to quickfix; force loclist for the builtin path.
-    vim.lsp.buf.references(nil, { loclist = true })
+local function show_lsp_references()
+    show_lsp_picker("lsp_references", function()
+        -- Default references go to quickfix; force loclist for the builtin path.
+        vim.lsp.buf.references(nil, { loclist = true })
+    end, {
+        ignore_current_line = true,
+        jump1 = true,
+    })
+end
+
+local function show_lsp_definition()
+    show_lsp_picker("lsp_definitions", vim.lsp.buf.definition)
+end
+
+local function show_lsp_declaration()
+    show_lsp_picker("lsp_declarations", vim.lsp.buf.declaration)
+end
+
+local function show_lsp_implementation()
+    show_lsp_picker("lsp_implementations", vim.lsp.buf.implementation)
+end
+
+local function show_lsp_type_definition()
+    show_lsp_picker("lsp_typedefs", vim.lsp.buf.type_definition)
 end
 
 --------------------------
@@ -116,8 +142,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         local bufnr = ev.buf
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
-        local map = function(mode, lhs, rhs, desc)
-            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
+        local map = function(mode, lhs, rhs, desc, opts)
+            vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", {
+                buffer = bufnr,
+                silent = true,
+                desc = desc,
+            }, opts or {}))
         end
 
         if ok_navic and client and client:supports_method("textDocument/documentSymbol") then
@@ -125,11 +155,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         -- Navigation
-        map("n", "gd",  vim.lsp.buf.definition,      "Go to definition")
-        map("n", "gD",  vim.lsp.buf.declaration,     "Go to declaration")
-        map("n", "gi",  vim.lsp.buf.implementation,  "Go to implementation")
-        map("n", "gr",  show_lsp_references,         "References")
-        map("n", "gt",  vim.lsp.buf.type_definition, "Go to type definition")
+        map("n", "gd",  show_lsp_definition,      "Go to definition")
+        map("n", "gD",  show_lsp_declaration,     "Go to declaration")
+        map("n", "gi",  show_lsp_implementation,  "Go to implementation")
+        map("n", "gr",  show_lsp_references,      "References", { nowait = true })
+        map("n", "gy",  show_lsp_type_definition, "Go to type definition")
 
         -- Documentation / hover
         map("n", "K",           vim.lsp.buf.hover,          "Hover docs")

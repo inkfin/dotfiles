@@ -19,7 +19,7 @@ M.transparent = true   -- transparent terminal background
 
 -- ─── LSP UI switches ─────────────────────────────────────────────────────────
 M.lsp = {
-    references = "loclist", -- `gr`: builtin loclist or fzf-lua picker
+    references = "loclist", -- LSP list UI: builtin loclist or fzf-lua picker
 }
 
 return M

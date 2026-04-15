@@ -7,6 +7,8 @@ local function map(mode, lhs, rhs, opts)
     vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+local ok_trouble, trouble = pcall(require, "trouble")
+
 --------------------------
 -- Neovide
 --------------------------
@@ -106,21 +108,38 @@ end, { desc = "Toggle autoformat (global)" })
 -- Diagnostics
 --------------------------
 map("n", "<leader>xl", function()
-    local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+    local loclist = vim.fn.getloclist(0, { winid = 0 })
+    local success, err
+
+    if loclist.winid ~= 0 then
+        success, err = pcall(vim.cmd.lclose)
+    elseif ok_trouble then
+        success, err = pcall(trouble.toggle, { mode = "loclist" })
+    else
+        success, err = pcall(vim.cmd.lopen)
+    end
+
     if not success and err then
         vim.notify(err, vim.log.levels.ERROR)
     end
-end, { desc = "Location List" })
+end, { desc = "Location List (Trouble)" })
 
 map("n", "<leader>xq", function()
-    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+    local qflist = vim.fn.getqflist({ winid = 0 })
+    local success, err
+
+    if qflist.winid ~= 0 then
+        success, err = pcall(vim.cmd.cclose)
+    elseif ok_trouble then
+        success, err = pcall(trouble.toggle, { mode = "qflist" })
+    else
+        success, err = pcall(vim.cmd.copen)
+    end
+
     if not success and err then
         vim.notify(err, vim.log.levels.ERROR)
     end
-end, { desc = "Quickfix List" })
-
-map("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
-map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
+end, { desc = "Quickfix List (Trouble)" })
 
 map("n", "<leader>ud", function()
     local enabled = not vim.diagnostic.is_enabled()
