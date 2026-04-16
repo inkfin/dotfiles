@@ -226,16 +226,6 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- Fold + conceal settings for Neorg
-vim.api.nvim_create_autocmd("FileType", {
-    group = augroup("norg_settings"),
-    pattern = { "norg" },
-    callback = function()
-        vim.wo.foldlevel    = 99
-        vim.wo.conceallevel = 2
-    end,
-})
-
 -- Keep LspInlayHint readable; optionally enforce transparent background
 vim.api.nvim_create_autocmd("ColorScheme", {
     group = augroup("inlay_hint_hl"),
