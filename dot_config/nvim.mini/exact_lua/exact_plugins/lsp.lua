@@ -1,7 +1,7 @@
 -- ~/.config/nvim.mini/lua/plugins/lsp.lua
 -- LSP framework: diagnostics UI + global keymaps via LspAttach
--- Individual servers live in lua/lang/*.lua
--- Mason installs missing server binaries automatically.
+-- Individual servers live in lua/lang/*.lua and own both their Mason install
+-- entries and server-specific setup.
 
 require("pack").add({
     "https://github.com/neovim/nvim-lspconfig",
@@ -175,7 +175,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end, "Format buffer")
 
         -- Diagnostics
-        map("n", "<leader>cd", vim.diagnostic.open_float,                    "Diagnostics float")
+        map("n", "<leader>cd", vim.diagnostic.open_float,                        "Diagnostics float")
         map("n", "[d",         function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
         map("n", "]d",         function() vim.diagnostic.jump({ count =  1 }) end, "Next diagnostic")
     end,
@@ -222,41 +222,44 @@ mason.setup({
 })
 
 --------------------------
--- Lang-specific servers
+-- Lang-specific specs
 --------------------------
 local ok_lspcfg = pcall(require, "lspconfig")
 if not ok_lspcfg then return end
 
--- mason-lspconfig bridges Mason package names ↔ lspconfig server names.
--- ensure_installed is filtered by local.lua so Mason only installs what's enabled.
+local ok_lang, lang_registry = pcall(require, "lang")
+if not ok_lang then return end
+
+-- Collect install requirements first, then run per-language setup after Mason
+-- has been configured. This keeps install metadata near each language file
+-- while avoiding language-specific wiring in this plugin module.
+local lang_specs = lang_registry.collect(enabled)
+
 local ok_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
 if ok_mlsp then
-    -- Map local.lua keys → mason-lspconfig server names
-    local server_map = {
-        c      = { "clangd", "neocmake" },
-        c3     = { "c3_lsp" },
-        lua_ls = { "lua_ls" },
-        python = { "basedpyright", "ruff" },
-        rust   = { "rust_analyzer" },
-        go     = { "gopls" },
-        latex  = { "texlab" },
-    }
-    local ensure = {}
-    for key, servers in pairs(server_map) do
-        if enabled(key) then
-            vim.list_extend(ensure, servers)
-        end
-    end
     mason_lspconfig.setup({
-        ensure_installed    = ensure,
+        -- Only server ids that mason-lspconfig understands belong here.
+        ensure_installed = lang_specs.ensure_servers,
         automatic_installation = false,
     })
 end
 
-if enabled("c")      then require("lang.c")       end
-if enabled("c3")     then require("lang.c3")      end
-if enabled("lua_ls") then require("lang.lua_ls")  end
-if enabled("python") then require("lang.python")  end
-if enabled("rust")   then require("lang.rust")    end
-if enabled("go")     then require("lang.go")      end
-if enabled("latex")  then require("lang.latex")   end
+local ok_registry, registry = pcall(require, "mason-registry")
+if ok_registry then
+    -- Install raw Mason package names for servers that exist in Mason but are
+    -- not yet mapped by mason-lspconfig. C3 currently takes this path.
+    for _, pkg_name in ipairs(lang_specs.ensure_packages) do
+        local ok_pkg, pkg = pcall(registry.get_package, pkg_name)
+        if ok_pkg and not pkg:is_installed() then
+            pkg:install()
+        end
+    end
+end
+
+-- Run actual server/plugin setup only after install collection is done. The
+-- setup calls stay in `lang/*.lua`, so adding a new language is mostly local.
+for _, spec in ipairs(lang_specs.loaded) do
+    if type(spec.setup) == "function" then
+        spec.setup()
+    end
+end

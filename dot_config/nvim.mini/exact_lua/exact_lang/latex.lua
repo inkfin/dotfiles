@@ -175,10 +175,18 @@ if ok_clip then
     })
 end
 
---------------------------
--- texlab LSP
---------------------------
-local ok_lsp, lsp_util = pcall(require, "lsp_util")
-if ok_lsp then
-    lsp_util.setup("texlab", {})
+local M = {
+    mason_lspconfig = { "texlab" },
+}
+
+function M.setup()
+    --------------------------
+    -- texlab LSP
+    --------------------------
+    local ok_lsp, lsp_util = pcall(require, "lsp_util")
+    if ok_lsp then
+        lsp_util.setup("texlab", {})
+    end
 end
+
+return M
