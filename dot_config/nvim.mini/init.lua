@@ -10,6 +10,7 @@ require("autocmds")
 -- Plugin modules: each calls pack.add() then configures itself.
 pack.load({
     "plugins.mini",       -- mini.icons must load before snacks dashboard renders
+    "plugins.gitsigns",
     "plugins.snacks",
     "plugins.noice",
     "plugins.treesitter",

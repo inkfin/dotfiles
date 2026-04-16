@@ -100,10 +100,9 @@ lualine.setup({
             {
                 "diff",
                 source = function()
-                    -- This config uses `mini.diff`, not gitsigns. If another
-                    -- provider populates `vim.b.gitsigns_status_dict`, lualine
-                    -- will still render counts. Otherwise this section stays
-                    -- empty without breaking the rest of the statusline.
+                    -- gitsigns populates per-buffer diff counts here. Keep the
+                    -- section resilient so the statusline stays quiet in
+                    -- non-git buffers or before gitsigns attaches.
                     local gitsigns = vim.b.gitsigns_status_dict
                     if gitsigns then
                         return {
