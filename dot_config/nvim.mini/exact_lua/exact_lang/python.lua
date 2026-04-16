@@ -7,6 +7,7 @@ local lsp = require("lsp_util")
 
 local M = {
     mason_lspconfig = { "basedpyright", "ruff" },
+    treesitter = { "python" },
 }
 
 function M.setup()

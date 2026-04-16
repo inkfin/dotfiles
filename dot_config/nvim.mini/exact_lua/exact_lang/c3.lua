@@ -8,6 +8,7 @@ local M = {
     -- Mason ships this package as `c3-lsp`, while nvim-lspconfig exposes the
     -- server as `c3_lsp`, so this language uses the raw Mason package path.
     mason_packages = { "c3-lsp" },
+    treesitter = { "c3" },
 }
 
 function M.setup()

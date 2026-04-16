@@ -6,6 +6,7 @@ local lsp = require("lsp_util")
 
 local M = {
     mason_lspconfig = { "lua_ls" },
+    treesitter = { "lua" },
 }
 
 function M.setup()

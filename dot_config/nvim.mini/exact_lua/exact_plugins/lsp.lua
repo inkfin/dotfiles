@@ -82,10 +82,8 @@ vim.diagnostic.config({
 })
 
 local ok_local, local_cfg = pcall(require, "local")
-local lang = ok_local and local_cfg.lang or {}
 local lsp_ui = ok_local and local_cfg.lsp or {}
 local ok_fzf, fzf = pcall(require, "fzf-lua")
-local function enabled(key) return lang[key] == true end
 
 local function use_fzf_lua_lsp_ui()
     return lsp_ui.references == "fzf-lua"
@@ -233,7 +231,7 @@ if not ok_lang then return end
 -- Collect install requirements first, then run per-language setup after Mason
 -- has been configured. This keeps install metadata near each language file
 -- while avoiding language-specific wiring in this plugin module.
-local lang_specs = lang_registry.collect(enabled)
+local lang_specs = lang_registry.collect()
 
 local ok_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
 if ok_mlsp then

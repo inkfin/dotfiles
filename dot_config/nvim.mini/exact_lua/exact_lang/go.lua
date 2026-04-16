@@ -6,6 +6,7 @@ local lsp = require("lsp_util")
 
 local M = {
     mason_lspconfig = { "gopls" },
+    treesitter = { "go" },
 }
 
 function M.setup()

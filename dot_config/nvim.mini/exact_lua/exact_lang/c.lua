@@ -6,6 +6,7 @@ local lsp = require("lsp_util")
 
 local M = {
     mason_lspconfig = { "clangd", "neocmake" },
+    treesitter = { "c", "cpp", "cmake" },
 }
 
 function M.setup()

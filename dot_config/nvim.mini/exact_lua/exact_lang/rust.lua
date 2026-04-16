@@ -6,6 +6,7 @@ local lsp = require("lsp_util")
 
 local M = {
     mason_lspconfig = { "rust_analyzer" },
+    treesitter = { "rust" },
 }
 
 function M.setup()

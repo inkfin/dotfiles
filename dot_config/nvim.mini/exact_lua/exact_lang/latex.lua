@@ -177,6 +177,7 @@ end
 
 local M = {
     mason_lspconfig = { "texlab" },
+    treesitter = { "latex", "bibtex" },
 }
 
 function M.setup()
