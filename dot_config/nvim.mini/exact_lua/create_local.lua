@@ -13,6 +13,7 @@ M.lang = {
     -- rust   = true,
     -- go     = true,
     -- latex  = true,
+    -- proto  = true,
 }
 
 -- ─── UI feature switches ─────────────────────────────────────────────────────
