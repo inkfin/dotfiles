@@ -27,6 +27,14 @@ M.root_patterns = {
     ".direnv",
 }
 
+-- Resolve the current project root from our explicit marker list and fall
+-- back to Neovim's current working directory when no marker is found.
+-- Keep this in one place so explorer, pickers, and cwd-related autocmds all
+-- agree on what "project root" means.
+function M.project_root(bufnr)
+    return vim.fs.root(bufnr or 0, M.root_patterns) or vim.uv.cwd()
+end
+
 -- Per-filetype indent widths
 -- Any filetype not listed falls back to the global shiftwidth in options.lua
 M.indent = {

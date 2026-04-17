@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/telescope.lua
 -- fzf-lua picker configuration replacing Telescope
 
+local cfg = require("config")
+
 require("pack").add({
     "https://github.com/ibhagwan/fzf-lua",
 })
@@ -60,25 +62,64 @@ local function call(name, opts)
     end
 end
 
+local function root_call(name, opts)
+    return function()
+        local merged = vim.tbl_extend("force", { cwd = cfg.project_root(0) }, opts or {})
+        return fzf[name](merged)
+    end
+end
+
+local function pick_search_dir(callback)
+    return function()
+        fzf.zoxide({
+            prompt = "Search Dir> ",
+            winopts = { title = " Search Directory " },
+            actions = {
+                -- zoxide output is a directory path, so we can feed it back into
+                -- any picker that accepts `cwd` and let the user choose the
+                -- search root interactively.
+                ["default"] = function(selected)
+                    local dir = selected and selected[1]
+                    if not dir or dir == "" then return end
+                    callback(vim.trim(dir))
+                end,
+            },
+        })
+    end
+end
+
+local function choose_files_root()
+    return pick_search_dir(function(dir)
+        fzf.files({ cwd = dir })
+    end)
+end
+
+local function choose_grep_root()
+    return pick_search_dir(function(dir)
+        fzf.live_grep({ cwd = dir })
+    end)
+end
+
 local function grep_word()
-    fzf.grep_cword({ search = vim.fn.expand("<cword>") })
+    fzf.grep_cword({ search = vim.fn.expand("<cword>"), cwd = cfg.project_root(0) })
 end
 
 local function grep_visual()
-    fzf.grep_visual()
+    fzf.grep_visual({ cwd = cfg.project_root(0) })
 end
 
 local map = vim.keymap.set
 
 -- Top-level
 map("n", "<leader>,",  "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>", { desc = "Switch Buffer" })
-map("n", "<leader>/",  "<cmd>FzfLua live_grep<cr>",                                 { desc = "Live Grep (cwd)" })
+map("n", "<leader>/",  root_call("live_grep"),                                       { desc = "Live Grep (root)" })
 map("n", "<leader>:",  "<cmd>FzfLua command_history<cr>",                           { desc = "Command History" })
-map("n", "<leader><space>", call("files"),                                          { desc = "Find Files" })
+map("n", "<leader><space>", root_call("files"),                                     { desc = "Find Files (root)" })
 
 -- Find
-map("n", "<leader>ff", call("files"),                                               { desc = "Find Files" })
+map("n", "<leader>ff", root_call("files"),                                          { desc = "Find Files (root)" })
 map("n", "<leader>fF", call("files", { cwd = vim.uv.cwd() }),                       { desc = "Find Files (cwd)" })
+map("n", "<leader>fR", choose_files_root(),                                          { desc = "Find Files (choose dir)" })
 map("n", "<leader>fg", "<cmd>FzfLua git_files<cr>",                                 { desc = "Find Files (git)" })
 map("n", "<leader>fr", "<cmd>FzfLua oldfiles<cr>",                                  { desc = "Recent Files" })
 map("n", "<leader>fb", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>",  { desc = "Buffers" })
@@ -100,7 +141,8 @@ map("n", "<leader>sc", "<cmd>FzfLua command_history<cr>",                       
 map("n", "<leader>sC", "<cmd>FzfLua commands<cr>",                                  { desc = "Commands" })
 map("n", "<leader>sd", "<cmd>FzfLua diagnostics_workspace<cr>",                     { desc = "Diagnostics" })
 map("n", "<leader>sD", "<cmd>FzfLua diagnostics_document<cr>",                      { desc = "Buffer Diagnostics" })
-map("n", "<leader>sg", "<cmd>FzfLua live_grep<cr>",                                 { desc = "Live Grep" })
+map("n", "<leader>sg", root_call("live_grep"),                                      { desc = "Live Grep (root)" })
+map("n", "<leader>sG", choose_grep_root(),                                           { desc = "Live Grep (choose dir)" })
 map("n", "<leader>sh", "<cmd>FzfLua help_tags<cr>",                                 { desc = "Help Pages" })
 map("n", "<leader>sH", "<cmd>FzfLua highlights<cr>",                                { desc = "Highlights" })
 map("n", "<leader>sj", "<cmd>FzfLua jumps<cr>",                                     { desc = "Jumplist" })

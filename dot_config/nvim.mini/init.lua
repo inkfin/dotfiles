@@ -24,6 +24,7 @@ pack.load({
     "plugins.lualine",
     "plugins.conform",
     "plugins.lsp",
+    "plugins.copilot",
     "plugins.blink",
     "plugins.trouble",
     "plugins.colorscheme",

@@ -3,10 +3,6 @@
 
 local cfg = require("config")
 
-local function project_root()
-    return vim.fs.root(0, cfg.root_patterns) or vim.uv.cwd()
-end
-
 --------------------------
 -- Snacks Explorer
 --------------------------
@@ -17,7 +13,7 @@ end
 local map = vim.keymap.set
 
 map("n", "<leader>e", function()
-    Snacks.explorer({ cwd = project_root() })
+    Snacks.explorer({ cwd = cfg.project_root(0) })
 end, { desc = "Explorer (root)" })
 
 map("n", "<leader>E", function()

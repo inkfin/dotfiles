@@ -1,6 +1,8 @@
 -- ~/.config/nvim.mini/lua/plugins/blink.lua
 -- Saghen/blink.cmp: fast LSP-based completion
 
+local default_sources = { "lsp", "path", "snippets", "buffer" }
+
 require("pack").add({
     src     = "https://github.com/Saghen/blink.cmp",
     version = ">=1",
@@ -66,7 +68,7 @@ blink.setup({
     -- Sources
     --------------------------
     sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+        default = default_sources,
         -- Optional: per-filetype overrides
         -- per_filetype = {
         --     markdown = { "lsp", "path", "buffer" },

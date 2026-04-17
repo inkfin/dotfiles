@@ -126,10 +126,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 vim.api.nvim_create_autocmd("VimEnter", {
     group = augroup("root_lcd"),
     callback = function()
-        local root = vim.fs.root(0, cfg.root_patterns)
-        if root then
-            vim.cmd("lcd " .. vim.fn.fnameescape(root))
-        end
+        vim.cmd("lcd " .. vim.fn.fnameescape(cfg.project_root(0)))
     end,
 })
 

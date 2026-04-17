@@ -19,6 +19,13 @@ M.lang = {
 -- ─── UI feature switches ─────────────────────────────────────────────────────
 M.transparent = true   -- transparent terminal background
 
+-- ─── AI feature switches ─────────────────────────────────────────────────────
+-- Keep AI integrations behind explicit booleans so they can be enabled per
+-- machine without deleting plugin files or changing the main plugin list.
+M.ai = {
+    copilot = true,
+}
+
 -- ─── LSP UI switches ─────────────────────────────────────────────────────────
 M.lsp = {
     references = "loclist", -- LSP list UI: builtin loclist or fzf-lua picker
