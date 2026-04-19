@@ -20,6 +20,10 @@ copy_command "clip.exe"
 copy_command "pbcopy"
 {{- end }}
 
+{{- if $is_windows }}
+support_kitty_keyboard_protocol false
+{{- end }}
+
 session_serialization true
 serialize_pane_viewport true
 scrollback_lines_to_serialize 5000
