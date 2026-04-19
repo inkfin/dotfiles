@@ -1,0 +1,42 @@
+// vi:set ft=kdl:
+{{- $is_windows := eq .chezmoi.os "windows" -}}
+{{- $is_macos := eq .chezmoi.os "darwin" -}}
+{{- $is_wsl := and (eq .chezmoi.os "linux") (contains .chezmoi.kernel.osrelease "microsoft") -}}
+
+{{- if $is_windows }}
+default_shell "pwsh.exe"
+{{- else }}
+default_shell "zsh"
+{{- end }}
+
+default_mode "locked"
+default_layout "compact"
+scroll_buffer_size 50000
+scrollback_editor "nvim"
+
+{{- if or $is_windows $is_wsl }}
+copy_command "clip.exe"
+{{- else if $is_macos }}
+copy_command "pbcopy"
+{{- end }}
+
+session_serialization true
+serialize_pane_viewport true
+scrollback_lines_to_serialize 5000
+serialization_interval 600
+
+show_startup_tips false
+show_release_notes false
+
+// themes
+pane_frames false
+theme "tokyo-night"
+
+plugins {
+    compact-bar location="zellij:compact-bar" {
+        tooltip "F1"
+    }
+}
+
+keybinds {
+}
