@@ -43,6 +43,7 @@ let g:maplocalleader=","
 set hlsearch
 set incsearch
 set ignorecase
+set smartcase
 
 " set ide handler
 sethandler <C-A> a:vim
@@ -78,6 +79,8 @@ vnoremap L $<left>
 " Buffers
 nnoremap [b gT
 nnoremap ]b gt
+nnoremap [t gT
+nnoremap ]t gt
 nnoremap <Leader>tmh :tabm -<CR>
 nnoremap <Leader>tml :tabm +<CR>
 nnoremap <Leader>bd  :action CloseContent<CR>
@@ -92,6 +95,7 @@ nnoremap <A-k> :action MoveLineUp<CR>
 
 nmap <silent> Q     :action CloseContent<CR>
 nmap <silent> <C-S> :w<cr>
+nnoremap <Esc> :nohlsearch<CR>
 
 " Split screen
 nnoremap <Leader>| <C-W>v
@@ -104,20 +108,25 @@ nnoremap <C-k> <C-W>k
 
 " clear the search buffer when hitting return
 nnoremap <space><cr> :nohlsearch<cr>
+nnoremap <leader><space> :<C-u>action GotoFile<CR>
+nnoremap <leader>, :<C-u>action RecentFiles<CR>
 
 
 
 
 " Use some IDE utils
+nnoremap K :<C-u>action QuickJavaDoc<CR>
 nnoremap <Leader>h :<C-u>action QuickJavaDoc<CR>
 
 " go to ...
 nnoremap gb :<C-u>action JumpToLastChange<CR>
 nnoremap gd :<C-u>action GotoDeclaration<CR>
+nnoremap gD :<C-u>action GotoDeclaration<CR>
 nnoremap gs :<C-u>action GotoSuperMethod<CR>
 nnoremap gi :<C-u>action GotoImplementation<CR>
 nnoremap gr :<C-u>action ShowUsages<CR>
-nnoremap gt :<C-u>action GotoTest<CR>
+nnoremap gy :<C-u>action GotoTypeDeclaration<CR>
+nnoremap <leader>gt :<C-u>action GotoTest<CR>
 
 nnoremap <Leader>ch :<C-u>action SwitchHeaderSource<CR>
 
@@ -128,14 +137,17 @@ nnoremap [d :<C-u>action GotoPreviousError<CR>
 " search
 nnoremap <Leader><Leader> :<C-u>action GotoFile<CR>
 nnoremap <Leader>/  :<C-u>action FindInPath<CR>
-nnoremap <Leader>ff :<C-u>action FindInPath<CR>
+nnoremap <Leader>ff :<C-u>action GotoFile<CR>
+nnoremap <Leader>fb :<C-u>action RecentFiles<CR>
 nnoremap <Leader>sf :<C-u>action GotoFile<CR>
 nnoremap <Leader>ss :<C-u>action GotoSymbol<CR>
 nnoremap <Leader>sc :<C-u>action GotoClass<CR>
+nnoremap <Leader>sg :<C-u>action FindInPath<CR>
 nnoremap <Leader>st :<C-u>action TextSearchAction<CR>
 nnoremap <Leader>sa :<C-u>action GotoAction<CR>
 nnoremap <Leader>sr :<C-u>action RecentFiles<CR>
 nnoremap <Leader>sm :<C-u>action ShowBookmarks<CR>
+nnoremap <Leader>mm :<C-u>action ShowBookmarks<CR>
 
 " replace
 nnoremap <Leader>f/ :<C-u>action Find<CR>
@@ -158,15 +170,25 @@ vnoremap <Leader>rf :<C-u>'<,'>action ReformatCode<CR>
 
 " Debug
 nnoremap <Leader>db :action ToggleLineBreakpoint<cr>
-nnoremap <Leader>dc :<C-u>action ChooseRunConfiguration<CR>
-" nnoremap F5 :<C-u>action StepInto<CR>
-" nnoremap F6 :<C-u>action StepOver<CR>
-" nnoremap F8 :<C-u>action Resume<CR>
+nnoremap <Leader>dc :<C-u>action Resume<CR>
+nnoremap <Leader>dC :<C-u>action ChooseRunConfiguration<CR>
+nnoremap <Leader>di :<C-u>action StepInto<CR>
+nnoremap <Leader>dO :<C-u>action StepOver<CR>
+nnoremap <Leader>do :<C-u>action StepOut<CR>
+nnoremap <Leader>dt :<C-u>action Stop<CR>
+nnoremap <F5> :<C-u>action Resume<CR>
+nnoremap <F9> :<C-u>action ToggleLineBreakpoint<CR>
+nnoremap <F10> :<C-u>action StepOver<CR>
+nnoremap <F11> :<C-u>action StepInto<CR>
+nnoremap <S-F5> :<C-u>action Stop<CR>
+nnoremap <S-F11> :<C-u>action StepOut<CR>
 
 " Bookmark
 nnoremap mm :action ToggleBookmark<cr>
 nnoremap m] :<C-u>action GotoNextBookmark<CR>
 nnoremap m[ :<C-u>action GotoPreviousBookmark<CR>
+nnoremap <Leader>m] :<C-u>action GotoNextBookmark<CR>
+nnoremap <Leader>m[ :<C-u>action GotoPreviousBookmark<CR>
 
 
 " code editing
