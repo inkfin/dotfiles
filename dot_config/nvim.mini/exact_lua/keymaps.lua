@@ -129,9 +129,16 @@ map("n", "<leader>xl", function()
     if loclist.winid ~= 0 then
         success, err = pcall(vim.cmd.lclose)
     elseif ok_trouble then
-        success, err = pcall(trouble.toggle, { mode = "loclist" })
+        success, err = pcall(trouble.toggle, { mode = "loclist", focus = true })
     else
-        success, err = pcall(vim.cmd.lopen)
+        success, err = pcall(function()
+            vim.cmd.lopen()
+
+            local opened = vim.fn.getloclist(0, { winid = 0 })
+            if opened.winid ~= 0 then
+                vim.api.nvim_set_current_win(opened.winid)
+            end
+        end)
     end
 
     if not success and err then
@@ -146,9 +153,16 @@ map("n", "<leader>xq", function()
     if qflist.winid ~= 0 then
         success, err = pcall(vim.cmd.cclose)
     elseif ok_trouble then
-        success, err = pcall(trouble.toggle, { mode = "qflist" })
+        success, err = pcall(trouble.toggle, { mode = "qflist", focus = true })
     else
-        success, err = pcall(vim.cmd.copen)
+        success, err = pcall(function()
+            vim.cmd.copen()
+
+            local opened = vim.fn.getqflist({ winid = 0 })
+            if opened.winid ~= 0 then
+                vim.api.nvim_set_current_win(opened.winid)
+            end
+        end)
     end
 
     if not success and err then

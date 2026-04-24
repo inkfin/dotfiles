@@ -55,12 +55,6 @@ noice.setup({
 		--     filter = { event = "msg_show", find = ":!chezmoi" },
 		--     opts = { skip = true },
 		-- },
-		-- Show :!cmd shell output in a split with cursor focus
-		{
-			filter = { event = "msg_show", kind = { "shell_cmd", "shell_out" } },
-			view = "split",
-			opts = { enter = true, size = "80%" },
-		},
 	},
 })
 
