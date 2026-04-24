@@ -18,7 +18,6 @@ pack.load({
     "plugins.marks",
     "plugins.multicursor",
     "plugins.undotree",
-    "plugins.grug-far",
     "plugins.fzf",
     "plugins.bufferline",
     "plugins.lualine",
