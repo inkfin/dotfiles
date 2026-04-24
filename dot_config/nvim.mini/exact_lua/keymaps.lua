@@ -68,18 +68,17 @@ map("n", "<leader>tml",     "<cmd>tabm +<cr>",{ desc = "Move tab right"  })
 --------------------------
 -- Search & view
 --------------------------
-local function prefill_loclist_grep_word()
+local function grep_word_to_loclist()
     local word = vim.fn.expand("<cword>")
     if word == nil or word == "" then
         vim.notify("No word under cursor", vim.log.levels.WARN)
         return
     end
 
-    -- Pre-fill a location-list grep and keep the command line open so extra
-    -- ripgrep flags such as `-g '!dist'` can be appended before the final `.`
-    -- search root. Two left moves place the cursor just before the trailing
-    -- space-dot suffix, so pressing <CR> later still searches from project root.
-    local keys = vim.keycode(":lgrep! " .. vim.fn.shellescape(word) .. " .<Left><Left>")
+    -- Keep this mapping minimal: seed `:lgrep!` with the word under cursor and
+    -- leave the command line open so the rest of the ripgrep arguments are
+    -- entered manually.
+    local keys = vim.keycode(":lgrep! " .. vim.fn.shellescape(word) .. " ")
     vim.api.nvim_feedkeys(keys, "n", false)
 end
 
@@ -89,7 +88,7 @@ map("n", "<Esc>",
 map("n", "<leader><CR>",
     "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
     { desc = "Clear hlsearch / diff update / redraw" })
-map("n", "<leader>sr", prefill_loclist_grep_word, { desc = "Grep Word to Location List" })
+map("n", "<leader>sr", grep_word_to_loclist, { desc = "Grep Word to Location List" })
 
 --------------------------
 -- File operations
