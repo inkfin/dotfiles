@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+NVIM_PORT=${NVIM_PORT:-6789}
+
+exec nvim \
+    --server "localhost:$NVIM_PORT" \
+    --remote-ui \
+    "$@"
+

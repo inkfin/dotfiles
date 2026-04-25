@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+NVIM_PORT=${NVIM_PORT:-6789}
+
+exec nvim \
+    --listen "localhost:$NVIM_PORT" \
+    --cmd 'let safequit=v:true' \
+    "$@"
+

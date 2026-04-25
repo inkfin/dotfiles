@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+exec nvim --cmd 'let g:rime=v:true' "$@"
+

@@ -39,6 +39,8 @@ scripts/linux/
 Documents/
 AppData/
 install-packages.ps1
+.local/scripts/*.bat
+.local/scripts/*.ps1
 {{ end }}
 
 # Unix specific settings
@@ -49,6 +51,7 @@ install-packages.sh
 .config/fzf/
 .zshrc
 .zshrc.conf/
+.local/scripts/*.sh
 {{ end }}
 
 # Input methods
