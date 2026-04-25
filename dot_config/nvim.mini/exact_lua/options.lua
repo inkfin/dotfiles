@@ -51,6 +51,7 @@ opt.encoding    = "utf-8"
 opt.autowrite   = true
 opt.backup      = true
 opt.confirm     = true          -- ask before quitting unsaved buffer
+opt.exrc        = true          -- read project-local .nvim.lua/.exrc files
 opt.updatetime  = 200
 opt.timeoutlen  = 300
 
