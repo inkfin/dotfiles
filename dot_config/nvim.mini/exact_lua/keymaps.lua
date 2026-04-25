@@ -48,6 +48,8 @@ map("n", "<C-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window h
 map("n", "<C-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width"  })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width"  })
 
+map("n", "<C-w>z", "<cmd>tab split<cr>", { desc = "Zoom window to new tab" })
+
 --------------------------
 -- Buffer navigation
 -- (cycle/move keymaps live in plugins/bufferline.lua)
