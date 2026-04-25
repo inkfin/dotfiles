@@ -16,12 +16,17 @@ if not ok then return end
 copilot.setup({
     suggestion = {
         enabled = true,
-        auto_trigger = true,
-        hide_during_completion = false,
+        auto_trigger = false, -- Don't show suggestions until the user explicitly triggers them.
+        hide_during_completion = false, -- Don't hide suggestions when the completion menu is open.
+        trigger_on_accept = true, -- Trigger a new suggestion with accpt key when there's no existing one.
         keymap = {
-            -- Keep Copilot's default navigation/dismiss bindings and only move
-            -- the accept action off <Tab> so blink/LSP completion stays separate.
             accept = "<M-l>",
+            next = "<M-]>",
+            prev = "<M-[>",
+            -- VS Code-like accept-next-word behavior.
+            accept_word = "<M-Right>",
+            accept_line = false,
+            toggle_auto_trigger = false,
         },
     },
     panel = {
@@ -31,31 +36,6 @@ copilot.setup({
     filetypes = {
         markdown = true,
     },
-})
-
--- blink.cmp and Copilot suggestions both draw inline UI near the cursor.
--- Hide Copilot while blink's menu is open so the two completion UIs do not
--- overlap, then restore Copilot once the menu closes.
-local blink_copilot_group = vim.api.nvim_create_augroup("nvim_mini_blink_copilot", { clear = true })
-
-vim.api.nvim_create_autocmd("User", {
-    group = blink_copilot_group,
-    pattern = "BlinkCmpMenuOpen",
-    callback = function()
-        local ok_suggestion, suggestion = pcall(require, "copilot.suggestion")
-        if not ok_suggestion then return end
-
-        suggestion.dismiss()
-        vim.b.copilot_suggestion_hidden = true
-    end,
-})
-
-vim.api.nvim_create_autocmd("User", {
-    group = blink_copilot_group,
-    pattern = "BlinkCmpMenuClose",
-    callback = function()
-        vim.b.copilot_suggestion_hidden = false
-    end,
 })
 
 vim.keymap.set("n", "<leader>ua", function()
