@@ -5,7 +5,7 @@
     refreshPeriod = "336h"
     exclude = ["custom_phrase.txt"]
 {{ if eq .chezmoi.os "darwin" }}
-[".local/bin"]
+[".local/rime"]
     type = "archive"
     url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-universal2-apple-darwin.tar.bz2"
     refreshPeriod = "336h"
