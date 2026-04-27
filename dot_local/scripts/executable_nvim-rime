@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+export NVIM_APPNAME=""
+
 exec nvim --cmd 'let g:rime=v:true' "$@"
 
