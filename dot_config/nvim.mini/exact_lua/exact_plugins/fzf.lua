@@ -111,15 +111,15 @@ end
 local map = vim.keymap.set
 
 -- Top-level
-map("n", "<leader>,",  "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>", { desc = "Switch Buffer" })
-map("n", "<leader>/",  root_call("live_grep"),                                       { desc = "Live Grep (root)" })
+map("n", "<leader>,",  "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>",  { desc = "Switch Buffer" })
+map("n", "<leader>/",  root_call("live_grep"),                                      { desc = "Live Grep (root)" })
 map("n", "<leader>:",  "<cmd>FzfLua command_history<cr>",                           { desc = "Command History" })
 map("n", "<leader><space>", root_call("files"),                                     { desc = "Find Files (root)" })
 
 -- Find
 map("n", "<leader>ff", root_call("files"),                                          { desc = "Find Files (root)" })
 map("n", "<leader>fF", call("files", { cwd = vim.uv.cwd() }),                       { desc = "Find Files (cwd)" })
-map("n", "<leader>fR", choose_files_root(),                                          { desc = "Find Files (choose dir)" })
+map("n", "<leader>fR", choose_files_root(),                                         { desc = "Find Files (choose dir)" })
 map("n", "<leader>fg", "<cmd>FzfLua git_files<cr>",                                 { desc = "Find Files (git)" })
 map("n", "<leader>fr", "<cmd>FzfLua oldfiles<cr>",                                  { desc = "Recent Files" })
 map("n", "<leader>fb", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>",  { desc = "Buffers" })
@@ -128,6 +128,7 @@ map("n", "<leader>fb", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>
 map("n", "<leader>fz", "<cmd>FzfLua zoxide<cr>",                                    { desc = "Zoxide list" })
 
 -- Git
+map("n", "<leader>gf", "<cmd>FzfLua git_bcommits<cr>",                              { desc = "Git Current File History" })
 map("n", "<leader>gc", "<cmd>FzfLua git_commits<cr>",                               { desc = "Git Commits" })
 map("n", "<leader>gl", "<cmd>FzfLua git_commits<cr>",                               { desc = "Git Log" })
 map("n", "<leader>gs", "<cmd>FzfLua git_status<cr>",                                { desc = "Git Status" })
@@ -142,7 +143,7 @@ map("n", "<leader>sC", "<cmd>FzfLua commands<cr>",                              
 map("n", "<leader>sd", "<cmd>FzfLua diagnostics_workspace<cr>",                     { desc = "Diagnostics" })
 map("n", "<leader>sD", "<cmd>FzfLua diagnostics_document<cr>",                      { desc = "Buffer Diagnostics" })
 map("n", "<leader>sg", root_call("live_grep"),                                      { desc = "Live Grep (root)" })
-map("n", "<leader>sG", choose_grep_root(),                                           { desc = "Live Grep (choose dir)" })
+map("n", "<leader>sG", choose_grep_root(),                                          { desc = "Live Grep (choose dir)" })
 map("n", "<leader>sh", "<cmd>FzfLua help_tags<cr>",                                 { desc = "Help Pages" })
 map("n", "<leader>sH", "<cmd>FzfLua highlights<cr>",                                { desc = "Highlights" })
 map("n", "<leader>sj", "<cmd>FzfLua jumps<cr>",                                     { desc = "Jumplist" })
