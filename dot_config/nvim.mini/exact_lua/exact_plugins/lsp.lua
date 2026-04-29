@@ -19,16 +19,13 @@ local function lsp_disabled(bufnr)
         or vim.wo.diff
 end
 
-local function stop_heavy_buffer_clients(bufnr)
+local function detach_disabled_buffer_clients(bufnr)
     if not vim.api.nvim_buf_is_valid(bufnr) or not lsp_disabled(bufnr) then
         return
     end
 
     for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
         pcall(vim.lsp.buf_detach_client, bufnr, client.id)
-        if vim.tbl_isempty(client.attached_buffers or {}) then
-            client:stop()
-        end
     end
 
     vim.diagnostic.enable(false, { bufnr = bufnr })
@@ -134,7 +131,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
         -- If a client still attaches in a heavy buffer, drop it immediately.
         if lsp_disabled(ev.buf) then
-            stop_heavy_buffer_clients(ev.buf)
+            detach_disabled_buffer_clients(ev.buf)
             return
         end
 
@@ -183,7 +180,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
     group = vim.api.nvim_create_augroup("nvim_mini_lsp_heavy_buffers", { clear = true }),
     callback = function(ev)
         -- Covers reused clients and buffers that become `bigfile` on FileType.
-        stop_heavy_buffer_clients(ev.buf)
+        detach_disabled_buffer_clients(ev.buf)
     end,
 })
 
@@ -192,7 +189,7 @@ vim.api.nvim_create_autocmd("OptionSet", {
     pattern = "diff",
     callback = function()
         -- Diff mode can be toggled after LSP is already attached.
-        stop_heavy_buffer_clients(vim.api.nvim_get_current_buf())
+        detach_disabled_buffer_clients(vim.api.nvim_get_current_buf())
     end,
 })
 

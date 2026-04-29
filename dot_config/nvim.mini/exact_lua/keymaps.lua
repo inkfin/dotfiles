@@ -192,9 +192,6 @@ map("n", "<leader>uD", function()
     if not enabled then
         for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
             pcall(vim.lsp.buf_detach_client, bufnr, client.id)
-            if vim.tbl_isempty(client.attached_buffers or {}) then
-                client:stop()
-            end
         end
         vim.diagnostic.enable(false, { bufnr = bufnr })
         vim.notify("Disabled LSP for buffer")
