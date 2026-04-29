@@ -52,7 +52,9 @@ install-packages.sh
 .config/fzf/
 .zshrc
 .zshrc.conf/
-.local/scripts/*.sh
+.local/scripts/*
+!.local/scripts/*.bat
+!.local/scripts/*.ps1
 {{ end }}
 
 # Input methods
