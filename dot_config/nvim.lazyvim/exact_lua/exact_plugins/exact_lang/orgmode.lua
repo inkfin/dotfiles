@@ -1,6 +1,79 @@
-if _G.disable_plugins.org then
+local is_win = vim.fn.has("win32") == 1
+
+local function has_ts_parser(lang)
+    for _, ext in ipairs({ "so", "dll", "dylib" }) do
+        if #vim.api.nvim_get_runtime_file(("parser/%s.%s"):format(lang, ext), true) > 0 then
+            return true
+        end
+    end
+    return false
+end
+
+local function neorg_enabled()
+    if _G.disable_plugins.org then
+        return false
+    end
+
+    -- Neorg on Windows: skip LuaRocks (`tree-sitter-norg` stays disabled below) and
+    -- do not rely on `:TSInstall norg` (often needs a full MSVC/MinGW toolchain).
+    -- Community nightly builds ship `norg.so` only (no `norg_meta` in that zip):
+    --   https://github.com/anasrar/nvim-treesitter-parser-bin/releases/download/windows/all.zip
+    -- Extract `norg.so` into `stdpath('data')/lazy/nvim-treesitter/parser/` (same
+    -- layout as lazy.nvim; Neovim accepts the `.so` name on Windows for these builds).
+    -- `norg_meta` is optional here: omit `core.summary` when it is missing so Neorg
+    -- still loads for normal editing without local compilation.
+    if is_win then
+        return has_ts_parser("norg")
+    end
+
+    return true
+end
+
+local function warn_missing_windows_parsers()
+    if not is_win or _G.disable_plugins.org then
+        return
+    end
+
+    local parser_dir = vim.fn.stdpath("data") .. "/lazy/nvim-treesitter/parser"
+    local prebuilt = "https://github.com/anasrar/nvim-treesitter-parser-bin/releases/download/windows/all.zip"
+
+    if not has_ts_parser("norg") then
+        if _G.__neorg_windows_norg_warned then
+            return
+        end
+        _G.__neorg_windows_norg_warned = true
+        vim.schedule(function()
+            vim.notify(
+                "Neorg disabled on Windows: no Tree-sitter `norg` parser. "
+                    .. "Without a C toolchain, extract `norg.so` from the prebuilt zip into:\n"
+                    .. parser_dir
+                    .. "\nZip: "
+                    .. prebuilt,
+                vim.log.levels.WARN
+            )
+        end)
+        return
+    end
+
+    if not has_ts_parser("norg_meta") and not _G.__neorg_windows_meta_warned then
+        _G.__neorg_windows_meta_warned = true
+        vim.schedule(function()
+            vim.notify(
+                "Neorg: `norg_meta` parser not found — workspace summary (core.summary) is disabled. "
+                    .. "Common prebuilt packs include `norg` only; `norg_meta` usually needs a one-off build "
+                    .. "(e.g. WSL or a machine with tree-sitter CLI) copied to the same parser directory.",
+                vim.log.levels.INFO
+            )
+        end)
+    end
+end
+
+if not neorg_enabled() then
+    warn_missing_windows_parsers()
     return {}
 end
+
+warn_missing_windows_parsers()
 
 return {
     {
@@ -8,7 +81,9 @@ return {
         opts = function(_, opts)
             -- add tsx and treesitter
             opts.highlight.enable = true
-            vim.list_extend(opts.ensure_installed, { "norg" })
+            if not is_win and type(opts.ensure_installed) == "table" then
+                vim.list_extend(opts.ensure_installed, { "norg" })
+            end
             if opts.highlight.additional_vim_regex_highlighting == nil then
                 opts.highlight.additional_vim_regex_highlighting = {}
             end
@@ -26,10 +101,13 @@ return {
     {
         "nvim-neorg/neorg",
         version = "*",
+        pkg = false,
         lazy = false,
-        ft = "norg",
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
+            "nvim-neotest/nvim-nio",
+            "MunifTanjim/nui.nvim",
+            "pysan3/pathlib.nvim",
             "nvim-neorg/lua-utils.nvim",
             { "nvim-neorg/tree-sitter-norg", enabled = not vim.fn.has("win32") },
         },
@@ -83,6 +161,11 @@ return {
                 },
                 -- cool features
             }
+
+            -- `core.summary` uses the `norg_meta` grammar; skip it when that parser is absent.
+            if is_win and not has_ts_parser("norg_meta") then
+                opts.load["core.summary"] = nil
+            end
 
             if vim.g.support_image then
                 opts.load["core.latex.renderer"] = {
