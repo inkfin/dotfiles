@@ -41,7 +41,7 @@
     },
   },
   {
-    "context": "Editor && (vim_mode == normal || vim_mode == visual) && (edit_prediction || (edit_prediction && (showing_completions || in_leading_whitespace)))",
+    "context": "Editor && (vim_mode == insert) && (edit_prediction && (showing_completions || in_leading_whitespace))",
     "bindings": {
       "alt-l": "editor::AcceptEditPrediction", // for windows
       "cmd-l": "editor::AcceptEditPrediction", // for mac
@@ -62,6 +62,8 @@
       "space c a": "editor::ToggleCodeActions",
       "space s s": "project_symbols::Toggle",
       "space e": "vim::ToggleProjectPanelFocus",
+      // language specific
+      "space c h": "editor::SwitchSourceHeader",
     },
   },
   {
