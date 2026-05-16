@@ -11,6 +11,11 @@ local function augroup(name)
     return vim.api.nvim_create_augroup("nvim_mini_" .. name, { clear = true })
 end
 
+local function in_diff_mode(bufnr)
+    local winid = vim.fn.bufwinid(bufnr)
+    return winid ~= -1 and vim.wo[winid].diff
+end
+
 --------------------------
 -- From LazyVim defaults
 --------------------------
@@ -18,8 +23,8 @@ end
 -- Reload file when it changes outside Neovim
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     group = augroup("checktime"),
-    callback = function()
-        if vim.o.buftype ~= "nofile" then
+    callback = function(event)
+        if vim.o.buftype ~= "nofile" and not in_diff_mode(event.buf) then
             vim.cmd("checktime")
         end
     end,
@@ -133,7 +138,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- Don't auto-continue comments on newline (o/O/Enter)
 vim.api.nvim_create_autocmd("BufEnter", {
     group = augroup("no_auto_comment"),
-    callback = function()
+    callback = function(event)
+        if in_diff_mode(event.buf) then return end
         vim.opt_local.formatoptions:remove({ "c", "r", "o" })
     end,
 })
@@ -166,10 +172,36 @@ end
 vim.g.autoformat = cfg.autoformat
 vim.api.nvim_create_autocmd("BufEnter", {
     group = augroup("autoformat_state"),
-    callback = function()
+    callback = function(event)
+        if in_diff_mode(event.buf) then
+            vim.b[event.buf].autoformat = false
+            return
+        end
         if vim.b.autoformat == nil then
             vim.b.autoformat = vim.g.autoformat
         end
+    end,
+})
+
+-- Diff buffers should stay minimal and deterministic. Keep them readable while
+-- turning off editor features that add background work or visual churn.
+vim.api.nvim_create_autocmd({ "BufWinEnter", "OptionSet" }, {
+    group = augroup("diff_mode_tuning"),
+    pattern = { "*", "diff" },
+    callback = function(event)
+        local bufnr = event.buf or vim.api.nvim_get_current_buf()
+        if not in_diff_mode(bufnr) then return end
+
+        vim.opt_local.wrap = false
+        vim.opt_local.spell = false
+        vim.opt_local.cursorline = false
+        vim.opt_local.relativenumber = false
+        vim.opt_local.signcolumn = "no"
+        vim.opt_local.foldcolumn = "0"
+        vim.opt_local.conceallevel = 0
+        vim.opt_local.list = false
+        vim.opt_local.smoothscroll = false
+        vim.b[bufnr].autoformat = false
     end,
 })
 

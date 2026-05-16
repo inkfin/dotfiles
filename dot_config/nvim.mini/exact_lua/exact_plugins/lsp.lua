@@ -16,19 +16,29 @@ local function lsp_disabled(bufnr)
     -- Diff buffers stay read-focused, so keep LSP off there too.
     return vim.b[bufnr].lsp_disabled
         or vim.bo[bufnr].filetype == "bigfile"
-        or vim.wo.diff
+        or vim.wo[vim.fn.bufwinid(bufnr)].diff
 end
 
-local function detach_disabled_buffer_clients(bufnr)
+local function disable_buffer_lsp_features(bufnr)
+    vim.diagnostic.enable(false, { bufnr = bufnr })
+    pcall(vim.lsp.inlay_hint.enable, false, { bufnr = bufnr })
+    pcall(vim.lsp.document_color.enable, false, { bufnr = bufnr })
+    pcall(vim.lsp.semantic_tokens.enable, false, { bufnr = bufnr })
+
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+        pcall(vim.lsp.codelens.clear, client.id, bufnr)
+    end
+end
+
+local function constrain_disabled_buffer_clients(bufnr)
     if not vim.api.nvim_buf_is_valid(bufnr) or not lsp_disabled(bufnr) then
         return
     end
 
-    for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-        pcall(vim.lsp.buf_detach_client, bufnr, client.id)
-    end
-
-    vim.diagnostic.enable(false, { bufnr = bufnr })
+    -- Leaving clients attached avoids Neovim 0.12 diff-mode changetracking
+    -- crashes during :diffput / :diffget, while still turning off the costly
+    -- UI features that make diff buffers noisy and slow.
+    disable_buffer_lsp_features(bufnr)
 end
 
 --------------------------
@@ -158,7 +168,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(ev)
         -- If a client still attaches in a heavy buffer, drop it immediately.
         if lsp_disabled(ev.buf) then
-            detach_disabled_buffer_clients(ev.buf)
+            constrain_disabled_buffer_clients(ev.buf)
             return
         end
 
@@ -207,7 +217,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
     group = vim.api.nvim_create_augroup("nvim_mini_lsp_heavy_buffers", { clear = true }),
     callback = function(ev)
         -- Covers reused clients and buffers that become `bigfile` on FileType.
-        detach_disabled_buffer_clients(ev.buf)
+        constrain_disabled_buffer_clients(ev.buf)
     end,
 })
 
@@ -216,7 +226,7 @@ vim.api.nvim_create_autocmd("OptionSet", {
     pattern = "diff",
     callback = function()
         -- Diff mode can be toggled after LSP is already attached.
-        detach_disabled_buffer_clients(vim.api.nvim_get_current_buf())
+        constrain_disabled_buffer_clients(vim.api.nvim_get_current_buf())
     end,
 })
 

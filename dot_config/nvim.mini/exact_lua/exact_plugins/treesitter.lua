@@ -11,9 +11,10 @@ local ok_lang, lang_registry = pcall(require, "lang")
 local function disable_treesitter(_, buf)
     -- Keep heavy buffers simple: vimtex handles latex, snacks.nvim marks
     -- large files as `bigfile`, and diff windows should avoid parser work.
+    local winid = vim.fn.bufwinid(buf)
     return vim.bo[buf].filetype == "latex"  -- vimtex will handle it
         or vim.bo[buf].filetype == "bigfile"
-        or vim.wo.diff
+        or (winid ~= -1 and vim.wo[winid].diff)
 end
 
 -- Core parsers used regardless of LSP language toggles. Language-specific
