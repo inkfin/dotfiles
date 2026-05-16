@@ -81,6 +81,7 @@ vim.diagnostic.config({
 local ok_local, local_cfg = pcall(require, "local")
 local lsp_ui = ok_local and local_cfg.lsp or {}
 local ok_fzf, fzf = pcall(require, "fzf-lua")
+local ok_trouble, trouble = pcall(require, "trouble")
 
 local function use_fzf_lua_lsp_ui()
     return lsp_ui.references == "fzf-lua"
@@ -97,10 +98,36 @@ local function show_lsp_picker(fzf_name, fallback, opts)
     fallback()
 end
 
+local function open_list_ui(mode)
+    if ok_trouble then
+        local ok_open, err = pcall(trouble.open, { mode = mode, focus = true })
+        if ok_open then return end
+        vim.notify(err, vim.log.levels.WARN)
+    end
+
+    if mode == "loclist" then
+        vim.cmd.lopen()
+    else
+        vim.cmd("botright copen")
+    end
+end
+
+local function list_handler(mode)
+    return function(list)
+        if mode == "loclist" then
+            vim.fn.setloclist(0, {}, " ", list)
+        else
+            vim.fn.setqflist({}, " ", list)
+        end
+        open_list_ui(mode)
+    end
+end
+
 local function show_lsp_references()
     show_lsp_picker("lsp_references", function()
-        -- Default references go to quickfix; force loclist for the builtin path.
-        vim.lsp.buf.references(nil, { loclist = true })
+        -- Keep references window-local via loclist, but surface the list
+        -- through Trouble when it is available instead of the native list UI.
+        vim.lsp.buf.references(nil, { on_list = list_handler("loclist") })
     end, {
         ignore_current_line = true,
         jump1 = true,
