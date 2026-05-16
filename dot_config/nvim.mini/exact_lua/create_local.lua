@@ -9,6 +9,7 @@ M.lang = {
     c      = true,
     -- c3     = true,
     lua_ls = true,
+    markdown = true,
     python = true,
     -- rust   = true,
     -- go     = true,

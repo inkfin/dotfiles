@@ -13,6 +13,7 @@ pack.load({
     "plugins.gitsigns",
     "plugins.snacks",
     "plugins.noice",
+    "plugins.markup",
     "plugins.treesitter",
     "plugins.flash",
     "plugins.marks",

@@ -219,7 +219,10 @@ vim.api.nvim_create_autocmd("FileType", {
     group = augroup("markdown_conceal"),
     pattern = { "markdown" },
     callback = function()
-        vim.wo.conceallevel = 0
+        -- render-markdown.nvim relies on conceal/extmarks to replace markdown
+        -- syntax with richer UI. Keep markdown at a non-zero conceal level so
+        -- rendered headings, checkboxes, and callouts can actually display.
+        vim.wo.conceallevel = math.max(vim.wo.conceallevel, 2)
     end,
 })
 
