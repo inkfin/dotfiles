@@ -29,7 +29,7 @@ M.ai = {
 
 -- ─── LSP UI switches ─────────────────────────────────────────────────────────
 M.lsp = {
-    references = "loclist", -- LSP list UI: builtin loclist or fzf-lua picker
+    references = "loclist", -- LSP list UI: window-local list or snacks picker
 }
 
 return M

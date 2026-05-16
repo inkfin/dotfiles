@@ -91,8 +91,8 @@ map("n", "<leader>snl", function()
 	require("noice").cmd("last")
 end, { desc = "Noice last message" })
 map("n", "<leader>snt", function()
-	require("noice").cmd("fzf")
-end, { desc = "Noice picker (fzf-lua)" })
+	require("noice").cmd("pick")
+end, { desc = "Noice picker" })
 
 -- which-key group label
 local ok_wk, wk = pcall(require, "which-key")

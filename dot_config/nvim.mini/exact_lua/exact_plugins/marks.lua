@@ -47,10 +47,10 @@ if ok_wk then
     })
 end
 
--- Keep the existing fzf-lua mark picker on <leader>mm. marks.nvim adds richer
--- mark/bookmark management and grouped bookmark navigation around the same
--- persistent mark model, but uses explicit <leader> mappings here so nothing
--- depends on quickly typing built-in m/dm prefixes.
+-- Keep the mark picker on <leader>mm. marks.nvim adds richer mark/bookmark
+-- management and grouped bookmark navigation around the same persistent mark
+-- model, but uses explicit <leader> mappings here so nothing depends on
+-- quickly typing built-in m/dm prefixes.
 map("<leader>ma", "<Plug>(Marks-annotate)", "Annotate Bookmark")
 map("<leader>mb", "<cmd>BookmarksListAll<cr>", "Bookmarks List")
 map("<leader>m0", "<Plug>(Marks-toggle-bookmark0)", "Toggle Bookmark 0")

@@ -90,23 +90,7 @@ vim.diagnostic.config({
 
 local ok_local, local_cfg = pcall(require, "local")
 local lsp_ui = ok_local and local_cfg.lsp or {}
-local ok_fzf, fzf = pcall(require, "fzf-lua")
 local ok_trouble, trouble = pcall(require, "trouble")
-
-local function use_fzf_lua_lsp_ui()
-    return lsp_ui.references == "fzf-lua"
-end
-
-local function show_lsp_picker(fzf_name, fallback, opts)
-    if use_fzf_lua_lsp_ui() then
-        local picker = ok_fzf and fzf[fzf_name]
-        if type(picker) == "function" then
-            picker(opts or {})
-            return
-        end
-    end
-    fallback()
-end
 
 local function open_list_ui(mode)
     if ok_trouble then
@@ -134,30 +118,32 @@ local function list_handler(mode)
 end
 
 local function show_lsp_references()
-    show_lsp_picker("lsp_references", function()
-        -- Keep references window-local via loclist, but surface the list
-        -- through Trouble when it is available instead of the native list UI.
-        vim.lsp.buf.references(nil, { on_list = list_handler("loclist") })
-    end, {
-        ignore_current_line = true,
-        jump1 = true,
-    })
+    if lsp_ui.references == "picker" then
+        Snacks.picker.lsp_references({
+            include_current = false,
+        })
+        return
+    end
+
+    -- Keep references window-local via loclist, but surface the list through
+    -- Trouble when it is available instead of the native list UI.
+    vim.lsp.buf.references(nil, { on_list = list_handler("loclist") })
 end
 
 local function show_lsp_definition()
-    show_lsp_picker("lsp_definitions", vim.lsp.buf.definition)
+    Snacks.picker.lsp_definitions()
 end
 
 local function show_lsp_declaration()
-    show_lsp_picker("lsp_declarations", vim.lsp.buf.declaration)
+    Snacks.picker.lsp_declarations()
 end
 
 local function show_lsp_implementation()
-    show_lsp_picker("lsp_implementations", vim.lsp.buf.implementation)
+    Snacks.picker.lsp_implementations()
 end
 
 local function show_lsp_type_definition()
-    show_lsp_picker("lsp_typedefs", vim.lsp.buf.type_definition)
+    Snacks.picker.lsp_type_definitions()
 end
 
 --------------------------
