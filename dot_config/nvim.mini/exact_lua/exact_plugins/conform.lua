@@ -35,15 +35,3 @@ conform.setup({
         markdown = { "prettierd" },
     },
 })
-
--- Keep Mason-managed formatter installs minimal. Mason already adjusts PATH for
--- its bin directory, so conform's normal command lookup will pick these up.
-local ok_registry, registry = pcall(require, "mason-registry")
-if ok_registry then
-    for _, pkg_name in ipairs({ "prettierd", "taplo" }) do
-        local ok_pkg, pkg = pcall(registry.get_package, pkg_name)
-        if ok_pkg and not pkg:is_installed() then
-            pkg:install()
-        end
-    end
-end

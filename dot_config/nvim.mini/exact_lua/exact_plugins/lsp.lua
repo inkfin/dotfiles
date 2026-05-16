@@ -216,6 +216,33 @@ mason.setup({
     },
 })
 
+-- Keep non-LSP Mason tools here too so a normal startup can bootstrap the
+-- formatter binaries that conform expects, without requiring a manual
+-- `:MasonInstall` later.
+local function ensure_mason_packages(pkg_names)
+    local ok_registry, registry = pcall(require, "mason-registry")
+    if not ok_registry then return end
+
+    local function install_missing()
+        local seen = {}
+        for _, pkg_name in ipairs(pkg_names) do
+            if not seen[pkg_name] then
+                seen[pkg_name] = true
+                local ok_pkg, pkg = pcall(registry.get_package, pkg_name)
+                if ok_pkg and not pkg:is_installed() then
+                    pkg:install()
+                end
+            end
+        end
+    end
+
+    if registry.refresh then
+        registry.refresh(vim.schedule_wrap(install_missing))
+    else
+        install_missing()
+    end
+end
+
 --------------------------
 -- Lang-specific specs
 --------------------------
@@ -239,17 +266,13 @@ if ok_mlsp then
     })
 end
 
-local ok_registry, registry = pcall(require, "mason-registry")
-if ok_registry then
-    -- Install raw Mason package names for servers that exist in Mason but are
-    -- not yet mapped by mason-lspconfig. C3 currently takes this path.
-    for _, pkg_name in ipairs(lang_specs.ensure_packages) do
-        local ok_pkg, pkg = pcall(registry.get_package, pkg_name)
-        if ok_pkg and not pkg:is_installed() then
-            pkg:install()
-        end
-    end
-end
+-- Install raw Mason package names only after mason.setup() has initialized its
+-- data dir/PATH handling. This includes non-LSP tools like prettierd/taplo,
+-- which `nvim.mini` needs for JSON/TOML formatting.
+ensure_mason_packages(vim.list_extend(vim.deepcopy(lang_specs.ensure_packages), {
+    "prettierd",
+    "taplo",
+}))
 
 -- Run actual server/plugin setup only after install collection is done. The
 -- setup calls stay in `lang/*.lua`, so adding a new language is mostly local.
