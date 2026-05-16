@@ -7,6 +7,16 @@ require("pack").add("https://github.com/folke/snacks.nvim")
 local ok, snacks = pcall(require, "snacks")
 if not ok then return end
 
+local git_picker = {
+    layout = {
+        preset = "default",
+        layout = {
+            width = 0.85,
+            height = 0.8,
+        },
+    },
+}
+
 snacks.setup({
     -- Gracefully handle large files: disables heavy features (treesitter,
     -- LSP, etc.) when opening files above a size threshold
@@ -22,6 +32,15 @@ snacks.setup({
     picker = {
         enabled = true,
         ui_select = true,
+        sources = {
+            git_files = vim.deepcopy(git_picker),
+            git_log = vim.deepcopy(git_picker),
+            git_log_file = vim.deepcopy(git_picker),
+            git_log_line = vim.deepcopy(git_picker),
+            git_status = vim.deepcopy(git_picker),
+            git_stash = vim.deepcopy(git_picker),
+            git_diff = vim.deepcopy(git_picker),
+        },
     },
 
     -- Renders the file content before plugins finish loading (faster startup

@@ -26,10 +26,11 @@ gitsigns.setup({
         map("n", "<leader>ghS", gitsigns.stage_buffer, "Stage Buffer")
         map("n", "<leader>ghu", gitsigns.undo_stage_hunk, "Undo Stage Hunk")
         map("n", "<leader>ghR", gitsigns.reset_buffer, "Reset Buffer")
-        map("n", "<leader>ghp", gitsigns.preview_hunk, "Preview Hunk")
+        map("n", "<leader>ghp", gitsigns.preview_hunk_inline, "Preview Hunk Inline")
         map("n", "<leader>ghb", function()
             gitsigns.blame_line({ full = true })
         end, "Blame Line")
+        map("n", "<leader>ghB", gitsigns.blame, "Blame Buffer")
         map("n", "<leader>ghd", gitsigns.diffthis, "Diff This")
         map("n", "<leader>ghD", function()
             gitsigns.diffthis("~")
@@ -48,8 +49,9 @@ if ok_wk then
         { "<leader>ghS", desc = "Stage Buffer"         },
         { "<leader>ghu", desc = "Undo Stage Hunk"      },
         { "<leader>ghR", desc = "Reset Buffer"         },
-        { "<leader>ghp", desc = "Preview Hunk"         },
+        { "<leader>ghp", desc = "Preview Hunk Inline"  },
         { "<leader>ghb", desc = "Blame Line"           },
+        { "<leader>ghB", desc = "Blame Buffer"         },
         { "<leader>ghd", desc = "Diff This"            },
         { "<leader>ghD", desc = "Diff This ~"          },
         { "<leader>ght", desc = "Toggle Line Blame"    },
