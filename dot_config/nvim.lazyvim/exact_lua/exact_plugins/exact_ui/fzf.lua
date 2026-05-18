@@ -1,25 +1,29 @@
 return {
     {
-        "ibhagwan/fzf-lua",
+        "folke/snacks.nvim",
         opts = {
-            files = {
-                file_ignore_patterns = {
-                    "%.git[/\\]",
-                    "%.svn[/\\]",
-                    "%.cache[/\\]",
-                    "node_modules[/\\]",
-                    "spell[/\\]",
-                    "elpa[/\\]",
-                },
-            },
-            grep = {
-                file_ignore_patterns = {
-                    "%.git[/\\]",
-                    "%.svn[/\\]",
-                    "%.cache[/\\]",
-                    "node_modules[/\\]",
-                    "spell[/\\]",
-                    "elpa[/\\]",
+            picker = {
+                sources = {
+                    files = {
+                        exclude = {
+                            ".git",
+                            ".svn",
+                            ".cache",
+                            "node_modules",
+                            "spell",
+                            "elpa",
+                        },
+                    },
+                    grep = {
+                        exclude = {
+                            ".git",
+                            ".svn",
+                            ".cache",
+                            "node_modules",
+                            "spell",
+                            "elpa",
+                        },
+                    },
                 },
             },
         },
@@ -27,7 +31,7 @@ return {
             {
                 "<leader>fz",
                 function()
-                    require("fzf-lua").zoxide()
+                    Snacks.picker.zoxide()
                 end,
                 desc = "Zoxide list",
             },

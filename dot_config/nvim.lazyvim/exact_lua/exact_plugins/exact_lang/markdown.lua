@@ -118,16 +118,19 @@ return {
             {
                 "<leader>pI",
                 function()
-                    require("fzf-lua").files({
-                        prompt = "Select image to embed> ",
-                        actions = {
-                            ["default"] = function(selected)
-                                if not selected or not selected[1] then
-                                    return
-                                end
-                                require("img-clip").paste_image(nil, selected[1])
-                            end,
-                        },
+                    Snacks.picker.files({
+                        title = "Select image to embed",
+                        cwd = vim.fn.expand("%:p:h"),
+                        filter = { paths = { [vim.fn.expand("%:p:h") .. "/assets"] = true } },
+                        confirm = function(picker, item)
+                            picker:close()
+                            if not item then
+                                return
+                            end
+                            vim.schedule(function()
+                                require("img-clip").paste_image(nil, item.file)
+                            end)
+                        end,
                     })
                 end,
             },

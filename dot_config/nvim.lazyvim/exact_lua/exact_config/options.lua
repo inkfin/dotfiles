@@ -62,7 +62,7 @@ vim.g.loaded_perl_provider = 0
 vim.g.root_spec =
     { { ".git", "lua", "node_modules", "Makefile", ".vscode", ".root", ".vim", ".vs", ".idea" }, "lsp", "cwd" }
 
-vim.g.lazyvim_picker = "fzf"
+vim.g.lazyvim_picker = "snacks"
 vim.g.lazyvim_cmp = "nvim-cmp"
 -- if the completion engine supports the AI source,
 -- use that instead of inline suggestions
@@ -310,4 +310,3 @@ vim.g.support_image = not _G.disable_plugins.image -- image support
 
 -- Set to "basedpyright" to use basedpyright instead of pyright.
 vim.g.lazyvim_python_lsp = "basedpyright"
-

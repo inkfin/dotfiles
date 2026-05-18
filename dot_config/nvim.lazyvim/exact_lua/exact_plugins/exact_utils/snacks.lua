@@ -5,5 +5,10 @@ return {
         zen = { enabled = false },
         explorer = { enabled = false },
         image = { enabled = false }, -- use image.nvim
+        picker = {
+            layout = {
+                preset = "telescope",
+            },
+        },
     },
 }
