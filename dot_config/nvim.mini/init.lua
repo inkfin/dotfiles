@@ -19,7 +19,7 @@ pack.load({
     "plugins.marks",
     "plugins.multicursor",
     "plugins.undotree",
-    "plugins.fzf",
+    "plugins.picker",
     "plugins.bufferline",
     "plugins.lualine",
     "plugins.conform",
