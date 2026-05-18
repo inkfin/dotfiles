@@ -20,6 +20,7 @@ function M.setup()
             ".git",
         },
     })
+    lsp.enable("c3_lsp")
 end
 
 return M

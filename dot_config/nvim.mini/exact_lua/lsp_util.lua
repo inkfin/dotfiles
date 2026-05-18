@@ -11,7 +11,7 @@ function M.capabilities()
     return ok and vim.tbl_deep_extend("force", base, blink.get_lsp_capabilities()) or base
 end
 
---- Register and enable an LSP server.
+--- Register an LSP server config.
 --- @param name string   server name (matches nvim-lspconfig's name)
 --- @param cfg  table    extra config merged on top of capabilities
 function M.setup(name, cfg)
@@ -19,6 +19,12 @@ function M.setup(name, cfg)
         capabilities = M.capabilities(),
     }, cfg or {})
     vim.lsp.config(name, cfg)
+end
+
+--- Enable an already-registered LSP server.
+--- Use this only for servers mason-lspconfig can't auto-enable.
+--- @param name string
+function M.enable(name)
     vim.lsp.enable(name)
 end
 

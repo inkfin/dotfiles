@@ -285,7 +285,7 @@ if ok_mlsp then
     mason_lspconfig.setup({
         -- Only server ids that mason-lspconfig understands belong here.
         ensure_installed = lang_specs.ensure_servers,
-        automatic_installation = false,
+        automatic_enable = true,
     })
 end
 
