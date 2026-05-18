@@ -9,10 +9,9 @@ if not ok then return end
 
 local git_picker = {
     layout = {
-        preset = "default",
+        preset = "sidebar",
         layout = {
-            width = 0.85,
-            height = 0.8,
+            width = 0.3,
         },
     },
 }
@@ -32,6 +31,12 @@ snacks.setup({
     picker = {
         enabled = true,
         ui_select = true,
+        layout = {
+            preset = "ivy",
+            layout = {
+                height = 0.6,
+            },
+        },
         sources = {
             git_files = vim.deepcopy(git_picker),
             git_log = vim.deepcopy(git_picker),
