@@ -83,6 +83,12 @@ Use chezmoi as the canonical sync mechanism:
 
 If the live config and chezmoi source differ, prefer updating the chezmoi source and mention the drift in the final response.
 
+## Commits
+
+Follow the user's existing commit style when asked to commit changes.
+In this repo, prefer concise messages like `mod(nvim.mini): ...` or `mod(nvim.lazyvim): ...`, scoped to the config being changed.
+Keep the subject focused on the behavioral change, not the implementation detail.
+
 ## Verification
 
 After changes, verify with the cheapest useful checks:
