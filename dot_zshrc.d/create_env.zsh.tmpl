@@ -7,7 +7,12 @@
 #   environment configurations before loading any other files
 # ======================================
 
-# load homebrew commands
+## PATH
+prepend_to_path PATH /usr/local/bin
+prepend_to_path PATH $HOME/.local/bin
+prepend_to_path PATH $HOME/.local/scripts
+
+## Homebrew commands
 {{ if eq .chezmoi.os "darwin" -}}
 
 prepend_to_path PATH "/opt/homebrew/bin"
