@@ -85,9 +85,7 @@ If the live config and chezmoi source differ, prefer updating the chezmoi source
 
 ## Commits
 
-Follow the user's existing commit style when asked to commit changes.
-In this repo, prefer concise messages like `mod(nvim.mini): ...` or `mod(nvim.lazyvim): ...`, scoped to the config being changed.
-Keep the subject focused on the behavioral change, not the implementation detail.
+When asked to commit changes, read `~/.gitmessage` and follow it directly.
 
 ## Verification
 

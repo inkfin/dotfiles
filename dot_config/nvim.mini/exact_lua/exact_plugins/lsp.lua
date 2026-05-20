@@ -26,7 +26,7 @@ local function disable_buffer_lsp_features(bufnr)
     pcall(vim.lsp.semantic_tokens.enable, false, { bufnr = bufnr })
 
     for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-        pcall(vim.lsp.codelens.clear, client.id, bufnr)
+        pcall(vim.lsp.codelens.enable, false, { bufnr = bufnr, client_id = client.id })
     end
 end
 
