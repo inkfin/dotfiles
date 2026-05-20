@@ -1,0 +1,7 @@
+customCommands:
+  - key: "C"
+    context: "files"
+    description: "Commit staged changes with AI"
+    command: "~/.local/scripts/ai-commit-msg"
+    output: logWithPty
+    loadingText: "Generating AI commit message"
