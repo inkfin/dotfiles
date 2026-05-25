@@ -34,6 +34,8 @@ set -as terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
 set -as terminal-overrides ',xterm*:sitm=\E[3m'
 {{ end }}
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
+# Enable modified key reporting (for keys like Ctrl/Alt+Enter)
+set -g extended-keys on
 # Default to zsh (some platform can't recognize default shell)
 set-option -g default-shell /bin/zsh
 
