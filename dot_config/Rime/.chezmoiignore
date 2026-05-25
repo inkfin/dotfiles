@@ -1,0 +1,9 @@
+# Rime runtime files — managed by Rime itself, not chezmoi
+installation.yaml
+user.yaml
+build/
+sync/
+*.userdb/
+*.userdb
+rime_ice.userdb
+rime_ice_custom.userdb
