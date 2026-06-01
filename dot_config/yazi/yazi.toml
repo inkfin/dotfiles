@@ -1,6 +1,7 @@
-# https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/yazi-default.toml
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+# A TOML linter such as Tombi can use this schema to validate your config.
+#:schema https://yazi-rs.github.io/schemas/yazi.json
 
+# https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/yazi-default.toml
 [mgr]
 sort_by = "natural"
 linemode = "size"

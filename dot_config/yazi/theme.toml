@@ -1,3 +1,6 @@
+# A TOML linter such as Tombi can use this schema to validate your config.
+#:schema https://yazi-rs.github.io/schemas/theme.json
+
 [flavor]
 dark = "tokyo-night"
 light = "tokyo-night"
