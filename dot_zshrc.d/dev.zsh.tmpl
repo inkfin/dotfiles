@@ -77,8 +77,13 @@ fi
 
 export_if_undefined EMSDK_HOME "$HOME/dev/emsdk"
 if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
+    emsdk_root="$EMSDK_HOME"
     export EMSDK_QUIET=1
-    source "$EMSDK_HOME/emsdk_env.sh"
+    source "$emsdk_root/emsdk_env.sh"
+    # Keep the repo root out of PATH; it contains a docker/ directory that
+    # shadows the real Docker CLI and breaks OMZ's docker plugin startup.
+    remove_from_path PATH "$emsdk_root"
+    alias emsdk="$emsdk_root/emsdk"
 fi
 
 ## ---- llvm ----
@@ -189,5 +194,3 @@ alias stopredis='${HOMEBREW_PREFIX}/opt/redis/bin/redis-server ${HOMEBREW_PREFIX
 if [ -f $VCPKG_ROOT/scripts/vcpkg_completion.zsh ]; then
     source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
 fi
-
-

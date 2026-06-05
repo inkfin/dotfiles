@@ -18,6 +18,11 @@ source $ZSHCONF_HOME/env.zsh
 ## homebrew initialization
 source $ZSHCONF_HOME/homebrew.zsh
 
+## inherited environment cleanup
+emsdk_root="${EMSDK:-${EMSDK_HOME:-$HOME/dev/emsdk}}"
+[[ -n "$emsdk_root" ]] && remove_from_path PATH "$emsdk_root"
+unset emsdk_root
+
 ## oh-my-zsh configs
 source $ZSHCONF_HOME/omz.zsh
 
@@ -84,4 +89,3 @@ export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_P
 
 # Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-
