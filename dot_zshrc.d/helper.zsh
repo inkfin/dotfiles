@@ -62,7 +62,9 @@ var_token_add() {
 
   # Do nothing if the token is already present
   if [[ "$exists" == true ]]; then
-    [[ "$silent" != "true" ]] && echo "Token already exists in '$var': $token"
+    if [[ "$silent" != "true" ]]; then
+      echo "Token already exists in '$var': $token"
+    fi
     return 0
   fi
 
@@ -77,7 +79,10 @@ var_token_add() {
     fi
   fi
 
-  [[ "$silent" != "true" ]] && echo "Updated $var: ${(P)var}"
+  if [[ "$silent" != "true" ]]; then
+    echo "Updated $var: ${(P)var}"
+  fi
+  return 0
 }
 
 var_token_remove() {
@@ -89,7 +94,9 @@ var_token_remove() {
   # Current value
   local cur="${(P)var}"
   if [[ -z "$cur" ]]; then
-    [[ "$silent" != "true" ]] && echo "'$var' is empty."
+    if [[ "$silent" != "true" ]]; then
+      echo "'$var' is empty."
+    fi
     return 0
   fi
 
@@ -115,7 +122,10 @@ var_token_remove() {
     eval "export $var='${(j: :)out}'"
   fi
 
-  [[ "$silent" != "true" ]] && echo "Updated $var: ${(P)var}"
+  if [[ "$silent" != "true" ]]; then
+    echo "Updated $var: ${(P)var}"
+  fi
+  return 0
 }
 
 # Thin wrappers for PATH-like variables
