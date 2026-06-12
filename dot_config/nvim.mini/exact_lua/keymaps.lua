@@ -65,6 +65,37 @@ local function toggle_list_ui(mode)
     end
 end
 
+local function open_list_ui(mode)
+    local success, err
+
+    if ok_trouble then
+        close_native_list(mode)
+        success, err = pcall(trouble.open, { mode = mode, focus = true })
+    else
+        success, err = pcall(function()
+            if mode == "loclist" then
+                vim.cmd.lopen()
+
+                local opened = vim.fn.getloclist(0, { winid = 0 })
+                if opened.winid ~= 0 then
+                    vim.api.nvim_set_current_win(opened.winid)
+                end
+            else
+                vim.cmd.copen()
+
+                local opened = vim.fn.getqflist({ winid = 0 })
+                if opened.winid ~= 0 then
+                    vim.api.nvim_set_current_win(opened.winid)
+                end
+            end
+        end)
+    end
+
+    if not success and err then
+        vim.notify(err, vim.log.levels.ERROR)
+    end
+end
+
 --------------------------
 -- Neovide
 --------------------------
@@ -126,6 +157,23 @@ map("n", "<leader>tml",     "<cmd>tabm +<cr>",{ desc = "Move tab right"  })
 --------------------------
 -- Search & view
 --------------------------
+vim.api.nvim_create_user_command("LGrep", function(opts)
+    local ok_lgrep, err = pcall(vim.cmd, "silent lgrep! " .. opts.args)
+    if not ok_lgrep then
+        vim.notify(err, vim.log.levels.ERROR)
+        return
+    end
+
+    -- `:lgrep!` populates the current window's location list. Running it
+    -- through `:silent` suppresses the external `rg` command-output window;
+    -- opening the list explicitly keeps the results visible after <Enter>.
+    open_list_ui("loclist")
+end, {
+    nargs = "+",
+    complete = "file",
+    desc = "Run silent lgrep and open the location list",
+})
+
 local function grep_word_to_loclist()
     local word = vim.fn.expand("<cword>")
     if word == nil or word == "" then
@@ -133,10 +181,10 @@ local function grep_word_to_loclist()
         return
     end
 
-    -- Keep this mapping minimal: seed `:lgrep!` with the word under cursor and
-    -- leave the command line open so the rest of the ripgrep arguments are
-    -- entered manually.
-    local keys = vim.keycode(":lgrep! " .. vim.fn.shellescape(word) .. " ")
+    -- Seed a command-line grep with the word under cursor and leave the
+    -- command line open for extra ripgrep arguments. LGrep runs the eventual
+    -- `:lgrep!` silently, then opens the location-list UI for the results.
+    local keys = vim.keycode(":LGrep " .. vim.fn.shellescape(word) .. " ")
     vim.api.nvim_feedkeys(keys, "n", false)
 end
 

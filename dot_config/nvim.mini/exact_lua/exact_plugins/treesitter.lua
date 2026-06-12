@@ -17,14 +17,24 @@ local function disable_treesitter(buf)
         or (winid ~= -1 and vim.wo[winid].diff)
 end
 
--- Core parsers used regardless of LSP language toggles. Language-specific
--- parsers come from `lang/*.lua` through `lang.collect()`.
+-- Parsers used regardless of LSP language toggles. Keep this list small:
+-- language-owned parsers belong in `lang/*.lua`; plugin UI dependencies that
+-- should never warn at startup belong here.
 local ensure_installed = {
     "bash",
     "markdown",
     "markdown_inline",
     "vim",
     "vimdoc",
+
+    -- Trouble highlights snippets from list items with their source filetype.
+    -- These parsers cover filetypes commonly produced by command/plugin output.
+    "commonlisp",
+    "embedded_template", -- registered below for Trouble's generic `template`
+    "fish",
+    "json",
+    "powershell",
+    "yaml",
 }
 
 if ok_lang then
@@ -35,6 +45,10 @@ end
 ensure_installed = vim.fn.uniq(vim.fn.sort(ensure_installed))
 
 treesitter.setup()
+
+-- nvim-treesitter publishes this parser as `embedded_template`, but Trouble can
+-- ask Neovim for the language behind a generic `template` filetype.
+vim.treesitter.language.register("embedded_template", "template")
 
 local installed = {}
 for _, lang in ipairs(treesitter.get_installed()) do
