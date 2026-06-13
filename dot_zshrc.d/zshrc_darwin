@@ -2,7 +2,7 @@
 
 
 # Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+source_once_if_readable "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 
 
 ZSHCONF_HOME="$HOME/.zshrc.d"
@@ -97,4 +97,4 @@ fi
 
 
 # Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+source_once_if_readable "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"

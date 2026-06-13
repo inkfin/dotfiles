@@ -37,7 +37,12 @@ alias nvs='nvim --listen localhost:6789 --cmd "let safequit=v:true"'
 alias nvc='nvim --server localhost:6789 --remote-ui'
 
 sourcezsh() {
-  source "$HOME/.zshrc"
+  if [[ -r "$HOME/.zshrc" ]]; then
+    source "$HOME/.zshrc"
+  else
+    print -u2 "sourcezsh: $HOME/.zshrc not readable"
+    return 1
+  fi
 }
 
 restartzsh() {
@@ -45,7 +50,11 @@ restartzsh() {
 }
 
 ## lsd
-alias ls="lsd"
+if is_command lsd; then
+  alias ls="lsd"
+else
+  alias ls="ls"
+fi
 alias l="ls"
 alias ll="ls -l"
 alias la="ls -al"

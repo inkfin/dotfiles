@@ -13,8 +13,10 @@
 # disable auto update
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-if is_command brew; then
-  eval "$(brew shellenv)"
+if is_command brew && [[ -z "${__ZSH_HOMEBREW_INIT:-}" ]]; then
+  if eval "$(brew shellenv)"; then
+    __ZSH_HOMEBREW_INIT=1
+  fi
 
   {{ if eq .chezmoi.os "darwin" -}}
   ## homebrew/command-not-found

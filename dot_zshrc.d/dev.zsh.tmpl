@@ -65,8 +65,8 @@ fi
 
 ## ---- nvm ----
 export_if_undefined NVM_DIR "$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+source_once_if_readable "$NVM_DIR/nvm.sh"       # This loads nvm
+source_once_if_readable "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ## ---- fnm ----
 export_if_undefined FNM_DIR "$HOME/.local/fnm"
@@ -80,14 +80,12 @@ fi
 ## ---- emsdk ----
 
 export_if_undefined EMSDK_HOME "$HOME/dev/emsdk"
-if [[ -f "$EMSDK_HOME/emsdk_env.sh" ]]; then
-    emsdk_root="$EMSDK_HOME"
+if source_once_if_readable "$EMSDK_HOME/emsdk_env.sh"; then
     export EMSDK_QUIET=1
-    source "$emsdk_root/emsdk_env.sh"
     # Keep the repo root out of PATH; it contains a docker/ directory that
     # shadows the real Docker CLI and breaks OMZ's docker plugin startup.
-    remove_from_path PATH "$emsdk_root"
-    alias emsdk="$emsdk_root/emsdk"
+    remove_from_path PATH "$EMSDK_HOME"
+    alias emsdk="$EMSDK_HOME/emsdk"
 fi
 
 ## ---- llvm ----
@@ -121,9 +119,7 @@ alias lzd=lazydocker
 ## ---- Vulkan ----
 {{ if eq .chezmoi.os "darwin" -}}
 
-if [ -f "/usr/local/VulkanSDK/current/setup-env.sh" ]; then
-    source "/usr/local/VulkanSDK/current/setup-env.sh"
-fi
+source_if_readable "/usr/local/VulkanSDK/current/setup-env.sh"
 
 {{- end }}
 

@@ -64,9 +64,9 @@ function _unsetproxy {
 alias unsetproxy=_unsetproxy
 
 function _setgitproxy {
-  git config --global https.proxy http://${proxy_ip}:7890
-  git config --global http.proxy  http://${proxy_ip}:7890
-  git config --global ssh.proxy   socks5://${proxy_ip}:7890
+  git config --global https.proxy "http://${proxy_ip}:7890"
+  git config --global http.proxy  "http://${proxy_ip}:7890"
+  git config --global ssh.proxy   "socks5://${proxy_ip}:7890"
   echo -e "git: proxy on"
 }
 alias setgitproxy=_setgitproxy

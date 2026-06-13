@@ -16,8 +16,9 @@ function wcd() {
     if [ "$#" -ne 1 ]; then
         cd "$@"
     elif [[ "$1" =~ '\\' ]]; then
-        path=$(wslpath "$1")
-        cd "$(realpath "$path")"
+        local wsl_path
+        wsl_path=$(wslpath "$1")
+        cd "$(realpath "$wsl_path")"
     else
         cd "$(realpath "$1")"
     fi
