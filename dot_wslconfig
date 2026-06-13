@@ -1,3 +1,9 @@
 [wsl2]
 guiApplications = true
 networkingMode = mirrored
+dnsTunneling = true
+autoProxy = true
+firewall = true
+
+[experimental]
+hostAddressLoopback = true
