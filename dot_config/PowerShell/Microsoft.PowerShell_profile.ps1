@@ -32,10 +32,6 @@ function Append-UserPath($Path) {
     [Environment]::SetEnvironmentVariable("Path", $UserPath, "User")
 }
 
-# Machine-specific early init
-$envScript = Join-Path $PSScriptRoot "Environment.ps1"
-if (Test-Path $envScript) { . $envScript }
-
 # ENVs
 $env:OPENER = "Invoke-Item"
 $env:EDITOR = "nvim"
