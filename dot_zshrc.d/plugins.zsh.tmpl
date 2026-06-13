@@ -96,7 +96,7 @@ fi
 
 ## ---- starship ----
 if is_command starship && [[ -z "${__ZSH_STARSHIP_INIT:-}" ]]; then
-    if eval "$(starship init zsh)"; then
+    if starship -V >/dev/null 2>&1 && eval "$(starship init zsh)"; then
         __ZSH_STARSHIP_INIT=1
     fi
 fi
