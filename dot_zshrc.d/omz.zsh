@@ -84,8 +84,16 @@ plugins=(git tmux docker colored-man-pages zsh-autosuggestions zsh-syntax-highli
 
 # ==== ZSH Post Init ====
 # At the end source oh-my-zsh
-source $ZSH/oh-my-zsh.sh
+if [[ -z "${__ZSH_OMZ_INIT:-}" ]]; then
+  if [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
+    source "$ZSH/oh-my-zsh.sh"
+    __ZSH_OMZ_INIT=1
+  else
+    print -u2 "oh-my-zsh not found: $ZSH/oh-my-zsh.sh"
+  fi
+fi
 
 # zsh codex
-bindkey '^X' create_completion
-
+if (( $+widgets[create_completion] )); then
+  bindkey '^X' create_completion
+fi

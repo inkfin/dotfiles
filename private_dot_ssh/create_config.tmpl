@@ -1,7 +1,15 @@
 # ssh config
 #
 # Note:
-#   When using * matching, remember put them first since latter match will overwrite it
+#   ssh uses the first value it gets for each option, so put specific hosts first.
+
+Host github.com
+  HostName ssh.github.com
+  Port 443
+  User git
+  IdentityFile ~/.ssh/id_ed25519
+  IdentitiesOnly yes
+  ProxyCommand nc -X connect -x 127.0.0.1:7890 %h %p
 
 Host *.github.com
   User git

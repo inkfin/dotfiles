@@ -32,12 +32,18 @@ append_to_path PATH "/usr/lib/w3m/"
 
 alias ra="yazi"
 function rag() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	if ! is_command yazi; then
+		print -u2 "rag: yazi is not installed"
+		return 127
+	fi
+
+	local tmp cwd
+	tmp="$(mktemp -t "yazi-cwd.XXXXXX")" || return
 	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+	if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
 		builtin cd -- "$cwd"
 	fi
-	rm -f -- "$tmp"
+	command rm -f -- "$tmp"
 }
 
 ## ---- Clash ----
@@ -82,15 +88,22 @@ alias panexport='pandoc --template eisvogel --listings --pdf-engine=xelatex -V C
 # ==== Initialization ====
 
 ## ---- zoxide ----
-eval "$(zoxide init zsh)"
+if is_command zoxide && [[ -z "${__ZSH_ZOXIDE_INIT:-}" ]]; then
+    if eval "$(zoxide init zsh)"; then
+        __ZSH_ZOXIDE_INIT=1
+    fi
+fi
 
 ## ---- starship ----
-eval "$(starship init zsh)"
+if is_command starship && [[ -z "${__ZSH_STARSHIP_INIT:-}" ]]; then
+    if eval "$(starship init zsh)"; then
+        __ZSH_STARSHIP_INIT=1
+    fi
+fi
 
 ## ---- fzf ----
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source ~/.config/fzf/fzf_config.zsh
+source_once_if_readable "$HOME/.fzf.zsh"
+source_once_if_readable "$HOME/.config/fzf/fzf_config.zsh"
 
 ## tldr
 export TLDR_AUTO_UPDATE_DISABLED=1
-

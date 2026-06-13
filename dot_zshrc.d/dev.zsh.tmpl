@@ -22,11 +22,13 @@
 ## ---- dylib ----
 {{ if eq .chezmoi.os "linux" -}}
 
-prepend_to_path LD_LIBRARY_PATH   "$HOME/.local/lib:/usr/local/lib/"
+prepend_to_path LD_LIBRARY_PATH "$HOME/.local/lib"
+prepend_to_path LD_LIBRARY_PATH "/usr/local/lib"
 
 {{- else if eq .chezmoi.os "darwin" -}}
 
-prepend_to_path DYLD_LIBRARY_PATH "$HOME/.local/lib:/usr/local/lib/"
+prepend_to_path DYLD_LIBRARY_PATH "$HOME/.local/lib"
+prepend_to_path DYLD_LIBRARY_PATH "/usr/local/lib"
 
 {{- end }}
 
@@ -36,7 +38,9 @@ prepend_to_path PATH "$VCPKG_ROOT"
 
 ## ---- rustup ----
 export_if_undefined RUSTUP_HOME "$HOME/.rustup"
-prepend_to_path PATH "${HOMEBREW_PREFIX}/opt/rustup/bin/"
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    prepend_to_path PATH "${HOMEBREW_PREFIX}/opt/rustup/bin"
+fi
 
 # rustup mirrors
 export RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
@@ -69,7 +73,7 @@ export_if_undefined FNM_DIR "$HOME/.local/fnm"
 
 ## ---- bun ----
 export_if_undefined BUN_HOME "$HOME/.bun"
-if [[ -f "$BUN_HOME" ]]; then
+if [[ -d "$BUN_HOME" ]]; then
     prepend_to_path PATH "$BUN_HOME/bin"
 fi
 
@@ -96,8 +100,10 @@ append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/opt/llvm/include"
 
 {{ if lookPath "cmake" -}}
 ## ---- CMake ----
-append_to_path CMAKE_INCLUDE_PATH "${HOMEBREW_PREFIX}/include"
-append_to_path CMAKE_LIBRARY_PATH "${HOMEBREW_PREFIX}/lib"
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    append_to_path CMAKE_INCLUDE_PATH "${HOMEBREW_PREFIX}/include"
+    append_to_path CMAKE_LIBRARY_PATH "${HOMEBREW_PREFIX}/lib"
+fi
 {{- end }}
 
 ## ---- DOCKER ----
@@ -154,17 +160,25 @@ append_to_path PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/opt/ruby/lib/pkgconfig"
 
 export DOTNET6_ROOT="${HOMEBREW_PREFIX}/opt/dotnet@6/libexec"
 export DOTNET8_ROOT="${HOMEBREW_PREFIX}/opt/dotnet@8/libexec"
-export_if_undefined DOTNET_ROOT "${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    export_if_undefined DOTNET_ROOT "${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+fi
 
-append_to_path PATH "$DOTNET_ROOT"
-append_to_path PATH "$DOTNET_ROOT/tools"
+if [[ -n "$DOTNET_ROOT" ]]; then
+    append_to_path PATH "$DOTNET_ROOT"
+    append_to_path PATH "$DOTNET_ROOT/tools"
+fi
 
 {{ else if eq .chezmoi.os "linux" -}}
 
-export_if_undefined DOTNET_ROOT "${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    export_if_undefined DOTNET_ROOT "${HOMEBREW_PREFIX}/opt/dotnet/libexec"
+fi
 
-append_to_path PATH "$DOTNET_ROOT"
-append_to_path PATH "$DOTNET_ROOT/tools"
+if [[ -n "$DOTNET_ROOT" ]]; then
+    append_to_path PATH "$DOTNET_ROOT"
+    append_to_path PATH "$DOTNET_ROOT/tools"
+fi
 
 {{- end }}
 
@@ -191,6 +205,15 @@ alias stopredis='${HOMEBREW_PREFIX}/opt/redis/bin/redis-server ${HOMEBREW_PREFIX
 # ==== Initialization ====
 
 ## ---- vcpkg ----
-if [ -f $VCPKG_ROOT/scripts/vcpkg_completion.zsh ]; then
-    source $VCPKG_ROOT/scripts/vcpkg_completion.zsh
+if [[ -f "$VCPKG_ROOT/scripts/vcpkg_completion.zsh" ]]; then
+    if (( ! $+functions[complete] )); then
+        if (( $+functions[compdef] )); then
+            autoload -Uz bashcompinit
+            bashcompinit
+        fi
+    fi
+
+    if (( $+functions[complete] )); then
+        source_once_if_readable "$VCPKG_ROOT/scripts/vcpkg_completion.zsh"
+    fi
 fi

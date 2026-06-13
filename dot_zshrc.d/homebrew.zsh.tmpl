@@ -10,22 +10,6 @@
 # remember to put brew in the PATH
 # "eval $(/path/to/brew shellenv)" >> ~/.zprofile
 
-{{ if eq .chezmoi.os "darwin" -}}
-
-eval "$(brew shellenv)"
-
-## homebrew/command-not-found
-HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
-if [ -f "$HB_CNF_HANDLER" ]; then
-source "$HB_CNF_HANDLER";
-fi
-
-{{- else if eq .chezmoi.os "linux" -}}
-
-eval "$(brew shellenv)"
-
-{{- end }}
-
 # homebrew remote
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
@@ -33,10 +17,23 @@ export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
 # disable auto update
-export HOMEBREW_NO_AUTO_UPDATE=
+export HOMEBREW_NO_AUTO_UPDATE=1
 
-append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/include"
-append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/lib -Wl,-rpath,${HOMEBREW_PREFIX}/lib"
-append_to_path PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/lib/pkgconfig"
-append_to_path CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}"
+if is_command brew; then
+  eval "$(brew shellenv)"
 
+  {{ if eq .chezmoi.os "darwin" -}}
+  ## homebrew/command-not-found
+  HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
+  source_if_readable "$HB_CNF_HANDLER"
+  unset HB_CNF_HANDLER
+  {{- end }}
+
+  if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    append_to_flag CPPFLAGS "-I${HOMEBREW_PREFIX}/include"
+    append_to_flag LDFLAGS  "-L${HOMEBREW_PREFIX}/lib"
+    append_to_flag LDFLAGS  "-Wl,-rpath,${HOMEBREW_PREFIX}/lib"
+    append_to_path PKG_CONFIG_PATH "${HOMEBREW_PREFIX}/lib/pkgconfig"
+    append_to_path CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}"
+  fi
+fi

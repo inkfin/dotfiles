@@ -10,13 +10,18 @@ ZSHCONF_HOME="$HOME/.zshrc.d"
 # ==== Includes ====
 
 ## helper functions
-source $ZSHCONF_HOME/helper.zsh
+if [[ -r "$ZSHCONF_HOME/helper.zsh" ]]; then
+    source "$ZSHCONF_HOME/helper.zsh"
+else
+    print -u2 "missing zsh helper: $ZSHCONF_HOME/helper.zsh"
+    return 1
+fi
 
 ## prelude environment
-source $ZSHCONF_HOME/env.zsh
+source_if_readable "$ZSHCONF_HOME/env.zsh"
 
 ## homebrew initialization
-source $ZSHCONF_HOME/homebrew.zsh
+source_if_readable "$ZSHCONF_HOME/homebrew.zsh"
 
 ## inherited environment cleanup
 emsdk_root="${EMSDK:-${EMSDK_HOME:-$HOME/dev/emsdk}}"
@@ -24,19 +29,19 @@ emsdk_root="${EMSDK:-${EMSDK_HOME:-$HOME/dev/emsdk}}"
 unset emsdk_root
 
 ## oh-my-zsh configs
-source $ZSHCONF_HOME/omz.zsh
+source_if_readable "$ZSHCONF_HOME/omz.zsh"
 
 ## user custom configs
-source $ZSHCONF_HOME/custom.zsh
+source_if_readable "$ZSHCONF_HOME/custom.zsh"
 
 ## 3rd party plugins
-source $ZSHCONF_HOME/plugins.zsh
+source_if_readable "$ZSHCONF_HOME/plugins.zsh"
 
 ## development configs
-source $ZSHCONF_HOME/dev.zsh
+source_if_readable "$ZSHCONF_HOME/dev.zsh"
 
 ## local configs
-source $ZSHCONF_HOME/local.zsh
+source_if_readable "$ZSHCONF_HOME/local.zsh"
 
 
 # ==== Platform specific configs ====
@@ -60,7 +65,7 @@ remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstr
 remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
 
 ## iterm2_shell_integration
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+source_if_readable "${HOME}/.iterm2_shell_integration.zsh"
 
 
 ## ==== Aliases ====
@@ -74,13 +79,17 @@ alias browse='~/.local/carbonyl-0.0.3/carbonyl'
 alias netease='https_proxy=120.76.98.193:8080 nohup /Applications/NeteaseMusic.app/Contents/MacOS/NeteaseMusic >/dev/null 2>&1 &'
 
 ## the fuck
-eval $(thefuck --alias)
+if is_command thefuck; then
+    eval "$(thefuck --alias)"
+fi
 
 # MACOS SecureInput
 alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
 
 # imagemagick (image utility)
-export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+if is_command brew; then
+    prepend_to_path DYLD_FALLBACK_LIBRARY_PATH "$(brew --prefix)/lib"
+fi
 
 
 ## ==== Initialization ====

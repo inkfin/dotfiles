@@ -6,28 +6,33 @@ ZSHCONF_HOME="$HOME/.zshrc.d"
 # ==== Includes ====
 
 ## helper functions
-source $ZSHCONF_HOME/helper.zsh
+if [[ -r "$ZSHCONF_HOME/helper.zsh" ]]; then
+    source "$ZSHCONF_HOME/helper.zsh"
+else
+    print -u2 "missing zsh helper: $ZSHCONF_HOME/helper.zsh"
+    return 1
+fi
 
 ## prelude environment
-source $ZSHCONF_HOME/env.zsh
+source_if_readable "$ZSHCONF_HOME/env.zsh"
 
 ## homebrew initialization
-source $ZSHCONF_HOME/homebrew.zsh
+source_if_readable "$ZSHCONF_HOME/homebrew.zsh"
 
 ## oh-my-zsh configs
-source $ZSHCONF_HOME/omz.zsh
+source_if_readable "$ZSHCONF_HOME/omz.zsh"
 
 ## user custom configs
-source $ZSHCONF_HOME/custom.zsh
+source_if_readable "$ZSHCONF_HOME/custom.zsh"
 
 ## 3rd party plugins
-source $ZSHCONF_HOME/plugins.zsh
+source_if_readable "$ZSHCONF_HOME/plugins.zsh"
 
 ## development configs
-source $ZSHCONF_HOME/dev.zsh
+source_if_readable "$ZSHCONF_HOME/dev.zsh"
 
 ## local configs
-source $ZSHCONF_HOME/local.zsh
+source_if_readable "$ZSHCONF_HOME/local.zsh"
 
 
 # ==== Platform specific configs ====
@@ -35,4 +40,3 @@ source $ZSHCONF_HOME/local.zsh
 ## === Aliases ====
 
 alias pac="sudo dnf"
-

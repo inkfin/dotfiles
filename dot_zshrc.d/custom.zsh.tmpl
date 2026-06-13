@@ -36,7 +36,13 @@ alias v="nvim"
 alias nvs='nvim --listen localhost:6789 --cmd "let safequit=v:true"'
 alias nvc='nvim --server localhost:6789 --remote-ui'
 
-alias sourcezsh="source ~/.zshrc"
+sourcezsh() {
+  source "$HOME/.zshrc"
+}
+
+restartzsh() {
+  exec zsh
+}
 
 ## lsd
 alias ls="lsd"
@@ -106,4 +112,3 @@ export SUDO_EDITOR='vim'
 export LC_CTYPE=C.UTF-8
 {{   end }}
 {{ end }}
-

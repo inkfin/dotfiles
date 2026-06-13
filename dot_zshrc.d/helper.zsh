@@ -10,13 +10,39 @@
 
 # ==== Define Variables ====
 
+is_command() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+source_if_readable() {
+  local file="$1"
+  [[ -r "$file" ]] && source "$file"
+}
+
+source_once_if_readable() {
+  local file="$1"
+  local guard="__source_once_${file//[^A-Za-z0-9_]/_}"
+
+  [[ -n "${(P)guard}" ]] && return 0
+  [[ -r "$file" ]] || return 0
+
+  typeset -g "$guard=1"
+  source "$file"
+}
+
+_valid_identifier() {
+  [[ "$1" =~ '^[A-Za-z_][A-Za-z0-9_]*$' ]]
+}
+
 # Export a variable only if it is not already defined.
 export_if_undefined() {
   local var="$1"
   local value="$2"
 
+  _valid_identifier "$var" || return 1
+
   if [[ -z "${(P)var}" ]]; then
-    eval "export $var='$value'"
+    typeset -gx "$var=$value"
   fi
 }
 
@@ -40,6 +66,8 @@ var_token_add() {
   local cur="${(P)var}"
   local -a parts
   local exists=false
+
+  _valid_identifier "$var" || return 1
 
   # Split the current value into tokens
   if [[ -n "$cur" ]]; then
@@ -70,12 +98,12 @@ var_token_add() {
 
   # Construct the new value
   if [[ -z "$cur" ]]; then
-    eval "export $var=\$token"
+    typeset -gx "$var=$token"
   else
     if [[ "$mode" == "prepend" ]]; then
-      eval "export $var=\$token\$sep\${(P)var}"
+      typeset -gx "$var=$token$sep$cur"
     else
-      eval "export $var=\${(P)var}\$sep\$token"
+      typeset -gx "$var=$cur$sep$token"
     fi
   fi
 
@@ -93,6 +121,8 @@ var_token_remove() {
 
   # Current value
   local cur="${(P)var}"
+  _valid_identifier "$var" || return 1
+
   if [[ -z "$cur" ]]; then
     if [[ "$silent" != "true" ]]; then
       echo "'$var' is empty."
@@ -117,9 +147,9 @@ var_token_remove() {
 
   # Join back
   if [[ "$sep" == ":" ]]; then
-    eval "export $var='${(j/:/)out}'"
+    typeset -gx "$var=${(j/:/)out}"
   else
-    eval "export $var='${(j: :)out}'"
+    typeset -gx "$var=${(j: :)out}"
   fi
 
   if [[ "$silent" != "true" ]]; then
