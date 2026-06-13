@@ -33,7 +33,7 @@ function Append-UserPath($Path) {
 }
 
 # Machine-specific early init
-$envScript = Join-Path $PSScriptRoot "env.ps1"
+$envScript = Join-Path $PSScriptRoot "Environment.ps1"
 if (Test-Path $envScript) { . $envScript }
 
 # ENVs
@@ -138,7 +138,10 @@ $env:LIBCLANG_PATH = "$HOME\scoop\apps\llvm\current\lib"
 Init-EnvironmentVariable VCPKG_ROOT "$HOME\dev\vcpkg"
 Append-UserPath $env:VCPKG_ROOT
 $env:LLVMInstallDir = "$HOME\scoop\apps\llvm\current"
-Import-Module (Join-Path $env:VCPKG_ROOT "\scripts\posh-vcpkg")
+$poshVcpkg = Join-Path $env:VCPKG_ROOT "scripts\posh-vcpkg"
+if (Test-Path $poshVcpkg) {
+    Import-Module $poshVcpkg
+}
 
 # CPM
 Init-EnvironmentVariable CPM_SOURCE_CACHE "$HOME\.cache\CPM"
@@ -152,7 +155,9 @@ Init-EnvironmentVariable RUSTUP_HOME "$env:SCOOP_HOME\persist\rustup\.rustup"
 Init-EnvironmentVariable CARGO_HOME "$env:SCOOP_HOME\scoop\persist\rustup\.cargo"
 
 # Fzf
-Import-Module PSFzf
+if (Get-Module -ListAvailable -Name PSFzf) {
+    Import-Module PSFzf
+}
 
 . "$PSScriptRoot/PSReadLine_config.ps1"
 . "$PSScriptRoot/Utilities.ps1"
@@ -183,7 +188,9 @@ if (Get-Command zoxide -ErrorAction SilentlyContinue) {
 }
 
 # scoop
-Import-Module scoop-completion
+if (Get-Module -ListAvailable -Name scoop-completion) {
+    Import-Module scoop-completion
+}
 if (Get-Command scoop-search -ErrorAction SilentlyContinue) {
     if (-not (Test-Path variable:__PSH_SCOOP_HOOK)) {
         . ([ScriptBlock]::Create((& scoop-search --hook | Out-String)))
@@ -192,5 +199,5 @@ if (Get-Command scoop-search -ErrorAction SilentlyContinue) {
 }
 
 # Machine-specific local overrides
-$localScript = Join-Path $PSScriptRoot "local.ps1"
+$localScript = Join-Path $PSScriptRoot "Local.ps1"
 if (Test-Path $localScript) { . $localScript }
