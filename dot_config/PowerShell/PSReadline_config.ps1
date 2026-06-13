@@ -3,8 +3,6 @@ using namespace System.Management.Automation.Language
 
 # PSReadLine Customization
 
-Import-Module PSReadLine
-
 Set-PSReadLineOption -EditMode Emacs
 
 # Searching for commands with up/down arrow is really handy.  The

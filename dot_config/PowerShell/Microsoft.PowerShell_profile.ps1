@@ -3,33 +3,38 @@
 # Subscripts include: PSReadLine_config.ps1, Utilities.ps1
 
 function Init-EnvironmentVariable($Name, $Val) {
+    if ((Get-Item -Path "env:$Name" -ErrorAction SilentlyContinue).Value -eq $Val) { return }
     $OldValue = [Environment]::GetEnvironmentVariable($Name, "User")
     if ($null -eq $OldValue) {
-        Set-Item -Path env:$Name -Value $Val
         [Environment]::SetEnvironmentVariable($Name, $Val, "User")
-        Write-Host "Environment variable '$Name' set to '$Val'."
     }
+    Set-Item -Path "env:$Name" -Value $Val
 }
 
 function Set-EnvironmentVariable($Name, $Val) {
+    if ((Get-Item -Path "env:$Name" -ErrorAction SilentlyContinue).Value -eq $Val) { return }
     $OldValue = [Environment]::GetEnvironmentVariable($Name, "User")
     if ($OldValue -ne $Val) {
-        Set-Item -Path env:$Name -Value $Val
         [Environment]::SetEnvironmentVariable($Name, $Val, "User")
-        Write-Host "Environment variable '$Name' set to '$Val'."
     }
+    Set-Item -Path "env:$Name" -Value $Val
 }
 
 function Append-UserPath($Path) {
-    $ENVPATH = [Environment]::GetEnvironmentVariable("Path", "User")
-    if ($ENVPATH -notlike "*$Path*") {
-        $ENVPATH = $ENVPATH + [IO.Path]::PathSeparator + $PATH
-        # Write-Host "$ENVPATH"
-        $env:PATH = $ENVPATH
-        [Environment]::SetEnvironmentVariable( "Path", $ENVPATH, "User" )
-        Write-Host "'$Path' is appended to User-Path."
+    if ($env:PATH -like "*$Path*") { return }
+    $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($UserPath -like "*$Path*") {
+        $env:PATH = "$env:PATH$([IO.Path]::PathSeparator)$Path"
+        return
     }
+    $UserPath = "$UserPath$([IO.Path]::PathSeparator)$Path"
+    $env:PATH = $UserPath
+    [Environment]::SetEnvironmentVariable("Path", $UserPath, "User")
 }
+
+# Machine-specific early init
+$envScript = Join-Path $PSScriptRoot "env.ps1"
+if (Test-Path $envScript) { . $envScript }
 
 # ENVs
 $env:OPENER = "Invoke-Item"
@@ -161,11 +166,31 @@ Import-Module PSFzf
 function Invoke-Starship-TransientFunction {
   &starship module character
 }
-Invoke-Expression (&starship init powershell)
-Enable-TransientPrompt # after starship init
+if (Get-Command starship -ErrorAction SilentlyContinue) {
+    if (-not (Test-Path variable:__PSH_STARSHIP_INIT)) {
+        Invoke-Expression (&starship init powershell)
+        Enable-TransientPrompt
+        Set-Variable -Name __PSH_STARSHIP_INIT -Value $true -Scope Global
+    }
+}
+
 # zoxide
-Invoke-Expression (& { (zoxide init powershell | Out-String) })
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    if (-not (Test-Path variable:__PSH_ZOXIDE_INIT)) {
+        Invoke-Expression (& { (zoxide init powershell | Out-String) })
+        Set-Variable -Name __PSH_ZOXIDE_INIT -Value $true -Scope Global
+    }
+}
+
 # scoop
-# . "$($(Get-Item $(Get-Command scoop).Path).Directory.Parent.FullName)\apps\scoop-completion\current\add-profile-content.ps1"
 Import-Module scoop-completion
-. ([ScriptBlock]::Create((& scoop-search --hook | Out-String)))
+if (Get-Command scoop-search -ErrorAction SilentlyContinue) {
+    if (-not (Test-Path variable:__PSH_SCOOP_HOOK)) {
+        . ([ScriptBlock]::Create((& scoop-search --hook | Out-String)))
+        Set-Variable -Name __PSH_SCOOP_HOOK -Value $true -Scope Global
+    }
+}
+
+# Machine-specific local overrides
+$localScript = Join-Path $PSScriptRoot "local.ps1"
+if (Test-Path $localScript) { . $localScript }
