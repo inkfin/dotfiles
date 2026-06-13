@@ -9,12 +9,6 @@ Host github.com
   User git
   IdentityFile ~/.ssh/id_ed25519
   IdentitiesOnly yes
-  ProxyCommand nc -X connect -x 127.0.0.1:7890 %h %p
-
-Host *.github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519
-  IdentitiesOnly yes
 
 {{ if eq .chezmoi.os "darwin" -}}
 #Include ~/.ssh/1password_config
