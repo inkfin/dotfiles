@@ -4,13 +4,8 @@
 # ======================================
 #  env.zsh
 # ======================================
-#   environment configurations before loading any other files
+#   machine-specific environment configurations
 # ======================================
-
-## PATH
-prepend_to_path PATH /usr/local/bin
-prepend_to_path PATH $HOME/.local/bin
-prepend_to_path PATH $HOME/.local/scripts
 
 ## Homebrew commands
 {{ if eq .chezmoi.os "darwin" -}}
