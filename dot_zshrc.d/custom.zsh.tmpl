@@ -9,11 +9,27 @@
 
 
 # ==== Environment Variables ====
+#
+# PATH entries in this file are managed by chezmoi and tracked in git.
+# Machine-specific PATH overrides belong in ~/.zshrc.d/local.zsh (create_).
+# Helper functions (prepend_to_path, is_command, etc.) are defined in helper.zsh
+# and sourced before this file.
 
-## PATH
+## PATH — universal
 prepend_to_path PATH /usr/local/bin
 prepend_to_path PATH $HOME/.local/bin
 prepend_to_path PATH $HOME/.local/scripts
+
+## Homebrew — prepend brew to PATH; skipped silently if brew is not installed
+{{ if eq .chezmoi.os "darwin" -}}
+if is_command brew; then
+  prepend_to_path PATH "/opt/homebrew/bin"
+fi
+{{- else if eq .chezmoi.os "linux" -}}
+if is_command brew; then
+  prepend_to_path PATH "/home/linuxbrew/.linuxbrew/bin"
+fi
+{{- end }}
 
 ## man
 # export MANPATH="/usr/local/man:$MANPATH"
