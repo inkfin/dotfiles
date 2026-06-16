@@ -1,0 +1,176 @@
+# zshrc Minimal — single-file, self-contained, for any Linux server
+# Usage: cp zshrc_minimal ~/.zshrc && exec zsh
+
+# ==== Locale ====
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# ==== PATH ====
+prepend_path() {
+  [[ -d "$1" ]] || return
+  case ":$PATH:" in
+    *":$1:"*) ;;
+    *) PATH="$1:$PATH" ;;
+  esac
+}
+prepend_path /usr/local/bin
+prepend_path "$HOME/.local/bin"
+prepend_path "$HOME/.local/scripts"
+
+# MSYS2 / UCRT64
+if [[ -n "${MINGW_PREFIX:-}" ]]; then
+  prepend_path "$MINGW_PREFIX/bin"
+fi
+
+# ==== Editor ====
+if [[ -n "$SSH_CONNECTION" ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='vim'
+fi
+export VISUAL="$EDITOR"
+export SUDO_EDITOR='vim'
+
+# ==== Completion ====
+autoload -Uz compinit
+compinit -u
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+
+# ==== History ====
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt hist_ignore_dups hist_ignore_space hist_reduce_blanks
+setopt share_history inc_append_history
+
+# ==== Key bindings ====
+bindkey -e
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+
+# ==== Options ====
+setopt auto_cd auto_pushd pushd_ignore_dups
+setopt interactive_comments
+setopt no_beep extended_glob
+setopt correct
+
+# ==== Aliases ====
+alias ls='ls --color=auto'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias lt='ls -lt'
+alias ltr='ls -ltr'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias rm='rm -i'
+alias mkdir='mkdir -p'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias h='history'
+alias j='jobs -l'
+alias cls='clear'
+alias reload='exec zsh'
+alias src='source ~/.zshrc'
+
+# git
+alias g='git'
+alias gst='git status'
+alias gcl='git clone'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git pull'
+alias gP='git push'
+alias gd='git diff'
+alias gl='git log --oneline --graph'
+alias gb='git branch'
+
+# tmux
+alias tl='tmux list-sessions'
+alias ts='tmux new-session -s'
+alias ta='tmux attach-session -t'
+alias tkss='tmux kill-session -t'
+alias tksv='tmux kill-server'
+
+# ==== Functions ====
+
+# Extract archives
+extract() {
+  if [[ -f "$1" ]]; then
+    case "$1" in
+      *.tar.gz|*.tgz) tar xzf "$1" ;;
+      *.tar.bz2|*.tbz2) tar xjf "$1" ;;
+      *.tar.xz|*.txz) tar xJf "$1" ;;
+      *.tar.zst) tar --zstd -xf "$1" ;;
+      *.tar) tar xf "$1" ;;
+      *.gz) gunzip "$1" ;;
+      *.bz2) bunzip2 "$1" ;;
+      *.xz) unxz "$1" ;;
+      *.zst) unzstd "$1" ;;
+      *.zip) unzip "$1" ;;
+      *.rar) unrar x "$1" ;;
+      *.7z) 7z x "$1" ;;
+      *) echo "extract: unknown archive: $1" ;;
+    esac
+  else
+    echo "extract: not a file: $1"
+  fi
+}
+
+# Quick mkdir + cd
+mcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# Find file by name
+ff() {
+  find . -type f -iname "*$1*" 2>/dev/null
+}
+
+# Find directory by name
+fd() {
+  find . -type d -iname "*$1*" 2>/dev/null
+}
+
+# Create a .bak backup
+bak() {
+  cp -r "$1" "$1.bak"
+}
+
+# My IP
+myip() {
+  curl -s ifconfig.me || curl -s ip.sb
+}
+
+# Weather
+weather() {
+  local city="${1:-shenzhen}"
+  curl -s "wttr.in/$city?m1"
+}
+
+# ==== Prompt ====
+autoload -Uz vcs_info
+precmd_vcs_info() { vcs_info }
+precmd_functions+=( precmd_vcs_info )
+setopt prompt_subst
+zstyle ':vcs_info:git:*' formats '(%b) '
+zstyle ':vcs_info:git:*' actionformats '(%b|%a) '
+
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f ${vcs_info_msg_0_}%# '
+

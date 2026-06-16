@@ -48,7 +48,6 @@ install-packages.ps1
 {{ if eq .chezmoi.os "windows" }}
 install-packages.sh
 .tmux/
-.tmux.conf
 .config/fzf/
 .zshrc
 .zshrc.conf/
