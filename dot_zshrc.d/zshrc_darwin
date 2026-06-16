@@ -1,13 +1,7 @@
 # zshrc MacOS
 
 
-# Q pre block. Keep at the top of this file.
-source_once_if_readable "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
-
-
 ZSHCONF_HOME="$HOME/.zshrc.d"
-
-# ==== Includes ====
 
 ## helper functions
 if [[ -r "$ZSHCONF_HOME/helper.zsh" ]]; then
@@ -16,6 +10,8 @@ else
     print -u2 "missing zsh helper: $ZSHCONF_HOME/helper.zsh"
     return 1
 fi
+
+# ==== Includes ====
 
 ## prelude environment
 source_if_readable "$ZSHCONF_HOME/env.zsh"
@@ -93,8 +89,3 @@ fi
 
 
 ## ==== Initialization ====
-
-
-
-# Q post block. Keep at the bottom of this file.
-source_once_if_readable "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
