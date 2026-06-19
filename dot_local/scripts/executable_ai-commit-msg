@@ -3,7 +3,7 @@
 
 Environment variables:
   DEEPSEEK_API_KEY  (required)  API key from https://platform.deepseek.com
-  DEEPSEEK_MODEL    (optional)  default: deepseek-chat
+  DEEPSEEK_MODEL    (optional)  default: deepseek-v4-flash
   DEEPSEEK_BASE_URL (optional)  default: https://api.deepseek.com
 """
 
@@ -82,12 +82,12 @@ Changes summary:
         print(
             "DEEPSEEK_API_KEY is not set.\n"
             "  export DEEPSEEK_API_KEY='sk-your-key-here'\n"
-            "  export DEEPSEEK_MODEL='deepseek-chat'   # optional"
+            "  export DEEPSEEK_MODEL='deepseek-v4-flash'   # optional"
         )
         sys.exit(1)
 
     base_url = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
-    model    = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")
+    model    = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-flash")
 
     body = json.dumps({
         "model": model,
@@ -98,6 +98,7 @@ Changes summary:
             )},
             {"role": "user", "content": prompt},
         ],
+        "thinking": {"type": "disabled"},
         "stream": False,
     }).encode()
 
