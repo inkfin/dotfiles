@@ -2,7 +2,6 @@
 guiApplications = true
 networkingMode = mirrored
 dnsTunneling = true
-autoProxy = true
 firewall = true
 
 [experimental]
