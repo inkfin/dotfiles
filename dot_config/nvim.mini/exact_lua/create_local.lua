@@ -13,6 +13,7 @@ M.lang = {
     python = true,
     -- rust   = true,
     -- go     = true,
+    -- zig    = true,
     -- latex  = true,
     -- proto  = true,
 }

@@ -33,5 +33,6 @@ conform.setup({
         toml  = { "taplo" },
         yaml  = { "prettierd" },
         markdown = { "prettierd" },
+        zig   = { "zigfmt" },
     },
 })
