@@ -7,6 +7,15 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "project_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
   "document_folding_ranges": "on",
   "relative_line_numbers": "enabled",
   "which_key": {
@@ -20,7 +29,7 @@
     "coloring": "fixed",
   },
   "preferred_line_length": 120,
-  "soft_wrap": "editor_width",
+  "soft_wrap": "bounded",
   "cursor_blink": false,
   "scroll_beyond_last_line": "one_page",
   // vim settings: https://zed.dev/docs/vim
@@ -32,17 +41,8 @@
     "toggle_relative_line_numbers": true,
   },
   "command_aliases": {
-    "x": "\"_x",
     "P": "\"_dP",
   },
-  "wsl_connections": [
-    {
-      "distro_name": "Ubuntu",
-      "user": null,
-      "projects": [
-      ],
-    },
-  ],
   "ssh_connections": [
     {
       "host": "ink.devcloud.woa.com",
@@ -54,6 +54,7 @@
     },
   ],
   "git_panel": {
+    "dock": "right",
     "tree_view": true,
     "sort_by_path": true,
   },
@@ -88,15 +89,11 @@
     "font_family": "FiraCode Nerd Font Mono",
   },
   "agent": {
-    "favorite_models": [
-      {
-        "provider": "copilot_chat",
-        "model": "gpt-5-mini",
-        "enable_thinking": false
-      },
-    ],
-    "default_profile": "ask",
+    "dock": "left",
+    "default_profile": "write",
     "default_model": {
+      "effort": "medium",
+      "enable_thinking": true,
       "provider": "copilot_chat",
       "model": "gpt-5-mini",
     },

@@ -9,8 +9,8 @@
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-s": "workspace::Save",
-    },
+      "ctrl-s": "workspace::Save"
+    }
   },
   {
     "context": "Editor && !menu",
@@ -73,5 +73,11 @@
       "H": "editor::SelectToBeginningOfLine",
       "space r f": "editor::FormatSelections",
     },
+  },
+  {
+    "context": "Editor && VimControl && (vim_mode == normal || vim_mode == visual)",
+    "bindings": {
+      "x": ["workspace::SendKeystrokes", "\" _ x"]
+    }
   },
 ]
