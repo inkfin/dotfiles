@@ -89,6 +89,21 @@
     "font_family": "FiraCode Nerd Font Mono",
   },
   "agent": {
+    "show_turn_stats": true,
+    "notify_when_agent_waiting": "all_screens",
+    "play_sound_when_agent_done": "when_hidden",
+    "tool_permissions": {
+      "default": "allow",
+      "tools": {}
+    },
+    "single_file_review": true,
+    "sandbox_permissions": {
+      "network_hosts": [
+        "crates.io",
+        "box2d.org"
+      ],
+      "allow_fs_write_all": true
+    },
     "dock": "left",
     "default_profile": "write",
     "default_model": {
