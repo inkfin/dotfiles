@@ -36,6 +36,7 @@ set -as terminal-overrides ',xterm*:sitm=\E[3m'
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
 # Enable modified key reporting (for keys like Ctrl/Alt+Enter)
 set -g extended-keys on
+set -g extended-keys-format csi-u
 # Default to zsh (some platform can't recognize default shell)
 set-option -g default-shell /bin/zsh
 
