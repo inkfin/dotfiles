@@ -8,4 +8,7 @@ bindings = [{ mouse = "Right", mods = "Control", action = "Paste" }]
 bindings = [
     { key = "/", mods = "Control", action = "ReceiveChar" },
     { key = "/", mode = "Vi|~Search", action = "ReceiveChar" },
+    { key = "Minus", mods = "Control|Shift", action = "DecreaseFontSize" },
+    { key = "Equals", mods = "Control|Shift", action = "IncreaseFontSize" },
+    { key = "Key0", mods = "Control", action = "ResetFontSize" },
 ]
