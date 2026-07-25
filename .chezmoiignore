@@ -56,6 +56,23 @@ install-packages.sh
 !.local/scripts/*.ps1
 {{ end }}
 
+# Server profile: exclude GUI/desktop configs on headless machines
+{{- if eq .profile "server" }}
+.config/alacritty/
+.config/wezterm/
+.config/zed/
+.config/neovide/
+.config/sioyek/
+.config/i3/
+.config/AutoHotkey/
+.config/ueberzugpp/
+.config/Rime/
+.config/karabiner/
+.config/VisualStudio/
+dot_Brewfile
+dot_ideavimrc
+{{- end }}
+
 # Input methods
 {{ if not .external.rime }}
 .config/Rime/

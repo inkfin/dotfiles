@@ -10,6 +10,30 @@ Host github.com
   IdentityFile ~/.ssh/id_ed25519
   IdentitiesOnly yes
 
+{{ if eq .profile "server" }}
+# Server: hardened defaults
+Host *
+  # No agent or X11 forwarding on headless server
+  ForwardAgent no
+  ForwardX11 no
+  # Hardened key exchange, ciphers, and MACs
+  KexAlgorithms sntrup761x25519-sha512@openssh.com,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+  MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+  # Strict checking
+  StrictHostKeyChecking ask
+  # Connection keep-alive
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+  # No password fallback (key-only)
+  PasswordAuthentication no
+  PubkeyAuthentication yes
+  # Timeout for initial connection
+  ConnectTimeout 10
+  # No roaming
+  UseRoaming no
+{{ else }}
 {{ if eq .chezmoi.os "darwin" -}}
 #Include ~/.ssh/1password_config
+{{ end }}
 {{ end }}
