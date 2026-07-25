@@ -14,9 +14,10 @@ require("pack").add({
 local function lsp_disabled(bufnr)
     -- Big files are tagged by snacks.nvim as filetype=bigfile.
     -- Diff buffers stay read-focused, so keep LSP off there too.
+    local winid = vim.fn.bufwinid(bufnr)
     return vim.b[bufnr].lsp_disabled
         or vim.bo[bufnr].filetype == "bigfile"
-        or vim.wo[vim.fn.bufwinid(bufnr)].diff
+        or (winid ~= -1 and vim.wo[winid].diff)
 end
 
 local function disable_buffer_lsp_features(bufnr)
