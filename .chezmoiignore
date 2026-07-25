@@ -29,6 +29,7 @@ scripts/env_init/macos*
 {{ if ne .chezmoi.os "linux" }}
 modikeys.sh
 scripts/linux/
+.config/ibus/
 {{ end }}
 
 # Windows specific settings
