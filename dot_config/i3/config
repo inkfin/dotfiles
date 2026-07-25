@@ -187,7 +187,7 @@ bindsym $mod+r mode "resize"
 exec_always --no-startup-id ~/modikeys.sh
 
 # mouse/touchpad natrual scrolling
-exec_always --no-startup-id ~/.local/bin/touchpad.sh
+exec_always --no-startup-id ~/scripts/linux/i3-touchpad.sh
 exec_always --no-startup-id ~/.local/bin/i3-mouse.sh
 
 # clipboard manager
