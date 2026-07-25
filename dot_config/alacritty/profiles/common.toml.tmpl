@@ -1,5 +1,11 @@
+# vi: ft=toml
+
 [terminal.shell]
+{{- if eq .chezmoi.os "windows" }}
 program = "pwsh"
+{{- else }}
+program = "zsh"
+{{- end }}
 
 [window]
 option_as_alt = "OnlyLeft"
