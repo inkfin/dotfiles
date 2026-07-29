@@ -1,35 +1,61 @@
 # PowerShell_profile
-# pwsh.exe
+# pwsh.exe / Windows PowerShell
 # Subscripts include: PSReadLine_config.ps1, Utilities.ps1
 
-function Init-EnvironmentVariable($Name, $Val) {
-    if ((Get-Item -Path "env:$Name" -ErrorAction SilentlyContinue).Value -eq $Val) { return }
-    $OldValue = [Environment]::GetEnvironmentVariable($Name, "User")
-    if ($null -eq $OldValue) {
-        [Environment]::SetEnvironmentVariable($Name, $Val, "User")
-    }
+# Skip interactive tooling when automation / scripts open a shell.
+# Callers should still prefer -NoProfile; this is the safety net.
+if (-not [Environment]::UserInteractive -or $env:TERM -eq 'dumb') {
+    return
+}
+
+# Process-scoped env helpers (cheap). User-scope writes only when missing.
+function Set-ProcessEnvironmentVariable([string]$Name, [string]$Val) {
+    $current = (Get-Item -Path "env:$Name" -ErrorAction SilentlyContinue).Value
+    if ($current -eq $Val) { return }
     Set-Item -Path "env:$Name" -Value $Val
 }
 
-function Set-EnvironmentVariable($Name, $Val) {
-    if ((Get-Item -Path "env:$Name" -ErrorAction SilentlyContinue).Value -eq $Val) { return }
+function Init-EnvironmentVariable([string]$Name, [string]$Val) {
+    $current = (Get-Item -Path "env:$Name" -ErrorAction SilentlyContinue).Value
+    if ($current -eq $Val) {
+        # Already correct in-process (usually inherited) — skip registry.
+        return
+    }
+    Set-Item -Path "env:$Name" -Value $Val
+    # Persist once: only write User scope when unset (avoids registry churn).
+    if ($null -eq [Environment]::GetEnvironmentVariable($Name, "User")) {
+        [Environment]::SetEnvironmentVariable($Name, $Val, "User")
+    }
+}
+
+function Set-EnvironmentVariable([string]$Name, [string]$Val) {
+    Set-ProcessEnvironmentVariable $Name $Val
     $OldValue = [Environment]::GetEnvironmentVariable($Name, "User")
     if ($OldValue -ne $Val) {
         [Environment]::SetEnvironmentVariable($Name, $Val, "User")
     }
-    Set-Item -Path "env:$Name" -Value $Val
 }
 
-function Append-UserPath($Path) {
-    if ($env:PATH -like "*$Path*") { return }
+function Append-UserPath([string]$Path) {
+    if ([string]::IsNullOrWhiteSpace($Path)) { return }
+    $sep = [IO.Path]::PathSeparator
+    foreach ($part in $env:PATH -split [regex]::Escape($sep)) {
+        if ($part -eq $Path) {
+            # Already on process PATH (usually inherited) — skip registry.
+            return
+        }
+    }
+    $env:PATH = "$env:PATH$sep$Path"
+
     $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
-    if ($UserPath -like "*$Path*") {
-        $env:PATH = "$env:PATH$([IO.Path]::PathSeparator)$Path"
+    if ([string]::IsNullOrEmpty($UserPath)) {
+        [Environment]::SetEnvironmentVariable("Path", $Path, "User")
         return
     }
-    $UserPath = "$UserPath$([IO.Path]::PathSeparator)$Path"
-    $env:PATH = $UserPath
-    [Environment]::SetEnvironmentVariable("Path", $UserPath, "User")
+    foreach ($part in $UserPath -split [regex]::Escape($sep)) {
+        if ($part -eq $Path) { return }
+    }
+    [Environment]::SetEnvironmentVariable("Path", "$UserPath$sep$Path", "User")
 }
 
 # ENVs
@@ -169,8 +195,13 @@ function Invoke-Starship-TransientFunction {
 }
 if (Get-Command starship -ErrorAction SilentlyContinue) {
     if (-not (Test-Path variable:__PSH_STARSHIP_INIT)) {
-        Invoke-Expression (&starship init powershell)
-        Enable-TransientPrompt
+        $starshipInit = & starship init powershell 2>$null | Out-String
+        if (-not [string]::IsNullOrWhiteSpace($starshipInit)) {
+            Invoke-Expression $starshipInit
+            if (Get-Command Enable-TransientPrompt -ErrorAction SilentlyContinue) {
+                Enable-TransientPrompt
+            }
+        }
         Set-Variable -Name __PSH_STARSHIP_INIT -Value $true -Scope Global
     }
 }
