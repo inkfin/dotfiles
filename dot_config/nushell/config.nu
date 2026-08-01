@@ -2,11 +2,25 @@
 
 source ($nu.default-config-dir | path join "utils.nu")
 
+# ---------------------------------------------------------------------------
+# Version helper: returns true when running nushell >= (major, minor, patch).
+# Uses an integer encoding since nushell can't compare lists with '>'.
+# Usage:  if (nu_version_at 0 106 0) { ... }
+# ---------------------------------------------------------------------------
+def nu_version_at [major: int, minor: int, patch?: int] {
+    let patch = ($patch | default 0)
+    let v = (version)
+    let cur = ($v.major * 1_000_000 + $v.minor * 1_000 + $v.patch)
+    let tgt = ($major * 1_000_000 + $minor * 1_000 + $patch)
+    $cur >= $tgt
+}
+
 $env.EDITOR = "nvim"
 $env.SHELL = "nu"
 $env.config.edit_mode = "emacs"
 $env.config.buffer_editor = "nvim"
-$env.config.error_style = "short"
+# error_style: "short" added in 0.106; older versions only accept "fancy"/"plain"
+$env.config.error_style = (if (nu_version_at 0 106 0) { "short" } else { "plain" })
 $env.config.rm.always_trash = true
 
 $env.config.show_banner = false
@@ -51,15 +65,26 @@ alias cz = chezmoi
 alias rm! = rm -p
 $env.chezmoi-dir = ("~/.local/share/chezmoi" | path expand)
 
-# Abbreviations (expand on space, store full command in history)
-$env.config.abbreviations = {
-    gst: "git status"
-    lg: "lazygit"
-    lzd: "lazydocker"
-    zj: "zellij"
-    cmc: "cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
-    cmcp: "cmake --preset"
-    cmb: "cmake --build"
+# Abbreviations (expand on space, store full command in history).
+# Added in 0.106; on older versions fall back to aliases so config still loads.
+if (nu_version_at 0 106 0) {
+    $env.config.abbreviations = {
+        gst: "git status"
+        lg: "lazygit"
+        lzd: "lazydocker"
+        zj: "zellij"
+        cmc: "cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
+        cmcp: "cmake --preset"
+        cmb: "cmake --build"
+    }
+} else {
+    alias gst = git status
+    alias lg = lazygit
+    alias lzd = lazydocker
+    alias zj = zellij
+    alias cmc = cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B
+    alias cmcp = cmake --preset
+    alias cmb = cmake --build
 }
 
 # Keybindings: Alt+. inserts last token of previous command (bash-style)

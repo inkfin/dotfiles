@@ -3,15 +3,16 @@ local wezterm = require("wezterm")
 local t = require("tools")
 local config = {}
 
--- Detect nushell binary per-platform
+-- Detect nushell binary per-platform.
+-- Rely on PATH for resolution — no hardcoded install locations.
+-- This survives winget/scoop/MSI install path changes.
 local function find_nu()
 	if t.os("windows") then
-		local home = wezterm.home_dir
-		return { home .. "/AppData/Local/Programs/nu/bin/nu.exe" }
+		return { "nu.exe" }
 	elseif t.os("macos") then
-		return { "/opt/homebrew/bin/nu" }
+		return { "nu" }
 	else
-		return { "/usr/bin/nu" }
+		return { "nu" }
 	end
 end
 
