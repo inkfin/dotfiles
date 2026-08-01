@@ -24,25 +24,38 @@ return {
 	initial_rows = 24,
 
 	window_background_opacity = window_background_opacity,
+	-- Windows 11: alternative translucent effect (acrylic)
+	-- win32_system_backdrop = "Acrylic",
 
-	-- "VerticalLcd" "HorizontalLcd" "Normal" "Mono" "Light"
 	freetype_load_target = "Normal",
 
-	-- color_scheme = "Batman",
 	color_scheme = "Snazzy (Gogh)",
 
-	-- Tab bar settings
-	-- Config.hide_tab_bar_if_only_one_tab = true
+	-- Tab bar
 	tab_bar_at_bottom = true,
-	-- retro tab bar
 	use_fancy_tab_bar = false,
+	hide_tab_bar_if_only_one_tab = false,
 
 	font = wezterm.font_with_fallback(font_with_fallback),
 	font_size = 11.0,
+	-- Line height for readability with Iosevka
+	-- line_height = 1.2,
 
 	window_decorations = "INTEGRATED_BUTTONS|RESIZE",
-	-- enable scroll bar
-	-- window_padding = { left = 0, right = 15, top = 0, bottom = 0 },
-	-- enable_scroll_bar = true,
 	window_padding = { left = 0, right = 0, top = 0, bottom = 0 },
+
+	-- Kitty keyboard protocol: better modifier key handling for nvim
+	enable_kitty_keyboard = true,
+
+	-- Scrollback
+	scrollback_lines = 10000,
+
+	-- Exit behavior: close tab when process exits cleanly
+	exit_behavior = "CloseOnCleanExit",
+
+	-- Auto-reload config on save
+	automatically_reload_config = true,
+
+	-- Silently ignore missing glyphs (fallback font will be used)
+	warn_about_missing_glyphs = false,
 }

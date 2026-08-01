@@ -7,6 +7,7 @@ local t = require("tools")
 
 t.require_config("config.shell")
 t.require_config("config.appearance")
+t.require_config("config.mux")
 
 require("keymaps")
 
