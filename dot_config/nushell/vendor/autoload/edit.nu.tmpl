@@ -6,15 +6,20 @@ alias vcn = nvim --cmd 'let g:rime=v:true'
 alias nvs = nvim --listen localhost:6789 --cmd "let safequit=v:true"
 alias nvc = nvim --server localhost:6789 --remote-ui
 
-## nvim custom build
-# alias nn = $env.home-path | path join ".local" "bin" "nvim"
-# alias nvim = nn
+# vimrc: edit neovim config
+def vimrc [] {
+    nvim ($nu.home-path | path join ".local" "share" "chezmoi" "dot_config" "nvim.lazyvim" "init.lua")
+}
 
-## edit config
-let nvim_config = $env.chezmoi-dir | path join "dot_config" "nvim.lazyvim" "init.lua"
-alias vimrc = nvim $nvim_config
-let nu_config = $env.chezmoi-dir | path join "dot_config" "nushell" "config.nu"
-alias vimnu = nvim $nu_config
+# vimnu: edit nushell config
+def vimnu [] {
+    nvim ($nu.home-path | path join ".local" "share" "chezmoi" "dot_config" "nushell" "config.nu")
+}
+
+# vimwez: edit wezterm config
+def vimwez [] {
+    nvim ($nu.home-path | path join ".local" "share" "chezmoi" "dot_config" "wezterm" "wezterm.lua")
+}
 
 # tmux
 alias tl = tmux list-sessions

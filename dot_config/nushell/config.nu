@@ -1,76 +1,69 @@
 # config.nu
-#
-# Installed by:
-# version = "0.102.0"
-#
-# This file is used to override default Nushell settings, define
-# (or import) custom commands, or run any other startup tasks.
-# See https://www.nushell.sh/book/configuration.html
-#
-# This file is loaded after env.nu and before login.nu
-#
-# You can open this file in your default editor using:
-# config nu
-#
-# See `help config nu` for more options
-#
-# You can remove these comments if you want or leave
-# them for future reference.
 
 source ($nu.default-config-dir | path join "utils.nu")
 
 $env.EDITOR = "nvim"
-
-$env.config.buffer_editor = "nvim"
-$env.config.edit_mode = 'emacs'
-
-# history
-$env.config.history = {
-  file_format: sqlite
-  max_size: 1_000_000
-  sync_on_enter: true
-  isolation: true
-}
+$env.config.edit_mode = "emacs"
 
 $env.config.show_banner = false
 
-# paths
-safe_append_path "~/bin"
-safe_append_path "~/.local/bin"
+$env.config.history = {
+    file_format: "sqlite"
+    max_size: 1_000_000
+    sync_on_enter: true
+    isolation: true
+}
 
-#=========
+$env.config.cursor_shape = {
+    emacs: "line"
+    vi_insert: "line"
+    vi_normal: "block"
+}
+
+use std/util "path add"
+path add "~/.local/bin"
+path add "~/bin"
+
+# ---------------------------------------------------------------------------
 # Aliases
-#=========
+# ---------------------------------------------------------------------------
 alias l = lsd
 alias ll = lsd -l
 alias la = lsd -al
 alias lt = lsd --tree
-alias pwd = echo $env.PWD
-alias ra = yazi
-def --env rag [...args] {
-	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
-	yazi ...$args --cwd-file $tmp
-	let cwd = (open $tmp)
-	if $cwd != "" and $cwd != $env.PWD {
-		cd $cwd
-	}
-	rm -fp $tmp
-}
-
-# chezmoi
-alias cz = chezmoi
-$env.chezmoi-dir = "~/.local/share/chezmoi" | path expand
-
 alias ee = exit
 
-# load completions
+alias cz = chezmoi
+$env.chezmoi-dir = ("~/.local/share/chezmoi" | path expand)
+
+def --env y [...args] {
+    let tmp = (mktemp -t "yazi-cwd.XXXXXX")
+    ^yazi ...$args --cwd-file $tmp
+    let cwd = (open $tmp)
+    if $cwd != "" and $cwd != $env.PWD {
+        cd $cwd
+    }
+    rm -fp $tmp
+}
+
+# ---------------------------------------------------------------------------
+# Completions
+# ---------------------------------------------------------------------------
 const NU_LIB_DIRS = [
-  ($nu.data-dir | path join "completions"),
+    ($nu.data-dir | path join "completions"),
 ]
 
-# initialization
-mkdir ($nu.data-dir | path join "vendor/autoload")
+mkdir ($nu.data-dir | path join "completions")
 
-starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
-zoxide init nushell | save -f ($nu.data-dir | path join "vendor/autoload/zoxide.nu")
+# ---------------------------------------------------------------------------
+# Prompt: starship (always refresh init, fast enough for startup)
+# ---------------------------------------------------------------------------
+mkdir ($nu.data-dir | path join "vendor" "autoload")
+^starship init nu | save --force ($nu.data-dir | path join "vendor" "autoload" "starship.nu")
+source ($nu.data-dir | path join "vendor" "autoload" "starship.nu")
 
+# ---------------------------------------------------------------------------
+# zoxide
+# ---------------------------------------------------------------------------
+^zoxide init nushell | save --force ($nu.data-dir | path join "vendor" "autoload" "zoxide.nu")
+source ($nu.data-dir | path join "vendor" "autoload" "zoxide.nu")

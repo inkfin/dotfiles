@@ -3,7 +3,6 @@ alias gst = git status
 alias lg = lazygit
 
 {{ if eq .chezmoi.os "darwin" -}}
-# macos has open command
 alias o = ^open
 {{- end }}
 
@@ -11,88 +10,83 @@ alias o = ^open
 ## cmake config
 alias cmc = cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B
 def cmcv [...args] {
-  let toolchain_file = ($env.VCPKG_ROOT | path join ("scripts/buildsystems/vcpkg.cmake" | path expand))
-  cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$toolchain_file -B ...$args
+    let toolchain_file = ($env.VCPKG_ROOT | path join "scripts/buildsystems/vcpkg.cmake" | path expand)
+    cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$toolchain_file -B ...$args
 }
 alias cmb = cmake --build
-## toolset
+
+## toolset - reset to system defaults
 $env.CC = ""
 $env.CXX = ""
 
-set_cc empty
-
 def cc_types [] {[
-  "gcc",
-  "clang",
+    "gcc",
+    "clang",
 {{- if eq .chezmoi.os "windows" }}
-  "clang-llvm",
+    "clang-llvm",
 {{- end }}
-  "empty",
+    "empty",
 ]}
 
 def set_cc --env [cc: string@cc_types, silent?: bool = true] {
-  let new_env = if $cc == "gcc" {
-    {
+    match $cc {
+        "gcc" => {
 {{- if eq .chezmoi.os "windows" }}
-      CC: ("~/scoop/apps/mingw/current/bin/gcc.EXE" | path expand)
-      CXX: ("~/scoop/apps/mingw/current/bin/g++.EXE" | path expand)
+            $env.CC = ("~/scoop/apps/mingw/current/bin/gcc.EXE" | path expand)
+            $env.CXX = ("~/scoop/apps/mingw/current/bin/g++.EXE" | path expand)
 {{- else }}
-      CC: "gcc"
-      CXX: "g++"
+            $env.CC = "gcc"
+            $env.CXX = "g++"
 {{- end }}
-    }
-  } else if $cc == "clang" {
-    {
+        }
+        "clang" => {
 {{- if eq .chezmoi.os "windows" }}
-      CC: ("~/scoop/apps/llvm/current/bin/clang.EXE" | path expand)
-      CXX: ("~/scoop/apps/llvm/current/bin/clang++.EXE" | path expand)
+            $env.CC = ("~/scoop/apps/llvm/current/bin/clang.EXE" | path expand)
+            $env.CXX = ("~/scoop/apps/llvm/current/bin/clang++.EXE" | path expand)
 {{- else }}
-      CC: "clang"
-      CXX: "clang++"
+            $env.CC = "clang"
+            $env.CXX = "clang++"
 {{- end }}
-    }
+        }
 {{- if eq .chezmoi.os "windows" }}
-  } else if $cc == "clang-llvm" {
-    {
-      CC: ("C:/Program Files/LLVM/bin/clang.exe" | path expand)
-      CXX: ("C:/Program Files/LLVM/bin/clang++.exe" | path expand)
-    }
+        "clang-llvm" => {
+            $env.CC = ("C:/Program Files/LLVM/bin/clang.exe" | path expand)
+            $env.CXX = ("C:/Program Files/LLVM/bin/clang++.exe" | path expand)
+        }
 {{- end }}
-  } else {
-    {
-      CC: ""
-      CXX: ""
+        _ => {
+            $env.CC = ""
+            $env.CXX = ""
+        }
     }
-  }
-  if not $silent {
-    print $"Setting env to ($new_env)"
-  }
-  load-env $new_env
+    if not $silent {
+        print $"CC=($env.CC) CXX=($env.CXX)"
+    }
 }
+
+set_cc empty
 
 ## vcpkg
 {{ if eq .chezmoi.os "windows" -}}
-if not ('VCPKG_ROOT' in $env) {
-  $env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
+if not ("VCPKG_ROOT" in $env) {
+    $env.VCPKG_ROOT = ("~/dev/vcpkg" | path expand)
 }
-safe_append_path $env.VCPKG_ROOT
+safe_prepend_path $env.VCPKG_ROOT
 {{- else -}}
-$env.VCPKG_ROOT = "~/dev/vcpkg" | path expand
-safe_append_path $env.VCPKG_ROOT
+$env.VCPKG_ROOT = ("~/dev/vcpkg" | path expand)
+safe_prepend_path $env.VCPKG_ROOT
 {{- end }}
-
 
 # CUDA environment
 {{ if eq .chezmoi.os "windows" -}}
-$env.CUDA_PATH_V12_1 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1" | path expand
-$env.CUDA_PATH_V11_2 = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2" | path expand
+$env.CUDA_PATH_V12_1 = ("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1" | path expand)
+$env.CUDA_PATH_V11_2 = ("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2" | path expand)
 $env.CUDA_PATH = $env.CUDA_PATH_V12_1
-safe_append_path ($env.CUDA_PATH | path join "bin")
-safe_append_path ($env.CUDA_PATH | path join "libnvvp")
+safe_prepend_path ($env.CUDA_PATH | path join "bin")
+safe_prepend_path ($env.CUDA_PATH | path join "libnvvp")
 {{- end }}
 
-
 # bun
-safe_append_path "~/.bun/bin"
+safe_prepend_path "~/.bun/bin"
 
 # vim: ft=nu
