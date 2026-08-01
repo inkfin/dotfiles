@@ -130,7 +130,7 @@ Changes summary:
 
     msg = match.group(0)
     print(f"Using commit message: {msg}", file=sys.stderr)
-    os.execvp("git", ["git", "commit", "-m", msg] + sys.argv[1:])
+    subprocess.check_call(["git", "commit", "-m", msg] + sys.argv[1:])
 
 
 if __name__ == "__main__":

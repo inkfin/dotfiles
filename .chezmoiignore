@@ -1,4 +1,5 @@
 README.md
+AGENTS.md
 
 .oh-my-zsh
 
@@ -43,6 +44,7 @@ AppData/
 install-packages.ps1
 .local/scripts/*.bat
 .local/scripts/*.ps1
+.local/scripts/*.py
 {{ end }}
 
 # Unix specific settings
@@ -53,6 +55,7 @@ install-packages.sh
 .zshrc
 .zshrc.conf/
 .local/scripts/*
+!.local/scripts/ai-commit-msg*
 !.local/scripts/*.bat
 !.local/scripts/*.ps1
 {{ end }}

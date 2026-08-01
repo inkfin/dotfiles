@@ -48,6 +48,31 @@ Config current profiles in `$HOME/.config/chezmoi/chezmoi.toml`.
     profile = "work"
 ```
 
+### Directory Structure
+
+```
+dot_config/          # All configs live here (~/.config)
+  nvim.mini/         #   daily Neovim config (minimal, fast)
+  nvim.lazyvim/      #   LazyVim reference
+  symlink_nvim.tmpl  #   switches active nvim config
+  lazygit/           #   OS-aware template with AI commit keybind
+  opencode/          #   create_ prefix: only generated once
+  ...
+AppData/             # Windows %APPDATA% symlinks → dot_config/
+dot_local/scripts/   # Cross-platform scripts
+```
+
+### Cross-platform Strategy
+
+1. **All configs in `dot_config/`** — single source of truth regardless of OS.
+2. **Windows apps reading `%APPDATA%`**: use `AppData/Roaming/symlink_<app>.tmpl`
+   to create a symlink pointing back to `dot_config/<app>/`.
+3. **OS differences** handled via `{{ if eq .chezmoi.os "windows" }}` in `.tmpl` templates.
+4. **Stopping tracking** without deleting on disk: add `.xxx` path to `.chezmoiignore`
+   (e.g. `.config/nvim.old`).
+5. **Scripts**: cross-platform logic in Python, `.bat` wrapper for Windows.
+6. For detailed conventions, see [AGENTS.md](./AGENTS.md).
+
 ### Pre-installation steps
 
 #### Windows

@@ -1,7 +1,13 @@
+os:
+  editPreset: "nvim"
 customCommands:
   - key: "C"
     context: "files"
     description: "Commit staged changes with AI"
+{{- if eq .chezmoi.os "windows" }}
+    command: "{{ .chezmoi.homeDir }}/.local/scripts/ai-commit-msg.bat"
+{{- else }}
     command: "~/.local/scripts/ai-commit-msg"
+{{- end }}
     output: logWithPty
     loadingText: "Generating AI commit message"
