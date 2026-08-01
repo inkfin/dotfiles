@@ -48,11 +48,52 @@ alias tksv = tmux kill-server
 def --env setproxy [] {
     $env.HTTP_PROXY = "http://127.0.0.1:7890"
     $env.HTTPS_PROXY = "http://127.0.0.1:7890"
+    $env.ALL_PROXY = "socks5://127.0.0.1:7890"
+    $env.http_proxy = "http://127.0.0.1:7890"
+    $env.https_proxy = "http://127.0.0.1:7890"
+    $env.all_proxy = "socks5://127.0.0.1:7890"
 }
 
 def --env unsetproxy [] {
-    hide-env HTTP_PROXY
-    hide-env HTTPS_PROXY
+    hide-env HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
+}
+
+def setgitproxy [] {
+    ^git config --global https.proxy "http://127.0.0.1:7890"
+    ^git config --global http.proxy  "http://127.0.0.1:7890"
+    ^git config --global ssh.proxy   "socks5://127.0.0.1:7890"
+}
+
+def unsetgitproxy [] {
+    ^git config --global --unset https.proxy
+    ^git config --global --unset http.proxy
+    ^git config --global --unset ssh.proxy
+}
+
+# extract: extract any archive by extension (mirrors omz `extract` plugin)
+def extract [file: path] {
+    let f = ($file | path expand)
+    if not ($f | path exists) {
+        print $"extract: file not found: ($f)"
+        return
+    }
+    let name = ($f | path basename | str lowercase)
+    match [$name] {
+        [$n if ($n =~ '\.tar\.gz$|\.tgz$')]    => { ^tar xzf $f }
+        [$n if ($n =~ '\.tar\.bz2$|\.tbz2?$')] => { ^tar xjf $f }
+        [$n if ($n =~ '\.tar\.xz$|\.txz$')]    => { ^tar xJf $f }
+        [$n if ($n =~ '\.tar\.zst$|\.tzst$')]  => { ^tar --zstd -xf $f }
+        [$n if ($n =~ '\.tar$')]                => { ^tar xf $f }
+        [$n if ($n =~ '\.gz$')]               => { ^gunzip $f }
+        [$n if ($n =~ '\.bz2$')]              => { ^bunzip2 $f }
+        [$n if ($n =~ '\.xz$')]               => { ^unxz $f }
+        [$n if ($n =~ '\.zst$')]              => { ^unzstd $f }
+        [$n if ($n =~ '\.zip$')]              => { ^unzip $f }
+        [$n if ($n =~ '\.7z$')]               => { ^7z x $f }
+        [$n if ($n =~ '\.rar$')]              => { ^unrar x $f }
+        [$n if ($n =~ '\.Z$')]                => { ^uncompress $f }
+        _ => { print $"extract: unknown archive type: ($f)" }
+    }
 }
 
 # vim: ft=nu
