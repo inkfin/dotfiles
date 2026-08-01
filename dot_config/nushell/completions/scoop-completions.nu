@@ -1,4 +1,3 @@
-{{- if eq .chezmoi.os "windows" }}
 # Copied from <https://github.com/nushell/nu_scripts/blob/main/custom-completions/scoop/scoop-completions.nu>
 # author: e2dk4r
 
@@ -716,4 +715,3 @@ export extern "scoop virustotal" [
   --help(-h)            # Show help for this command.
 ]
 # vim: ft=nu
-{{- end }}

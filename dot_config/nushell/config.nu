@@ -3,6 +3,7 @@
 source ($nu.default-config-dir | path join "utils.nu")
 
 $env.EDITOR = "nvim"
+$env.SHELL = "nu"
 $env.config.edit_mode = "emacs"
 
 $env.config.show_banner = false
@@ -35,6 +36,17 @@ alias ee = exit
 
 alias cz = chezmoi
 $env.chezmoi-dir = ("~/.local/share/chezmoi" | path expand)
+
+# Abbreviations (expand on space, store full command in history)
+$env.config.abbreviations = {
+    gst: "git status"
+    lg: "lazygit"
+    lzd: "lazydocker"
+    zj: "zellij"
+    cmc: "cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B"
+    cmcp: "cmake --preset"
+    cmb: "cmake --build"
+}
 
 def --env y [...args] {
     let tmp = (mktemp -t "yazi-cwd.XXXXXX")

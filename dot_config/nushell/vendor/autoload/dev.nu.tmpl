@@ -1,6 +1,7 @@
 # git
-alias gst = git status
-alias lg = lazygit
+# abbreviations (gst, lg, lzd, zj, cmc, cmcp, cmb) defined in config.nu
+
+$env.SUDO_EDITOR = "vim"
 
 {{ if eq .chezmoi.os "darwin" -}}
 alias o = ^open
@@ -8,12 +9,10 @@ alias o = ^open
 
 # C++ environment
 ## cmake config
-alias cmc = cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -B
 def cmcv [...args] {
     let toolchain_file = ($env.VCPKG_ROOT | path join "scripts/buildsystems/vcpkg.cmake" | path expand)
     cmake -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=$toolchain_file -B ...$args
 }
-alias cmb = cmake --build
 
 ## toolset - reset to system defaults
 $env.CC = ""
