@@ -195,12 +195,24 @@ function Invoke-Starship-TransientFunction {
 }
 if (Get-Command starship -ErrorAction SilentlyContinue) {
     if (-not (Test-Path variable:__PSH_STARSHIP_INIT)) {
-        $starshipInit = & starship init powershell 2>$null | Out-String
-        if (-not [string]::IsNullOrWhiteSpace($starshipInit)) {
-            Invoke-Expression $starshipInit
-            if (Get-Command Enable-TransientPrompt -ErrorAction SilentlyContinue) {
-                Enable-TransientPrompt
+        $starshipExe = (Get-Command starship).Source
+        $starshipCache = Join-Path (Get-Item $PROFILE.CurrentUserCurrentHost).Directory.Parent.FullName ".cache\powershell" | Join-Path -ChildPath "starship_init.ps1"
+        $needRefresh = $true
+        if (Test-Path $starshipCache) {
+            $needRefresh = (Get-Item $starshipExe).LastWriteTime -gt (Get-Item $starshipCache).LastWriteTime
+        }
+        if ($needRefresh) {
+            $starshipInit = & starship init powershell 2>$null | Out-String
+            if (-not [string]::IsNullOrWhiteSpace($starshipInit)) {
+                New-Item -ItemType File -Path $starshipCache -Force | Out-Null
+                $starshipInit | Out-File -FilePath $starshipCache -Encoding UTF8
+                Invoke-Expression $starshipInit
             }
+        } else {
+            . $starshipCache
+        }
+        if (Get-Command Enable-TransientPrompt -ErrorAction SilentlyContinue) {
+            Enable-TransientPrompt
         }
         Set-Variable -Name __PSH_STARSHIP_INIT -Value $true -Scope Global
     }
@@ -209,7 +221,20 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 # zoxide
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     if (-not (Test-Path variable:__PSH_ZOXIDE_INIT)) {
-        Invoke-Expression (& { (zoxide init powershell | Out-String) })
+        $zoxideExe = (Get-Command zoxide).Source
+        $zoxideCache = Join-Path (Get-Item $PROFILE.CurrentUserCurrentHost).Directory.Parent.FullName ".cache\powershell" | Join-Path -ChildPath "zoxide_init.ps1"
+        $needRefresh = $true
+        if (Test-Path $zoxideCache) {
+            $needRefresh = (Get-Item $zoxideExe).LastWriteTime -gt (Get-Item $zoxideCache).LastWriteTime
+        }
+        if ($needRefresh) {
+            $zoxideInit = & { (zoxide init powershell | Out-String) }
+            New-Item -ItemType File -Path $zoxideCache -Force | Out-Null
+            $zoxideInit | Out-File -FilePath $zoxideCache -Encoding UTF8
+            Invoke-Expression $zoxideInit
+        } else {
+            . $zoxideCache
+        }
         Set-Variable -Name __PSH_ZOXIDE_INIT -Value $true -Scope Global
     }
 }
