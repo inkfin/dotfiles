@@ -46,4 +46,7 @@ M.lsp = {
     references = "loclist", -- LSP list UI: window-local list or snacks picker
 }
 
+-- ─── Optional tools ───────────────────────────────────────────────────────────
+M.wakatime = false   -- coding time tracking (needs ~/.wakatime.cfg with API key)
+
 return M

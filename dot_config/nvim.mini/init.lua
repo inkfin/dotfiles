@@ -26,6 +26,7 @@ pack.load({
     "plugins.lsp",
     "plugins.supermaven",
     "plugins.codecompanion",
+    "plugins.wakatime",
     "plugins.blink",
     "plugins.trouble",
     "plugins.colorscheme",
