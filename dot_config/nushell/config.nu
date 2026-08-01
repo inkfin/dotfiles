@@ -5,6 +5,9 @@ source ($nu.default-config-dir | path join "utils.nu")
 $env.EDITOR = "nvim"
 $env.SHELL = "nu"
 $env.config.edit_mode = "emacs"
+$env.config.buffer_editor = "nvim"
+$env.config.error_style = "short"
+$env.config.rm.always_trash = true
 
 $env.config.show_banner = false
 
@@ -21,6 +24,16 @@ $env.config.cursor_shape = {
     vi_normal: "block"
 }
 
+# UI / Display
+$env.config.completions.algorithm = "fuzzy"
+$env.config.table.header_on_separator = true
+$env.config.render_right_prompt_on_last_line = true
+# Kitty keyboard protocol: skip inside tmux (tmux speaks extended-keys/CSI u, not kitty).
+# Enabling kitty here under tmux would make Shift+Enter etc. get dropped/mistranslated.
+if ("TMUX" not-in $env) {
+    $env.config.use_kitty_protocol = true
+}
+
 use std/util "path add"
 path add "~/.local/bin"
 path add "~/bin"
@@ -35,6 +48,7 @@ alias lt = lsd --tree
 alias ee = exit
 
 alias cz = chezmoi
+alias rm! = rm -p
 $env.chezmoi-dir = ("~/.local/share/chezmoi" | path expand)
 
 # Abbreviations (expand on space, store full command in history)
@@ -47,6 +61,28 @@ $env.config.abbreviations = {
     cmcp: "cmake --preset"
     cmb: "cmake --build"
 }
+
+# Keybindings: Alt+. inserts last token of previous command (bash-style)
+#              Alt+Backspace deletes the previous word (emacs-style)
+$env.config.keybindings ++= [
+    {
+        name: insert_last_token
+        modifier: alt
+        keycode: char_.
+        mode: [emacs vi_normal vi_insert]
+        event: {
+            send: executehostcommand
+            cmd: "commandline edit --insert (history | last | get command | split row (char space) | last)"
+        }
+    }
+    {
+        name: delete_word_back
+        modifier: alt
+        keycode: backspace
+        mode: [emacs vi_insert]
+        event: { edit: BackspaceWord }
+    }
+]
 
 def --env y [...args] {
     let tmp = (mktemp -t "yazi-cwd.XXXXXX")
