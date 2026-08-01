@@ -35,6 +35,7 @@ _G.disable_plugins = {
 
     --- AI
     copilot = true,
+    codecompanion = true, -- free replacement for copilot
     harper = true,
 
     --- input method
