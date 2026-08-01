@@ -8,17 +8,17 @@ alias nvc = nvim --server localhost:6789 --remote-ui
 
 # vimrc: edit neovim config
 def vimrc [] {
-    nvim ($nu.home-path | path join ".local" "share" "chezmoi" "dot_config" "nvim.lazyvim" "init.lua")
+    nvim ($nu.home-dir | path join ".local" "share" "chezmoi" "dot_config" "nvim.lazyvim" "init.lua")
 }
 
 # vimnu: edit nushell config
 def vimnu [] {
-    nvim ($nu.home-path | path join ".local" "share" "chezmoi" "dot_config" "nushell" "config.nu")
+    nvim ($nu.home-dir | path join ".local" "share" "chezmoi" "dot_config" "nushell" "config.nu")
 }
 
 # vimwez: edit wezterm config
 def vimwez [] {
-    nvim ($nu.home-path | path join ".local" "share" "chezmoi" "dot_config" "wezterm" "wezterm.lua")
+    nvim ($nu.home-dir | path join ".local" "share" "chezmoi" "dot_config" "wezterm" "wezterm.lua")
 }
 
 # tmux
