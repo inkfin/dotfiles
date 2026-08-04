@@ -77,8 +77,8 @@ new_workspace = "prefix+shift+c"
 # remove_worktree = ""  # optional, unset by default; opens confirmation
 # rename_workspace = "prefix+shift+w"
 # close_workspace = "prefix+shift+d"
-# previous_workspace = "" # optional, unset by default
-# next_workspace = ""     # optional, unset by default
+previous_workspace = "prefix+ctrl+p" # tmux-like: previous session
+next_workspace = "prefix+ctrl+n"     # tmux-like: next session
 previous_agent = "prefix+alt+p"     # optional
 next_agent = "prefix+alt+n"         # optional
 focus_agent = "prefix+alt+1..9" # optional indexed binding, e.g. "prefix+alt+1..9"
@@ -99,10 +99,11 @@ focus_pane_right = "prefix+l"
 # cycle_pane_next = "prefix+tab"
 # cycle_pane_previous = "prefix+shift+tab"
 # last_pane = ""          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth
-# swap_pane_left = ""     # optional, unset by default
-swap_pane_down = "prefix+ctrl+n"
-swap_pane_up = "prefix+ctrl+p"
-# swap_pane_right = ""    # optional, unset by default
+# swap pane = prefix+ctrl+arrow (tmux resize uses plain arrows, no conflict)
+swap_pane_left = "prefix+ctrl+left"
+swap_pane_down = "prefix+ctrl+down"
+swap_pane_up = "prefix+ctrl+up"
+swap_pane_right = "prefix+ctrl+right"
 split_vertical = ["prefix+|", "prefix+%"]
 split_horizontal = ["prefix+-", 'prefix+"']
 close_pane = "prefix+x"
@@ -166,7 +167,7 @@ height = "80%"
 # sidebar_max_width = 36
 
 # Start with the sidebar collapsed. Changes take effect on the next launch.
-sidebar_start_collapsed = true
+sidebar_start_collapsed = false
 
 # Collapsed sidebar presentation: "compact" keeps the narrow status rail, "hidden" uses zero width.
 # sidebar_collapsed_mode = "compact"

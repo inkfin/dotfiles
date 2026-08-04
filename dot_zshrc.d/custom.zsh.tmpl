@@ -86,6 +86,9 @@ alias cz="chezmoi"
 
 alias zj="zellij"
 
+## herdr
+source_if_readable "$ZSHCONF_HOME/herdr.zsh"
+
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
 {{ if eq .chezmoi.os "darwin" }}
 alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_darwin"

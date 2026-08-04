@@ -69,14 +69,33 @@ bind -r j select-pane -D
 bind -r h select-pane -L
 bind -r l select-pane -R
 
-bind -r ^k resizep -U 10
-bind -r ^j resizep -D 10
-bind -r ^h resizep -L 10
-bind -r ^l resizep -R 10
+# resize panes with arrow keys, 5 cells per press (repeatable)
+bind -r Up resizep -U 5
+bind -r Down resizep -D 5
+bind -r Left resizep -L 5
+bind -r Right resizep -R 5
+# slow resize with shift+arrow, 1 cell per press (repeatable)
+bind -r S-Up resizep -U 1
+bind -r S-Down resizep -D 1
+bind -r S-Left resizep -L 1
+bind -r S-Right resizep -R 1
+# free ctrl+hjkl and built-in ctrl+arrow (resize 1): herdr uses ctrl+hjkl / ctrl+arrow
+unbind C-k
+unbind C-j
+unbind C-h
+unbind C-l
+unbind C-Up
+unbind C-Down
 
-# swap pane position with previous / next pane
-bind ^p swapp -U
-bind ^n swapp -D
+# ctrl+arrow: swap pane left/right (native swap-pane prev/next)
+bind C-Left  swapp -U
+bind C-Right swapp -D
+# ctrl+up/down: rotate panes forward / reverse (pane order, not strict geometry)
+bind C-Up    rotate-window
+bind C-Down  rotate-window -D
+# ctrl+p/n: previous/next session (aligns with herdr workspace switching)
+bind C-p switch-client -p
+bind C-n switch-client -n
 
 # swap the current window left / right in the tab order.
 bind -r < swap-window -d -t :-
