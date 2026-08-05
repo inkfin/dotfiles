@@ -1,8 +1,6 @@
 README.md
 AGENTS.md
 
-.oh-my-zsh
-
 .config/nvim.old
 
 .config/nvim/symlink
@@ -53,6 +51,9 @@ install-packages.sh
 .tmux/
 .config/fzf/
 .zshrc
+.zshenv
+.zprofile
+.zshrc.d/
 .zshrc.conf/
 .local/scripts/*
 !.local/scripts/ai-commit-msg*

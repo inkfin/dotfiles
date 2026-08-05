@@ -4,7 +4,8 @@
 # ======================================
 #  plugins.zsh
 # ======================================
-#   3rd party plugins settings
+#   Interactive tools and non-OMZ integrations.
+#   OMZ itself is configured separately in omz.zsh.
 # ======================================
 
 
@@ -85,7 +86,7 @@ alias panexport='pandoc --template eisvogel --listings --pdf-engine=xelatex -V C
 {{- end }}
 
 
-# ==== Initialization ====
+# ==== Command initialization ====
 
 ## ---- zoxide ----
 if is_command zoxide && [[ -z "${__ZSH_ZOXIDE_INIT:-}" ]]; then

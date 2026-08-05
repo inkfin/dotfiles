@@ -16,21 +16,6 @@
 # and sourced before this file.
 
 ## PATH — universal
-prepend_to_path PATH /usr/local/bin
-prepend_to_path PATH $HOME/.local/bin
-prepend_to_path PATH $HOME/.local/scripts
-
-## Homebrew — prepend brew to PATH; skipped silently if brew is not installed
-{{ if eq .chezmoi.os "darwin" -}}
-if is_command brew; then
-  prepend_to_path PATH "/opt/homebrew/bin"
-fi
-{{- else if eq .chezmoi.os "linux" -}}
-if is_command brew; then
-  prepend_to_path PATH "/home/linuxbrew/.linuxbrew/bin"
-fi
-{{- end }}
-
 ## man
 # export MANPATH="/usr/local/man:$MANPATH"
 prepend_to_path MANPATH "/usr/local/man/"
@@ -38,11 +23,7 @@ prepend_to_path MANPATH "/usr/local/man/"
 
 # ==== User Commands ====
 
-alias gst="git status"
 alias gcl="git clone"
-alias ga="git add"
-alias gc="git commit"
-alias gp="git pull"
 alias gP="git push"
 alias lg="lazygit"
 alias lzd="lazydocker"
@@ -90,23 +71,7 @@ alias zj="zellij"
 source_if_readable "$ZSHCONF_HOME/herdr.zsh"
 
 alias vimfish="nvim ~/.local/share/chezmoi/dot_config/fish/config.fish"
-{{ if eq .chezmoi.os "darwin" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_darwin"
-{{ else if eq .chezmoi.os "linux" }}
-{{   if eq .chezmoi.osRelease.id "ubuntu" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_ubuntu"
-{{   else if eq .chezmoi.osRelease.id "fedora" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_fedora"
-{{   else if eq .chezmoi.osRelease.id "opensuse-tumbleweed" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_opensuse"
-{{   else if eq .chezmoi.osRelease.id "arch" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_arch"
-{{   else if eq .chezmoi.osRelease.id "tencentos" }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_tencentos"
-{{   else }}
-alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc_linux"
-{{   end }}
-{{ end }}
+alias vimzsh="nvim ~/.local/share/chezmoi/dot_zshrc.d/zshrc.tmpl"
 alias vimrc="nvim ~/.local/share/chezmoi/dot_config/nvim.lazyvim/init.lua"
 alias virc="vim ~/.local/share/chezmoi/dot_vim/vimrc"
 alias custom_phrase="nvim ~/.local/share/chezmoi/dot_config/Rime/custom_phrase.txt"
@@ -115,31 +80,27 @@ alias vimtmpl="nvim ~/.local/share/chezmoi/template/"
 ## Rime
 {{ if eq .chezmoi.os "darwin" }}
 alias rimerc="nvim ~/.local/share/chezmoi/dot_config/Rime/squirrel.custom.yaml"
+alias browse="~/.local/carbonyl-0.0.3/carbonyl"
+alias netease='https_proxy=120.76.98.193:8080 nohup /Applications/NeteaseMusic.app/Contents/MacOS/NeteaseMusic >/dev/null 2>&1 &'
+alias MACSecureInput="ioreg -l -d 1 -w 0 | grep SecureInput"
+
+if is_command thefuck; then
+  eval "$(thefuck --alias)"
+fi
+
+if is_command brew; then
+  prepend_to_path DYLD_FALLBACK_LIBRARY_PATH "$(brew --prefix)/lib"
+fi
+
+# These macOS system paths can be injected into PATH by the OS.
+remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin"
+remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin"
+remove_from_path PATH "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
 {{ end }}
 
 
 # ==== User configurations ====
 
-## zsh history
-HISTFILE=~/.zshrc.d/.histfile
-HISTSIZE=5000
-SAVEHIST=5000
-## emacs like keybinds
-bindkey -e
-
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-## Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
-else
-  export EDITOR='nvim'
-fi
-export SUDO_EDITOR='vim'
-
-## fix zsh completion duplicates commands
-# https://github.com/spaceship-prompt/spaceship-prompt/issues/726
 {{ if eq .chezmoi.os "linux" }}
 {{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 # wsl

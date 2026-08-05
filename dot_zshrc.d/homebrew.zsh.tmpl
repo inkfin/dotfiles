@@ -7,13 +7,14 @@
 #   homebrew initialization
 # ======================================
 
-# remember to put brew in the PATH
-# "eval $(/path/to/brew shellenv)" >> ~/.zprofile
+# This file is loaded by the create_ ~/.zprofile, so Homebrew's environment
+# is available to login shells and inherited by interactive child shells.
 
-# disable auto update
+# Homebrew will not perform its own update during shell startup.
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 if is_command brew && [[ -z "${__ZSH_HOMEBREW_INIT:-}" ]]; then
+  # brew shellenv prints export statements for HOMEBREW_PREFIX, PATH, etc.
   if eval "$(brew shellenv)"; then
     __ZSH_HOMEBREW_INIT=1
   fi

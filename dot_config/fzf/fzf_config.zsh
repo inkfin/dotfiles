@@ -5,18 +5,24 @@
 # /_/      /____/_/       
 #                         
 
-# fzf user config
+# fzf user config. This file is loaded only in interactive zsh shells.
+
+# fd searches paths; rg searches file contents. Use fd for fzf's file list.
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
 
 # Options to fzf command
 export FZF_COMPLETION_OPTS='--border --info=inline'
 
 
-# Dir completion, type **<TAB> to trigger (fullscreen)
+# General fzf completion options. Type **<TAB> after a path to use them.
 export FZF_DEFAULT_OPTS='--no-height --no-reverse'
 
 
-# Dir completion
-# Preview file content using bat (https://github.com/sharkdp/bat)
+# Ctrl-T: fzf's standard file picker, including hidden files.
+# bat provides the preview (https://github.com/sharkdp/bat).
 export FZF_CTRL_T_OPTS="
   --reverse
   --preview 'bat -n --color=always {}'
@@ -25,8 +31,7 @@ export FZF_CTRL_T_OPTS="
   --select-1 --exit-0"
 
 
-# Search history
-# CTRL-/ to toggle small preview window to see the full command
+# Ctrl-R: fzf's history picker. Ctrl-/ toggles the preview.
 export FZF_CTRL_R_OPTS="
   --reverse
   --preview 'echo {}' --preview-window up:3:hidden:wrap
@@ -34,9 +39,23 @@ export FZF_CTRL_R_OPTS="
   --color header:italic
   --header 'Press CTRL-/ to toggle preview'"
 
+# Ctrl-F: file picker excluding hidden files. The selected path is inserted
+# at the current cursor position instead of executing anything.
+_fzf_file_no_hidden() {
+  local result
+  result="$(fd --type f --follow --exclude .git 2>/dev/null | fzf \
+    --preview 'bat -n --color=always {}' \
+    --preview-window=right:60%:wrap)" || return
+  LBUFFER+="$result"
+  zle redisplay
+}
+if command -v fd >/dev/null 2>&1; then
+  zle -N _fzf_file_no_hidden
+  bindkey '^F' _fzf_file_no_hidden
+fi
 
-# Cd dir completion
-# Print tree structure in the preview window
+
+# Alt-C: directory picker. tree is only used for the preview.
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head --200'
   --reverse
   --select-1 --exit-0"
@@ -45,18 +64,17 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {} | head --200'
 # fzf-tmux settings
 export FZF_TMUX_OPTS='-p80%,60%'
 
-# Use fd (https://github.com/sharkdp/fd) instead of the default find
-# command for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
-_fzf_compgen_path() {
-  fd --type f --hidden --follow --exclude ".git" . "$1"
-}
+if command -v fd >/dev/null 2>&1; then
+  # Use fd instead of find for fzf path completion. The first argument is the
+  # directory where completion starts. Without fd, fzf keeps its own default.
+  _fzf_compgen_path() {
+    fd --type f --hidden --follow --exclude ".git" . "$1"
+  }
 
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type d --hidden --follow --exclude ".git" . "$1"
-}
+  _fzf_compgen_dir() {
+    fd --type d --hidden --follow --exclude ".git" . "$1"
+  }
+fi
 
 # Advanced customization of fzf options via _fzf_comprun function
 # - The first argument to the function is the name of the command.

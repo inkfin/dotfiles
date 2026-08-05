@@ -1,0 +1,50 @@
+# vim: ft=zsh:
+# ~/.zshrc is read by interactive shells only.
+# Startup order: helper functions, OMZ, completion fallback, then modules.
+
+setopt AUTOCD NOBEEP NUMERIC_GLOB_SORT
+setopt APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
+setopt HIST_EXPIRE_DUPS_FIRST HIST_FIND_NO_DUPS
+HISTSIZE=100000
+SAVEHIST=100000
+bindkey -e
+
+source_if_readable() { [[ -r "$1" ]] && source "$1"; }
+source_once_if_readable() {
+  local file="$1" guard="__source_once_${1//[^A-Za-z0-9_]/_}"
+  [[ -n "${(P)guard}" || ! -r "$file" ]] && return 0
+  typeset -g "$guard=1"
+  source "$file"
+}
+
+source_if_readable "$ZSHCONF_HOME/helper.zsh"
+source_if_readable "$ZSHCONF_HOME/omz.zsh"  # OMZ and its built-in plugins
+
+# OMZ may set its own default. Keep the historical history file for existing
+# machines and avoid splitting history across two files.
+export HISTFILE="$ZSHCONF_HOME/.histfile"
+
+# OMZ normally runs compinit itself. If installation is unavailable, this
+# fallback still gives the shell ordinary zsh completion.
+if (( ! $+functions[_main_complete] )); then
+    autoload -Uz compinit
+    mkdir -p "$XDG_CACHE_HOME/zsh"
+    compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+fi
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+source_if_readable "$ZSHCONF_HOME/plugins.zsh"
+source_if_readable "$ZSHCONF_HOME/custom.zsh"
+source_if_readable "$ZSHCONF_HOME/dev.zsh"
+source_if_readable "$ZSHCONF_HOME/local.zsh"
+
+{{ if eq .chezmoi.os "darwin" -}}
+export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+export HOME_LANG="zh-CN"
+export TARGET_LANG="zh-CN"
+source_if_readable "$HOME/.iterm2_shell_integration.zsh"
+alias pac="brew"
+alias typora='open -a Typora.app'
+alias sublime='open -a Sublime\ Text.app'
+{{- end }}

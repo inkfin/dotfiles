@@ -83,7 +83,7 @@ export_if_undefined EMSDK_HOME "$HOME/dev/emsdk"
 export EMSDK_QUIET=1
 if source_once_if_readable "$EMSDK_HOME/emsdk_env.sh"; then
     # Keep the repo root out of PATH; it contains a docker/ directory that
-    # shadows the real Docker CLI and breaks OMZ's docker plugin startup.
+    # shadows the real Docker CLI and breaks Docker command lookup.
     remove_from_path PATH "$EMSDK_HOME"
     alias emsdk="$EMSDK_HOME/emsdk"
 fi

@@ -166,7 +166,7 @@ alias matrix "cmatrix -sna"
 
 alias vimrc "nvim ~/.local/share/chezmoi/dot_config/nvim.lazyvim/init.lua"
 alias vimfish "vim ~/.local/share/chezmoi/dot_config/fish/config.fish"
-alias vimzsh "vim ~/.local/share/chezmoi/.zshrc_darwin"
+alias vimzsh "vim ~/.local/share/chezmoi/dot_zshrc.d/zshrc.tmpl"
 alias sourcefish "source ~/.config/fish/config.fish"
 
 alias cz chezmoi
