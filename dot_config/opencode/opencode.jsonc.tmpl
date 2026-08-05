@@ -1,0 +1,775 @@
+// vim: ft=jsonc:
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "*": "allow",
+  },
+  "provider": {
+    // {{- if eq .profile "work" }}
+    "venus": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://v2.open.venus.oa.com/llmproxy",
+      },
+      "models": {
+
+        // ════════════════════════════════════════════════════════════════════
+        // Venus 模型维护规范（每次更新前请先读这里，避免重复交代）
+        // ────────────────────────────────────────────────────────────────────
+        // 1. 数据源：~/downloads/venus.json（Venus API 模型列表）
+        // 2. 筛选口径【能力 ≥ GLM-5.2】——只保留通用对话/编程模型：
+        //    · supportTool == true（agent 必须能调用工具）
+        //    · 非专用模型：剔除 OCR / 知识问答 / 视频理解 / 图像生成 / Omni
+        //    · 非已下线模型：modelAlias 含「下线」字样的剔除
+        //    · 非旧代模型：剔除 GPT-4o/o1/o3/4.1、Claude 4.5、DeepSeek V3/R1、
+        //      Qwen3 小模型（32B/30B/235B/VL/Omni）、Gemma、GLM-4.x 等
+        // 3. 字段规范（一律取自 venus.json，勿手填）：
+        //    · key 与 "name"（显示名）= API 的 model 字段原样
+        //    · limit.context = apiMeta.context_window（无则 contextWindow）
+        //    · limit.output  = apiMeta.max_output_tokens（无则 maxToken）
+        //    · tool_call     = supportTool
+        //    · attachment    = supportMultimodalTypes 非空（支持图片输入）
+        // 4. 价格：联网搜索公开价，单位 $/1M tokens（input/output/cache_read[/cache_write]）。
+        //    来源：官方定价页 / LiteLLM model_prices_and_context_window.json。
+        // 5. 分组注释尽量多：每族注明厂商、定位、价格出处与注意事项。
+        // ════════════════════════════════════════════════════════════════════
+
+        // ── claude ── Claude（Anthropic）— 官方公开价
+
+        // Claude-Opus-4-6｜Anthropic Claude Opus 4.6。默认最大上下文长度200k
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+          },
+          "limit": { "context": 1000000, "output": 128000 },
+        },
+
+        // Claude-Opus-4-7｜Anthropic Claude Opus 4.7。默认最大上下文长度 1M
+        "claude-opus-4-7": {
+          "name": "claude-opus-4-7",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+          },
+          "limit": { "context": 1000000, "output": 128000 },
+        },
+
+        // Claude-Opus-4-8｜当前代旗舰之一，默认 effort=high｜Anthropic Claude Opus 4.8。默认最大上下文长度 1M
+        "claude-opus-4-8": {
+          "name": "claude-opus-4-8",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+          },
+          "limit": { "context": 1048576, "output": 128000 },
+        },
+
+        // Claude-Opus-5｜最新代旗舰，官方推荐 agentic coding 首选｜Anthropic Claude Opus 5。默认最大上下文长度 1M
+        "claude-opus-5": {
+          "name": "claude-opus-5",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+          },
+          "limit": { "context": 1048576, "output": 128000 },
+        },
+
+        // Claude-Sonnet-4-6｜含高/满思考预算 variant｜Anthropic Claude Sonnet 4.6。默认最大上下文长度200k
+        "claude-sonnet-4-6": {
+          "name": "claude-sonnet-4-6",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75,
+          },
+          "limit": { "context": 200000, "output": 64000 },
+          "variants": {
+            "high": {"thinking": {"type": "enabled", "budgetTokens": 16000}},
+            "max": {"thinking": {"type": "enabled", "budgetTokens": 32000}},
+          },
+        },
+
+        // Claude-Sonnet-5｜介绍价 $2/$10 至 2026-08-31，之后恢复 $3/$15；默认 effort=high｜Anthropic Claude Sonnet 5。默认最大上下文长度 1M
+        "claude-sonnet-5": {
+          "name": "claude-sonnet-5",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.2,
+            "cache_write": 2.5,
+          },
+          "limit": { "context": 1048576, "output": 128000 },
+        },
+
+
+        // ── gemini ── Gemini（Google）— 官方公开价
+
+        // Gemini 2.5 Pro｜Gemini 2.5 Pro正式版，Gemini 2.5 是一个思考型模型，旨在解决日益复杂的问题。在常见基准测试中以显著优势领先，并展示了强大的推理和代码能力。 Gemini 2.5系列模型都是思考型模型，能够在回应前通过思考进行推理，从而带来增强的性能和提高的准确性。
+        "gemini-2.5-pro": {
+          "name": "gemini-2.5-pro",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 1.25,
+            "output": 10,
+          },
+          "limit": { "context": 1048576, "output": 1048576 },
+        },
+
+        // Gemini 2.5 Flash｜Google当前性价比、速度最优的推理模型，上下文1M长度
+        "gemini-2.5-flash": {
+          "name": "gemini-2.5-flash",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.3,
+            "output": 2.5,
+          },
+          "limit": { "context": 1048576, "output": 1048576 },
+        },
+
+        // Gemini 2.5 Flash Lite｜Gemini 2.5 Flash-Lite: 1M上下文, 最大64K输出
+        "gemini-2.5-flash-lite": {
+          "name": "gemini-2.5-flash-lite",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.4,
+          },
+          "limit": { "context": 102400, "output": 102400 },
+        },
+
+        // Gemini 3 Flash (预览版)｜预览版，$0.5/$3（与 2.5-flash 同档提价前预览价）｜Gemini 3 Flash 在延迟、效率和成本方面有优势。能够以高性价比的推理能力处理日常任务
+        "gemini-3-flash": {
+          "name": "gemini-3-flash",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.5,
+            "output": 3,
+          },
+          "limit": { "context": 1000000, "output": 65536 },
+        },
+
+        // Gemini 3.1 Pro (预览版)｜预览版，agentic 任务定位｜Gemini 3.1 Pro 是 Google 推出的新一代高性能大语言模型，专为应对复杂的智能体（Agentic）任务场景而设计，在编程能力、推理性能及多模态理解方面均达到业界领先水平。
+        "gemini-3.1-pro": {
+          "name": "gemini-3.1-pro",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 2,
+            "output": 12,
+          },
+          "limit": { "context": 1048576, "output": 65536 },
+        },
+
+        // Gemini 3.1 Flash Lite (预览版)｜最大上下文长度：1024K，最大输出长度64K。Gemini 3.1 Flash-Lite 是 Google 旗下成本效率最高的 Gemini 模型，针对高并发、低延迟及对成本敏感的 LLM 调用场景进行了优化。据称，该模型相比 Gemini 2.0/2.5 Flash-Lite 在质量上有显著提升…
+        "gemini-3.1-flash-lite": {
+          "name": "gemini-3.1-flash-lite",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.25,
+            "output": 1.5,
+          },
+          "limit": { "context": 1024000, "output": 64000 },
+        },
+
+        // Gemini 3.5 Flash｜接近 Pro 性能的主力｜Gemini 3.5 Flash 旨在以卓越的速度和成本效益提供强大的智能体能力（接近Pro级别的性能）。Gemini 3 模型是思维型模型，能够在响应前进行推理思考，从而实现更强的性能和更高的准确度。最大上下文长度1M，最大输出长度65000
+        "gemini-3.5-flash": {
+          "name": "gemini-3.5-flash",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 1.5,
+            "output": 9,
+          },
+          "limit": { "context": 1000000, "output": 65000 },
+        },
+
+        // Gemini 3.5 Flash Lite｜Gemini 3.5 Flash Lite, 1M 上下文长度, 64K 最大输出
+        "gemini-3.5-flash-lite": {
+          "name": "gemini-3.5-flash-lite",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.3,
+            "output": 2.5,
+          },
+          "limit": { "context": 1000000, "output": 65000 },
+        },
+
+        // Gemini 3.6 Flash｜3.6 系列，输出价略降｜Gemini 3.6 Flash, 1M 上下文长度, 64K 最大输出
+        "gemini-3.6-flash": {
+          "name": "gemini-3.6-flash",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 1.5,
+            "output": 7.5,
+          },
+          "limit": { "context": 1000000, "output": 65000 },
+        },
+
+
+        // ── gpt ── GPT（OpenAI）— 官方公开价
+
+        // GPT 5｜GPT-5, 265k 上下文长度, 128k 最大输出
+        "gpt-5": {
+          "name": "gpt-5",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 1.25,
+            "output": 10,
+          },
+          "limit": { "context": 272000, "output": 272000 },
+        },
+
+        // GPT 5.1｜GPT-5.1, 400k 上下文长度, 128k 最大输出. GPT‑5.1 在 GPT‑5 的基础上进行了改进，使交互过程更加可靠、灵活且易于使用。该版本重点在于提供更清晰的回答、更好的适应性，以及在多样化任务中的更强可控性。主要特点包括： 更高的一致性：在遵循用户指令方面，能够生成更可预期且更准确的输出。 自适应推理能力：在处理复杂问题时表现出更深入的推理能力…
+        "gpt-5.1": {
+          "name": "gpt-5.1",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 1.25,
+            "output": 10,
+          },
+          "limit": { "context": 400000, "output": 128000 },
+        },
+
+        // GPT 5.2｜GPT-5.2, 400k 上下文长度, 128k 最大输出.
+        "gpt-5.2": {
+          "name": "gpt-5.2",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 1.75,
+            "output": 14,
+          },
+          "limit": { "context": 400000, "output": 128000 },
+        },
+
+        // GPT 5.4｜GPT-5.4, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.4": {
+          "name": "gpt-5.4",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 2.5,
+            "output": 15,
+          },
+          "limit": { "context": 1000000, "output": 128000 },
+        },
+
+        // GPT 5.4 Mini｜GPT-5.4 Mini, 400K 上下文长度, 128k 最大输出.
+        "gpt-5.4-mini": {
+          "name": "gpt-5.4-mini",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.75,
+            "output": 4.5,
+          },
+          "limit": { "context": 400000, "output": 128000 },
+        },
+
+        // GPT 5.4 Nano｜低成本高吞吐档｜GPT-5.4 Nano, 400K 上下文长度, 128k 最大输出.
+        "gpt-5.4-nano": {
+          "name": "gpt-5.4-nano",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.2,
+            "output": 1.25,
+          },
+          "limit": { "context": 400000, "output": 128000 },
+        },
+
+        // GPT 5.5｜GPT-5.5, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.5": {
+          "name": "gpt-5.5",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 30,
+          },
+          "limit": { "context": 1000000, "output": 128000 },
+        },
+
+        // GPT-5.6 Sol｜5.6 系列最强｜GPT-5.6-Sol, 5.6 系列最强模型, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.6-sol": {
+          "name": "gpt-5.6-sol",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 30,
+          },
+          "limit": { "context": 1050000, "output": 128000 },
+        },
+
+        // GPT-5.6 Terra｜5.6 系列中等｜GPT-5.6-Terra, 5.6 系列中等模型, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.6-terra": {
+          "name": "gpt-5.6-terra",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 2,
+            "output": 12,
+          },
+          "limit": { "context": 1050000, "output": 128000 },
+        },
+
+        // GPT-5.6 Luna｜5.6 系列最便宜｜GPT-5.6-Luna, 5.6 系列最小模型, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.6-luna": {
+          "name": "gpt-5.6-luna",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.2,
+            "output": 1.2,
+          },
+          "limit": { "context": 1050000, "output": 128000 },
+        },
+
+
+        // ── deepseek ── DeepSeek — 官方公开价（-external/-official 为外部直连，-overseas 海外云 2x）
+
+        // DeepSeek-V4-Pro｜平台私有化部署，按 DeepSeek 官方价计费；thinking 默认开｜Venus私有化部署的DeepSeek-V4-Pro模型，平台支持上下文长度128K
+        "deepseek-v4-pro": {
+          "name": "deepseek-v4-pro",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.435,
+            "output": 0.87,
+            "cache_read": 0.003625,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+        },
+
+        // DeepSeek-V4-Flash｜平台私有化部署，按官方价；本会话所用模型｜Venus私有化部署的DeepSeek-V4-Flash-0731模型，平台支持上下文长度128K
+        "deepseek-v4-flash": {
+          "name": "deepseek-v4-flash",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.14,
+            "output": 0.28,
+            "cache_read": 0.0028,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+        },
+
+        // DeepSeek-V4-Pro（外部）｜DeepSeek V4 Pro,直连外部服务商版本,M 上下文, 384K 最大输出
+        "deepseek-v4-pro-external": {
+          "name": "deepseek-v4-pro-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.435,
+            "output": 0.87,
+            "cache_read": 0.003625,
+          },
+          "limit": { "context": 1048576, "output": 393216 },
+        },
+
+        // DeepSeek-V4-Flash（外部）｜DeepSeek V4 Flash,直连外部服务商版本,1M 上下文, 384K 最大输出
+        "deepseek-v4-flash-external": {
+          "name": "deepseek-v4-flash-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.14,
+            "output": 0.28,
+            "cache_read": 0.0028,
+          },
+          "limit": { "context": 1048576, "output": 393216 },
+        },
+
+        // DeepSeek-V4-Pro（海外云部署）｜海外云部署，按 list price 2x 估算｜Venus私有化海外云部署的DeepSeek-V4-Pro模型，平台支持上下文长度512K
+        "deepseek-v4-pro-overseas": {
+          "name": "deepseek-v4-pro-overseas",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 1.74,
+            "output": 3.48,
+            "cache_read": 0.0145,
+          },
+          "limit": { "context": 512000, "output": 512000 },
+        },
+
+        // DeepSeek-V4-Pro（官方API）｜DeepSeek官方API，1M 上下文，384K 最大输出
+        "deepseek-v4-pro-official": {
+          "name": "deepseek-v4-pro-official",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.435,
+            "output": 0.87,
+            "cache_read": 0.003625,
+          },
+          "limit": { "context": 1048576, "output": 393216 },
+        },
+
+        // DeepSeek-V4-Flash（官方API）｜DeepSeek官方API，1M 上下文, 384K 最大输出
+        "deepseek-v4-flash-official": {
+          "name": "deepseek-v4-flash-official",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.14,
+            "output": 0.28,
+            "cache_read": 0.0028,
+          },
+          "limit": { "context": 1048576, "output": 393216 },
+        },
+
+
+        // ── kimi ── Kimi（Moonshot）— 官方公开价（K3 为估算）
+
+        // Kimi-K3 (Kimi 官网)｜K3 无公开价，暂按 $3/$15 估算｜Kimi 官方的Kimi-K3模型，1M 上下文长度
+        "kimi-k3-external": {
+          "name": "kimi-k3-external",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+          },
+          "limit": { "context": 1050000, "output": 128000 },
+        },
+
+        // Kimi-K3（海外云部署）｜海外云部署，暂按 kimi-k3-external 价估算｜Venus私有化海外云部署的Kimi-K3模型，平台支持上下文长度500K
+        "kimi-k3-overseas": {
+          "name": "kimi-k3-overseas",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+          },
+          "limit": { "context": 500000, "output": 500000 },
+        },
+
+        // Kimi-K2.7-Code｜Venus私有化部署的Kimi-K2.7-code模型，平台支持上下文长度128K
+        "kimi-k2.7-code": {
+          "name": "kimi-k2.7-code",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.95,
+            "output": 4,
+            "cache_read": 0.19,
+          },
+          "limit": { "context": 256000, "output": 256000 },
+          "variants": {
+            "instant": {"thinking": {"type": "disabled"}},
+            "high": {"thinking": {"type": "enabled"}},
+          },
+        },
+
+        // Kimi-K2.7-Code (Kimi 官网)｜Kimi 官方的Kimi-K2.7-Code模型，上下文长度256K，无法关闭开启思考
+        "kimi-k2.7-code-external": {
+          "name": "kimi-k2.7-code-external",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.95,
+            "output": 4,
+            "cache_read": 0.19,
+          },
+          "limit": { "context": 262144, "output": 32768 },
+        },
+
+        // Kimi-K2.6｜Venus私有化部署的Kimi-K2.6模型，平台支持上下文长度128K
+        "kimi-k2.6": {
+          "name": "kimi-k2.6",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.95,
+            "output": 4,
+            "cache_read": 0.16,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+          "variants": {
+            "instant": {"thinking": {"type": "disabled"}},
+            "high": {"thinking": {"type": "enabled"}},
+          },
+        },
+
+        // Kimi-K2.6 (Kimi 官网)｜Kimi 官方的Kimi-K2.6模型，上下文长度256K
+        "kimi-k2.6-external": {
+          "name": "kimi-k2.6-external",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.95,
+            "output": 4,
+            "cache_read": 0.16,
+          },
+          "limit": { "context": 256000, "output": 256000 },
+        },
+
+        // Kimi-K2.5｜Venus私有化部署的Kimi-K2.5模型，平台支持上下文长度128K
+        "kimi-k2.5": {
+          "name": "kimi-k2.5",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.6,
+            "output": 3,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+        },
+
+        // Kimi-K2.5 (Kimi 官网)｜Kimi 官方的Kimi-K2.5模型，平台支持上下文长度64K
+        "kimi-k2.5-external": {
+          "name": "kimi-k2.5-external",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.6,
+            "output": 3,
+          },
+          "limit": { "context": 262144, "output": 16000 },
+        },
+
+
+        // ── glm ── GLM（Z.ai）— 官方公开价
+
+        // GLM-5 (GLM 官网)｜GLM-5 平台版 8/10 下线，external 通道暂留｜智谱 官方的GLM-5模型，上下文长度200K
+        "glm-5-external": {
+          "name": "glm-5-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 1,
+            "output": 3.2,
+          },
+          "limit": { "context": 200000, "output": 128000 },
+        },
+
+        // GLM-5.1｜平台版｜智谱科技推出的全新的GLM-5.1模型，上下文长度128K
+        "glm-5.1": {
+          "name": "glm-5.1",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+          "variants": {
+            "fast": {"thinking": {"type": "disabled"}},
+            "high": {"thinking": {"type": "enabled"}},
+          },
+        },
+
+        // GLM-5.1 (Token Hub)｜智谱 官方的GLM-5.1模型，上下文长度200K
+        "glm-5.1-external": {
+          "name": "glm-5.1-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+          },
+          "limit": { "context": 200000, "output": 128000 },
+        },
+
+        // GLM-5.2｜智谱科技推出的全新的GLM-5.2模型，上下文长度200K
+        "glm-5.2": {
+          "name": "glm-5.2",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+          },
+          "limit": { "context": 200000, "output": 200000 },
+          "variants": {
+            "fast": {"thinking": {"type": "disabled"}},
+            "high": {"thinking": {"type": "enabled"}},
+          },
+        },
+
+        // GLM-5.2 (外部)｜智谱 官方的GLM-5.2模型，上下文长度1M
+        "glm-5.2-external": {
+          "name": "glm-5.2-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+          },
+          "limit": { "context": 1048576, "output": 128000 },
+        },
+
+
+        // ── qwen ── Qwen（阿里）— DashScope 官方价
+
+        // Qwen3.7-Plus（外部）｜Qwen3.7-Plus，上下文长度1M
+        "qwen3.7-plus-external": {
+          "name": "qwen3.7-plus-external",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.4,
+            "output": 1.6,
+            "cache_read": 0.04,
+          },
+          "limit": { "context": 1048576, "output": 512000 },
+        },
+
+
+        // ── minimax ── MiniMax — 官方公开价
+
+        // MiniMax-M3（外部）｜≤512K 档公开价｜MiniMax公司推出的MiniMax-M3模型，上下文长度1M
+        "minimax-m3-external": {
+          "name": "minimax-m3-external",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.06,
+          },
+          "limit": { "context": 1048576, "output": 512000 },
+        },
+
+        // MiniMax-M2.7｜MiniMax公司推出的全新的MiniMax-M2.7模型，上下文长度128K
+        "minimax-m2.7": {
+          "name": "minimax-m2.7",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.3,
+            "output": 1.2,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+        },
+
+        // MiniMax-M2.7｜MiniMax公司推出的全新的MiniMax-M2.7模型，上下文长度128K
+        "minimax-m2.7-external": {
+          "name": "minimax-m2.7-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.3,
+            "output": 1.2,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+        },
+
+
+        // ── hy3 ── Hy3（公司内部模型）
+
+        // Hy3｜公司内部私有化部署，免费｜Venus 平台私有化部署的Hy3，平台支持最大上下文长度128K。
+        "hy3": {
+          "name": "hy3",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cache_read": 0,
+          },
+          "limit": { "context": 128000, "output": 128000 },
+          "variants": {
+            "low": {"thinking": {"type": "enabled"}, "reasoning_effort": "low"},
+            "high": {"thinking": {"type": "enabled"}, "reasoning_effort": "high"},
+          },
+        },
+
+        // Hy3 (TokenHub)｜外部 TokenHub 收费（¥1/¥4 ≈ $0.14/$0.56）｜Hy3，192K 上下文长度，128k 最大输出
+        "hy3-external": {
+          "name": "hy3-external",
+          "reasoning": true,
+          "tool_call": true,
+          "cost": {
+            "input": 0.14,
+            "output": 0.56,
+            "cache_read": 0.035,
+          },
+          "limit": { "context": 196608, "output": 128000 },
+          "variants": {
+            "low": {"thinking": {"type": "enabled"}, "reasoning_effort": "low"},
+            "high": {"thinking": {"type": "enabled"}, "reasoning_effort": "high"},
+          },
+        },
+
+      },
+    },
+    // {{- end }}
+  },
+}
