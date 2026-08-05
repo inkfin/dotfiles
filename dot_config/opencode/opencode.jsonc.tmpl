@@ -3,6 +3,68 @@
   "$schema": "https://opencode.ai/config.json",
   "permission": {
     "*": "allow",
+
+    // ── 外部目录访问：工作区之外的路径必须先过 external_directory ──
+    // 规则解析：整个 permission 扁平化后「最后一个匹配的规则生效」，所以 *:ask 放最前，白名单放后覆盖。
+    // 注意：edit 权限匹配的是「相对工作区路径」，绝对路径规则写在那里无效；
+    //       系统维护路径的只读保护实际靠 OS 文件权限（root 所有），不在 opencode 层设 deny。
+    "external_directory": {
+      "*": "ask",                       // 白名单之外的外部路径 → 弹窗询问
+
+      // 常用配置/数据路径（全平台，可读写）
+      "~/.config/**": "allow",
+      "~/.local/**": "allow",
+      "~/downloads/**": "allow",
+      "~/.agents/**": "allow",
+      "~/.claude/**": "allow",
+      "~/.codex/**": "allow",
+      "~/.cursor/**": "allow",
+      "~/bin/**": "allow",
+      "~/scripts/**": "allow",
+
+      // {{- if eq .chezmoi.os "windows" }}
+      // Windows：%APPDATA% 与 Documents
+      "~/AppData/**": "allow",
+      "~/Documents/**": "allow",
+      // {{- else }}
+      // Unix：Linux 常用维护路径（可读，写受 OS 权限保护）
+      "/etc/**": "allow",
+      "/usr/**": "allow",
+      "/opt/**": "allow",
+      "/var/**": "allow",
+      "/run/**": "allow",
+      "/srv/**": "allow",
+      "/tmp/**": "allow",
+      "/mnt/**": "allow",
+      "/media/**": "allow",
+      "/bin/**": "allow",
+      "/sbin/**": "allow",
+      "/boot/**": "allow",
+      "/dev/**": "allow",
+      "/proc/**": "allow",
+      "/sys/**": "allow",
+      // {{- end }}
+    },
+
+    // ── 文件修改：配置路径显式允许（文档化意图）；系统路径不在此设 deny（绝对规则无效）──
+    "edit": {
+      "*": "allow",
+      "~/.config/**": "allow",
+      "~/.local/**": "allow",
+      "~/downloads/**": "allow",
+      "~/.agents/**": "allow",
+      "~/.claude/**": "allow",
+      "~/.codex/**": "allow",
+      "~/.cursor/**": "allow",
+      "~/bin/**": "allow",
+      "~/scripts/**": "allow",
+      // {{- if eq .chezmoi.os "windows" }}
+      "~/AppData/**": "allow",
+      "~/Documents/**": "allow",
+      // {{- else }}
+      "~/.local/share/chezmoi/**": "allow",
+      // {{- end }}
+    },
   },
   "provider": {
     // {{- if eq .profile "work" }}
