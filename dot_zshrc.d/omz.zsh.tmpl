@@ -12,13 +12,13 @@ plugins=(git tmux docker colored-man-pages zsh-autosuggestions zsh-syntax-highli
 # Run `omz-update` manually when you want to update OMZ and custom plugins.
 # `--ff-only` refuses to overwrite or merge local changes.
 omz-update() {
-    local repo status=0
+    local repo update_status=0
     for repo in "$ZSH" "$ZSH"/custom/plugins/*(N/); do
         [[ -d "$repo/.git" ]] || continue
         print "Updating ${repo:t}..."
-        command git -C "$repo" pull --ff-only || status=1
+        command git -C "$repo" pull --ff-only || update_status=1
     done
-    return $status
+    return $update_status
 }
 
 _omz_clone() {
