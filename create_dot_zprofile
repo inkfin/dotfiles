@@ -2,12 +2,9 @@
 # ~/.zprofile is read for login shells, before ~/.zshrc.
 # Put environment setup here, not interactive aliases or key bindings.
 
-# Existing machine locale and JetBrains Toolbox path.
+# Machine locale.
 export LANG="en_SG.UTF-8"
 export LC_ALL="en_SG.UTF-8"
-typeset -U path
-path+=("$HOME/Library/Application Support/JetBrains/Toolbox/scripts")
-export PATH
 
 # homebrew.zsh uses the shared PATH and helper functions. Keep the second
 # source conditional: without helper.zsh, homebrew.zsh cannot do useful work.
