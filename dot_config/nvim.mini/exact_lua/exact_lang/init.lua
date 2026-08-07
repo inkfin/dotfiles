@@ -25,6 +25,7 @@ local registry = {
     { key = "rust",   module = "lang.rust" },
     { key = "go",     module = "lang.go" },
     { key = "zig",    module = "lang.zig" },
+    { key = "odin",   module = "lang.odin" },
     { key = "latex",  module = "lang.latex" },
 }
 

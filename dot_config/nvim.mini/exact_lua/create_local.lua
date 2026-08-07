@@ -14,6 +14,7 @@ M.lang = {
     -- rust   = true,
     -- go     = true,
     -- zig    = true,
+    -- odin   = true,
     -- latex  = true,
     -- proto  = true,
 }
