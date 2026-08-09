@@ -47,6 +47,14 @@ export_if_undefined() {
 }
 
 
+# Detect whether we are running inside Windows Subsystem for Linux (WSL).
+# Returns 0 on WSL, 1 elsewhere, so the result is safe to use on any machine:
+#   if is_wsl; then ...; fi
+is_wsl() {
+  [[ $(uname -r 2>/dev/null) == *icrosoft* ]]
+}
+
+
 # ==== Path Operations ====
 # Generic helper to add/remove a token (path entry or flag) to/from a delimited variable.
 # Examples:

@@ -21,6 +21,10 @@ typeset -U path
 path=("$HOME/.local/bin" "$HOME/.local/scripts" /usr/local/bin $path)
 [[ -d /opt/homebrew/bin ]] && path=(/opt/homebrew/bin $path)
 [[ -d /home/linuxbrew/.linuxbrew/bin ]] && path=(/home/linuxbrew/.linuxbrew/bin $path)
+
+# WSL appends the entire Windows %PATH% (converted to /mnt/... paths). Every
+# such entry costs a slow 9p stat on command lookups, so drop them all.
+path=(${path:#/mnt/*})
 export PATH
 
 # Use the chezmoi-managed ~/.config/starship.toml by default.
