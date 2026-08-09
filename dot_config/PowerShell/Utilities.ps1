@@ -71,6 +71,36 @@ function cmc  { cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --preset $args }
 function cmcv { cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" -B $args }
 function cmb  { cmake --build $args }
 
+# proxy (mirrors zsh / nushell setproxy)
+function setproxy {
+    $env:HTTP_PROXY  = "http://127.0.0.1:7890"
+    $env:HTTPS_PROXY = "http://127.0.0.1:7890"
+    $env:ALL_PROXY   = "socks5://127.0.0.1:7890"
+    $env:http_proxy  = "http://127.0.0.1:7890"
+    $env:https_proxy = "http://127.0.0.1:7890"
+    $env:all_proxy   = "socks5://127.0.0.1:7890"
+    Write-Output "proxy on"
+}
+
+function unsetproxy {
+    Remove-Item Env:HTTP_PROXY, Env:HTTPS_PROXY, Env:ALL_PROXY, Env:http_proxy, Env:https_proxy, Env:all_proxy -ErrorAction SilentlyContinue
+    Write-Output "proxy off"
+}
+
+function setgitproxy {
+    git config --global https.proxy "http://127.0.0.1:7890"
+    git config --global http.proxy  "http://127.0.0.1:7890"
+    git config --global ssh.proxy   "socks5://127.0.0.1:7890"
+    Write-Output "git: proxy on"
+}
+
+function unsetgitproxy {
+    git config --global --unset https.proxy
+    git config --global --unset http.proxy
+    git config --global --unset ssh.proxy
+    Write-Output "git: proxy off"
+}
+
 function preview {
     param(
         [string]$filePath,

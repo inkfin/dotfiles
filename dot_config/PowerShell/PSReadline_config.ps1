@@ -128,14 +128,14 @@ Set-PSReadLineKeyHandler -Key F1 `
     }
 }
 
-# PSFzf integration
+# PSFzf integration (mirrors dot_config/fzf/fzf_config.zsh)
 
 # Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 
 # psfzf aliases
 # url: https://github.com/kelleyma49/PSFzf#helper-functions
-$env:PSFZF_EDITOR_OPTIONS="nvim"
+$env:PSFZF_EDITOR_OPTIONS = "nvim"
 Set-PSFzfOption -EnableAliasFuzzyEdit           # fe
 Set-PSFzfOption -EnableAliasFuzzyZLocation      # fz
 Set-PSFzfOption -EnableAliasFuzzyHistory        # fh
@@ -144,14 +144,64 @@ Set-PsFzfOption -EnableAliasFuzzyKillProcess    # fkill
 Set-PSFzfOption -EnableAliasFuzzySetLocation    # fd
 Set-PSFzfOption -EnableAliasFuzzyScoop          # fs
 
+# Use fd for fzf's file lists (mirror zsh FZF_DEFAULT_COMMAND)
+if (Get-Command fd -ErrorAction SilentlyContinue) {
+    Set-PSFzfOption -EnableFd
+    $env:FZF_CTRL_T_COMMAND = 'fd --type f --hidden --follow --exclude .git'
+}
+
+# Default fzf opts: tomasr/molokai colors (mirror zsh FZF_DEFAULT_OPTS)
+$env:FZF_DEFAULT_OPTS = '--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
+
+# Ctrl+t: fzf's standard file picker, including hidden files (mirror zsh FZF_CTRL_T_OPTS)
+$env:FZF_CTRL_T_OPTS = @"
+--reverse
+--preview 'bat -n --color=always {}'
+--bind 'ctrl-/:change-preview-window(down|hidden|)'
+--header 'Press CTRL-/ to toggle preview'
+--select-1 --exit-0
+"@
+
+# Ctrl+r: fzf's history picker. Ctrl-/ toggles the preview (mirror zsh FZF_CTRL_R_OPTS)
+$env:FZF_CTRL_R_OPTS = @"
+--reverse
+--preview 'echo {}' --preview-window up:3:hidden:wrap
+--bind 'ctrl-/:toggle-preview'
+--color header:italic
+--header 'Press CTRL-/ to toggle preview'
+"@
+
+# Alt+c: directory picker, cd into the selection (mirror zsh FZF_ALT_C_OPTS;
+# lsd --tree replaces tree, which is unavailable on Windows)
+$env:FZF_ALT_C_OPTS = "--preview 'lsd --tree {}'
+  --reverse
+  --select-1 --exit-0"
+
+# Ctrl+f: file picker excluding hidden files. The selected path is inserted
+# at the current cursor position (mirror zsh ^F `_fzf_file_no_hidden`).
+if (Get-Command fd -ErrorAction SilentlyContinue) {
+    Set-PSReadLineKeyHandler -Chord 'Ctrl+f' `
+        -BriefDescription FzfFileNoHidden `
+        -Description "Insert path of selected file, excluding hidden files" `
+        -ScriptBlock {
+        param($key, $arg)
+        $result = fd --type f --follow --exclude .git 2>$null |
+            Invoke-Fzf -Preview 'bat -n --color=always {}' -PreviewWindow 'right:60%:wrap'
+        if ($result) {
+            $result | ForEach-Object {
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($_)
+            }
+        }
+        [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+    }
+}
+
 # Press Ctrl+t to start PSFzf to select provider paths. PSFzf will parse the current token and use that as the starting path to search from. If current token is empty, or the token isn't a valid path, PSFzf will search below the current working directory.
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
 
 # Press Ctrl+r to start PSFzf to select a command in the command history saved by PSReadline. PSFzf will insert the command into the current line, but it will not execute the command.
 Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
 
-# Set-Location Based on Selected Directory (default chord: Alt+c)
-# example command - use $Location with a different command:
-$commandOverride = [ScriptBlock]{ param($Location) Write-Host $Location }
-# pass your override to PSFzf:
-Set-PsFzfOption -AltCCommand $commandOverride
+# Alt+c: cd into the selected directory. Passed explicitly so it overrides the
+# default PSReadLine CapitalizeWord binding.
+Set-PsFzfOption -PSReadlineChordSetLocation 'Alt+c'
