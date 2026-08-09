@@ -29,15 +29,22 @@ def cmd_list(_args: argparse.Namespace) -> int:
     state = registry.sync_state(registry.load_state(), tools)
     shown = [t for t in tools if engine.platform_available(t)]
     hidden = len(tools) - len(shown)
-    print(f"{'':4}{'tool':<20}{'method':<10}{'status':<12}version")
-    print("-" * 60)
+    print(f"{'':4}{'tool':<20}{'method':<10}{'status':<20}version")
+    print("-" * 64)
     for t in shown:
         entry = state["tools"].get(t.name, {})
-        installed, method, version = engine.probe(t, entry)
+        status, method, version = engine.probe(t, entry)
         enabled = entry.get("enabled", t.enabled)
         mark = "[x]" if enabled else "[ ]"
-        status = "installed" if installed else ("disabled" if not enabled else "missing")
-        print(f"{mark:<4}{t.name:<20}{(method or '-'):<10}{status:<12}{version or ''}")
+        if not enabled:
+            status_text = "disabled"
+        elif status == "installed":
+            status_text = "installed"
+        elif status == "external":
+            status_text = "installed (external)"
+        else:
+            status_text = "missing"
+        print(f"{mark:<4}{t.name:<20}{(method or '-'):<10}{status_text:<20}{version or ''}")
     if hidden:
         print(f"\n{hidden} tool(s) have no recipe on {engine.platform()} (hidden)")
     orphans = registry.orphans(state, tools)
@@ -50,20 +57,25 @@ def cmd_status(_args: argparse.Namespace) -> int:
     tools = registry.load_tools()
     state = registry.sync_state(registry.load_state(), tools)
     plat = engine.platform()
-    installed = enabled = missing = off = 0
+    installed = enabled = missing = off = external = 0
     for t in tools:
         entry = state["tools"].get(t.name, {})
-        is_installed, _, _ = engine.probe(t, entry)
+        status, _, _ = engine.probe(t, entry)
         is_enabled = entry.get("enabled", t.enabled)
-        installed += int(is_installed)
+        present = status in ("installed", "external")
+        installed += int(present)
+        external += int(status == "external")
         enabled += int(is_enabled)
-        if not is_enabled and not is_installed:
+        if not is_enabled and not present:
             off += 1
-        if is_enabled and not is_installed:
+        if is_enabled and not present:
             missing += 1
     print(f"platform: {plat}")
     print(f"tools in catalog: {len(tools)}")
-    print(f"enabled: {enabled}   installed: {installed}   missing (enabled): {missing}   disabled: {off}")
+    print(
+        f"enabled: {enabled}   installed: {installed} ({external} external)   "
+        f"missing (enabled): {missing}   disabled: {off}"
+    )
     orphans = registry.orphans(state, tools)
     if orphans:
         print(f"orphans: {', '.join(orphans)}")
@@ -74,7 +86,10 @@ def cmd_install(args: argparse.Namespace) -> int:
     tools = registry.load_tools()
     state = registry.sync_state(registry.load_state(), tools)
     if args.names == ["all"]:
-        targets = [t for t in tools if not state["tools"].get(t.name, {}).get("installed")]
+        targets = [
+            t for t in tools
+            if engine.probe(t, state["tools"].get(t.name, {}))[0] != "installed"
+        ]
         if not targets:
             print("apptools: everything already installed")
             return 0
@@ -97,7 +112,8 @@ def cmd_update(args: argparse.Namespace) -> int:
     by_name = {t.name: t for t in tools}
     if args.names == ["all"]:
         for t in tools:
-            if state["tools"].get(t.name, {}).get("installed"):
+            entry = state["tools"].get(t.name, {})
+            if engine.probe(t, entry)[0] != "missing":
                 engine.update(t, state, log=print)
         return 0
     for name in args.names:
@@ -134,11 +150,13 @@ def cmd_sync(_args: argparse.Namespace) -> int:
 def cmd_clean(args: argparse.Namespace) -> int:
     tools = registry.load_tools()
     state = registry.load_state()
-    targets = [
-        t.name
-        for t in tools
-        if state["tools"].get(t.name, {}).get("installed") and not state["tools"].get(t.name, {}).get("enabled", t.enabled)
-    ]
+    targets = []
+    for t in tools:
+        entry = state["tools"].get(t.name, {})
+        if entry.get("enabled", t.enabled):
+            continue
+        if engine.probe(t, entry)[0] == "installed" and entry.get("recipe_kind"):
+            targets.append(t.name)
     targets += registry.orphans(state, tools)
     if not targets:
         print("apptools: nothing to clean")
@@ -193,6 +211,18 @@ WHAT IT DOES
     enabled   = "manage this tool on this machine" (the ✓ / ✗ toggle)
     installed = whether the tool is present (detected live)
 
+  Status of a tool is detected live, not from the catalog method:
+    installed             = installed by apptools (~/.local shim/dir, or the
+                            configured scoop/brew install)
+    installed (external)  = the binary is on PATH but was NOT installed by
+                            apptools (e.g. via apt/pacman, or a manual path)
+    missing               = not found
+
+  sync (s) installs the apptools copy (into ~/.local) for any enabled tool
+  that isn't apptools-managed yet, including externally-present ones, so
+  ~/.local takes PATH precedence. clean (c) only ever removes what apptools
+  itself installed.
+
   Installed tools get shims in ~/.local/bin, which is prepended to PATH so
   they override system packages.
 
@@ -241,8 +271,8 @@ CONFIG EXAMPLE (~/.config/apptools/config.py)
   ]
   Methods (multiple install strategies per tool):
   Tool(name="neovim", methods={
-      "local": Method(sources={...archive into ~/.local/neovim, bin=...}),
-      "brew":  Method(sources={...Shell("brew install neovim", ...)}),
+      "download": Method(sources={...archive into ~/.local/neovim, bin=...}),
+      "brew":     Method(sources={...Shell("brew install neovim", ...)}),
   })
 
 ENV

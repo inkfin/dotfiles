@@ -37,7 +37,7 @@ def resolve(tool: Tool, method_name: Optional[str] = None) -> Tuple[str, Method,
     elif tool.default_method and tool.default_method in names:
         chosen = tool.default_method
     else:
-        chosen = "local" if "local" in names else names[0]
+        chosen = "download" if "download" in names else names[0]
     method = dict(avail)[chosen]
     return chosen, method, method.sources[plat]
 
@@ -65,6 +65,11 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
     log(f"apptools: install {tool.name} [{chosen}/{plat}]")
 
     if isinstance(recipe, Shell):
+        if not dry_run:
+            status, _, _ = probe(tool, entry)
+            if status == "installed":
+                log(f"apptools: {tool.name} is already installed, use `update`")
+                return
         cmd = recipe.install
         if dry_run:
             log(f"  (dry-run) {cmd}")
@@ -208,7 +213,8 @@ def uninstall(name: str, state: dict, tools: List[Tool], log: Callable[[str], No
 
 def update(tool: Tool, state: dict, log: Callable[[str], None] = print) -> None:
     entry = state["tools"].get(tool.name, {})
-    if not entry.get("installed"):
+    status, _, _ = probe(tool, entry)
+    if status == "missing":
         log(f"apptools: {tool.name} is not installed, run install first")
         return
     plat = platform()
@@ -247,8 +253,8 @@ def apply_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = p
         entry = state["tools"].get(tool.name, {})
         if not entry.get("enabled", tool.enabled):
             continue
-        installed, _, _ = probe(tool, entry)
-        if not installed:
+        status, _, _ = probe(tool, entry)
+        if status != "installed":
             install(tool, state, log=log)
 
 
@@ -259,36 +265,54 @@ def sync_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = pr
         entry = state["tools"].get(tool.name, {})
         if not entry.get("enabled", tool.enabled):
             continue
-        installed, _, _ = probe(tool, entry)
-        if installed:
+        status, _, _ = probe(tool, entry)
+        if status == "installed":
             update(tool, state, log=log)
         else:
             install(tool, state, log=log)
 
 
-def _probe_recipe(tool: Tool, recipe: object, entry: dict) -> bool:
+def _probe_recipe(tool: Tool, recipe: object, entry: dict) -> str:
+    """Return "installed" (apptools-managed), "external" (on PATH only), or "missing"."""
     plat = platform()
     if entry.get("shims") and any(util.expand(s).exists() for s in entry["shims"]):
-        return True
+        return "installed"
     if entry.get("placed") and any(util.expand(p).exists() for p in entry["placed"]):
-        return True
+        return "installed"
     if isinstance(recipe, Shell):
-        return bool(recipe.check and util.which(recipe.check[0]))
+        return "installed" if (recipe.check and util.which(recipe.check[0])) else "missing"
     if isinstance(recipe, Git):
         d = util.expand(recipe.into or f"~/.local/{tool.name}")
-        return (d / ".git").exists()
+        if (d / ".git").exists():
+            return "installed"
+        return "external" if util.which(tool.name) else "missing"
     if getattr(recipe, "bin", None):
-        return shims.shim_exists_for(recipe.bin)
+        if shims.shim_exists_for(recipe.bin):
+            return "installed"
+        return "external" if util.which(Path(recipe.bin).name) else "missing"
     if isinstance(recipe, File):
         dest = _extract_into(tool, recipe, plat)
         name = recipe.name or util.basename_from_url(recipe.url)
-        return (dest / name).exists()
+        if (dest / name).exists():
+            return "installed"
+        return "external" if _which_any(name) else "missing"
     if isinstance(recipe, Archive) and recipe.pick:
         dest = _extract_into(tool, recipe, plat)
         pat = Path(recipe.pick).name
-        return dest.is_dir() and any(fnmatch.fnmatch(p.name, pat) for p in dest.iterdir() if p.is_file())
+        if dest.is_dir() and any(fnmatch.fnmatch(p.name, pat) for p in dest.iterdir() if p.is_file()):
+            return "installed"
+        return "external" if _which_any(pat) else "missing"
     d = _extract_into(tool, recipe, plat)
-    return d.is_dir() and any(d.iterdir())
+    if d.is_dir() and any(d.iterdir()):
+        return "installed"
+    return "external" if util.which(tool.name) else "missing"
+
+
+def _which_any(name: str) -> bool:
+    candidates = [name]
+    if name.lower().endswith(".exe"):
+        candidates.append(name[:-4])
+    return any(util.which(c) for c in candidates)
 
 
 def _recipe_version(tool: Tool, recipe: object) -> Optional[str]:
@@ -297,7 +321,12 @@ def _recipe_version(tool: Tool, recipe: object) -> Optional[str]:
             return util.version_of(recipe.check)
         return None
     if getattr(recipe, "bin", None):
-        return util.version_of([str(shims.resolve_bin(recipe.bin))])
+        binp = shims.resolve_bin(recipe.bin)
+        if not binp.exists():
+            alt = util.which(Path(recipe.bin).name)
+            if alt:
+                return util.version_of([alt])
+        return util.version_of([str(binp)])
     if isinstance(recipe, File):
         dest = _extract_into(tool, recipe, platform())
         name = recipe.name or util.basename_from_url(recipe.url)
@@ -305,19 +334,26 @@ def _recipe_version(tool: Tool, recipe: object) -> Optional[str]:
     return None
 
 
-def probe(tool: Tool, entry: dict) -> Tuple[bool, Optional[str], Optional[str]]:
+def probe(tool: Tool, entry: dict) -> Tuple[str, Optional[str], Optional[str]]:
+    """Return (status, method, version); status is installed/external/missing."""
     plat = platform()
     avail = available_methods(tool, plat)
     wanted = entry.get("method")
-    if entry.get("installed") and wanted:
+    if wanted:
         for name, method in avail:
             if name == wanted:
                 recipe = method.sources[plat]
-                if _probe_recipe(tool, recipe, entry):
-                    return True, name, entry.get("version") or _recipe_version(tool, recipe)
+                status = _probe_recipe(tool, recipe, entry)
+                if status != "missing":
+                    return status, name, entry.get("version") or _recipe_version(tool, recipe)
                 break
     for name, method in avail:
         recipe = method.sources[plat]
-        if _probe_recipe(tool, recipe, entry):
-            return True, name, _recipe_version(tool, recipe)
-    return bool(entry.get("installed")), entry.get("method"), entry.get("version")
+        status = _probe_recipe(tool, recipe, entry)
+        if status != "missing":
+            return status, name, _recipe_version(tool, recipe)
+    try:
+        chosen, _, _ = resolve(tool, entry.get("method"))
+    except AppError:
+        chosen = entry.get("method")
+    return "missing", chosen, None

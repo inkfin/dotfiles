@@ -9,23 +9,32 @@ from apptools import Archive, File, Git, Method, Shell, Tool
 
 
 def _shell(name, desc, group, pkg, check, windows=True, unix=True):
-    sources = {}
+    methods = {}
     if unix:
-        for plat in ("darwin", "linux"):
-            sources[plat] = Shell(
+        methods["brew"] = Method(sources={
+            "darwin": Shell(
                 f"brew install {pkg}",
                 uninstall=f"brew uninstall {pkg}",
                 update=f"brew upgrade {pkg}",
                 check=check,
-            )
+            ),
+            "linux": Shell(
+                f"brew install {pkg}",
+                uninstall=f"brew uninstall {pkg}",
+                update=f"brew upgrade {pkg}",
+                check=check,
+            ),
+        })
     if windows:
-        sources["windows"] = Shell(
-            f"scoop install {pkg}",
-            uninstall=f"scoop uninstall {pkg}",
-            update=f"scoop update {pkg}",
-            check=check,
-        )
-    return Tool(name=name, desc=desc, group=group, sources=sources)
+        methods["scoop"] = Method(sources={
+            "windows": Shell(
+                f"scoop install {pkg}",
+                uninstall=f"scoop uninstall {pkg}",
+                update=f"scoop update {pkg}",
+                check=check,
+            ),
+        })
+    return Tool(name=name, desc=desc, group=group, methods=methods)
 
 
 TOOLS = [
@@ -55,9 +64,9 @@ TOOLS = [
         name="neovim-nightly",
         desc="Neovim nightly editor (download to ~/.local or via brew)",
         group="editor",
-        default_method="local",
+        default_method="download",
         methods={
-            "local": Method(sources={
+            "download": Method(sources={
                 "windows": Archive(
                     "https://github.com/neovim/neovim/releases/download/nightly/nvim-win64.zip",
                     strip=1,

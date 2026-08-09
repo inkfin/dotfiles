@@ -26,6 +26,7 @@ C_DIM = "\x1b[2m"
 C_REV = "\x1b[7m"
 C_GREEN = "\x1b[32m"
 C_YELLOW = "\x1b[33m"
+C_CYAN = "\x1b[36m"
 C_GRAY = "\x1b[90m"
 
 _ALT_ON = "\x1b[?1049h"
@@ -381,8 +382,8 @@ class TUI:
             entry = self.state["tools"].get(t.name, {})
             if not entry.get("enabled", t.enabled):
                 continue
-            installed, _, _ = self._probe(t)
-            ops.append(("update" if installed else "install", t))
+            status, _, _ = self._probe(t)
+            ops.append(("update" if status == "installed" else "install", t))
         if not ops:
             self.log.append("nothing to sync — toggle tools with space/t, then sync")
             return
@@ -394,8 +395,8 @@ class TUI:
             entry = self.state["tools"].get(t.name, {})
             if entry.get("enabled", t.enabled):
                 continue
-            installed, _, _ = self._probe(t)
-            if installed:
+            status, _, _ = self._probe(t)
+            if status == "installed" and entry.get("recipe_kind"):
                 ops.append(("uninstall", t))
         if not ops:
             self.log.append("nothing to clean")
@@ -566,20 +567,22 @@ class TUI:
     # ---- rendering ---------------------------------------------------------
 
     def _list_lines(self, width: int) -> List[str]:
-        mark_w, method_w, status_w = 2, 8, 10
+        mark_w, method_w, status_w = 2, 8, 20
         name_w = max(6, width - mark_w - method_w - status_w - 2)
         out: List[str] = []
         for i, tool in enumerate(self.visible):
             entry = self.state["tools"].get(tool.name, {})
-            installed, method, _ = self._probe(tool)
+            status, method, _ = self._probe(tool)
             enabled = entry.get("enabled", tool.enabled)
             mark = (C_GREEN + "✓" + C_RESET) if enabled else (C_GRAY + "✗" + C_RESET)
             name = tool.name[:name_w]
             m = (method or "-")[:method_w]
             if not enabled:
                 st = C_GRAY + "disabled" + C_RESET
-            elif installed:
+            elif status == "installed":
                 st = C_GREEN + "installed" + C_RESET
+            elif status == "external":
+                st = C_CYAN + "installed (external)" + C_RESET
             else:
                 st = C_YELLOW + "missing" + C_RESET
             line = f"{mark:<{mark_w}}{name:<{name_w}} {m:<{method_w}} {st}"
@@ -595,7 +598,7 @@ class TUI:
         if tool is None:
             return []
         entry = self.state["tools"].get(tool.name, {})
-        installed, method, version = self._probe(tool)
+        status, method, version = self._probe(tool)
         chosen = self._chosen_method(tool, entry) or "-"
         plat = engine.platform()
         out = [tool.name, tool.desc, f"group: {tool.group}", ""]
@@ -608,9 +611,15 @@ class TUI:
                 out.append(f"  {marker} {mname}  {_recipe_summary(recipe)}")
         else:
             out.append("no recipe for this platform")
+        if status == "installed":
+            state_text = "installed (apptools)"
+        elif status == "external":
+            state_text = "installed (external — not managed by apptools)"
+        else:
+            state_text = "not installed"
         out += [
             "",
-            f"state: {'installed' if installed else 'not installed'} ({method or '-'})",
+            f"state: {state_text} ({method or '-'})",
             f"managed: {'yes' if entry.get('enabled', tool.enabled) else 'no'}  (space toggles)",
         ]
         if version:

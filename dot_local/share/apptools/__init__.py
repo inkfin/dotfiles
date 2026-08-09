@@ -93,8 +93,8 @@ class Tool:
 
     def __post_init__(self) -> None:
         if self.methods is None:
-            self.methods = {"local": Method(sources=self.sources or {})}
-            local = self.methods["local"]
+            self.methods = {"download": Method(sources=self.sources or {})}
+            local = self.methods["download"]
             for recipe in local.sources.values():
                 if isinstance(recipe, (Archive, File)):
                     if recipe.bin is None and self.bin:
