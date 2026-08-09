@@ -3,36 +3,66 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
-from typing import List
+from pathlib import Path
+from typing import List, Optional
 
 from . import AppError, __version__, engine, registry, shims, util
 
+_VENV_DIR = "~/.local/state/apptools/venv"
 
-def _bootstrap_textual() -> bool:
+
+def _venv_path() -> Path:
+    env = os.environ.get("APPPTOOLS_VENV")
+    return Path(env) if env else util.expand(_VENV_DIR)
+
+
+def _venv_python() -> Path:
+    if sys.platform.startswith("win"):
+        return _venv_path() / "Scripts" / "python.exe"
+    return _venv_path() / "bin" / "python"
+
+
+def _in_venv() -> bool:
     try:
-        import textual  # noqa: F401
-
-        return True
-    except ImportError:
-        pass
-    print("apptools: 'textual' is required for the TUI; installing it now...")
-    rc = util.run([sys.executable, "-m", "pip", "install", "--user", "textual"], log=print)
-    if rc.returncode != 0:
-        print("apptools: failed to install textual; use the CLI subcommands instead")
+        return os.path.abspath(sys.prefix) == os.path.abspath(str(_venv_path()))
+    except Exception:
         return False
-    return True
+
+
+def ensure_venv(log=print) -> str:
+    """Create the apptools venv (isolated from system packages) if missing."""
+    py = _venv_python()
+    if py.exists():
+        return str(py)
+    _venv_path().parent.mkdir(parents=True, exist_ok=True)
+    log("apptools: creating virtualenv for TUI dependencies...")
+    util.run([sys.executable, "-m", "venv", str(_venv_path())], log=log, check=True)
+    log("apptools: installing 'textual' into the virtualenv...")
+    util.run([str(py), "-m", "pip", "install", "textual"], log=log, check=True)
+    return str(py)
 
 
 def cmd_tui(_args: argparse.Namespace) -> int:
     tools = registry.load_tools()
     state = registry.sync_state(registry.load_state(), tools)
-    if not _bootstrap_textual():
+    if not _in_venv():
+        try:
+            venv_py = ensure_venv()
+        except AppError as e:
+            print(f"apptools: {e}")
+            print("hint: install a virtualenv first, e.g. `python -m venv <path>`")
+            return 1
+        if sys.executable != venv_py:
+            os.execv(venv_py, [venv_py, "-m", "apptools", "tui"])
+    try:
+        from . import tui
+    except ImportError:
+        print("apptools: 'textual' is missing in the apptools virtualenv.")
+        print(f"hint: remove {_venv_path()} and run `apptools` again")
         return 1
-    from . import tui
-
-    tui.run(tools, state)
-    return 0
+    return tui.run(tools, state)
 
 
 def cmd_list(_args: argparse.Namespace) -> int:
@@ -163,14 +193,17 @@ def cmd_clean(args: argparse.Namespace) -> int:
 
 def cmd_doctor(_args: argparse.Namespace) -> int:
     ok = True
-    print(f"python: {sys.version.split()[0]}")
-    try:
-        import textual
-
-        print(f"textual: {textual.__version__}")
-    except ImportError:
-        print("textual: MISSING (pip install --user textual for the TUI)")
-        ok = False
+    print(f"python: {sys.version.split()[0]} ({sys.executable})")
+    venv_py = _venv_python()
+    if venv_py.exists():
+        probe = util.run([str(venv_py), "-c", "import textual; print(textual.__version__)"], log=lambda _m: None)
+        if probe.returncode == 0:
+            print(f"venv: {_venv_path()} (textual {probe.stdout.strip()})")
+        else:
+            print(f"venv: {_venv_path()} (textual MISSING, reinstall by removing the venv)")
+            ok = False
+    else:
+        print(f"venv: {_venv_path()} (missing; created on first TUI run)")
     cfg = registry.config_path()
     print(f"config: {cfg} ({'OK' if cfg.exists() else 'MISSING'})")
     if cfg.exists():
@@ -192,7 +225,7 @@ def cmd_version(_args: argparse.Namespace) -> int:
     return 0
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     argv = list(sys.argv[1:]) if argv is None else list(argv)
     if not argv or argv[0] == "tui":
         return cmd_tui(argparse.Namespace())

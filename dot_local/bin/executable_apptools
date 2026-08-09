@@ -1,6 +1,4 @@
 #!/bin/sh
-PYTHONDONTWRITEBYTECODE=1
-export PYTHONDONTWRITEBYTECODE
 PYTHONPATH="$HOME/.local/share${PYTHONPATH:+:$PYTHONPATH}"
 export PYTHONPATH
 exec python3 -m apptools "$@"
