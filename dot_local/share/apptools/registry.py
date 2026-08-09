@@ -75,8 +75,9 @@ def load_state() -> dict:
 
 
 def save_state(state: dict) -> None:
-    state_dir().mkdir(parents=True, exist_ok=True)
-    state_path().write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    from . import util
+
+    util.write_text_retry(state_path(), json.dumps(state, indent=2, ensure_ascii=False) + "\n")
 
 
 def sync_state(state: dict, tools: List[Tool]) -> dict:

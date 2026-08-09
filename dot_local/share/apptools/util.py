@@ -41,11 +41,12 @@ def home() -> Path:
     return Path.home()
 
 
-def download(url: str, dest: Path, progress: Optional[Callable[[int, int], None]] = None, timeout: int = 60) -> Path:
+def download(url: str, dest: Path, progress: Optional[Callable[[int, int], None]] = None, timeout: int = 60, overall: float = 300.0) -> Path:
     dest = Path(dest)
     dest.parent.mkdir(parents=True, exist_ok=True)
     req = Request(url, headers={"User-Agent": USER_AGENT})
     tmp = dest.with_name(dest.name + ".part")
+    deadline = time.monotonic() + overall
     try:
         with urlopen(req, timeout=timeout) as resp:
             total = int(resp.headers.get("Content-Length") or 0)
@@ -53,6 +54,8 @@ def download(url: str, dest: Path, progress: Optional[Callable[[int, int], None]
             last = 0
             with open(tmp, "wb") as fh:
                 while True:
+                    if time.monotonic() > deadline:
+                        raise AppError(f"download timed out after {overall}s: {url}")
                     chunk = resp.read(_CHUNK)
                     if not chunk:
                         break
@@ -66,7 +69,7 @@ def download(url: str, dest: Path, progress: Optional[Callable[[int, int], None]
     except Exception as e:
         tmp.unlink(missing_ok=True)
         raise AppError(f"download failed: {url}: {e}") from e
-    os.replace(tmp, dest)
+    replace_retry(tmp, dest)
     return dest
 
 
@@ -167,12 +170,32 @@ def find_files(root: Path, pattern: str) -> List[Path]:
     return out
 
 
-def run(cmd: List[str], cwd: Optional[Path] = None, log: Callable[[str], None] = print, check: bool = False) -> subprocess.CompletedProcess:
+def run(
+    cmd: List[str],
+    cwd: Optional[Path] = None,
+    log: Callable[[str], None] = print,
+    check: bool = False,
+    timeout: Optional[float] = 1800.0,
+) -> subprocess.CompletedProcess:
+    """Run a command capturing output.
+
+    stdin is detached so interactive children (brew/sudo/installer prompts)
+    cannot block on the TUI's terminal. `timeout` guards against hangs.
+    """
     log(f"$ {' '.join(cmd)}")
     try:
-        proc = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True)
+        proc = subprocess.run(
+            cmd,
+            cwd=cwd,
+            text=True,
+            capture_output=True,
+            stdin=subprocess.DEVNULL,
+            timeout=timeout,
+        )
     except FileNotFoundError as e:
         raise AppError(f"command not found: {cmd[0]}") from e
+    except subprocess.TimeoutExpired as e:
+        raise AppError(f"command timed out after {timeout}s: {' '.join(cmd)}") from e
     if proc.stdout and proc.stdout.strip():
         for line in proc.stdout.rstrip().splitlines():
             log(line)
@@ -225,6 +248,37 @@ def rmtree_retry(path: Path, attempts: int = 4, delay: float = 0.3) -> None:
             last = e
             time.sleep(delay * (i + 1))
     raise AppError(f"cannot remove {path}: {last}")
+
+
+def replace_retry(src: Path, dest: Path, attempts: int = 6, delay: float = 0.3) -> None:
+    """os.replace with retries — Windows locks (AV scans, running exes) are transient."""
+    last: Optional[BaseException] = None
+    for i in range(attempts):
+        try:
+            os.replace(src, dest)
+            return
+        except (PermissionError, OSError) as e:
+            last = e
+            time.sleep(delay * (i + 1))
+    raise AppError(f"cannot replace {dest}: {last}")
+
+
+def write_text_retry(path: Path, text: str, attempts: int = 6, delay: float = 0.3) -> None:
+    """Atomic write of text via a temp file + replace, retrying on locks."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    last: Optional[BaseException] = None
+    for i in range(attempts):
+        try:
+            tmp.write_text(text, encoding="utf-8")
+            os.replace(tmp, path)
+            return
+        except (PermissionError, OSError) as e:
+            last = e
+            time.sleep(delay * (i + 1))
+    tmp.unlink(missing_ok=True)
+    raise AppError(f"cannot write {path}: {last}")
 
 
 def basename_from_url(url: str) -> str:

@@ -85,7 +85,7 @@ class Tool:
     desc: str = ""
     group: str = ""
     default_method: Optional[str] = None
-    enabled: bool = True
+    enabled: bool = False
     methods: Optional[Dict[str, Method]] = None
     sources: Optional[Dict[str, Recipe]] = None
     bin: Optional[str] = None

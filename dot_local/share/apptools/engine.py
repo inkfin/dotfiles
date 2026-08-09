@@ -21,6 +21,10 @@ def available_methods(tool: Tool, plat: str) -> List[Tuple[str, Method]]:
     return [(name, method) for name, method in tool.methods.items() if plat in method.sources]
 
 
+def platform_available(tool: Tool, plat: Optional[str] = None) -> bool:
+    return bool(available_methods(tool, plat or platform()))
+
+
 def resolve(tool: Tool, method_name: Optional[str] = None) -> Tuple[str, Method, object]:
     plat = platform()
     avail = available_methods(tool, plat)
@@ -238,19 +242,25 @@ def update(tool: Tool, state: dict, log: Callable[[str], None] = print) -> None:
 
 def apply_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = print) -> None:
     for tool in tools:
+        if not platform_available(tool):
+            continue
         entry = state["tools"].get(tool.name, {})
         if not entry.get("enabled", tool.enabled):
             continue
-        if not entry.get("installed"):
+        installed, _, _ = probe(tool, entry)
+        if not installed:
             install(tool, state, log=log)
 
 
 def sync_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = print) -> None:
     for tool in tools:
+        if not platform_available(tool):
+            continue
         entry = state["tools"].get(tool.name, {})
         if not entry.get("enabled", tool.enabled):
             continue
-        if entry.get("installed"):
+        installed, _, _ = probe(tool, entry)
+        if installed:
             update(tool, state, log=log)
         else:
             install(tool, state, log=log)
