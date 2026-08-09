@@ -166,10 +166,43 @@ var_token_remove() {
   return 0
 }
 
-# Thin wrappers for PATH-like variables
-append_to_path()   { var_token_add "$1" "$2" ":" append  "${3:-true}"; }
-prepend_to_path()  { var_token_add "$1" "$2" ":" prepend "${3:-true}"; }
-remove_from_path() { var_token_remove "$1" "$2" ":"      "${3:-true}"; }
+# PATH-like variables (colon-separated). PATH is special-cased to use zsh's
+# built-in `path` array binding so dedup and filtering stay array-native;
+# any other colon-separated variable falls back to the generic string logic.
+append_to_path()   { _path_op "$1" "$2" append  "${3:-true}"; }
+prepend_to_path()  { _path_op "$1" "$2" prepend "${3:-true}"; }
+remove_from_path() { _path_op "$1" "$2" remove "${3:-true}"; }
+
+_path_op() {
+  local var="$1" token="$2" mode="$3" silent="$4"
+  _valid_identifier "$var" || return 1
+  [[ -n "$token" ]] || return 0
+
+  # PATH is a tied array (typeset -T PATH path :). Work on the array so
+  # dedup / filtering stay array-native.
+  if [[ "$var" == "PATH" ]]; then
+    if [[ "$mode" == "remove" ]]; then
+      path=(${path:#$token})
+    else
+      path=(${(u)path})                      # dedup existing entries
+      if (( ${path[(Ie)$token]} )); then     # token already present
+        return 0
+      fi
+      if [[ "$mode" == "prepend" ]]; then
+        path=("$token" $path)
+      else
+        path+=("$token")
+      fi
+    fi
+    return 0
+  fi
+
+  # Generic colon-separated variables: string logic.
+  case "$mode" in
+    remove) var_token_remove "$var" "$token" ":" "$silent" ;;
+    *)      var_token_add    "$var" "$token" ":" "$mode"  "$silent" ;;
+  esac
+}
 
 # Thin wrapper for flag-like variables (space-separated)
 append_to_flag()   { var_token_add "$1" "$2" " " append  "${3:-true}"; }
