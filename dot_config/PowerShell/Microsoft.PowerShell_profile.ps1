@@ -58,6 +58,28 @@ function Append-UserPath([string]$Path) {
     [Environment]::SetEnvironmentVariable("Path", "$UserPath$sep$Path", "User")
 }
 
+function Prepend-UserPath([string]$Path) {
+    if ([string]::IsNullOrWhiteSpace($Path)) { return }
+    $sep = [IO.Path]::PathSeparator
+    foreach ($part in $env:PATH -split [regex]::Escape($sep)) {
+        if ($part -eq $Path) {
+            # Already on process PATH (usually inherited) — skip registry.
+            return
+        }
+    }
+    $env:PATH = "$Path$sep$env:PATH"
+
+    $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    foreach ($part in $UserPath -split [regex]::Escape($sep)) {
+        if ($part -eq $Path) { return }
+    }
+    if ([string]::IsNullOrEmpty($UserPath)) {
+        [Environment]::SetEnvironmentVariable("Path", $Path, "User")
+        return
+    }
+    [Environment]::SetEnvironmentVariable("Path", "$Path$sep$UserPath", "User")
+}
+
 # ENVs
 $env:OPENER = "Invoke-Item"
 $env:EDITOR = "nvim"
@@ -118,8 +140,8 @@ function rag {
     Remove-Item -Path $tmp
 }
 
-# local bin
-Append-UserPath("$HOME\.local\bin")
+# local bin (prepended so ~/.local tools override system packages)
+Prepend-UserPath("$HOME\.local\bin")
 Append-UserPath("$HOME\.local\neovim\bin")
 
 # Init-EnvironmentVariable COMSPEC "pwsh.exe"

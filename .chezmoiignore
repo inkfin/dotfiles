@@ -1,6 +1,9 @@
 README.md
 AGENTS.md
 
+__pycache__/
+*.pyc
+
 .config/nvim.old
 
 .config/nvim/symlink

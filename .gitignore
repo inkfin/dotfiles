@@ -3,3 +3,7 @@
 # AI local configs
 **/.claude/*.local.json
 .codex
+
+# Python
+__pycache__/
+*.pyc
