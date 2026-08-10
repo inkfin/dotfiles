@@ -19,7 +19,7 @@ from typing import Callable, List, Optional
 
 from . import AppError
 
-USER_AGENT = "apptools/0.1"
+USER_AGENT = "apptools/0.2"
 _CHUNK = 1 << 16
 _PROGRESS_EVERY = 1 << 20  # log progress at most every 1 MiB
 

@@ -13,7 +13,7 @@ import sys
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 PLATFORMS = ("windows", "darwin", "linux")
 

@@ -62,6 +62,8 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
     plat = platform()
     chosen, method, recipe = resolve(tool, method_name)
     entry = registry.sync_state(state, [tool])["tools"][tool.name]
+    # installing implies the user wants it managed on this machine
+    entry["enabled"] = True
     log(f"apptools: install {tool.name} [{chosen}/{plat}]")
 
     if isinstance(recipe, Shell):
@@ -69,18 +71,20 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
             status, _, _ = probe(tool, entry)
             if status == "installed":
                 log(f"apptools: {tool.name} is already installed, use `update`")
+                entry["enabled"] = True
+                registry.save_state(state)
                 return
         cmd = recipe.install
         if dry_run:
             log(f"  (dry-run) {cmd}")
             return
         util.run(util.shell_command(cmd), log=log, check=True)
-        entry.update(installed=True, method=chosen, recipe_kind="shell", updated_at=_now())
+        entry.update(installed=True, method=chosen, recipe_kind="shell", updated_at=_now(), enabled=True)
         entry.pop("managed_dir", None)
         entry.pop("placed", None)
         entry.pop("shims", None)
         registry.save_state(state)
-        log(f"  done.")
+        log("  done.")
         return
 
     dest = _extract_into(tool, recipe, plat)
@@ -99,11 +103,19 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
             cmd += ["--branch", recipe.branch]
         cmd += [recipe.url, str(dest)]
         util.run(cmd, log=log, check=True)
-        entry.update(installed=True, method=chosen, recipe_kind="git", url=recipe.url, managed_dir=str(dest), updated_at=_now())
+        entry.update(
+            installed=True,
+            enabled=True,
+            method=chosen,
+            recipe_kind="git",
+            url=recipe.url,
+            managed_dir=str(dest),
+            updated_at=_now(),
+        )
         entry.pop("placed", None)
         entry.pop("shims", None)
         registry.save_state(state)
-        log(f"  done.")
+        log("  done.")
         return
 
     placed: List[str] = []
@@ -115,11 +127,22 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
         log(f"  (dry-run) install into {dest}")
         return
 
+    # wipe previous managed dir when reinstalling into a dedicated folder
+    prev_dir = entry.get("managed_dir")
+    if prev_dir:
+        pd = util.expand(prev_dir).resolve()
+        local = util.expand("~/.local").resolve()
+        if str(pd).startswith(str(local)) and pd.exists() and pd != shims.bin_dir().resolve():
+            try:
+                util.rmtree_retry(pd)
+            except AppError as e:
+                log(f"  warning: could not clear old dir: {e}")
+
     with tempfile.TemporaryDirectory(prefix="apptools-") as td:
         tdir = Path(td)
         if isinstance(recipe, Archive):
             tmp = tdir / util.basename_from_url(url)
-            util.download(url, tmp, progress=lambda done, total: log(f"  {_fmt_size(done)}/{_fmt_size(total)}"))
+            util.download(url, tmp, progress=lambda done, total: log(f"  {_fmt_size(done)}/{_fmt_size(total) if total else '?'}"))
             if recipe.pick:
                 xdir = tdir / "x"
                 xdir.mkdir()
@@ -135,25 +158,40 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
                         target.chmod(0o755)
                     placed.append(str(target))
             else:
+                dest.mkdir(parents=True, exist_ok=True)
                 util.extract(tmp, dest, strip=recipe.strip, include=recipe.include, exclude=recipe.exclude)
                 placed = [str(p) for p in sorted(dest.rglob("*")) if p.is_file()]
         elif isinstance(recipe, File):
             name = recipe.name or util.basename_from_url(url)
+            dest.mkdir(parents=True, exist_ok=True)
             target = dest / name
-            util.download(url, target, progress=lambda done, total: log(f"  {_fmt_size(done)}/{_fmt_size(total)}"))
+            util.download(url, target, progress=lambda done, total: log(f"  {_fmt_size(done)}/{_fmt_size(total) if total else '?'}"))
             if recipe.executable and plat != "windows":
                 target.chmod(0o755)
             placed = [str(target)]
         else:
             raise AppError(f"{tool.name}: unsupported recipe {type(recipe).__name__}")
 
+    # drop old shims before creating new ones
+    shims.remove_shims(entry.get("shims") or [])
+
     if getattr(recipe, "bin", None):
         shim_list.append(str(shims.create_shim(recipe.bin, env=recipe.shim_env)))
     elif isinstance(recipe, File) and dest.resolve() != shims.bin_dir().resolve():
         shim_list.append(str(shims.create_shim(str(dest / (recipe.name or util.basename_from_url(url))))))
+    elif isinstance(recipe, Archive) and recipe.pick and dest.resolve() == shims.bin_dir().resolve():
+        # binary already landed in bin dir — nothing extra
+        pass
+    elif isinstance(recipe, Archive) and recipe.pick:
+        for p in placed:
+            try:
+                shim_list.append(str(shims.create_shim(p)))
+            except Exception as e:
+                log(f"  warning: shim for {p}: {e}")
 
     entry.update(
         installed=True,
+        enabled=True,
         method=chosen,
         recipe_kind=type(recipe).__name__.lower(),
         url=url,
@@ -163,7 +201,7 @@ def install(tool: Tool, state: dict, method_name: Optional[str] = None, dry_run:
         updated_at=_now(),
     )
     registry.save_state(state)
-    log(f"  done.")
+    log("  done.")
 
 
 def _fmt_size(n: int) -> str:
@@ -246,7 +284,10 @@ def update(tool: Tool, state: dict, log: Callable[[str], None] = print) -> None:
     install(tool, state, method_name=chosen, log=log)
 
 
-def apply_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = print) -> None:
+def apply_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = print) -> int:
+    """Install enabled-but-not-apptools-managed tools. Returns error count."""
+    errors = 0
+    n = 0
     for tool in tools:
         if not platform_available(tool):
             continue
@@ -255,21 +296,62 @@ def apply_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = p
             continue
         status, _, _ = probe(tool, entry)
         if status != "installed":
-            install(tool, state, log=log)
+            n += 1
+            try:
+                install(tool, state, log=log)
+            except AppError as e:
+                errors += 1
+                log(f"apptools: {e}")
+    if n == 0:
+        log("apptools: nothing to apply")
+    elif errors:
+        log(f"apptools: apply finished with {errors} error(s)")
+    return errors
 
 
-def sync_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = print) -> None:
+def sync_enabled(state: dict, tools: List[Tool], log: Callable[[str], None] = print) -> int:
+    """Install missing + update installed for all enabled tools. Returns error count."""
+    errors = 0
+    n = 0
     for tool in tools:
         if not platform_available(tool):
             continue
         entry = state["tools"].get(tool.name, {})
         if not entry.get("enabled", tool.enabled):
             continue
+        n += 1
         status, _, _ = probe(tool, entry)
-        if status == "installed":
-            update(tool, state, log=log)
-        else:
-            install(tool, state, log=log)
+        try:
+            if status == "installed":
+                update(tool, state, log=log)
+            else:
+                install(tool, state, log=log)
+        except AppError as e:
+            errors += 1
+            log(f"apptools: {e}")
+    if n == 0:
+        log("apptools: nothing to sync (enable tools first)")
+    elif errors:
+        log(f"apptools: sync finished with {errors} error(s)")
+    return errors
+
+
+def clean_unmanaged(state: dict, tools: List[Tool], log: Callable[[str], None] = print, yes: bool = False) -> List[str]:
+    """Return names that would be cleaned; if yes, uninstall them."""
+    targets: List[str] = []
+    for t in tools:
+        entry = state["tools"].get(t.name, {})
+        if entry.get("enabled", t.enabled):
+            continue
+        if probe(t, entry)[0] == "installed" and entry.get("recipe_kind"):
+            targets.append(t.name)
+    targets += [o for o in orphans_safe(state, tools) if o not in targets]
+    return targets
+
+
+def orphans_safe(state: dict, tools: List[Tool]) -> List[str]:
+    return registry.orphans(state, tools)
+
 
 
 def _probe_recipe(tool: Tool, recipe: object, entry: dict) -> str:
