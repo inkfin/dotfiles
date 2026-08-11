@@ -256,13 +256,19 @@ Start a new agent rather than reusing an idle one — a fresh session keeps cont
 only when continuing a task with an agent started earlier in this same conversation, or when the
 user points at a specific one.
 
+Remote investigation on a box **without** a Herdr session (logs, `journalctl`, fetch a file) belongs
+to the `remote` skill — use `remote run` / `remote get` / `remote put`, and keep reports on this
+machine. Do not use `herdr --remote` for automation; it is TUI attach only. Reach for Herdr on the
+remote host only when the work needs a full coding-agent session on that checkout.
+
 ## Assigning work
 
 A dispatched agent knows nothing about the current conversation. Every prompt must stand alone
 and state all four:
 
 1. **Goal** — what to accomplish, concretely.
-2. **Location** — repository path and branch it is working on.
+2. **Location** — repository path and branch it is working on. For a remote box without Herdr,
+   name the SSH Host alias and remote paths, and point the agent at the `remote` skill.
 3. **Constraints** — e.g. read-only, do not commit, do not push, do not touch unrelated files.
 4. **Deliverable** — write the full result as Markdown to
    `~/.cache/agents-supervisor/<YYYYMMDD>/<agent-name>.md`, creating the directory if needed, and

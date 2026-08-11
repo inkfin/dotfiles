@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""SSH wrapper for agents and scripts: run commands and move files on a remote host.
+
+Uses BatchMode SSH (no password prompts). Prefer Host aliases from ~/.ssh/config.
+
+Examples:
+  remote run workbox -- journalctl -u myapp -n 200 --no-pager
+  remote run workbox --cwd /var/log -- ls -lt
+  remote get workbox /var/log/app/error.log
+  remote get workbox ~/notes.md -o /tmp/notes.md
+  remote put workbox ./fix.sh /tmp/fix.sh
+"""
+
+from __future__ import annotations
+
+import argparse
+import shlex
+import subprocess
+import sys
+from pathlib import Path
+
+
+CONTROL_DIR = Path.home() / ".cache" / "remote-ssh"
+DEFAULT_CONNECT_TIMEOUT = "10"
+DEFAULT_ALIVE_INTERVAL = "30"
+
+
+def ssh_base(host: str) -> list[str]:
+    CONTROL_DIR.mkdir(parents=True, exist_ok=True)
+    control_path = str(CONTROL_DIR / "%C")
+    return [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        f"ConnectTimeout={DEFAULT_CONNECT_TIMEOUT}",
+        "-o",
+        f"ServerAliveInterval={DEFAULT_ALIVE_INTERVAL}",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        f"ControlPath={control_path}",
+        "-o",
+        "ControlPersist=10m",
+        host,
+    ]
+
+
+def scp_base() -> list[str]:
+    CONTROL_DIR.mkdir(parents=True, exist_ok=True)
+    control_path = str(CONTROL_DIR / "%C")
+    return [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        f"ConnectTimeout={DEFAULT_CONNECT_TIMEOUT}",
+        "-o",
+        f"ServerAliveInterval={DEFAULT_ALIVE_INTERVAL}",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        f"ControlPath={control_path}",
+        "-o",
+        "ControlPersist=10m",
+    ]
+
+
+def die(msg: str, code: int = 2) -> None:
+    print(msg, file=sys.stderr)
+    raise SystemExit(code)
+
+
+def cmd_run(args: argparse.Namespace) -> int:
+    if not args.command:
+        die("remote run: missing command after host (use: remote run <host> -- <cmd...>)")
+
+    remote = shlex.join(args.command)
+    if args.cwd:
+        remote = f"cd {shlex.quote(args.cwd)} && {remote}"
+
+    # Login shell so PATH matches an interactive SSH session.
+    argv = [*ssh_base(args.host), "bash", "-lc", remote]
+    return subprocess.call(argv)
+
+
+def cmd_get(args: argparse.Namespace) -> int:
+    remote_path = args.remote_path
+    if args.output in (None, "-"):
+        argv = [*ssh_base(args.host), "cat", "--", remote_path]
+        return subprocess.call(argv)
+
+    out = Path(args.output)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    src = f"{args.host}:{remote_path}"
+    return subprocess.call([*scp_base(), "--", src, str(out)])
+
+
+def cmd_put(args: argparse.Namespace) -> int:
+    local = Path(args.local_path)
+    if not local.is_file():
+        die(f"remote put: local file not found: {local}", code=1)
+    dest = f"{args.host}:{args.remote_path}"
+    return subprocess.call([*scp_base(), "--", str(local), dest])
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        prog="remote",
+        description="Run commands and transfer files over SSH (agent-friendly, BatchMode).",
+    )
+    sub = p.add_subparsers(dest="action", required=True)
+
+    run = sub.add_parser("run", help="Run a command on the remote host")
+    run.add_argument("host", help="SSH host or Host alias from ~/.ssh/config")
+    run.add_argument("--cwd", help="Remote working directory before the command")
+    run.add_argument(
+        "command",
+        nargs=argparse.REMAINDER,
+        help="Command and args; prefer `--` before the command",
+    )
+    run.set_defaults(func=cmd_run)
+
+    get = sub.add_parser("get", help="Fetch a remote file to stdout or -o path")
+    get.add_argument("host")
+    get.add_argument("remote_path")
+    get.add_argument("-o", "--output", help="Local path (default: stdout)")
+    get.set_defaults(func=cmd_get)
+
+    put = sub.add_parser("put", help="Upload a local file to the remote host")
+    put.add_argument("host")
+    put.add_argument("local_path")
+    put.add_argument("remote_path")
+    put.set_defaults(func=cmd_put)
+
+    return p
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    # argparse.REMAINDER keeps a leading "--"; drop it.
+    if args.action == "run" and args.command and args.command[0] == "--":
+        args.command = args.command[1:]
+
+    raise SystemExit(args.func(args))
+
+
+if __name__ == "__main__":
+    main()
