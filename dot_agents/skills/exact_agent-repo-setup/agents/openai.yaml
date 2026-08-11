@@ -1,0 +1,5 @@
+interface:
+  display_name: "Agent Repo Setup"
+  short_description: "Configure plans/ tracking and domain docs"
+policy:
+  allow_implicit_invocation: false
