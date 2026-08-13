@@ -18,12 +18,16 @@ local rime_ls_shared_data_dir = "undefined"
 
 if vim.fn.has("win32") == 1 then
     rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls.exe"
-    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
+    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.local/share/rime-ls"
     rime_ls_shared_data_dir = "C:\\Program Files (x86)\\Rime\\weasel-0.16.1\\data"
 elseif vim.fn.has("mac") == 1 then
     rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls"
-    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.config/Rime"
+    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.local/share/rime-ls"
     rime_ls_shared_data_dir = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
+elseif vim.fn.has("linux") == 1 then
+    rime_ls_exe_path = vim.fn.getenv("HOME") .. "/.local/bin/rime_ls"
+    rime_ls_user_dir = vim.fn.getenv("HOME") .. "/.local/share/rime-ls"
+    rime_ls_shared_data_dir = "/usr/share/rime-data"
 end
 
 if vim.fn.filereadable(rime_ls_exe_path) == 0 then

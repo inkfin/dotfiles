@@ -84,4 +84,5 @@ dot_ideavimrc
 # Input methods
 {{ if not .external.rime }}
 .config/Rime/
+.local/share/rime-ls/
 {{ end }}

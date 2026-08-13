@@ -4,4 +4,28 @@
     url = "https://github.com/iDvel/rime-ice/releases/latest/download/full.zip"
     refreshPeriod = "336h"
     exclude = ["custom_phrase.txt"]
+
+# rime-ls 的独立用户目录：与系统输入法 (Squirrel/Weasel) 分开，避免两个 librime
+# 进程并发读写同一个 userdb（LevelDB 不支持多进程），导致词库损坏、记不住词。
+[".local/share/rime-ls"]
+    type = "archive"
+    url = "https://github.com/iDvel/rime-ice/releases/latest/download/full.zip"
+    refreshPeriod = "336h"
+    exclude = ["custom_phrase.txt"]
+{{ if eq .chezmoi.os "darwin" }}
+[".local/rime"]
+    type = "archive"
+    url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-universal2-apple-darwin.tar.bz2"
+    refreshPeriod = "336h"
+{{ else if eq .chezmoi.os "linux" }}
+[".local/bin"]
+    type = "archive"
+    url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-x86_64-unknown-linux-gnu.tar.gz"
+    refreshPeriod = "336h"
+{{ else if eq .chezmoi.os "windows"}}
+# [".local/bin"]
+#     type = "archive"
+#     url = "https://github.com/wlh320/rime-ls/releases/latest/download/rime-ls-v0.4.3-x86_64-pc-windows-msvc.7z"
+#     refreshPeriod = "336h"
+{{ end }}
 {{ end }}

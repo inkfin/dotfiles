@@ -1,0 +1,8 @@
+# rime-ls runtime files — managed by rime-ls itself, not chezmoi
+installation.yaml
+user.yaml
+build/
+sync/
+log/
+*.userdb/
+*.userdb
