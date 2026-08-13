@@ -21,6 +21,7 @@ local registry = {
     { key = "proto",  module = "lang.proto" },
     { key = "lua_ls", module = "lang.lua_ls" },
     { key = "markdown", module = "lang.markdown" },
+    { key = "rime", module = "lang.rime" },
     { key = "python", module = "lang.python" },
     { key = "rust",   module = "lang.rust" },
     { key = "go",     module = "lang.go" },

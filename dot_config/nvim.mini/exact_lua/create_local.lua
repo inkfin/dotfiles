@@ -10,6 +10,7 @@ M.lang = {
     -- c3     = true,
     lua_ls = true,
     markdown = true,
+    -- rime   = true,  -- rime-ls 中文输入（需 chezmoi external.rime 安装 rime_ls）
     python = true,
     -- rust   = true,
     -- go     = true,

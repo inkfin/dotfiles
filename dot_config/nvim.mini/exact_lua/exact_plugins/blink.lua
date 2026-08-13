@@ -11,12 +11,17 @@ require("pack").add({
 local ok, blink = pcall(require, "blink.cmp")
 if not ok then return end
 
+-- rime-ls IME keymaps (space / 1-9 select the n-th Chinese candidate). They are
+-- no-ops unless rime is installed and enabled, so merging is always safe.
+local ok_rime, rime = pcall(require, "lang.rime")
+local rime_keymaps = ok_rime and rime.blink_keymaps() or {}
+
 blink.setup({
     --------------------------
     -- Keymap preset
     -- "default" gives sensible bindings; we override a few below.
     --------------------------
-    keymap = {
+    keymap = vim.tbl_deep_extend("force", {
         preset = "default",
 
         -- Trigger completion manually
@@ -40,7 +45,7 @@ blink.setup({
         -- Arrow keys navigate items too
         ["<C-n>"] = { "select_next", "fallback" },
         ["<C-p>"] = { "select_prev", "fallback" },
-    },
+    }, rime_keymaps),
 
     --------------------------
     -- Completion behaviour
