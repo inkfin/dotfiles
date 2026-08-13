@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
+# Launch Neovim with the rime (Chinese input) profile enabled.
+#
+# nvim.mini / nvim.lazyvim read the NVIM_RIME env var to turn rime on for this
+# session; plain `nvim` leaves it off. Cleaner than per-file `-cn` suffixes or
+# `--cmd 'let g:rime=v:true'`, and inherits whatever NVIM_APPNAME profile the
+# caller uses, so `nvim-rime` behaves exactly like `nvim` + rime.
+export NVIM_RIME=1
 
-export NVIM_APPNAME=""
-
-exec nvim --cmd 'let g:rime=v:true' "$@"
-
+exec nvim "$@"

@@ -111,7 +111,7 @@ Set-Alias -Name lg -Value 'lazygit'
 Set-Alias -Name v -Value 'nvim'
 Set-Alias -Name vim -Value 'nvim'
 Set-Alias -Name nvi -Value 'neovide'
-function vcn { param($file) nvim --cmd 'let g:rime=v:true' $file }
+function vcn { param($file) $env:NVIM_RIME = "1"; nvim $file }
 function nvs { & nvim --listen localhost:6789 --cmd "let safequit=v:true" @args }
 function nvc { & nvim --server localhost:6789 --remote-ui }
 Set-Alias -Name cz -Value 'chezmoi'

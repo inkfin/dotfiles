@@ -36,19 +36,10 @@ end
 
 ---------------------------------------------------------------------
 
-local bDisableChinese = true
-
--- only enable space and enter when editing filename ends with '-cn'
-local filename = vim.fn.expand("%:p:t:r")
-if filename:sub(-3) == "-cn" then
-    bDisableChinese = false
-end
-
--- check vim modeline 'let g:rime=v:true'
--- nvim filename.md --cmd 'let g:rime=v:true'
-if vim.g.rime then
-    bDisableChinese = false
-end
+-- Session-level profile isolation: the `nvim-rime` wrapper exports NVIM_RIME=1.
+-- Plain `nvim` leaves rime off (the plugin below is `enabled = false`), so the
+-- IME keys are only ever relevant when rime is actually loaded.
+local bDisableChinese = vim.env.NVIM_RIME ~= "1"
 
 local cmp_cache = { keymaps = {}, cmp_sources = {} }
 local filetypes = { "markdown", "quarto", "org", "norg", "text" }
@@ -61,7 +52,7 @@ return {
     -- https://github.com/liubianshi/cmp-lsp-rimels
     {
         "liubianshi/cmp-lsp-rimels",
-        enabled = vim.g.rime == true,
+        enabled = vim.env.NVIM_RIME == "1",
         ft = filetypes,
         opts = {
             cmd = { rime_ls_exe_path },

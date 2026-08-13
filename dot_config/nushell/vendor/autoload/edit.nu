@@ -2,7 +2,10 @@
 alias v = nvim
 alias nvi = neovide
 
-alias vcn = nvim --cmd 'let g:rime=v:true'
+# vcn: nvim with the rime (Chinese input) profile enabled (see NVIM_RIME)
+def vcn [...args] {
+    with-env { NVIM_RIME: "1" } { nvim ...$args }
+}
 alias nvs = nvim --listen localhost:6789 --cmd "let safequit=v:true"
 alias nvc = nvim --server localhost:6789 --remote-ui
 
