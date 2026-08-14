@@ -293,15 +293,14 @@ their behalf.
 
 ### Checking on everything
 
-When asked how things are going, run `herdr agent list` (with the session resolved first when
-running outside a pane) and group by `agent_status`:
+When asked how things are going, this skill surveys **only agents visible in running Herdr sessions**. Resolve each running session explicitly, run `herdr agent list`, then group by `agent_status`:
 
 - `blocked` first — include the actual question, read from the pane.
-- `done` next — with the conclusion from each report file.
+- `done` and `idle` next — retrieve their conclusion from the declared report file or pane output when available; both can mean finished.
 - `working` — name and workspace only; do not interrupt.
 - `unknown` — state plainly that Herdr cannot classify it. It is not evidence of completion.
 
-Sweeps are read-only. Do not send keys or prompts while surveying.
+Sweeps are read-only. Do not send keys or prompts while surveying. A stopped session or agent absent from `agent list` is **outside Herdr observation scope**, not evidence of no result. In WorkNotes, hand off that recovery to `chief-of-staff/workflows/sweep.md`, which scans cached reports, archived reports, and repository progress.
 
 ## Cleanup
 
