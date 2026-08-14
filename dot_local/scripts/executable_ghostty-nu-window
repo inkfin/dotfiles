@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# Open a new Ghostty window running nushell
+
+exec osascript -e 'tell application "Ghostty"
+set cfg to new surface configuration
+set command of cfg to "nu"
+new window with configuration cfg
+end tell'

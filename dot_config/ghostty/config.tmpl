@@ -1,0 +1,60 @@
+# ghostty config
+# 更多选项见 https://ghostty.org/docs/config/reference
+# 常用验证命令: ghostty +show-config | ghostty +list-themes | ghostty +list-keybinds --default
+
+# --- 主题 ---
+# 配色主题。可用 `ghostty +list-themes` 查看全部 463 个内置主题。
+# 支持 light/dark 自动切换: theme = light:xxx,dark:xxx
+theme = TokyoNight Night
+
+# --- 字体 ---
+# font-family 可重复指定，作为回退链(primary -> fallback)。
+# 常用: FantasqueSansM Nerd Font Mono / JetBrains Mono / IosevkaTerm NFM
+font-family = FantasqueSansM Nerd Font Mono
+font-size = 20
+
+# --- 光标 ---
+# cursor-style: block(方块) | bar(竖线) | underline(下划线) | block_hollow(空心块)
+cursor-style = block
+cursor-color = ffffff
+# 闪烁开关: true/false(留空则跟随 DEC 模式)
+cursor-style-blink = true
+# shell integration 默认会在提示符处把光标强制设为 bar, no-cursor 关闭该行为。
+# 其他特性(工作目录同步/prompt 标记/title)仍保留。
+shell-integration-features = no-cursor
+
+# --- 鼠标 ---
+# 右键行为: context-menu(菜单) | paste | copy | copy-or-paste | ignore(透传给终端应用)
+# 设 ignore 后, nvim 等启用鼠标协议的 app 能收到右键事件(如 nvim 的 <RightMouse>)。
+# 需要菜单时用 ctrl+左键 触发。
+right-click-action = ignore
+# 是否允许终端 app 请求鼠标事件(nvim 选中/悬停等)。true 为默认。
+mouse-reporting = true
+
+# --- 窗口透明 ---
+# 背景不透明度: 1=不透明, 0=全透明。macOS 改动需完全重启 Ghostty 生效。
+background-opacity = 0.7
+# 透明度<1 时可加 background-blur = true 开启毛玻璃(macOS 26+ 可用 macos-glass-regular/clear)
+
+# --- Quick Terminal (quake 终端) ---
+# position: top/bottom/left/right/center
+# size: 主轴尺寸, 可写百分比或 px, 用逗号写两个(主轴,副轴)。
+#   top/bottom -> 主轴=高, left/right -> 主轴=宽; center 两个都须显式指定才会铺满。
+quick-terminal-position = center
+quick-terminal-size = 100%,100%
+# 滑入动画秒数, 0=禁用
+quick-terminal-animation-duration = 0
+
+# --- macOS 专属 ---
+{{- if eq .chezmoi.os "darwin" }}
+# 全局热键(需系统设置->隐私与安全->辅助功能 授权)。
+# global: 前缀让快捷键在系统任意应用下生效(不聚焦 Ghostty 也能用)。
+# 其他可绑定的 quick terminal 选项: quick-terminal-screen / quick-terminal-autohide 等
+keybind = global:ctrl+alt+z=toggle_quick_terminal
+# cmd+u: 切换背景透明/不透明 (iTerm2 同款, 仅 macOS)
+keybind = super+u=toggle_background_opacity
+# 把左边 cmd 键在 Ghostty 内部当 alt 用(只影响 Ghostty 收到的按键)。
+# 注意: macOS 菜单栏快捷键(如 ⌘,)由系统先处理, remap 管不到它们。
+# 其他常见 remap: ctrl=super / left_control=right_alt
+key-remap = left_super=left_alt
+{{- end }}

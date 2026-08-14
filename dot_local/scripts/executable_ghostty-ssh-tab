@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# Open a new Ghostty tab running ssh to the given host alias
+
+HOST="$1"
+if [ -z "$HOST" ]; then
+    echo "usage: ghostty-ssh-tab <host>" >&2
+    exit 1
+fi
+
+exec osascript -e "tell application \"Ghostty\"
+set cfg to new surface configuration
+set command of cfg to \"ssh $HOST\"
+new tab in front window with configuration cfg
+end tell"
