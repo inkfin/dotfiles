@@ -56,7 +56,7 @@ if [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
     _omz_clone tom-doerr/zsh_codex "$ZSH/custom/plugins/zsh_codex" zsh_codex.plugin.zsh || print -u2 'zsh: failed to install zsh_codex'
     if [[ -z "${__ZSH_OMZ_INIT:-}" ]]; then
         source_if_readable "$ZSH/oh-my-zsh.sh"
-        export __ZSH_OMZ_INIT=1
+        __ZSH_OMZ_INIT=1
     fi
 
     # zsh_codex defines the widget but intentionally leaves the key choice to
