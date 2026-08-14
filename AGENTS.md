@@ -64,6 +64,15 @@ dot_local/           # ~/.local
 - Home dir: `{{ .chezmoi.homeDir }}`
 - External data: `{{ .external.xxx }}` (from `.chezmoidata.toml` or platform keys)
 - Keep templates short. If logic exceeds 5 conditionals, reconsider the design.
+- **Fonts come from `{{ .font.xxx }}`** — never hardcode a font name in an app
+  config. Centralized per-machine in `.chezmoi.toml.tmpl` `[data.font]`
+  (`term_font`, `editor_font`, `ui_font`, `cjk_font`), because nerd font names
+  differ across platforms/installs. To change on one machine, edit
+  `~/.config/chezmoi/chezmoi.toml` `[data.font]` — one place, every app updates.
+- **`{{ }}` in a comment is still executed.** `.chezmoi.toml.tmpl` and every
+  `.tmpl` file are Go templates; a commented-out `{{ .font.xxx }}` errors with
+  `map has no entry for key "xxx"`. Write example placeholders as `font.xxx`
+  without the braces, or escape them.
 
 ## `.chezmoiignore` Rules
 
@@ -97,6 +106,8 @@ There are **two separate skill trees**. Do not confuse them.
 - **Config-related skill** (how to edit this repo's configs) → `.agents/skills/<name>/`. Never deployed; the agent reads it straight from the source dir. Example: `neovim-config`.
 - **Generic agent skill** (workflow, not repo-specific) → `dot_agents/skills/exact_<name>/`. Deploys to the global `~/.agents/skills/`.
 - Do NOT put config-related skills under `dot_agents/`; they would leak to the global tree.
+- The two trees answer different questions. When adding a skill ask: *does it describe this repo's configs, or is it a reusable workflow?* Config → `.agents/`; workflow → `dot_agents/`.
+- Moving a skill between trees leaves a **global stale copy** behind (see below). Deleting the source in `dot_agents/` does not remove `~/.agents/skills/<name>/` on machines that already applied it — ship a `remove_<name>` placeholder to clean it up.
 
 ## Deletions Do Not Propagate
 
@@ -118,8 +129,8 @@ Two ways to clean up a leftover target:
 2. **Migration changelog** — for complex changes (config content migration,
    per-environment adjustments, moving state around), record a
    `changelogs/YYYY-MM-DD-<slug>.md` entry and apply it via the
-   `chezmoi-migration` skill when the user says "更新一下". Use this when a
-   plain `remove_` cannot express what must happen.
+   `chezmoi-migration` skill when the user says "更新一下" / "apply 一下". Use
+   this when a plain `remove_` cannot express what must happen.
 
 ## Adding a New App
 
@@ -134,6 +145,28 @@ Two ways to clean up a leftover target:
 - All custom scripts go in `dot_local/scripts/` with `executable_` prefix.
 - Windows wrappers use `.bat` extension and call the Python/Unix script via `python "%~dp0<script>" %*`.
 - Prefer Python for cross-platform scripts; avoid bash on Windows.
+
+## Gotchas
+
+Pitfalls that cost real time in this repo.
+
+- **`.tmpl` rename keeps the target path.** Turning `foo.toml` into
+  `foo.toml.tmpl` (to add a `{{ }}`) changes the *source*, not the
+  destination. Consumers that `require`/import by destination path (wezterm
+  `require("config.appearance")`, nvim `exact_lua/...`) keep working. Use
+  `git mv` so history tracks the rename.
+- **`exact_` and `remove_` on the same target = inconsistent state.** chezmoi
+  refuses to guess between "manage this dir" and "delete this target". When
+  retiring a global skill: delete the `exact_<name>` source *and* add
+  `remove_<name>` in the same commit — never leave both pointing at one
+  target. Verify with `chezmoi status | grep <name>` (empty = clean).
+- **`chezmoi data` reads the cached config.** After editing `.chezmoi.toml.tmpl`
+  (e.g. `[data.font]`), the running config is stale until `chezmoi init`
+  regenerates it. `chezmoi init` needs a TTY for its prompts; feed the
+  existing `data.*` values or run it interactively.
+- **Deleting a source file leaves the target behind** — see
+  [Deletions Do Not Propagate](#deletions-do-not-propagate). Always ask what
+  happens to the on-disk target when removing a managed file.
 
 ## Testing
 

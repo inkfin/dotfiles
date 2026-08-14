@@ -1,7 +1,12 @@
 # Changelogs — Destructive Updates
 
 Record breaking changes here so the `chezmoi-migration` skill can apply them
-on each machine when you say "更新一下".
+on each machine when you say "更新一下" / "apply 一下".
+
+> Pure deletions (a leftover file/dir that should simply be gone) do **not**
+> need an entry — use a `remove_` placeholder instead (see
+> `AGENTS.md` → Deletions Do Not Propagate). This directory is only for
+> migrations a `remove_` cannot express.
 
 ## When to log — the residual test
 

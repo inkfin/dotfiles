@@ -1,6 +1,6 @@
 ---
 name: chezmoi-migration
-description: Apply destructive chezmoi updates from changelogs/ when the user says "更新一下", or when making/reviewing a breaking chezmoi change that needs a changelog entry (old dir/file deletion, local config migration, environment-dependent adjustment).
+description: Apply destructive chezmoi migrations from changelogs/ when the user says "更新一下"/"update config" or "apply 一下"/"apply", or when making/reviewing a breaking chezmoi change that fails the residual test (local config migration, environment-dependent adjustment) and needs a changelog entry.
 ---
 
 # Chezmoi Migration
