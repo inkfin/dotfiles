@@ -148,7 +148,10 @@ Two ways to clean up a leftover target:
 
 ## Gotchas
 
-Pitfalls that cost real time in this repo.
+Pitfalls that cost real time in this repo. For the full conceptual model
+(prefixes, deployment semantics, data flow), read `.agents/reference/chezmoi.md`
+when a chezmoi concept is unclear or a command does something unexpected — the
+answers there were each paid for by a real bug.
 
 - **`.tmpl` rename keeps the target path.** Turning `foo.toml` into
   `foo.toml.tmpl` (to add a `{{ }}`) changes the *source*, not the
