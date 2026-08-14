@@ -10,8 +10,8 @@ Host github.com
   IdentityFile ~/.ssh/id_ed25519
   IdentitiesOnly yes
 
-{{ if eq .profile "server" }}
-# Server: hardened defaults
+{{ if hasPrefix "server" .profile }}
+# server-personal / server-work: hardened defaults
 Host *
   # No agent or X11 forwarding on headless server
   ForwardAgent no

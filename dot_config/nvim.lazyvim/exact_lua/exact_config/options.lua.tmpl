@@ -45,7 +45,7 @@ vim.g.maplocalleader = ","
 vim.g.tex_flavor = "latex"
 
 -- Enable LazyVim auto format
---{{ if eq .profile "personal" }}
+--{{ if hasSuffix "personal" .profile }}
 vim.g.autoformat = true
 --{{ else }}
 vim.g.autoformat = false
@@ -234,7 +234,7 @@ vim.cmd([[
 if vim.g.neovide then
     -- local guifont = "FiraCode Nerd Font Mono"
     -- local guifont = "JetBrainsMono Nerd Font"
-    local guifont = "{{ .font.editor_font }}"
+    local guifont = "{{ dig "font" "editor_font" "monospace" . }}"
     local guifontsize = 16
     function _G.AdjustFontSize(amount)
         guifontsize = guifontsize + amount

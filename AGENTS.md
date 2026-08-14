@@ -26,6 +26,38 @@ dot_local/           # ~/.local
   scripts/           #   → executable_ prefix for scripts
 ```
 
+## Profiles
+
+Four profiles, named so that two sprig helpers compose every combination
+without extra data keys:
+
+| Profile | GUI / fonts | Personal bits | Work bits | Hardened ssh |
+|---|---|---|---|---|
+| `personal` | yes | yes | — | — |
+| `work` | yes | — | yes | — |
+| `server-personal` | — | yes | — | yes |
+| `server-work` | — | — | yes | yes |
+
+```gotemplate
+{{ if hasSuffix "personal" .profile }}   {{/* personal + server-personal */}}
+{{ if hasSuffix "work" .profile }}       {{/* work + server-work */}}
+{{ if hasPrefix "server" .profile }}     {{/* server-personal + server-work */}}
+```
+
+Note the sprig argument order: `hasSuffix SUFFIX STRING`, `hasPrefix PREFIX
+STRING` — the needle comes first, which is the reverse of what most people
+type. Never test a profile with a bare `eq`: `eq .profile "work"` silently
+skips `server-work`, which is the whole point of the naming scheme.
+
+The profile is chosen once by `chezmoi init` (`promptChoiceOnce`) and stored as
+`data.profile` in `~/.config/chezmoi/chezmoi.toml`. All four names must stay
+distinct at the prompt, which is why the headless personal box is
+`server-personal` and not `server`.
+
+Server profiles deploy no GUI config: `.chezmoi.toml.tmpl` skips the whole
+`[data.font]` block, and the root `.chezmoiignore` excludes the GUI app dirs
+(alacritty, wezterm, ghostty, zed, neovide, …).
+
 ## Cross-platform Strategy
 
 1. **Canonical config** lives in `dot_config/<app>/`. Templates use `{{ if eq .chezmoi.os "windows" }}` for OS branches.
@@ -60,7 +92,9 @@ dot_local/           # ~/.local
 
 - Use `{{-` to trim whitespace: `{{- if ... }}`
 - OS checks: `{{ if eq .chezmoi.os "windows" }}` / `"darwin"` / `"linux"`
-- Profile checks: `{{ if eq .profile "work" }}`
+- Profile checks: compose on the profile *name*, never a bare `eq` — see
+  [Profiles](#profiles). `{{ if hasSuffix "work" .profile }}` /
+  `{{ if hasPrefix "server" .profile }}`.
 - Home dir: `{{ .chezmoi.homeDir }}`
 - External data: `{{ .external.xxx }}` (from `.chezmoidata.toml` or platform keys)
 - Keep templates short. If logic exceeds 5 conditionals, reconsider the design.
@@ -69,6 +103,13 @@ dot_local/           # ~/.local
   (`term_font`, `editor_font`, `ui_font`, `cjk_font`), because nerd font names
   differ across platforms/installs. To change on one machine, edit
   `~/.config/chezmoi/chezmoi.toml` `[data.font]` — one place, every app updates.
+- **Headless profiles have no `[data.font]` at all**, and chezmoi renders with
+  `missingkey=error` — the error fires at the *lookup*, so `{{ if .font }}` and
+  `{{ with .font }}` blow up exactly like `{{ .font.x }}`. Any file that still
+  renders on a server profile must guard with
+  `{{ dig "font" "editor_font" "monospace" . }}` (lookup + default in one call)
+  or `hasKey . "font"`. GUI-only configs need no guard — they are
+  `.chezmoiignore`d on server profiles and never render.
 - **`{{ }}` in a comment is still executed.** `.chezmoi.toml.tmpl` and every
   `.tmpl` file are Go templates; a commented-out `{{ .font.xxx }}` errors with
   `map has no entry for key "xxx"`. Write example placeholders as `font.xxx`

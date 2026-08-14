@@ -149,11 +149,18 @@ Worth knowing about even though this repo does not use them yet.
   `ui_font`, `cjk_font`) because nerd font names differ per machine. Apps
   reference `{{ .font.xxx }}`; change one machine by editing
   `~/.config/chezmoi/chezmoi.toml` `[data.font]`.
+- **Headless profiles omit `[data.font]`, and chezmoi renders with
+  `missingkey=error`** — the error fires at the *lookup*, so `{{ if .font }}`
+  and `{{ with .font }}` fail exactly like `{{ .font.x }}`. Guard with
+  `{{ dig "font" "editor_font" "monospace" . }}` (lookup + default in one
+  call) or `hasKey . "font"`. GUI-only files need no guard: they are
+  chezmoiignored on headless profiles and never render.
 
 ## Templates
 
 - `{{-` trims whitespace. OS: `{{ if eq .chezmoi.os "windows" }}`. Profile:
-  `{{ if eq .profile "work" }}`.
+  compose on the name — `{{ if hasSuffix "work" .profile }}` /
+  `{{ if hasPrefix "server" .profile }}` (see AGENTS.md → Profiles).
 - **`{{ }}` inside a comment is still executed.** Every `.tmpl` file is a Go
   template, including `.chezmoi.toml.tmpl` itself. A commented-out
   `{{ .font.xxx }}` fails with `map has no entry for key "xxx"`. Write example

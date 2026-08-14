@@ -20,12 +20,26 @@ Visit the [user guide in chezmoi.io](https://www.chezmoi.io/user-guide/command-o
 
 Config current profiles in `$HOME/.config/chezmoi/chezmoi.toml`.
 
+Four profiles, combining a machine role with a desktop/headless split:
+
+| Profile | GUI / fonts | Work bits | Hardened ssh |
+|---|---|---|---|
+| `personal` | yes | — | — |
+| `work` | yes | yes | — |
+| `server-personal` | — | — | yes |
+| `server-work` | — | yes | yes |
+
 ```toml
 # personal
 [data]
     email = "inkfinite@qq.com"
     name = "inkfin"
     profile = "personal"
+[data.font]
+    term_font = "FantasqueSansM Nerd Font Mono"
+    editor_font = "FantasqueSansM Nerd Font Mono"
+    ui_font = "FiraCode Nerd Font Mono"
+    cjk_font = "Sarasa Term SC Nerd Font"
 [git]
     autoCommit = false
     autoPush = false
@@ -46,7 +60,15 @@ Config current profiles in `$HOME/.config/chezmoi/chezmoi.toml`.
     email = ""
     name = "Ziyue Zhang"
     profile = "work"
+
+# headless work box — no [data.font], GUI configs are not deployed
+[data]
+    profile = "server-work"
 ```
+
+`[data.font]` centralizes per-machine font names (nerd font names differ
+across platforms/installs), so changing a font is a one-place edit. Server
+profiles omit the block entirely.
 
 ### Directory Structure
 

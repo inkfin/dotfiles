@@ -67,7 +67,7 @@
     },
   },
   "provider": {
-    // {{- if eq .profile "work" }}
+    // {{- if hasSuffix "work" .profile }}
     "venus": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {

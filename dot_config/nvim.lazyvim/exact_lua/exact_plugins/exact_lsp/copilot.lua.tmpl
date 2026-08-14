@@ -3,7 +3,7 @@ if _G.disable_plugins.copilot then
 end
 
 return {
-    -- {{- if eq .profile "work" }}
+    -- {{- if hasSuffix "work" .profile }}
     {
         "git@git.woa.com:aurorani/gongfeng-copilot.git",
         lazy = false,  -- always load

@@ -1,6 +1,10 @@
 # vi: ft=toml
 
-{{- $profiles   := list "personal" "work" "server" }}
+{{- /* Profiles: personal | work | server-personal | server-work
+     Compose: hasSuffix "personal"|"work" . / hasPrefix "server" .
+     Sprig: hasSuffix SUFFIX STRING / hasPrefix PREFIX STRING — see AGENTS.md
+*/ -}}
+{{- $profiles   := list "personal" "work" "server-personal" "server-work" }}
 
 {{- $profile    := promptChoiceOnce . "data.profile" "Which profile should we apply" $profiles }}
 {{- $name       := promptStringOnce . "data.name" "What's your name" "inkfin" }}
@@ -11,8 +15,7 @@
     name = {{ $name | quote }}
     fullname = "Ink Zhang"
     email = {{ $email | quote }}
-# Fonts: centralized per-machine names (nerd font names differ across
-# platforms/installs). Apps reference these via the font data keys.
+{{- if not (hasPrefix "server" $profile) }}
 # Override per machine in ~/.config/chezmoi/chezmoi.toml [data.font].
 [data.font]
 {{- if eq .chezmoi.os "windows" }}
@@ -25,6 +28,7 @@
     ui_font = "FiraCode Nerd Font Mono"
 {{- end }}
     cjk_font = "Sarasa Term SC Nerd Font"
+{{- end }}
 [git]
     autoCommit = false
     autoPush = false
@@ -38,7 +42,4 @@
 [cd]
     command = "pwsh.EXE"
     args = ["-NoLogo"]
-    # command = "nu"
-    # args = []
 {{- end }}
-

@@ -193,7 +193,7 @@ end
 
 -- Neovide GUI
 if vim.g.neovide then
-    local guifont     = "{{ .font.editor_font }}"
+    local guifont     = "{{ dig "font" "editor_font" "monospace" . }}"
     local guifontsize = 16
 
     function _G.AdjustFontSize(amount)

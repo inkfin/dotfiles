@@ -10,11 +10,13 @@ changelogs/
 
 .config/nvim/symlink
 
-{{- if ne .profile "work" }}
-.work       # only manage .work on work-laptop
+{{- /* work: work + server-work */}}
+{{- if not (hasSuffix "work" .profile) }}
+.work
 {{- end }}
 
-{{- if ne .profile "personal" }}
+{{- /* personal: personal + server-personal */}}
+{{- if not (hasSuffix "personal" .profile) }}
 .personal
 {{- end }}
 
@@ -66,10 +68,11 @@ install-packages.sh
 !.local/scripts/*.ps1
 {{ end }}
 
-# Server profile: exclude GUI/desktop configs on headless machines
-{{- if eq .profile "server" }}
+# Headless profiles (server-personal / server-work): skip GUI/desktop configs
+{{- if hasPrefix "server" .profile }}
 .config/alacritty/
 .config/wezterm/
+.config/ghostty/
 .config/zed/
 .config/neovide/
 .config/sioyek/
@@ -79,6 +82,9 @@ install-packages.sh
 .config/Rime/
 .config/karabiner/
 .config/VisualStudio/
+.config/vscode/
+.config/bilibili_evolved/
+.local/scripts/ghostty-*
 dot_Brewfile
 dot_ideavimrc
 {{- end }}
