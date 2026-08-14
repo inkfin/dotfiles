@@ -47,4 +47,11 @@ source_if_readable "$HOME/.iterm2_shell_integration.zsh"
 alias pac="brew"
 alias typora='open -a Typora.app'
 alias sublime='open -a Sublime\ Text.app'
+
+# terminal image preview via sixel (works in iTerm2 with or without tmux)
+img() {
+  local f="${1:?usage: img <file>}"
+  chafa --format=sixel --size "$(tput cols)x$(( $(tput lines) - 1 ))" "$f"
+}
+
 {{- end }}
