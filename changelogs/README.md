@@ -1,19 +1,31 @@
 # Changelogs — Destructive Updates
 
-This directory records breaking changes that affect existing machines: old
-directories/files that must be deleted, local config migrations, and anything
-that needs per-environment adjustment. The `chezmoi-migration` skill reads
-these when you say "更新一下" to decide what to apply on the current machine.
+Record breaking changes here so the `chezmoi-migration` skill can apply them
+on each machine when you say "更新一下".
+
+## When to log — the residual test
+
+Log a change only if it fails the **residual test**: after `chezmoi apply`,
+an old machine still has something left to do by hand —
+
+- old directories/files on disk that should be deleted or moved
+- local config that must be migrated (not re-rendered)
+- per-environment paths or values that need adjusting on this machine
+
+Additive changes (new config, new template, new app, new script) pass the
+test — `apply` installs everything, nothing is left over — and are never
+logged.
+
+The test is observable: run `chezmoi apply --dry-run` and ask whether an
+existing machine ends up clean. Clean means no entry.
 
 ## Rules
 
-- One file per change, named `YYYY-MM-DD-<slug>.md` (or `<commit>.md`).
-- Record only the date in the filename/frontmatter; no auto-expiry.
-- Files here are never deployed by chezmoi (see `.chezmoiignore`), they are
-  documentation for the migration agent.
-- Each entry must be **idempotent**: running it twice is a no-op, and the
-  entry states its completion condition so the agent can check whether it
-  still needs to run on a given machine.
+- One file per change: `YYYY-MM-DD-<slug>.md`.
+- Record the date; entries never expire.
+- Never deployed (see `.chezmoiignore`); read by the migration agent only.
+- Every entry is idempotent: re-running it is a no-op, and it states a
+  completion condition the agent checks before running it again.
 
 ## Template
 
@@ -21,12 +33,11 @@ these when you say "更新一下" to decide what to apply on the current machine
 # <Title>
 
 Date: YYYY-MM-DD
-Status: pending | applied   <!-- pending until it's been applied on this machine -->
+Status: pending | applied   <!-- pending until applied on this machine -->
 
 ## What changed
 
-One paragraph: the breaking change in the chezmoi source, and why it is
-destructive (deletes/moves files, rewrites local config, env-dependent).
+One paragraph: the change and the residual it leaves on old machines.
 
 ## Impact
 
@@ -39,6 +50,6 @@ Numbered commands the agent runs. Must be idempotent and safe to re-run.
 
 ## Completion condition
 
-How to check on a machine whether this migration is done (e.g. a file no
-longer exists, a config key present). If met, mark Status: applied.
+How to check on a machine that the migration is done (a file no longer
+exists, a config key present). If met, mark Status: applied.
 ```
