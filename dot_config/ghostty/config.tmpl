@@ -57,4 +57,8 @@ keybind = super+u=toggle_background_opacity
 # 注意: macOS 菜单栏快捷键(如 ⌘,)由系统先处理, remap 管不到它们。
 # 其他常见 remap: ctrl=super / left_control=right_alt
 key-remap = left_super=left_alt
+# opt 键当 Alt/Meta 用 (iTerm2 "Option sends Esc+" 等价物)。
+# 默认只在 U.S. Standard/International 布局下为 true; 当前布局 (Unicode Hex Input + Rime)
+# 不在其中, 需显式开启, 否则 opt+g 不发 ESC g, tmux 收不到 M-g。
+macos-option-as-alt = true
 {{- end }}
