@@ -9,6 +9,15 @@
 set-option -g focus-events on
 set -g set-clipboard on
 
+# native clipboard integration (replaces tmux-yank)
+{{ if eq .chezmoi.os "darwin" }}
+set -g copy-command 'pbcopy'
+{{ else if eq .chezmoi.os "linux" }}
+set -g copy-command 'xclip -selection clipboard'
+{{ else if eq .chezmoi.os "windows" }}
+set -g copy-command 'clip.exe'
+{{ end }}
+
 set-option -g prefix C-g
 unbind C-b
 bind C-a send-prefix # bind C-a as new tmux prefix
@@ -25,8 +34,25 @@ set -g status-interval 10
 set-option -g status-position bottom
 setw -g monitor-activity on # 非当前窗口有内容更新时在状态栏通知
 
+# start numbering at 1 and renumber windows to fill gaps
+set -g base-index 1
+set -g pane-base-index 1
+set -g renumber-windows on
+# let programs (nvim etc.) rename windows
+set -g allow-rename on
+
+# pane borders only when the window has multiple panes (hook keeps it in sync)
+set -g pane-border-status off
+set -g pane-border-format '#{pane_index} #{pane_current_command}'
+set-hook -g window-layout-changed 'if-shell "test #{window_panes} -gt 1" "set -w pane-border-status top" "set -w pane-border-status off"'
+
 # use tmux instead of screen to enable italics and fzf support
+# NOTE: tmux-direct breaks zsh (autosuggestions/syntax-highlighting render
+# duplicated characters). Truecolor still works: tmux sets COLORTERM=truecolor
+# for every pane (nvim picks it up) and ',*:RGB' gives the status bar truecolor.
 set -g default-terminal "tmux-256color"
+# advertise truecolor support to tmux's status line and pane borders
+set -ag terminal-features ',*:RGB'
 # make sure terminal passes cursor style (Ss, Se means set/reset cursor style)
 set -as terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
 {{ if eq .chezmoi.os "darwin" }}
@@ -46,6 +72,10 @@ set -sg escape-time 10
 set -g history-limit 50000
 # Increase tmux messages display duration from 750ms to 4s
 set -g display-time 4000
+# Persist command history for the tmux prompt (prefix + :) across restarts (3.5+)
+set -g history-file ~/.tmux/history
+# Keep more message/copy-mode history lines in the scrollback
+set -g message-limit 10000
 # Emacs key bindings in tmux command prompt (prefix + :)
 set -g status-keys emacs
 # Super useful when using "grouped sessions" and multi-monitor setup
@@ -65,16 +95,16 @@ set -as terminal-features 'tmux*:sixel'
 set -as terminal-features 'screen*:sixel'
 
 ## key-mappings
-bind c new-window -c "#{pane_current_path}"
-bind '"' split-window -c "#{pane_current_path}"
-bind % split-window -h -c "#{pane_current_path}"
-bind - splitw -v -c '#{pane_current_path}'
-bind | splitw -h -c '#{pane_current_path}'
+bind -N "New window" c new-window -c "#{pane_current_path}"
+bind -N "Split window" '"' split-window -c "#{pane_current_path}"
+bind -N "Split horizontal" % split-window -h -c "#{pane_current_path}"
+bind -N "Split vertical" - splitw -v -c '#{pane_current_path}'
+bind -N "Split horizontal" \| splitw -h -c '#{pane_current_path}'
 
-bind -r k select-pane -U
-bind -r j select-pane -D
-bind -r h select-pane -L
-bind -r l select-pane -R
+bind -r -N "Pane up" k select-pane -U
+bind -r -N "Pane down" j select-pane -D
+bind -r -N "Pane left" h select-pane -L
+bind -r -N "Pane right" l select-pane -R
 
 # resize panes with arrow keys, 5 cells per press (repeatable)
 bind -r Up resizep -U 5
@@ -95,27 +125,51 @@ unbind C-Up
 unbind C-Down
 
 # ctrl+arrow: swap pane left/right (native swap-pane prev/next)
-bind C-Left  swapp -U
-bind C-Right swapp -D
+bind -N "Swap pane up" C-Left  swapp -U
+bind -N "Swap pane down" C-Right swapp -D
 # ctrl+up/down: rotate panes forward / reverse (pane order, not strict geometry)
-bind C-Up    rotate-window
-bind C-Down  rotate-window -D
+bind -N "Rotate window" C-Up    rotate-window
+bind -N "Rotate window reverse" C-Down  rotate-window -D
 # ctrl+p/n: previous/next session (aligns with herdr workspace switching)
-bind C-p switch-client -p
-bind C-n switch-client -n
+bind -N "Previous session" C-p switch-client -p
+bind -N "Next session" C-n switch-client -n
 
 # swap the current window left / right in the tab order.
-bind -r < swap-window -d -t :-
-bind -r > swap-window -d -t :+
+bind -r -N "Swap window left" < swap-window -d -t :-
+bind -r -N "Swap window right" > swap-window -d -t :+
+
+# fuzzy window/session switcher
+bind -N "Choose window" w choose-tree -Zw
+# popup menu with common actions
+bind -N "Show tmux menu" m display-menu -T "⟪ Tmux Menu ⟫" \
+    "New Window"           c  "new-window -c '#{pane_current_path}'" \
+    "Split Horizontal"     %  "split-window -h -c '#{pane_current_path}'" \
+    "Split Vertical"       '"' "split-window -c '#{pane_current_path}'" \
+    "Zoom Pane"            z  "resize-pane -Z" \
+    "--" "--" "--" \
+    "Rename Window"        ,  "command-prompt -I '#W' 'rename-window %%'" \
+    "Kill Pane"            x  "kill-pane" \
+    "Kill Window"          &  "confirm-before kill-window" \
+    "--" "--" "--" \
+    "Copy Mode"            [  "copy-mode" \
+    "Paste Buffer"         ]  "paste-buffer" \
+    "Choose Window"        w  "choose-tree -Zw" \
+    "--" "--" "--" \
+    "Resurrect Save"       C-s "run-shell '~/.tmux/plugins/tmux-resurrect/scripts/save.sh'" \
+    "Resurrect Restore"    C-r "run-shell '~/.tmux/plugins/tmux-resurrect/scripts/restore.sh'" \
+    "Reload Config"        R  "source-file ~/.tmux.conf; display-message 'config reloaded'"
+# popup scratchpad terminal (3.2+); close with C-c or Escape (a running
+# popup swallows all keys, so C-g M cannot close it)
+bind -N "Open popup shell" M display-popup -h 60% -w 60% "zsh"
 
 ## copy mode
 bind -T copy-mode-vi v send-keys -X begin-selection
 bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
 # Easy config reload
-bind-key R source-file ~/.tmux.conf \; display-message "tmux.conf reloaded"
+bind-key -N "Reload config" R source-file ~/.tmux.conf \; display-message "tmux.conf reloaded"
 # save log
-bind P pipe-pane -o "cat >>~/Desktop/#W.log" \; display "Toggled logging to ~/Desktop/#W.log"
+bind -N "Toggle pane logging" P pipe-pane -o "cat >>~/Desktop/#W.log" \; display "Toggled logging to ~/Desktop/#W.log"
 
 
 ### ==== Plugins ====
@@ -134,11 +188,6 @@ set -g @plugin 'tmux-plugins/tpm'
 # https://draculatheme.com/tmux
 set -g @plugin 'dracula/tmux'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'tmux-plugins/tmux-yank'
-set -g @plugin 'tmux-plugins/tmux-copycat'
-
-# don't escape after yank
-set -g @yank_action 'copy-pipe' # or 'copy-pipe-and-cancel' for the default
 
 # 显示prefix键有没有被按下
 set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
