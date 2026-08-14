@@ -57,8 +57,10 @@ set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
 set -g visual-activity off
 
-# sixel image passthrough (iTerm2 3.5+, tmux 3.3+)
-set -as terminal-features 'xterm*:sixel'
+# sixel image passthrough (iTerm2 3.5+, tmux 3.3+).
+# Scoped to iTerm2's TERM only, so a future kitty terminal (TERM=xterm-kitty)
+# won't be told it supports sixel.
+set -as terminal-features 'xterm-256color*:sixel'
 set -as terminal-features 'tmux*:sixel'
 set -as terminal-features 'screen*:sixel'
 
