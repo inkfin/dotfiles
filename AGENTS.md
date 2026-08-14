@@ -85,6 +85,42 @@ dot_local/           # ~/.local
 
 Do NOT add plugins or heavy config to nvim.mini unless essential for daily work. Prefer built-in Neovim features over plugins.
 
+## Agent Skills — Two Homes
+
+There are **two separate skill trees**. Do not confuse them.
+
+| Tree | Path | Deployed? | Holds |
+|---|---|---|---|
+| Repo-scoped | `.agents/skills/<name>/` | **No** (git-tracked, read in place by the agent) | Config-related skills: `apple-design`, `neovim-config`, `chezmoi-migration` |
+| Global | `dot_agents/skills/exact_<name>/` | Yes → `~/.agents/skills/<name>/` | Generic agent skills shared across projects: `agent-mailbox`, `grill-me`, etc. |
+
+- **Config-related skill** (how to edit this repo's configs) → `.agents/skills/<name>/`. Never deployed; the agent reads it straight from the source dir. Example: `neovim-config`.
+- **Generic agent skill** (workflow, not repo-specific) → `dot_agents/skills/exact_<name>/`. Deploys to the global `~/.agents/skills/`.
+- Do NOT put config-related skills under `dot_agents/`; they would leak to the global tree.
+
+## Deletions Do Not Propagate
+
+**Deleting a chezmoi-tracked source file does NOT delete the target on disk.**
+Removing `dot_config/<app>/foo.toml` from the source only stops chezmoi from
+managing it; the file stays at `~/.config/<app>/foo.toml`. The same applies to
+`~/.agents/skills/<name>/`: if a global skill is removed from `dot_agents/`,
+the deployed copy lingers on machines that applied the old state.
+
+Two ways to clean up a leftover target:
+
+1. **`remove_` placeholder** — add an empty source file named `remove_<target>`.
+   On apply, chezmoi removes the target if it exists (file/symlink, or a
+   directory if empty; non-empty dirs are skipped). Example:
+   `dot_agents/skills/remove_chezmoi-migration` removes the deployed global
+   `~/.agents/skills/chezmoi-migration` that once shipped via
+   `dot_agents/skills/exact_chezmoi-migration`. Prefer this for pure deletions
+   (a file/dir that should simply be gone).
+2. **Migration changelog** — for complex changes (config content migration,
+   per-environment adjustments, moving state around), record a
+   `changelogs/YYYY-MM-DD-<slug>.md` entry and apply it via the
+   `chezmoi-migration` skill when the user says "更新一下". Use this when a
+   plain `remove_` cannot express what must happen.
+
 ## Adding a New App
 
 1. Create `dot_config/<app>/` with the config file(s).
