@@ -5,17 +5,26 @@
 ##
 ## Code:
 
+{{ $tv := output "tmux" "-V" | replace "tmux " "" | replace "next" "999.9" | trim -}}
+{{- $major := int (regexReplaceAll "^([0-9]+).*" $tv "${1}") -}}
+{{- $minor := int (regexReplaceAll "^[0-9]+\\.([0-9]+).*" $tv "${1}") -}}
+{{- $ver := add (mul $major 100) $minor -}}
+## version gates: >=301 menu, >=302 copy-command/terminal-features/extended-keys/popup,
+## >=303 allow-passthrough, >=305 extended-keys-format
+
 ## basic settings
 set-option -g focus-events on
 set -g set-clipboard on
 
-# native clipboard integration (replaces tmux-yank)
+# native clipboard integration (replaces tmux-yank) (3.2+)
+{{ if ge $ver 302 }}
 {{ if eq .chezmoi.os "darwin" }}
 set -g copy-command 'pbcopy'
 {{ else if eq .chezmoi.os "linux" }}
 set -g copy-command 'xclip -selection clipboard'
 {{ else if eq .chezmoi.os "windows" }}
 set -g copy-command 'clip.exe'
+{{ end }}
 {{ end }}
 
 set-option -g prefix C-g
@@ -51,8 +60,10 @@ set-hook -g window-layout-changed 'if-shell "test #{window_panes} -gt 1" "set -w
 # duplicated characters). Truecolor still works: tmux sets COLORTERM=truecolor
 # for every pane (nvim picks it up) and ',*:RGB' gives the status bar truecolor.
 set -g default-terminal "tmux-256color"
-# advertise truecolor support to tmux's status line and pane borders
+# advertise truecolor support to tmux's status line and pane borders (3.2+)
+{{ if ge $ver 302 }}
 set -ag terminal-features ',*:RGB'
+{{ end }}
 # make sure terminal passes cursor style (Ss, Se means set/reset cursor style)
 set -as terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
 {{ if eq .chezmoi.os "darwin" }}
@@ -61,8 +72,12 @@ set -as terminal-overrides ',xterm*:sitm=\E[3m'
 {{ end }}
 set-window-option -g xterm-keys on # tell tmux to send xterm keys
 # Enable modified key reporting (for keys like Ctrl/Alt+Enter)
+{{ if ge $ver 302 }}
 set -g extended-keys on
+{{ end }}
+{{ if ge $ver 305 }}
 set -g extended-keys-format csi-u
+{{ end }}
 # Default to zsh (some platform can't recognize default shell)
 set-option -g default-shell /bin/zsh
 
@@ -82,17 +97,21 @@ set -g status-keys emacs
 setw -g aggressive-resize on
 
 ## image preview
+{{ if ge $ver 303 }}
 set -g allow-passthrough on
+{{ end }}
 set -ga update-environment TERM
 set -ga update-environment TERM_PROGRAM
 set -g visual-activity off
 
-# sixel image passthrough (iTerm2 3.5+, tmux 3.3+).
+# sixel image passthrough (iTerm2 3.5+, tmux 3.3+). (3.2+)
 # Scoped to iTerm2's TERM only, so a future kitty terminal (TERM=xterm-kitty)
 # won't be told it supports sixel.
+{{ if ge $ver 302 }}
 set -as terminal-features 'xterm-256color*:sixel'
 set -as terminal-features 'tmux*:sixel'
 set -as terminal-features 'screen*:sixel'
+{{ end }}
 
 ## key-mappings
 bind -N "New window" c new-window -c "#{pane_current_path}"
@@ -140,7 +159,8 @@ bind -r -N "Swap window right" > swap-window -d -t :+
 
 # fuzzy window/session switcher
 bind -N "Choose window" w choose-tree -Zw
-# popup menu with common actions
+# popup menu with common actions (display-menu 3.0+, bind -N 3.1+)
+{{ if ge $ver 301 }}
 bind -N "Show tmux menu" m display-menu -T "⟪ Tmux Menu ⟫" \
     "New Window"           c  "new-window -c '#{pane_current_path}'" \
     "Split Horizontal"     %  "split-window -h -c '#{pane_current_path}'" \
@@ -158,9 +178,13 @@ bind -N "Show tmux menu" m display-menu -T "⟪ Tmux Menu ⟫" \
     "Resurrect Save"       C-s "run-shell '~/.tmux/plugins/tmux-resurrect/scripts/save.sh'" \
     "Resurrect Restore"    C-r "run-shell '~/.tmux/plugins/tmux-resurrect/scripts/restore.sh'" \
     "Reload Config"        R  "source-file ~/.tmux.conf; display-message 'config reloaded'"
-# popup scratchpad terminal (3.2+); close with C-c or Escape (a running
-# popup swallows all keys, so C-g M cannot close it)
-bind -N "Open popup shell" M display-popup -h 60% -w 60% "zsh"
+{{ end }}
+# popup scratchpad terminal (3.2+). -E: 关闭 = exit 或 C-d（shell 退出时自动关）。
+# 注意：popup 是模态 overlay，内部所有按键（含 prefix C-g）都直接进 shell——
+# 这是 3.7 的设计限制，tmux 3.8 的 floating panes 才像普通 pane 一样可操作。
+{{ if ge $ver 302 }}
+bind -N "Open popup shell" M display-popup -E -h 60% -w 60% "zsh"
+{{ end }}
 
 ## copy mode
 bind -T copy-mode-vi v send-keys -X begin-selection
