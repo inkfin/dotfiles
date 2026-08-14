@@ -84,6 +84,14 @@ dot_local/           # ~/.local
   ```
 - To stop managing a file but keep it on disk: add its path to `.chezmoiignore`. The file remains on the system but chezmoi stops tracking it (e.g. `.config/nvim.old`).
 - Guard the inverse: on Windows, exclude Unix scripts (`install-packages.sh`, `.tmux/`, `.zshrc`) with `{{ if eq .chezmoi.os "windows" }}`.
+- **Two kinds of ignore, two homes.** Ignoring an app's runtime artifacts that
+  belong to one directory → a per-directory `.chezmoiignore` beside the files
+  (see `dot_config/Rime/`, `dot_local/share/rime-ls/`). Excluding an app from a
+  platform/profile ("deploy this dir only on X") → keep it in the root
+  `.chezmoiignore` as a global condition. Splitting OS/profile blocks into
+  subdirectory ignores moves the condition without simplifying it and scatters
+  the deployment matrix; only localize an ignore when the ignore itself is
+  naturally per-directory.
 
 ## Neovim Setup
 

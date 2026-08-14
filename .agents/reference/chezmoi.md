@@ -82,7 +82,7 @@ placeholder to clean it.
 
 | Path | Purpose | In this repo |
 |---|---|---|
-| `.chezmoiignore` | patterns/OS blocks to exclude from managing; excluded targets stay on disk | yes — OS/profile blocks |
+| `.chezmoiignore` | patterns/OS blocks to exclude from managing; excluded targets stay on disk. Per-directory files apply only to their own dir (see AGENTS.md for when to localize vs keep global) | yes — root OS/profile blocks + per-dir Rime/rime-ls |
 | `.chezmoidata.toml` | data for `{{ .xxx }}` keys | yes — `[external]` keys |
 | `.chezmoiexternals/*.toml` | external sources (git repos, archives) fetched at apply | yes — doomemacs, rime, tmux, etc. |
 | `.chezmoitemplates/` | named template fragments, included via `include` | empty |
