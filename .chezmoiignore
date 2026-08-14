@@ -1,6 +1,8 @@
 README.md
 AGENTS.md
 
+changelogs/
+
 **/__pycache__/
 **/*.pyc
 
