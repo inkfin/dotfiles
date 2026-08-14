@@ -9,8 +9,8 @@ theme = TokyoNight Night
 
 # --- 字体 ---
 # font-family 可重复指定，作为回退链(primary -> fallback)。
-# 常用: FantasqueSansM Nerd Font Mono / JetBrains Mono / IosevkaTerm NFM
-font-family = FantasqueSansM Nerd Font Mono
+# 引用 chezmoi data.font.term_font（换机改 ~/.config/chezmoi/chezmoi.toml 一处即可）
+font-family = {{ .font.term_font }}
 font-size = 20
 
 # --- 光标 ---

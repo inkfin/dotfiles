@@ -86,7 +86,7 @@
   "formatter": "language_server",
   "terminal": {
     "font_size": 11.0,
-    "font_family": "FiraCode Nerd Font Mono",
+    "font_family": "{{ .font.ui_font }}",
   },
   "agent": {
     "show_turn_stats": true,
@@ -121,7 +121,9 @@
   },
   "icon_theme": "Material Icon Theme",
   "base_keymap": "VSCode",
+  "ui_font_family": "{{ .font.ui_font }}",
   "ui_font_size": 14.0,
+  "buffer_font_family": "{{ .font.editor_font }}",
   "buffer_font_size": 13.0,
   "theme": {
     "mode": "dark",

@@ -11,10 +11,20 @@
     name = {{ $name | quote }}
     fullname = "Ink Zhang"
     email = {{ $email | quote }}
+# Fonts: centralized per-machine names (nerd font names differ across
+# platforms/installs). Apps reference these via the font data keys.
+# Override per machine in ~/.config/chezmoi/chezmoi.toml [data.font].
 [data.font]
-    term_font = "UbuntuMono Nerd Font Mono"
-    editor_font = "JetbrainsMono Nerd Font Mono"
+{{- if eq .chezmoi.os "windows" }}
+    term_font = "IosevkaTerm NFM Medium"
+    editor_font = "Sarasa Term SC Nerd Font"
     ui_font = "ZedMono Nerd Font Mono"
+{{- else }}
+    term_font = "FantasqueSansM Nerd Font Mono"
+    editor_font = "FantasqueSansM Nerd Font Mono"
+    ui_font = "FiraCode Nerd Font Mono"
+{{- end }}
+    cjk_font = "Sarasa Term SC Nerd Font"
 [git]
     autoCommit = false
     autoPush = false

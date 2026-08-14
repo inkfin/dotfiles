@@ -193,7 +193,7 @@ end
 
 -- Neovide GUI
 if vim.g.neovide then
-    local guifont     = "FantasqueSansM Nerd Font Mono"
+    local guifont     = "{{ .font.editor_font }}"
     local guifontsize = 16
 
     function _G.AdjustFontSize(amount)

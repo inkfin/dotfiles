@@ -6,11 +6,11 @@ local t = require("tools")
 t.require_config("config.retro_tab_bar")
 
 local font_with_fallback = {}
-if t.os("windows") then
-	font_with_fallback = { "IosevkaTerm NFM Medium", "JetBrains Mono" }
-elseif t.os("macos") then
-	font_with_fallback = { "JetBrains Mono" }
-end
+{{- if eq .chezmoi.os "windows" }}
+font_with_fallback = { "{{ .font.term_font }}", "JetBrains Mono" }
+{{- else }}
+font_with_fallback = { "{{ .font.term_font }}" }
+{{- end }}
 
 local window_background_opacity = 0.6
 if t.os("windows") then

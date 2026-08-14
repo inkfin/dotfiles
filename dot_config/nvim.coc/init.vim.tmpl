@@ -505,7 +505,7 @@ autocmd BufNewFile CMakeLists.txt 0r ~/.config/nvim/template/CMakeLists.txt
 """ Neovide Configurations
 if exists("g:neovide")
 
-set guifont=FiraCode\ Nerd\ Font\ Mono:h18
+set guifont={{ .font.editor_font | replace " " "\\ " }}:h18
 set linespace=0
 let g:neovide_scale_factor = 1.0
 
