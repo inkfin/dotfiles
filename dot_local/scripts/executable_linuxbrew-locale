@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+# Generate a locale-archive for linuxbrew glibc so its binaries can resolve
+# UTF-8 locales. linuxbrew glibc's default localedir is opt/glibc/lib/locale
+# (a symlink into the active Cellar), which ships no locale data of its own.
+#
+# Do NOT set LOCPATH for this: LOCPATH switches glibc from archive lookup to
+# per-locale directory lookup, which breaks system glibc (Ubuntu only ships
+# /usr/lib/locale/locale-archive, no directory tree). Instead generate the
+# archive in linuxbrew glibc's own localedir.
+#
+# Re-run after `brew upgrade glibc` (upgrade removes the archive).
+
+set -eu
+
+localedef=/home/linuxbrew/.linuxbrew/opt/glibc/bin/localedef
+localedir=/home/linuxbrew/.linuxbrew/opt/glibc/lib/locale
+
+if [ ! -x "$localedef" ]; then
+    echo "linuxbrew-locale: $localedef not found (linuxbrew glibc not installed)" >&2
+    exit 0
+fi
+
+[ -d "$localedir" ] || mkdir -p "$localedir"
+
+# Enumerate the system's UTF-8 locales so linuxbrew matches what the machine
+# actually uses (e.g. en_US.UTF-8). Fall back to a minimal set on failure.
+locales=$(locale -a 2>/dev/null | grep -E '\.(utf8|UTF-8)$' | sed 's/\.utf8$/.UTF-8/' | sort -u) \
+    || locales="C.UTF-8 en_US.UTF-8"
+[ -n "$locales" ] || locales="en_US.UTF-8"
+
+for loc in $locales; do
+    lang=${loc%.*}          # en_US
+    case "$lang" in
+        C | POSIX) continue ;;
+    esac
+    "$localedef" -i "$lang" -f UTF-8 --quiet "$loc" 2>/dev/null || true
+done
+
+if [ -f "$localedir/locale-archive" ]; then
+    echo "linuxbrew-locale: generated $(stat -c %s "$localedir/locale-archive" 2>/dev/null || echo '?') bytes at $localedir/locale-archive"
+else
+    echo "linuxbrew-locale: no locale-archive produced (no system locale definitions?)" >&2
+fi
