@@ -1,0 +1,16 @@
+
+# Locale: match zsh setup. Linuxbrew glibc reads its own locale-archive from
+# opt/glibc/lib/locale. Do NOT set LOCPATH here: it breaks system glibc.
+# Non-login interactive bash (e.g. in tmux) skips ~/.profile.
+export LANG="${LANG:-en_US.UTF-8}"
+export LC_ALL="${LC_ALL:-en_US.UTF-8}"
+
+          # Adding wsl-open as a browser for Bash for Windows
+          if [[ $(uname -r) =~ (m|M)icrosoft ]]; then
+            if [[ -z $BROWSER ]]; then
+              export BROWSER=wsl-open
+            else
+              export BROWSER=$BROWSER:wsl-open
+            fi
+          fi
+          

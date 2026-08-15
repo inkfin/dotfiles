@@ -3,8 +3,8 @@
 # Put environment setup here, not interactive aliases or key bindings.
 
 # Machine locale.
-export LANG="en_SG.UTF-8"
-export LC_ALL="en_SG.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 # homebrew.zsh uses the shared PATH and helper functions. Keep the second
 # source conditional: without helper.zsh, homebrew.zsh cannot do useful work.
