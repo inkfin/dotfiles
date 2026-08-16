@@ -50,7 +50,7 @@ setopt hist_ignore_dups hist_ignore_space hist_reduce_blanks
 setopt share_history inc_append_history
 
 # ==== Key bindings ====
-bindkey -e
+bindkey -v
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search

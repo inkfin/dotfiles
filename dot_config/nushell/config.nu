@@ -17,7 +17,7 @@ def nu_version_at [major: int, minor: int, patch?: int] {
 
 $env.EDITOR = "nvim"
 $env.SHELL = "nu"
-$env.config.edit_mode = "emacs"
+$env.config.edit_mode = "vi"
 $env.config.buffer_editor = "nvim"
 # error_style: "short" added in 0.106; older versions only accept "fancy"/"plain"
 $env.config.error_style = (if (nu_version_at 0 106 0) { "short" } else { "plain" })
@@ -33,7 +33,7 @@ $env.config.history = {
 }
 
 $env.config.cursor_shape = {
-    emacs: "line"
+    emacs: "block"
     vi_insert: "line"
     vi_normal: "block"
 }
