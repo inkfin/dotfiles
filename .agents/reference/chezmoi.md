@@ -122,7 +122,13 @@ Worth knowing about even though this repo does not use them yet.
   depending on a newer chezmoi feature.
 - **Encryption** — `encrypted_` prefix + `chezmoi encrypt`/`decrypt`/`age-keygen`,
   with age or gpg backends. Keeps secrets in the source repo without plaintext.
-  Not used here; secrets stay out of the tree entirely.
+  In use: `dot_config/yazi/create_encrypted_vfs.toml.age` (create_ so machines
+  with the key can keep a hand-made local file after `apply`). The age private key lives
+  machine-local at `~/.config/chezmoi/age.key` (never tracked); the public
+  recipient is shared via `.chezmoidata.toml` `[external].encryption_recipient`.
+  Config emits `encryption = "age"` + `[age]` only when that key exists
+  (`stat` guard in `.chezmoi.toml.tmpl`), and `.chezmoiignore` skips encrypted
+  files on machines without the key so `apply` never tries to decrypt there.
 - **Password managers** — chezmoi can source values from 1Password, Bitwarden,
   pass, Vault, etc. via template functions (`{{ onepassword ... }}` etc.).
   Replaces hardcoded secrets in templates.

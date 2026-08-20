@@ -10,6 +10,13 @@
 {{- $name       := promptStringOnce . "data.name" "What's your name" "inkfin" }}
 {{- $email      := promptStringOnce . "data.email" "What's your email" "inkfinite@qq.com" }}
 
+{{- /* Encryption: only machines with ~/.config/chezmoi/age.key get the [age] block */}}
+{{- $ageKey := joinPath .chezmoi.homeDir ".config/chezmoi/age.key" }}
+{{- $hasAge := stat $ageKey }}
+{{- if $hasAge }}
+encryption = "age"
+{{- end }}
+
 [data]
     profile = {{ $profile | quote }}
     name = {{ $name | quote }}
@@ -28,6 +35,11 @@
     ui_font = "FiraCode Nerd Font Mono"
 {{- end }}
     cjk_font = "Sarasa Term SC Nerd Font"
+{{- end }}
+{{- if $hasAge }}
+[age]
+    identity = {{ $ageKey | quote }}
+    recipient = {{ dig "external" "encryption_recipient" "" . | quote }}
 {{- end }}
 [git]
     autoCommit = false

@@ -5,3 +5,5 @@ zsh = true
 rime = false
 # neovim config dir
 neovim_dir = "nvim.lazyvim"
+# age public key for chezmoi encrypted_ files; private key is ~/.config/chezmoi/age.key (backup in 1Password Private vault)
+encryption_recipient = "age18gz4rjpv8ne37ev6smntj2vnnud59hy89gdwtk9j85yxtragxgyq75ujuu"
