@@ -10,18 +10,21 @@ description: >-
 
 # Agents Supervisor
 
-**Policy** for dispatching coding agents through [Herdr](https://herdr.dev): topology,
-naming, permissions, reports. CLI syntax lives in the binary — before any control
-command:
+**Policy** for dispatching coding agents through [Herdr](https://herdr.dev) (0.8.2):
+topology, naming, permissions, reports. CLI syntax lives in the binary — before any
+control command:
 
 ```bash
 herdr --skill
 herdr --help
-herdr <group>    # agent | worktree | session | …
+herdr <group>    # agent | pane | terminal | workspace | tab | worktree | session | …
 ```
 
 Strategy from this file; syntax from the binary. Exception: `herdr --skill` says stop
 unless `HERDR_ENV=1` — this file wins; outside dispatch is allowed under **Session pin**.
+
+The bundled skill (`herdr --skill`) is the canonical reference for this binary; when in
+doubt about any command or lifecycle behavior, diff against it or the manpage.
 
 ## Host mode
 
@@ -89,15 +92,22 @@ Shared-checkout overwrite risk: mention once; user’s call.
 
 ## Start
 
-Default kind: `cursor`. Other kinds: confirm `command -v <cli>` first.
+Default kind: `cursor`. Other kinds: confirm `command -v <cli>` first (`herdr agent
+start --help` lists the installed kinds).
 
 - Agent name = job slug `[a-z][a-z0-9_-]{0,31}`, unique among live agents (`-2` on collision).
   Tab name = same slug (job, not kind).
+- `agent start` needs an **existing** shell pane at its interactive prompt (create via
+  `pane split --current --direction right --cwd "$PWD" --no-focus` — keep caller focus); it
+  never splits or moves layout. It returns only when the agent is detected and ready; a
+  blocked startup returns `agent_not_ready` early but keeps the name for `read`/`send-keys`.
+  `--timeout` defaults to 30s.
 - Always pass `--model` after `--` (with permission flags). Omitted model inherits the user’s
   last interactive choice — the largest avoidable cost on fleets.
 - Fresh agent per task; reuse only to continue one started in this conversation, or when the
   user points at it.
-- Box without Herdr (logs, files) → `remote` skill. `herdr --remote` is TUI attach only.
+- Box without Herdr (logs, files) → `remote` skill. `herdr --remote` is TUI attach only
+  (works from Windows clients too).
 
 Cursor flag presets (other kinds: check that CLI):
 
@@ -138,6 +148,15 @@ Reports live outside the repo because alternate-screen TUIs drop long answers fr
 herdr agent prompt <name> "<self-contained prompt>" --wait --timeout <ms>
 ```
 
+`agent prompt` rejects an agent already waiting at an approval/question dialog with
+`agent_blocked` before sending anything — inspect the UI and bring it to the user, do not
+answer for them. From a non-working state, `--wait` first requires an observed lifecycle
+change within 5s or it returns `agent_prompt_stalled` (a shorter `--timeout` returns
+`timeout`); it then settles on `idle`/`done`/`blocked` unless you pass `--until` for a
+specific state. It tracks lifecycle state, not turns — if the agent was already `working`,
+your ask returning may satisfy it. Use `--until blocked` to wait for an already-running
+agent to request input.
+
 On return: read the report file; summarise for the user (see **Report**).
 
 ### Peer mailbox
@@ -157,10 +176,14 @@ must share findings mid-flight:
 herdr agent list
 herdr agent get <name>
 herdr agent read <name> --source recent-unwrapped --lines 120
+herdr agent explain <name> --json   # why Herdr classified a pane a given way
 ```
 
-**Read** is always safe (does not mark tabs seen). Prefer `recent-unwrapped`. Empty long output
-usually means alternate screen — use the report file.
+**Read** is always safe (does not mark tabs seen). Prefer `recent-unwrapped`. Read sources:
+`visible` (rendered viewport), `recent`, `recent-unwrapped` (logs/transcripts), `detection`
+(bottom-buffer snapshot used for agent detection). Add `--format ansi` when color/styling is
+evidence. `--lines` only reaches Herdr host scrollback, not a TUI's alternate screen — empty
+long output usually means alternate screen → use the report file.
 
 **Write** (`prompt`, `send-keys`) needs care: the user may be watching that terminal.
 
@@ -168,8 +191,11 @@ usually means alternate screen — use the report file.
   turn ends, not when your ask finishes. Non-working prompt with no lifecycle change in ~5s →
   `agent_prompt_stalled`.
 - Skip the `focused: true` pane from outside (often the user’s own line). If that is the real
-  target, say so and let the user act.
-- `send-keys` (`esc`, `ctrl+c`) only as last resort, named agent, ask first.
+  target, say so and let the user act. In `idle` vs `done`: `done` is the same busy-idle state
+  after unseen background work; `blocked` means an approval/question UI; `unknown` is a
+  present-but-unclassifiable agent — none prove completion on their own.
+- `send-keys` (`esc`, `ctrl+c`) only as last resort, named agent, ask first; Herdr validates
+  keys before writing.
 
 `blocked` → `agent get` / `agent read`, then **bring the question to the user**. Do not approve,
 accept a plan, or answer a permission prompt for them.

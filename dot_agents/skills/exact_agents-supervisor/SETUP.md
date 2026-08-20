@@ -25,3 +25,14 @@ herdr config check
 
 Worktrees collect under `~/.agents/worktrees` via `[worktrees].directory` — Herdr owns paths;
 do not pass worktree directories by hand.
+
+## Gotchas
+
+- **Panes open bash instead of zsh.** The herdr *server* inherits the passwd
+  `$SHELL` (often `/bin/bash`), not your interactive shell — so fresh/restored/remote-attached
+  panes start bash unless `[terminal].default_shell` is pinned. Root fix: set
+  `default_shell = "zsh"` in `dot_config/herdr/config.toml.tmpl` (empty means `$SHELL`, then
+  `/bin/sh`). New panes pick it up after `reload-config`; an existing pane keeps its shell
+  until recreated, so a session restore (server restart) re-shells the whole layout.
+- Editing `~/.zshrc` or making your shell a login shell does **not** change the server's
+  env — the server uses whatever env launched it.
