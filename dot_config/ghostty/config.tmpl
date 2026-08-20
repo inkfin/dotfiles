@@ -11,6 +11,9 @@ theme = TokyoNight Night
 # font-family 可重复指定，作为回退链(primary -> fallback)。
 # 引用 chezmoi data.font.term_font（换机改 ~/.config/chezmoi/chezmoi.toml 一处即可）
 font-family = {{ .font.term_font }}
+# CJK 回退: 普通英文 nerd font 无汉字, 会沿此回退链落到 cjk_font(SC 字体)取简体字形。
+# 不用 font-codepoint-map 钉死区间, 以免 term_font 自带 CJK 时被强制覆盖成 cjk_font。
+font-family = {{ .font.cjk_font }}
 font-size = 20
 
 # --- 光标 ---
@@ -30,6 +33,11 @@ shell-integration-features = no-cursor
 right-click-action = ignore
 # 是否允许终端 app 请求鼠标事件(nvim 选中/悬停等)。true 为默认。
 mouse-reporting = true
+# 链接: macOS 是按住 ⌘ 悬停+点击, Linux 是 ctrl。但 app 一旦开了 mouse
+# reporting(如 herdr --remote 的 mouse_capture), ghostty 就停止检测链接,
+# ⌘+点击 会被 app 吞掉。ghostty 没有 bypass 修饰键配置, 唯一的逃生口是
+# 按住 shift 丢弃 mouse capture: 所以 herdr 里用 Shift+⌘+click 开链接,
+# 不按 shift 时 herdr 的鼠标 UI(侧边栏点到切换)照常工作。
 
 # --- 窗口透明 ---
 # 背景不透明度: 1=不透明, 0=全透明。macOS 改动需完全重启 Ghostty 生效。
