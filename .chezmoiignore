@@ -75,6 +75,13 @@ install-packages.sh
 !.local/scripts/*.ps1
 {{ end }}
 
+# xclip shim: headless Linux servers + WSL only — GUI Linux/macOS/Windows
+# use the native clipboard (real xclip / wl-copy / pbcopy / PowerShell);
+# on WSL the shim itself routes to clip.exe, the native Windows clipboard.
+{{- if not (and (eq .chezmoi.os "linux") (or (hasPrefix "server" .profile) (env "WSL_DISTRO_NAME"))) }}
+.local/bin/xclip
+{{- end }}
+
 # Headless profiles (server-personal / server-work): skip GUI/desktop configs
 {{- if hasPrefix "server" .profile }}
 .config/alacritty/

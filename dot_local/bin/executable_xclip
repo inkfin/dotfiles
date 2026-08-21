@@ -1,0 +1,48 @@
+#!/bin/sh
+# xclip shim: prefer the native clipboard everywhere.
+#   WSL: clip.exe / powershell.exe Get-Clipboard
+#   X11/Wayland display + real xclip: delegate to it
+#   headless: OSC 52 via tmux forwarding (set-clipboard on)
+wsl=
+if [ -n "${WSL_DISTRO_NAME:-}" ] || grep -qi microsoft /proc/version 2>/dev/null; then
+    wsl=1
+fi
+read_mode=
+for a in "$@"; do
+    [ "$a" = "-o" ] && read_mode=1
+done
+osc52() {
+    payload=$(cat)
+    [ -n "$payload" ] || exit 0
+    b64=$(printf '%s' "$payload" | base64 -w0 2>/dev/null || printf '%s' "$payload" | base64)
+    printf '\033]52;c;%s\007' "$b64"
+    exit 0
+}
+if [ -n "$wsl" ]; then
+    if [ -n "$read_mode" ]; then
+        powershell.exe -NoProfile -Command Get-Clipboard 2>/dev/null | tr -d '\r'
+        exit $?
+    fi
+    [ -t 0 ] && exit 0
+    payload=$(cat)
+    [ -n "$payload" ] || exit 0
+    printf '%s' "$payload" | clip.exe && exit 0
+    printf '%s' "$payload" | osc52
+fi
+self=$(realpath "$0" 2>/dev/null || command -v "$0" 2>/dev/null)
+real=
+for d in $(printf '%s' "$PATH" | tr ':' ' '); do
+    if [ -x "$d/xclip" ] && ! [ "$d/xclip" -ef "$self" ]; then
+        real="$d/xclip"
+        break
+    fi
+done
+if [ -n "$read_mode" ]; then
+    [ -n "$real" ] || exit 1
+    exec "$real" "$@"
+fi
+if { [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; } && [ -n "$real" ]; then
+    "$real" "$@"
+    [ $? -eq 0 ] && exit 0
+fi
+osc52
