@@ -22,7 +22,8 @@ changelogs/
 
 # Encrypted files: only deploy where the machine-local age key exists
 {{- if not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/age.key")) }}
-.config/yazi/vfs.toml
+# Without age configured the .age suffix is kept in the target name
+**/*.age
 {{- end }}
 
 # MacOS specific settings
