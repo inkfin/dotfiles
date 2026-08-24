@@ -44,9 +44,6 @@ encryption = "age"
 [git]
     autoCommit = false
     autoPush = false
-[diff]
-    command = "delta"
-    args = ["--color-only", "--line-numbers", "--syntax-theme=Nord", {{`"{{ .Destination }}"`}}, {{`"{{ .Target }}"`}}]
 [merge]
     command = "nvim"
     args = ["-d", {{`"{{ .Destination }}"`}}, {{`"{{ .Source }}"`}}]
