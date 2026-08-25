@@ -3,8 +3,10 @@
 --
 -- This keeps the markup feature set intentionally small in nvim.mini:
 -- - `render-markdown.nvim` for in-editor Obsidian-like visual rendering.
--- - `lukas-reineke/headlines.nvim` for styled heading lines that make section
---   titles read more like a notes app than raw markdown source.
+--   This also covers the old headlines.nvim role: the heading config below
+--   gives every heading level a full-width background bar (the successor
+--   route recommended by headlines' author and by LazyVim upstream, since
+--   headlines.nvim is effectively unmaintained and broken on Neovim 0.12).
 -- - a Snacks toggle on `<leader>um` to turn rendering on/off per session.
 -- - `<localleader>t*` task toggles so markdown checkboxes can be edited by
 --   mnemonic status names instead of remembering symbolic forms like `[!]`.
@@ -14,11 +16,17 @@
 
 require("pack").add({
     "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-    "https://github.com/lukas-reineke/headlines.nvim",
 })
 
 local ok, render_markdown = pcall(require, "render-markdown")
 if not ok then return end
+
+-- Reuse the old Headline1..6 groups (linked to Headline -> ColorColumn) so
+-- the heading bars keep the same subdued background tone headlines.nvim had,
+-- instead of the brighter per-level colors render-markdown defaults to.
+for i = 1, 6 do
+    vim.api.nvim_set_hl(0, "Headline" .. i, { link = "Headline", default = true })
+end
 
 render_markdown.setup({
     file_types = { "markdown" },
@@ -34,6 +42,13 @@ render_markdown.setup({
     },
     heading = {
         sign = true,
+        -- Full-width background bars on every heading level: this replaces
+        -- headlines.nvim's headline_highlights + fat headlines look.
+        backgrounds = {
+            "Headline1", "Headline2", "Headline3",
+            "Headline4", "Headline5", "Headline6",
+        },
+        widths = { "full", "full", "full", "full", "full", "full" },
     },
     pipe_table = {
         style = "normal",
@@ -57,29 +72,6 @@ render_markdown.setup({
         },
     },
 })
-
-local ok_headlines, headlines = pcall(require, "headlines")
-if ok_headlines then
-    local opts = {
-        markdown = {
-            headline_highlights = {},
-            fat_headline_lower_string = "▀",
-        },
-    }
-
-    for i = 1, 6 do
-        local hl = "Headline" .. i
-        vim.api.nvim_set_hl(0, hl, { link = "Headline", default = true })
-        table.insert(opts.markdown.headline_highlights, hl)
-    end
-
-    -- Schedule to keep markdown startup responsive when opening large notes
-    -- directly from the CLI.
-    vim.schedule(function()
-        headlines.setup(opts)
-        headlines.refresh()
-    end)
-end
 
 if Snacks and Snacks.toggle then
     Snacks.toggle({
