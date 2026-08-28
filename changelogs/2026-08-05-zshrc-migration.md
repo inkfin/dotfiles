@@ -1,7 +1,6 @@
 # Migrate platform-specific zshrc to unified chezmoi-managed zsh layout
 
 Date: 2026-08-05
-Status: applied
 
 ## What changed
 

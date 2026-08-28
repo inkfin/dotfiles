@@ -31,6 +31,24 @@ existing machine ends up clean. Clean means no entry.
 - Never deployed (see `.chezmoiignore`); read by the migration agent only.
 - Every entry is idempotent: re-running it is a no-op, and it states a
   completion condition the agent checks before running it again.
+- Changelogs are **shared across machines**; applied-ness is per-machine and
+  must NOT be recorded in this directory (it would go stale). The completion
+  condition, run on the current machine, is the only gate. After a verified
+  apply the agent drops a machine-local marker — see "Applied markers".
+
+## Applied markers
+
+After an entry's completion condition verifies, the agent writes:
+
+```
+~/.local/state/chezmoi-migrations/<slug>
+```
+
+(content: the date). The marker lives in the machine's home dir — never in
+git, so it cannot leak across machines or go stale in this repo. It is
+bookkeeping for humans and agents (`ls ~/.local/state/chezmoi-migrations`
+shows what this machine has migrated), **not** a gate: when in doubt, trust
+the completion condition over the marker.
 
 ## Template
 
@@ -38,7 +56,6 @@ existing machine ends up clean. Clean means no entry.
 # <Title>
 
 Date: YYYY-MM-DD
-Status: pending | applied   <!-- pending until applied on this machine -->
 
 ## What changed
 
@@ -56,5 +73,6 @@ Numbered commands the agent runs. Must be idempotent and safe to re-run.
 ## Completion condition
 
 How to check on a machine that the migration is done (a file no longer
-exists, a config key present). If met, mark Status: applied.
+exists, a config key present). If met, write the marker (see Applied
+markers) and skip re-running.
 ```

@@ -26,17 +26,25 @@ When the user asks to update:
    ls -1 changelogs/ | grep -E '^[0-9]{4}-'
    ```
 
-2. **Filter.** For each entry, check its completion condition on the current
-   machine. Skip entries already applied or already satisfied; keep only
-   pending ones.
+2. **Filter.** For each entry, run its completion condition on the current
+   machine — that condition is the only gate. Entries carry no applied
+   state: the same changelog file is shared by every machine, so nothing in
+   it can tell you whether *this* machine is done. The machine-local marker
+   `~/.local/state/chezmoi-migrations/<slug>` is bookkeeping only; trust the
+   condition over the marker when they disagree.
 
 3. **Apply.** Run each pending entry's migration steps exactly as written.
    For destructive steps, read the current files first and touch nothing
-   unmanaged or unrelated.
+   unmanaged or unrelated. Every entry is idempotent — re-running a
+   satisfied entry is a no-op.
 
 4. **Verify.** Confirm each applied entry's completion condition now holds.
 
-5. **Mark.** Set `Status: applied` in each applied entry's file.
+5. **Mark.** Write the machine-local marker (never record applied-ness in
+    the repo — it would go stale):
+    ```
+    mkdir -p ~/.local/state/chezmoi-migrations && date > ~/.local/state/chezmoi-migrations/<slug>
+    ```
 
 6. **Report.** Which entries applied, which skipped (and why), and any manual
    steps left for the user (restart an app, re-login).
