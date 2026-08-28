@@ -1,0 +1,22 @@
+# 白霜拼音 patch
+# 语言模型参考 <https://github.com/amzxyz/RIME-LMDG>（万象 LTS）与
+# <https://www.mintimate.cc/zh/guide/languageModel.html>
+# gram 文件 wanxiang-lts-zh-hans.gram 放到 Rime 用户目录（见 changelogs/ 迁移指南）
+
+patch:
+  translator/dictionary: rime_frost_custom # 挂载词库 rime_frost_custom
+  pin_cand_filter:
+    __include: pin_candidate:/list
+
+  # 语言模型（octagram 插件；鼠须管 1.1.0+ 已内置）
+  grammar:
+    language: wanxiang-lts-zh-hans
+    collocation_max_length: 6
+    collocation_min_length: 3
+    collocation_penalty: -14
+    non_collocation_penalty: -6
+    weak_collocation_penalty: -100
+    rear_penalty: -20
+  translator/contextual_suggestions: true
+  translator/max_homophones: 7
+  translator/max_homographs: 7

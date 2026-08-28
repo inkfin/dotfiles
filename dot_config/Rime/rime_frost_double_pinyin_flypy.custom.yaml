@@ -1,0 +1,5 @@
+# 让小鹤双拼与全拼共用同一个自定义词库 rime_frost_custom，
+# 从而共用同一个用户词库（rime_frost_custom.userdb），
+# 避免全拼 / 双拼各记一份、互不互通。
+patch:
+  translator/dictionary: rime_frost_custom

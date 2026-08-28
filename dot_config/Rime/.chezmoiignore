@@ -5,5 +5,3 @@ build/
 sync/
 *.userdb/
 *.userdb
-rime_ice.userdb
-rime_ice_custom.userdb
