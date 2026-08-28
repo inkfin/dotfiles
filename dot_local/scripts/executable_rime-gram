@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Download the wanxiang LTS grammar model (~400MB) into the live Rime user dir.
+#
+# The .external.rime_gram flag (see dot_config/Rime/rime_frost.custom.yaml.tmpl)
+# only switches which model the schema uses; this script fetches the file
+# itself — deliberately outside chezmoi so `chezmoi update -R` never pulls it.
+#
+# Usage:
+#   rime-gram          download (resumes a partial file)
+#   rime-gram --force  delete and re-download (after an LTS model update)
+set -euo pipefail
+
+URL="https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
+
+dir=""
+for d in "$HOME/.config/Rime" "$HOME/.local/share/fcitx5/rime" "$HOME/.config/ibus/rime"; do
+  if [ -d "$d" ]; then dir="$d"; break; fi
+done
+[ -n "$dir" ] || { echo "error: no Rime user dir found" >&2; exit 1; }
+
+out="$dir/wanxiang-lts-zh-hans.gram"
+[ "${1:-}" = "--force" ] && rm -f "$out"
+
+# skip when the file is already complete (avoid curl -C - 416 on full files)
+if [ -f "$out" ]; then
+  expected=$(curl -sIL "$URL" | tr -d '\r' | awk 'tolower($1)=="content-length:"{len=$2} END{print len}')
+  size=$(stat -f%z "$out" 2>/dev/null || stat -c%s "$out" 2>/dev/null || echo "")
+  if [ -n "$expected" ] && [ "$size" = "$expected" ]; then
+    echo "already downloaded: $out ($size bytes, use --force to re-download)"
+    exit 0
+  fi
+fi
+
+curl -fL --progress-bar -C - -o "$out" "$URL"
+ls -lh "$out"
+echo "done: $out"
+echo "重新部署后生效：Squirrel 菜单 → 重新部署（或 Squirrel --reload）"

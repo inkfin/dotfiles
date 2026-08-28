@@ -6,3 +6,10 @@ sync/
 log/
 *.userdb/
 *.userdb
+
+# 万象 gram 存放于 ~/.config/Rime（external 按 .external.rime_gram 下载），
+# flag 关闭时不部署这个 symlink，rime-ls 用 zip 自带的 zh-moqi.gram
+{{ if dig "external" "rime_gram" false . }}
+{{ else }}
+wanxiang-lts-zh-hans.gram
+{{ end }}

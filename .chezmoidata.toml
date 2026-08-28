@@ -3,6 +3,10 @@
 zsh = true
 # input method
 rime = false
+# download the ~400MB wanxiang grammar model (opt-in per machine via
+# ~/.config/chezmoi/chezmoi.toml [data.external] rime_gram = true);
+# when false, the zh-moqi.gram bundled in the frost zip is used instead
+rime_gram = false
 # neovim config dir
 neovim_dir = "nvim.lazyvim"
 # age public key for chezmoi encrypted_ files; private key is ~/.config/chezmoi/age.key (backup in 1Password Private vault)
