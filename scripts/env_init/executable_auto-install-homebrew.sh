@@ -26,8 +26,3 @@ brew update
 
 # install requirements
 brew install hello
-
-if [ -f "$HOME/.Brewfile" ]; then
-    echo "Updating homebrew bundle"
-    brew bundle --global
-fi

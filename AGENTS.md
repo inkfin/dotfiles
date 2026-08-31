@@ -175,6 +175,9 @@ Two ways to clean up a leftover target:
    `~/.agents/skills/chezmoi-migration` that once shipped via
    `dot_agents/skills/exact_chezmoi-migration`. Prefer this for pure deletions
    (a file/dir that should simply be gone).
+   Attributes are *not* inherited by the placeholder: removing a dotfile needs
+   `remove_dot_Brewfile` (target `~/.Brewfile`), not `remove_Brewfile` (target
+   `~/Brewfile` — silently matches nothing). Verify with `chezmoi diff`.
 2. **Migration changelog** — for complex changes (config content migration,
    per-environment adjustments, moving state around), record a
    `changelogs/YYYY-MM-DD-<slug>.md` entry and apply it via the

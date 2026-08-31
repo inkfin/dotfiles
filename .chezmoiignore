@@ -101,7 +101,6 @@ install-packages.sh
 .config/vscode/
 .config/bilibili_evolved/
 .local/scripts/ghostty-*
-dot_Brewfile
 dot_ideavimrc
 {{- end }}
 
