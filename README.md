@@ -39,7 +39,7 @@ Four profiles, combining a machine role with a desktop/headless split:
     term_font = "FantasqueSansM Nerd Font Mono"
     editor_font = "FantasqueSansM Nerd Font Mono"
     ui_font = "FiraCode Nerd Font Mono"
-    cjk_font = "Sarasa Term SC Nerd Font"
+    cjk_font = "Sarasa Term SC"
 [git]
     autoCommit = false
     autoPush = false
