@@ -1,0 +1,79 @@
+# kitty config — 对齐 ghostty 功能 / iTerm2 效果的初版
+# 参考文档: https://sw.kovidgoyal.net/kitty/conf/
+# 验证命令: kitty --debug-config (列出未知/无效选项) / kitten themes (换主题)
+# kitty >= 0.48 (0.48 默认 scrollbar=scrolled、支持垂直标签)
+
+# --- 主题 ---
+# TokyoNight Night, 与 ghostty 同款配色; 换主题用 `kitten themes --reload-in=all` 重写该文件
+include current-theme.conf
+
+# --- 字体 ---
+# kitty 没有 ghostty 式字体回退链, 用 symbol_map 把 CJK 区间钉到 cjk_font(取简体字形)。
+# 覆盖: 部首/注音/假名/汉字扩展A、汉字、兼容表意文字、谚文、全角/半角、扩展B-F
+symbol_map U+2E80-U+9FFF,U+AC00-U+D7AF,U+F900-U+FAFF,U+FF00-U+FFEF,U+20000-U+2FA1F {{ .font.cjk_font }}
+font_family {{ .font.term_font }}
+font_size 20.0
+disable_ligatures never
+
+# --- 光标 ---
+# ghostty: block + 白色 + 闪烁
+cursor #ffffff
+cursor_shape block
+cursor_blink_interval -1
+# iTerm2 光标始终闪烁, 不因键盘空闲停止(kitty 默认 15 秒后停)
+cursor_stop_blinking_after 0
+# shell integration 默认在提示符处强制 beam, no-cursor 关闭该行为(与 ghostty 同理),
+# 其余特性(cwd 同步/prompt 标记/notify_on_cmd_finish)仍保留
+shell_integration no-cursor
+
+# --- 透明 ---
+# 与 ghostty 同款 0.7; background_blur 仅 macOS, 需 opacity < 1
+background_opacity 0.7
+{{- if eq .chezmoi.os "darwin" }}
+background_blur 32
+# cmd+u 切换透明 (iTerm2 同款); kitty 无原生 toggle, 用两组映射模拟
+dynamic_background_opacity yes
+map super+u set_background_opacity 0.7
+map super+shift+u set_background_opacity 1
+{{- end }}
+
+# --- 窗口/滚动 ---
+scrollback_lines 10000
+window_padding_width 8
+# 关窗确认: shell prompt 上的空闲窗不计, 仅阻止杀正在跑的命令
+confirm_os_window_close -1
+
+# --- 标签栏 ---
+tab_bar_edge bottom
+tab_bar_style powerline
+tab_powerline_style angled
+# 单标签时隐藏标签栏
+tab_bar_min_tabs 2
+
+# --- 分屏 (键位与 ghostty 完全一致) ---
+# ctrl+shift+=: 右侧新窗格; ctrl+shift+-: 下方新窗格。符号即直觉: = 宽 → 左右并排, - 扁 → 上下堆叠
+enabled_layouts splits,stack
+map ctrl+shift+equal launch --location=vsplit --cwd=current
+map ctrl+shift+minus launch --location=hsplit --cwd=current
+# 窗格跳转: ctrl+alt+方向键 (不与 kitty 默认的 ctrl+shift+上下 冲突)
+map ctrl+alt+left neighboring_window left
+map ctrl+alt+right neighboring_window right
+map ctrl+alt+up neighboring_window up
+map ctrl+alt+down neighboring_window down
+
+# --- 鼠标 ---
+# kitty 默认左键点链接即打开(无需修饰键); app 开启鼠标协议时右键透传给 app
+# (等价 ghostty right-click-action=ignore, nvim <RightMouse> 可用)。
+# 额外映射 cmd+点击 开链接, 兼容 iTerm2 习惯
+mouse_map cmd+left click ungrabbed mouse_handle_click selection link prompt
+
+# --- 通知 ---
+# 命令跑完且窗口未聚焦时弹系统通知(需 shell integration), iTerm2 完成通知等价物
+notify_on_cmd_finish unfocused 10.0 notify
+
+# --- macOS 专属 ---
+{{- if eq .chezmoi.os "darwin" }}
+# opt 当 Alt/Meta (iTerm2 "Option sends Esc+" 等价物)。
+# 当前布局(Unicode Hex Input + Rime)不在 kitty 默认识别范围, 需显式开启, 否则 opt+g 不发 ESC g
+macos_option_as_alt yes
+{{- end }}

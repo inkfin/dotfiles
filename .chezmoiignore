@@ -69,6 +69,7 @@ install-packages.sh
 .zprofile
 .zshrc.d/
 .zshrc.conf/
+.config/kitty/
 .local/scripts/*
 !.local/scripts/ai-commit-msg*
 !.local/scripts/*.bat
@@ -87,6 +88,7 @@ install-packages.sh
 .config/alacritty/
 .config/wezterm/
 .config/ghostty/
+.config/kitty/
 .config/zed/
 .config/neovide/
 .config/sioyek/
