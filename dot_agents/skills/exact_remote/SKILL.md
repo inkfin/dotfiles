@@ -30,7 +30,8 @@ Host names are OpenSSH targets — prefer `Host` aliases from `~/.ssh/config`.
 
 Do **not** use this skill for:
 
-- Interactive TUI attach with clipboard/image bridge → `herdr --remote <host>`.
+- Interactive TUI attach with clipboard/image bridge → `herdr --remote <host>`
+  (Windows: `wsl herdr --remote <host>`; native `herdr.exe` rejects remote mode).
 - Full coding-agent sessions on a remote checkout that already runs Herdr → SSH
   there (or a Herdr control path) and use agents-supervisor / `herdr` locally on
   that host. `herdr --remote` is attach-only and must not be used for automation.
