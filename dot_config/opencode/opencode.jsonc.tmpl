@@ -71,7 +71,7 @@
     "venus": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://v2.open.venus.oa.com/llmproxy",
+        "baseURL": "https://v2.open.venus.woa.com/llmproxy",
       },
       "models": {
 
@@ -79,23 +79,20 @@
         // Venus 模型维护规范（每次更新前请先读这里，避免重复交代）
         // ────────────────────────────────────────────────────────────────────
         // 1. 数据源：~/downloads/venus.json（Venus API 模型列表）
-        // 2. 筛选口径——只留通用对话/编程模型：
-        //    · supportTool == true（agent 必须能调用工具）
-        //    · 非专用模型：剔除 OCR / 知识问答 / 视频理解 / 图像生成 / Omni
-        //    · 非已下线模型：modelAlias 含「下线」字样的剔除
-        //    · 删轻量缩水档：lite / mini / nano / luna / 旧代 turbo 等不入列
-        //    · 删家族内部旧代老古董（如 GLM-5/5.1/5V，已被 5.2+ 取代）；
-        //      其他家族旧代旗舰（GPT-5.x、Gemini 2.5/3.x、Claude 4.6 等）保留
-        //    · 例外：deepseek-v4-flash 系为日常主力，即使属轻量档也保留
-        // 3. 字段规范（一律取自 venus.json，勿手填）：
-        //    · key 与 "name"（显示名）= API 的 model 字段原样
-        //    · limit.context = apiMeta.context_window（无则 contextWindow）
-        //    · limit.output  = apiMeta.max_output_tokens（无则 maxToken）
-        //    · tool_call     = supportTool
-        //    · attachment    = supportMultimodalTypes 非空（支持图片输入）
-        // 4. 价格：联网搜索公开价，单位 $/1M tokens（input/output/cache_read[/cache_write]）。
-        //    来源：官方定价页 / LiteLLM model_prices_and_context_window.json。
-        // 5. 分组注释尽量多：每族注明厂商、定位、价格出处与注意事项。
+        // 2. 筛选口径——只留通用对话/编程模型：supportTool 且非专用/非下线模型；
+        //    删轻量缩水档（lite/mini/nano/luna 等）与旧代老古董（GLM-5/5.1/5V 等）；
+        //    例外：deepseek-v4-flash 系为日常主力保留。
+        // 3. 字段规范（一律取自 venus.json，勿手填）：key 与 name = model 原样；
+        //    limit.context = context_window（无则 contextWindow）；
+        //    limit.output = max_output_tokens（无则 maxToken）；
+        //    tool_call = supportTool；attachment = supportMultimodalTypes 非空。
+        // 4. 价格：联网搜索公开价，单位 $/1M tokens，来源官方定价页 / LiteLLM。
+        // 5. 分组注释注明厂商、定位、价格出处。
+        // 6. gpt-5.x 系拒收 max_tokens、只收 max_completion_tokens：由
+        //    plugins/venus-max-tokens.js 在 chat.params 里改写，无需在此配置。
+        // 7. gpt-5.6-sol/terra 在 chat/completions 带工具时拒收 reasoning_effort，
+        //    已移入 venus-responses（Responses API），此列表不包含它们。
+        // 8. 域名固定 woa.com（官方文档），勿改回 oa.com。
         // ════════════════════════════════════════════════════════════════════
 
         // ── claude ── Claude（Anthropic）— 官方公开价
@@ -356,31 +353,8 @@
           "limit": { "context": 1000000, "output": 128000 },
         },
 
-        // GPT-5.6 Sol｜5.6 系列最强｜GPT-5.6-Sol, 5.6 系列最强模型, 1M 上下文长度, 128k 最大输出.
-        "gpt-5.6-sol": {
-          "name": "gpt-5.6-sol",
-          "reasoning": true,
-          "tool_call": true,
-          "attachment": true,
-          "cost": {
-            "input": 5,
-            "output": 30,
-          },
-          "limit": { "context": 1050000, "output": 128000 },
-        },
-
-        // GPT-5.6 Terra｜5.6 系列中等｜GPT-5.6-Terra, 5.6 系列中等模型, 1M 上下文长度, 128k 最大输出.
-        "gpt-5.6-terra": {
-          "name": "gpt-5.6-terra",
-          "reasoning": true,
-          "tool_call": true,
-          "attachment": true,
-          "cost": {
-            "input": 2,
-            "output": 12,
-          },
-          "limit": { "context": 1050000, "output": 128000 },
-        },
+        // GPT-5.6 系列（sol/terra）已移入 venus-responses（chat 通道带工具时拒收
+        // reasoning_effort），此处不再列出。
 
 
         // ── deepseek ── DeepSeek — 官方公开价（-external/-official 为外部直连，-overseas 海外云 2x）
@@ -751,6 +725,54 @@
             "cache_read": 0.035,
           },
           "limit": { "context": 1048576, "output": 65536 },
+        },
+
+      },
+    },
+
+    // ════════════════════════════════════════════════════════════════════
+    // venus-responses：Venus 网关的 Responses API 通道（/v1/responses）
+    // ────────────────────────────────────────────────────────────────────
+    // · 仅放 gpt-5.6-sol/terra：chat/completions 带工具时拒收 reasoning_effort，
+    //   Responses API 无此限制（opencode 走 @ai-sdk/openai 即 Responses API）。
+    // · baseURL 比 venus 多一层 /v1（SDK 会拼接 /responses）；域名固定 woa.com。
+    // · Venus-Codex-Routing: true 固定资源方，否则重放的 encrypted_content 校验失败。
+    // · 鉴权按 provider id 读 auth.json：新机器把 venus 凭证复制到 venus-responses。
+    // · 只加 5.6 系列：Responses 端点对其他模型报 DEVELOPER role 错误。
+    "venus-responses": {
+      "npm": "@ai-sdk/openai",
+      "options": {
+        "baseURL": "https://v2.open.venus.woa.com/llmproxy/v1",
+        "headers": {
+          "Venus-Codex-Routing": "true",
+        },
+      },
+      "models": {
+
+        // GPT-5.6 Sol｜5.6 系列最强｜GPT-5.6-Sol, 5.6 系列最强模型, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.6-sol": {
+          "name": "gpt-5.6-sol",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 5,
+            "output": 30,
+          },
+          "limit": { "context": 1050000, "output": 128000 },
+        },
+
+        // GPT-5.6 Terra｜5.6 系列中等｜GPT-5.6-Terra, 5.6 系列中等模型, 1M 上下文长度, 128k 最大输出.
+        "gpt-5.6-terra": {
+          "name": "gpt-5.6-terra",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "cost": {
+            "input": 2,
+            "output": 12,
+          },
+          "limit": { "context": 1050000, "output": 128000 },
         },
 
       },
