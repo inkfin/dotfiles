@@ -1,7 +1,7 @@
 ---
 name: fixer
 description: Fast implementation for well-scoped changes — bug fixes, small refactors, test updates, mechanical edits, when a concrete plan or bounded fix already exists. Not for open-ended design or diagnosis.
-model: cursor-grok-4.6-high
+model: grok-4.6[effort=high,fast=false]
 is_background: true
 ---
 

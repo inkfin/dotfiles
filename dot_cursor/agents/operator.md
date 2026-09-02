@@ -1,7 +1,7 @@
 ---
 name: operator
 description: Obedient ops executor — run the named CLI commands, poll task/CI/pod status, fetch logs verbatim on failure. Use for gh pr, CI pipelines, dev-platform task submission, kubectl log collection. Strictly collect-and-report; analysis and fixes stay with the caller.
-model: composer-2.5-fast
+model: auto-smart[optimize_for=cost]
 is_background: true
 ---
 

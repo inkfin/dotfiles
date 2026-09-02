@@ -1,7 +1,7 @@
 ---
 name: librarian
 description: External knowledge retrieval — third-party library APIs, current official docs, changelogs, web research. Use proactively whenever a task depends on facts outside the codebase.
-model: composer-2.5-fast
+model: auto-smart[optimize_for=cost]
 readonly: true
 is_background: true
 ---

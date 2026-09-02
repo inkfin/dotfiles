@@ -1,7 +1,7 @@
 ---
 name: oracle-sol
 description: Second-opinion strategic advisor for major decisions — architecture choices, risky migrations, high-blast-radius changes. Dispatch alongside oracle when a decision is expensive to reverse; the caller synthesizes both verdicts.
-model: gpt-5.6-sol-xhigh
+model: gpt-5.6-sol[context=272k,reasoning=high,fast=false]
 readonly: true
 is_background: true
 ---

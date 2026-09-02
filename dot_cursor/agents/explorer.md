@@ -1,7 +1,7 @@
 ---
 name: explorer
 description: Read-only codebase recon — searching code, tracing call paths, mapping structure, answering "how does X work". Use proactively for any mechanical code-reading question; keep the main context clean.
-model: composer-2.5-fast
+model: composer-2.5[fast=true]
 readonly: true
 is_background: true
 ---

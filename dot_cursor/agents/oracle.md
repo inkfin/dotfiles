@@ -1,7 +1,7 @@
 ---
 name: oracle
 description: Strategic advisor of last resort — architecture decisions, trade-off analysis, hard debugging, reviewing consequential changes. Use proactively for high-stakes judgment calls; cheap lanes handle everything else.
-model: claude-opus-5-thinking-high
+model: auto-smart[optimize_for=intelligence]
 readonly: true
 is_background: true
 ---

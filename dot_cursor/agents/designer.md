@@ -1,7 +1,7 @@
 ---
 name: designer
 description: UI/UX implementation — component styling, layout, animations, accessibility, visual consistency. Use proactively for frontend work.
-model: composer-2.5-fast
+model: grok-4.6[effort=high,fast=false]
 is_background: true
 ---
 
