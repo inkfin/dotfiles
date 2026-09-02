@@ -10,6 +10,9 @@
 -- - a Snacks toggle on `<leader>um` to turn rendering on/off per session.
 -- - `<localleader>t*` task toggles so markdown checkboxes can be edited by
 --   mnemonic status names instead of remembering symbolic forms like `[!]`.
+-- - inline image rendering via snacks.image (kitty graphics protocol, which
+--   ghostty supports and snacks passes through tmux). Markdown buffers start
+--   with images OFF; `<localleader>mi` toggles them per buffer.
 --
 -- LSP support itself lives in `lang/markdown.lua` so the server install and
 -- enablement follow the same registry path as the other language configs.
@@ -80,6 +83,89 @@ if Snacks and Snacks.toggle then
         set = render_markdown.set,
     }):map("<leader>um")
 end
+
+-- ─── Inline image rendering (snacks.image) ───────────────────────────────────
+--
+-- snacks.image renders markdown images inline through the kitty graphics
+-- protocol. Detection is automatic: ghostty answers the protocol query
+-- directly; inside tmux snacks wraps every escape sequence in passthrough
+-- (`.tmux.conf` has `allow-passthrough on`) and even sets pane-local
+-- `allow-passthrough` itself. ImageMagick (`magick`) is required at runtime
+-- to convert non-PNG formats (jpg, svg, pdf, ...).
+--
+-- Markdown buffers start with rendering OFF. snacks has no public toggle
+-- (folke/snacks.nvim#1739), so we drive it with buffer-local state:
+--   b:snacks_image_attached  snacks' own guard; set BEFORE its scheduled
+--                            doc.attach runs to keep the default OFF
+--   b:snacks_image_off       our ON/OFF state, checked by the toggle
+--   b:snacks_image_epoch     bumped on every toggle; stamps each inline
+--                            instance so stale ones go inert
+--
+-- The epoch stamp is what makes OFF durable: snacks keeps a per-buffer
+-- `nvim_buf_attach` on_lines listener that no API can detach, and its
+-- debounced update would re-create placements on every edit. We wrap
+-- `inline.new` so each instance captures the epoch at creation and its
+-- update() becomes a no-op once the epoch moves on.
+do
+    local inline = require("snacks.image.inline")
+    local inline_new = inline.new
+    inline.new = function(buf)
+        local self = inline_new(buf)
+        local epoch = vim.b[buf].snacks_image_epoch or 0
+        local update = self.update
+        self.update = function(s, ...)
+            if (vim.b[buf].snacks_image_epoch or 0) ~= epoch then return end
+            return update(s, ...)
+        end
+        return self
+    end
+end
+
+local function images_enable(buf)
+    vim.b[buf].snacks_image_off      = false
+    vim.b[buf].snacks_image_epoch    = (vim.b[buf].snacks_image_epoch or 0) + 1
+    -- doc._attach bails out on this flag, so clear it for the manual attach
+    vim.b[buf].snacks_image_attached = false
+    require("snacks.image.doc").attach(buf)
+end
+
+local function images_disable(buf)
+    vim.b[buf].snacks_image_off   = true
+    vim.b[buf].snacks_image_epoch = (vim.b[buf].snacks_image_epoch or 0) + 1
+    -- close current placements (extmarks + terminal images) ...
+    pcall(Snacks.image.placement.clean, buf)
+    -- ... and stop float-hover mode from re-following the cursor on
+    -- terminals without unicode placeholder support
+    pcall(vim.api.nvim_clear_autocmds, { group = "snacks.image.doc." .. buf })
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("nvim_mini_markdown_images", { clear = true }),
+    pattern = "markdown",
+    callback = function(ev)
+        local buf = ev.buf
+        -- Default OFF. snacks registers its doc FileType autocmd on the
+        -- first BufReadPre and defers the actual attach with vim.schedule,
+        -- so setting the guard here (synchronously, during the FileType
+        -- event) reliably pre-empts it.
+        vim.b[buf].snacks_image_attached = true
+        vim.b[buf].snacks_image_off      = true
+        vim.b[buf].snacks_image_epoch    = 0
+
+        vim.keymap.set("n", "<localleader>mi", function()
+            if vim.b[buf].snacks_image_off then
+                images_enable(buf)
+            else
+                images_disable(buf)
+            end
+        end, { buffer = buf, silent = true, desc = "Toggle inline images" })
+
+        local ok_wk, wk = pcall(require, "which-key")
+        if ok_wk then
+            wk.add({ buffer = buf, { "<localleader>mi", desc = "Toggle inline images" } })
+        end
+    end,
+})
 
 local markdown_task_states = {
     t = "[ ]",

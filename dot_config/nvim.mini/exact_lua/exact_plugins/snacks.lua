@@ -119,6 +119,13 @@ snacks.setup({
     explorer  = {
         enabled = true,
     },
+    -- Image viewer via the kitty graphics protocol (ghostty; inside tmux
+    -- snacks wraps the escapes in allow-passthrough, already on in
+    -- .tmux.conf). Only `enabled` is set here so the module stays lazy:
+    -- it is not loaded until an image buffer or a doc filetype shows up.
+    -- Inline rendering in markdown is gated OFF by default — markup.lua
+    -- owns the per-buffer toggle (<localleader>mi).
+    image     = { enabled = true },
     -- Disabled — personal preference
     scroll    = { enabled = false },
     zen       = { enabled = false },
