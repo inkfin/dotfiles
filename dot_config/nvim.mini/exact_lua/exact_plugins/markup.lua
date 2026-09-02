@@ -106,7 +106,11 @@ end
 -- debounced update would re-create placements on every edit. We wrap
 -- `inline.new` so each instance captures the epoch at creation and its
 -- update() becomes a no-op once the epoch moves on.
-do
+--
+-- The whole block follows the per-machine `M.image` switch in local.lua —
+-- on machines without a kitty-protocol terminal it never loads.
+local ok_local, local_cfg = pcall(require, "local")
+if ok_local and local_cfg.image == true then
     local inline = require("snacks.image.inline")
     local inline_new = inline.new
     inline.new = function(buf)
@@ -119,53 +123,53 @@ do
         end
         return self
     end
-end
 
-local function images_enable(buf)
-    vim.b[buf].snacks_image_off      = false
-    vim.b[buf].snacks_image_epoch    = (vim.b[buf].snacks_image_epoch or 0) + 1
-    -- doc._attach bails out on this flag, so clear it for the manual attach
-    vim.b[buf].snacks_image_attached = false
-    require("snacks.image.doc").attach(buf)
-end
+    local function images_enable(buf)
+        vim.b[buf].snacks_image_off      = false
+        vim.b[buf].snacks_image_epoch    = (vim.b[buf].snacks_image_epoch or 0) + 1
+        -- doc._attach bails out on this flag, so clear it for the manual attach
+        vim.b[buf].snacks_image_attached = false
+        require("snacks.image.doc").attach(buf)
+    end
 
-local function images_disable(buf)
-    vim.b[buf].snacks_image_off   = true
-    vim.b[buf].snacks_image_epoch = (vim.b[buf].snacks_image_epoch or 0) + 1
-    -- close current placements (extmarks + terminal images) ...
-    pcall(Snacks.image.placement.clean, buf)
-    -- ... and stop float-hover mode from re-following the cursor on
-    -- terminals without unicode placeholder support
-    pcall(vim.api.nvim_clear_autocmds, { group = "snacks.image.doc." .. buf })
-end
+    local function images_disable(buf)
+        vim.b[buf].snacks_image_off   = true
+        vim.b[buf].snacks_image_epoch = (vim.b[buf].snacks_image_epoch or 0) + 1
+        -- close current placements (extmarks + terminal images) ...
+        pcall(Snacks.image.placement.clean, buf)
+        -- ... and stop float-hover mode from re-following the cursor on
+        -- terminals without unicode placeholder support
+        pcall(vim.api.nvim_clear_autocmds, { group = "snacks.image.doc." .. buf })
+    end
 
-vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("nvim_mini_markdown_images", { clear = true }),
-    pattern = "markdown",
-    callback = function(ev)
-        local buf = ev.buf
-        -- Default OFF. snacks registers its doc FileType autocmd on the
-        -- first BufReadPre and defers the actual attach with vim.schedule,
-        -- so setting the guard here (synchronously, during the FileType
-        -- event) reliably pre-empts it.
-        vim.b[buf].snacks_image_attached = true
-        vim.b[buf].snacks_image_off      = true
-        vim.b[buf].snacks_image_epoch    = 0
+    vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("nvim_mini_markdown_images", { clear = true }),
+        pattern = "markdown",
+        callback = function(ev)
+            local buf = ev.buf
+            -- Default OFF. snacks registers its doc FileType autocmd on the
+            -- first BufReadPre and defers the actual attach with vim.schedule,
+            -- so setting the guard here (synchronously, during the FileType
+            -- event) reliably pre-empts it.
+            vim.b[buf].snacks_image_attached = true
+            vim.b[buf].snacks_image_off      = true
+            vim.b[buf].snacks_image_epoch    = 0
 
-        vim.keymap.set("n", "<localleader>mi", function()
-            if vim.b[buf].snacks_image_off then
-                images_enable(buf)
-            else
-                images_disable(buf)
+            vim.keymap.set("n", "<localleader>mi", function()
+                if vim.b[buf].snacks_image_off then
+                    images_enable(buf)
+                else
+                    images_disable(buf)
+                end
+            end, { buffer = buf, silent = true, desc = "Toggle inline images" })
+
+            local ok_wk, wk = pcall(require, "which-key")
+            if ok_wk then
+                wk.add({ buffer = buf, { "<localleader>mi", desc = "Toggle inline images" } })
             end
-        end, { buffer = buf, silent = true, desc = "Toggle inline images" })
-
-        local ok_wk, wk = pcall(require, "which-key")
-        if ok_wk then
-            wk.add({ buffer = buf, { "<localleader>mi", desc = "Toggle inline images" } })
-        end
-    end,
-})
+        end,
+    })
+end
 
 local markdown_task_states = {
     t = "[ ]",

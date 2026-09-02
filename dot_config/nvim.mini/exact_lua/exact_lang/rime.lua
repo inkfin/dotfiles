@@ -29,13 +29,21 @@
 --      contains no letters, and — while rime candidates ARE shown — hides
 --      every other source so the menu stays a clean candidate bar.
 --
--- Profile isolation — rime is gated by two independent switches:
---   machine level: `lang.rime = true` in lua/local.lua (binary + dict installed)
---   session level: the `nvim-rime` wrapper exports `NVIM_RIME=1`, so plain
---                  `nvim` never starts rime while `nvim-rime` does.
--- Within a rime session, <leader>rt toggles it per buffer.
-
-local lsp = require("lsp_util")
+-- Profile isolation — rime is gated by ONE hard switch, `lang.rime` in
+-- lua/local.lua (default OFF). This file stays a plain lua module on
+-- purpose: no chezmoi templating, so the config loads anywhere.
+--
+--   * switch OFF (default): rime never activates, zero cost.
+--   * switch ON, rime-ls installed: the LSP server registers immediately
+--     but attaches lazily — vim.lsp.enable only spawns rime_ls when a
+--     buffer with one of RIME_FILETYPES opens, so non-markdown editing
+--     pays nothing. Those buffers start with rime ON (<leader>rt toggles).
+--   * switch ON, rime-ls MISSING: a one-shot warning explains how to
+--     install it (chezmoi `[data.external] rime`) instead of failing
+--     silently or spawning a dead server.
+--
+-- Installed here means both pieces that .chezmoiexternals/rime.toml ships:
+-- the rime_ls binary and the frost user dicts (~/.local/share/rime-ls).
 
 local M = {}
 
@@ -59,20 +67,39 @@ local function shared_data_dir()
     return "/usr/share/rime-data"
 end
 
---- True when the rime_ls binary is installed (via chezmoi external.rime).
+--- True when rime-ls is fully installed: both the rime_ls binary and the
+--- frost user dicts that .chezmoiexternals/rime.toml ships. A leftover
+--- binary without dicts cannot initialize librime.
 function M.available()
     return vim.fn.filereadable(exe()) == 1
+        and vim.fn.isdirectory(user_data_dir()) == 1
 end
 
---- True when this session is a rime session: binary present and the `nvim-rime`
---- entry point (NVIM_RIME=1) was used. Plain `nvim` keeps rime off.
+--- True when the local.lua hard switch is on AND rime-ls is installed.
 function M.enabled()
-    return M.available() and vim.env.NVIM_RIME == "1"
+    local ok_local, local_cfg = pcall(require, "local")
+    return ok_local and local_cfg.lang.rime == true and M.available()
 end
 
 function M.setup()
-    if not M.enabled() then return end
+    if M.available() then
+        return M._enable()
+    end
 
+    -- Switch is on but rime-ls is missing: point at the install path once
+    -- (scheduled so the message survives the startup UI handoff).
+    vim.schedule(function()
+        vim.notify(
+            "rime: lang.rime=true but rime-ls is not installed.\n"
+                .. "Install: set  [data.external] rime = true  in ~/.config/chezmoi/chezmoi.toml\n"
+                .. "then run  chezmoi apply  (downloads the rime_ls binary + rime-frost dicts).",
+            vim.log.levels.WARN,
+            { title = "nvim.mini / rime" }
+        )
+    end)
+end
+
+function M._enable()
     lsp.setup("rime_ls", {
         cmd = { exe() },
         filetypes = RIME_FILETYPES,
@@ -97,7 +124,9 @@ function M.setup()
 
     local augroup = vim.api.nvim_create_augroup("nvim_mini_rime", { clear = true })
 
-    -- rime is on by default in a rime session; <leader>rt flips it per buffer.
+    -- rime is on by default in markdown-ish buffers; <leader>rt flips it
+    -- per buffer. Non-matching filetypes never get the flag (and never
+    -- spawn rime_ls, see the `filetypes` gate on the server config).
     vim.api.nvim_create_autocmd("FileType", {
         group = augroup,
         pattern = RIME_FILETYPES,

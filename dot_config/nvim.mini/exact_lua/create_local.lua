@@ -10,7 +10,7 @@ M.lang = {
     -- c3     = true,
     lua_ls = true,
     markdown = true,
-    -- rime   = true,  -- rime-ls 中文输入（需 chezmoi external.rime 安装 rime_ls）
+    -- rime   = true,
     python = true,
     -- rust   = true,
     -- go     = true,
@@ -22,6 +22,7 @@ M.lang = {
 
 -- ─── UI feature switches ─────────────────────────────────────────────────────
 M.transparent = true   -- transparent terminal background
+M.image = true         -- inline image rendering via snacks.image (ghostty/kitty; needs `magick` for non-PNG)
 
 -- ─── AI feature switches ─────────────────────────────────────────────────────
 -- Keep AI integrations behind explicit booleans so they can be enabled per

@@ -13,7 +13,9 @@ if not ok then return end
 
 -- rime-ls IME keymaps (space / 1-9 select the n-th Chinese candidate) and
 -- source tuning (candidate-bar filtering). They are no-ops unless rime is
--- installed and enabled, so merging is always safe.
+-- switched on (lua/local.lua `lang.rime`) and installed, so merging is
+-- always safe. Server setup itself lives in lang/rime.lua, driven by the
+-- lang registry like every other language.
 local ok_rime, rime = pcall(require, "lang.rime")
 local rime_keymaps = ok_rime and rime.blink_keymaps() or {}
 local rime_sources = ok_rime and rime.blink_sources() or {}

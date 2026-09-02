@@ -7,6 +7,12 @@ require("pack").add("https://github.com/folke/snacks.nvim")
 local ok, snacks = pcall(require, "snacks")
 if not ok then return end
 
+-- Per-machine image switch (lua/local.lua `M.image`): snacks.image needs a
+-- kitty-graphics-protocol terminal (ghostty/kitty) and ImageMagick for
+-- non-PNG formats, so headless boxes can turn it off.
+local ok_local, local_cfg = pcall(require, "local")
+local image_enabled = ok_local and local_cfg.image == true
+
 local git_picker = {
     layout = {
         preset = "sidebar",
@@ -125,7 +131,7 @@ snacks.setup({
     -- it is not loaded until an image buffer or a doc filetype shows up.
     -- Inline rendering in markdown is gated OFF by default — markup.lua
     -- owns the per-buffer toggle (<localleader>mi).
-    image     = { enabled = true },
+    image     = { enabled = image_enabled },
     -- Disabled — personal preference
     scroll    = { enabled = false },
     zen       = { enabled = false },
