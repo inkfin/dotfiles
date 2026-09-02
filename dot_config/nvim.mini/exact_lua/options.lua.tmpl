@@ -58,6 +58,21 @@ opt.timeoutlen  = 300
 -- Clipboard: skip in SSH so OSC 52 works
 opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 
+-- On SSH, force the bundled OSC 52 clipboard provider (`:h clipboard-osc52`)
+-- instead of xclip/xsel: over plain ssh there is no $DISPLAY, so the X11
+-- tools cannot reach any clipboard and yank to `+` (see `Y` in keymaps.lua)
+-- fails with "no provider". Auto-detection of OSC 52 only runs in the raw
+-- TUI; wrappers like herdr or tmux inhibit it (they hide the terminal's
+-- OSC 52 support), so force the provider here. Gated on "no local display"
+-- so an X-forwarded session keeps using the real xclip provider (faster and
+-- supports paste). Empty-string exports count as "unset" (empty string is
+-- truthy in Lua, so `not vim.env.DISPLAY` alone is not enough).
+local has_display = (vim.env.DISPLAY ~= nil and vim.env.DISPLAY ~= "")
+    or (vim.env.WAYLAND_DISPLAY ~= nil and vim.env.WAYLAND_DISPLAY ~= "")
+if vim.env.SSH_TTY and not has_display and vim.fn.has("nvim-0.10") == 1 then
+    vim.g.clipboard = "osc52"
+end
+
 --------------------------
 -- UI
 --------------------------
