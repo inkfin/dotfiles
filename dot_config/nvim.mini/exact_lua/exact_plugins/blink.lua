@@ -11,10 +11,12 @@ require("pack").add({
 local ok, blink = pcall(require, "blink.cmp")
 if not ok then return end
 
--- rime-ls IME keymaps (space / 1-9 select the n-th Chinese candidate). They are
--- no-ops unless rime is installed and enabled, so merging is always safe.
+-- rime-ls IME keymaps (space / 1-9 select the n-th Chinese candidate) and
+-- source tuning (candidate-bar filtering). They are no-ops unless rime is
+-- installed and enabled, so merging is always safe.
 local ok_rime, rime = pcall(require, "lang.rime")
 local rime_keymaps = ok_rime and rime.blink_keymaps() or {}
+local rime_sources = ok_rime and rime.blink_sources() or {}
 
 blink.setup({
     --------------------------
@@ -72,13 +74,13 @@ blink.setup({
     --------------------------
     -- Sources
     --------------------------
-    sources = {
+    sources = vim.tbl_deep_extend("force", {
         default = default_sources,
         -- Optional: per-filetype overrides
         -- per_filetype = {
         --     markdown = { "lsp", "path", "buffer" },
         -- },
-    },
+    }, rime_sources),
 
     --------------------------
     -- Snippets: use mini.snippets if available, else built-in

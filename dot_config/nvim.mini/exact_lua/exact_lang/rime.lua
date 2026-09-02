@@ -14,6 +14,21 @@
 --
 -- Reference: https://github.com/wlh320/rime-ls/blob/master/doc/nvim-with-blink.md
 --
+-- Completion mechanics (why each piece exists):
+--
+--   1. Space commits candidate #1 ONLY mid-composition (ASCII letter right
+--      before the cursor). Everywhere else it falls through and inserts a
+--      literal space — after a commit, between English words, after
+--      punctuation. Digits 1-9 only need the menu to be open.
+--   2. Candidate order rides in `sortText` ("z001", "z002", …); blink.cmp's
+--      default `fuzzy.sorts = { 'score', 'sort_text' }` already honours it
+--      once fuzzy scores tie (every rime item shares one filterText).
+--   3. rime-ls' input regex treats ASCII punctuation as pinyin input, so
+--      typing "+" pops a menu of full-width candidates. The lsp provider's
+--      `transform_items` drops rime items when the trailing input chunk
+--      contains no letters, and — while rime candidates ARE shown — hides
+--      every other source so the menu stays a clean candidate bar.
+--
 -- Profile isolation — rime is gated by two independent switches:
 --   machine level: `lang.rime = true` in lua/local.lua (binary + dict installed)
 --   session level: the `nvim-rime` wrapper exports `NVIM_RIME=1`, so plain
@@ -68,6 +83,11 @@ function M.setup()
             log_dir = user_data_dir() .. "/log",
             max_candidates = 9,
             trigger_characters = {},
+            -- "=" pages candidates (rime_ice binds = to next page mid-
+            -- composition); after a commit it falls through rime's punct
+            -- handler and types a literal "=". "-" and "," are too common
+            -- in prose to hijack.
+            paging_characters = { "=" },
             schema_trigger_character = "&",
             long_filter_text = true, -- required: blink.cmp filters candidates strictly
             preselect_first = false,
@@ -120,8 +140,31 @@ function M.blink_keymaps()
         end
     end
 
+    -- The menu window is the source of truth for visibility; list.items is
+    -- cleared on hide, but checking the window keeps us honest about stale
+    -- scheduled refreshes.
+    local function menu_open()
+        local ok, menu = pcall(require, "blink.cmp.completion.windows.menu")
+        return ok and menu.win ~= nil and menu.win:is_open()
+    end
+
+    -- True while pinyin composition is live: an ASCII letter right before
+    -- the cursor (mirrors the tail of rime-ls' input regex, which is
+    -- [a-zA-Z[:punct:]]+). After a commit, between English words, or after
+    -- punctuation there is no letter directly before the cursor.
+    local function composing()
+        local line = vim.api.nvim_get_current_line()
+        local col = vim.api.nvim_win_get_cursor(0)[2] -- 0-based byte offset
+        return line:sub(1, col):match("[a-zA-Z]$") ~= nil
+    end
+
     local function select_nth(cmp, n)
         if not vim.b.rime_enabled then return false end
+        if not menu_open() then return false end
+        -- Space doubles as a text character: only commit the first candidate
+        -- mid-composition, otherwise insert a literal space. Digits have no
+        -- plain-text meaning while the menu is open, so they always select.
+        if n == 1 and not composing() then return false end
         local idx = nth_rime_index(n)
         if idx == nil then return false end
         return cmp.accept({ index = idx })
@@ -134,6 +177,47 @@ function M.blink_keymaps()
     -- Space confirms the first candidate (the default IME behaviour).
     keys["<Space>"] = { function(cmp) return select_nth(cmp, 1) end, "fallback" }
     return keys
+end
+
+--- blink.cmp source tuning for rime. Merged into blink.setup() by
+--- plugins/blink.lua. The lsp provider transform serves two purposes:
+---
+---   * 混排污染: while rime candidates are present the menu IS the IME
+---     candidate bar, so marksman/buffer/path items only add noise.
+---   * 标点误触发: rime-ls' input regex accepts ASCII punctuation, so typing
+---     "+" (or ",", "///" after a commit) pops a menu of full-width symbol
+---     candidates. Drop rime items when the trailing input chunk contains
+---     no ASCII letters — pinyin composition always has letters.
+function M.blink_sources()
+    if not M.enabled() then return {} end
+
+    -- rime-ls input chunk equivalent: trailing run of letters + ASCII
+    -- punctuation right before the cursor.
+    local function trailing_chunk(line, col)
+        return line:sub(1, col):match("[a-zA-Z%p]+$") or ""
+    end
+
+    return {
+        providers = {
+            lsp = {
+                transform_items = function(ctx, items)
+                    if not vim.b[ctx.bufnr].rime_enabled then return items end
+                    local rime_items, others = {}, {}
+                    for _, item in ipairs(items) do
+                        if item.client_name == "rime_ls" then
+                            table.insert(rime_items, item)
+                        else
+                            table.insert(others, item)
+                        end
+                    end
+                    if #rime_items == 0 then return items end
+                    local chunk = trailing_chunk(ctx.line, ctx.cursor[2])
+                    if chunk:match("[a-zA-Z]") == nil then return others end
+                    return rime_items
+                end,
+            },
+        },
+    }
 end
 
 return M
