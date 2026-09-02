@@ -67,3 +67,12 @@ SOHO	soho
 冇問題	moumantai
 
 加训	jiaxun
+
+^_^	ywz	10
+(≧▽≦)	ywz	9
+(￣▽￣)	ywz	8
+(・∀・)	ywz	7
+(ง •̀_•́)ง	ywz	6
+(╯°□°）╯︵ ┻━┻	ywz	5
+┬─┬ ノ( ゜-゜ノ)	ywz	4
+orz	ywz	3

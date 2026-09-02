@@ -3,3 +3,4 @@
 # 避免全拼 / 双拼各记一份、互不互通。
 patch:
   translator/dictionary: rime_frost_custom
+  switches/@4/reset: 1 # Emoji 默认开启
