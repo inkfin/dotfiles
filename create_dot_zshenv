@@ -7,6 +7,10 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
+# Cursor GUI does not load shell env and defaults to ~/.cursor. Pin the CLI to
+# the same directory so XDG_CONFIG_HOME does not split cli-config / auth.
+export CURSOR_CONFIG_DIR="${CURSOR_CONFIG_DIR:-$HOME/.cursor}"
+
 export ZSHCONF_HOME="$HOME/.zshrc.d"
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-$EDITOR}"
