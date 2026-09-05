@@ -45,6 +45,10 @@
 -- Installed here means both pieces that .chezmoiexternals/rime.toml ships:
 -- the rime_ls binary and the frost user dicts (~/.local/share/rime-ls).
 
+-- `lsp_util` owns server registration (`setup`) and `vim.lsp.enable`
+-- wrapping, same as every other module under lua/lang/.
+local lsp = require("lsp_util")
+
 local M = {}
 
 local RIME_FILETYPES = { "markdown", "quarto", "org", "norg", "text" }
