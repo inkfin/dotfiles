@@ -42,6 +42,7 @@ scripts/env_init/macos*
 modikeys.sh
 scripts/linux/
 .config/ibus/
+.config/environment.d/
 {{ end }}
 
 # Windows specific settings
