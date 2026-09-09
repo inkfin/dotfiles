@@ -10,7 +10,7 @@ description: >-
 
 # Agents Supervisor
 
-**Policy** for dispatching coding agents through [Herdr](https://herdr.dev) (0.8.2):
+**Policy** for dispatching coding agents through [Herdr](https://herdr.dev) (0.9.0):
 topology, naming, permissions, reports. CLI syntax lives in the binary — before any
 control command:
 
@@ -24,7 +24,10 @@ Strategy from this file; syntax from the binary. Exception: `herdr --skill` says
 unless `HERDR_ENV=1` — this file wins; outside dispatch is allowed under **Session pin**.
 
 The bundled skill (`herdr --skill`) is the canonical reference for this binary; when in
-doubt about any command or lifecycle behavior, diff against it or the manpage.
+doubt about any command or lifecycle behavior, diff against it or the manpage. After an
+update, client and server versions can differ (`herdr status`): a feature the server
+lacks disables only its own action, it does not block connection — check before relying
+on new server features.
 
 ## Host mode
 
@@ -85,7 +88,8 @@ Worktrees are for **new branches** only — never for a checkout that already ex
 
 Worktree create: `--branch` / `--label` = task slug (`fix-auth`); `--base` defaults to the
 repo's current HEAD (do not silently retarget `main`). Branch already exists → open that
-worktree.
+worktree. Worktree commands accept `--trust-repository` (per-request Git trust) only after
+the user has verified the repository — never as a routine retry for a failed command.
 
 Background finish lands as `done` (unseen) or `idle` (seen) — treat both as finished.
 Shared-checkout overwrite risk: mention once; user’s call.
@@ -104,8 +108,10 @@ start --help` lists the installed kinds).
   `--timeout` defaults to 30s.
 - Always pass `--model` after `--` (with permission flags). Omitted model inherits the user’s
   last interactive choice — the largest avoidable cost on fleets.
-- Fresh agent per task; reuse only to continue one started in this conversation, or when the
-  user points at it.
+- **Reuse before spawning.** Before `agent start`, check `agent list` for a live agent already
+  on this task — same job slug, same tab, or one the user pointed at — and prompt it again
+  instead of starting new. Fresh agent only when no live agent covers the task, the old one
+  failed or left a mess a clean start would clear, or the user asks for one.
 - Box without Herdr (logs, files) → `remote` skill. `herdr --remote` is TUI attach only
   (works from Windows clients too).
 
@@ -113,19 +119,19 @@ Cursor flag presets (other kinds: check that CLI):
 
 | Role | Flags | Model |
 |---|---|---|
-| Write code | `--yolo --trust --approve-mcps` | `auto-smart[optimize_for=balanced]` |
-| Read-only judgement | `--mode plan --yolo --trust` | `auto-smart[optimize_for=balanced]` |
-| Read-only mechanical | `--mode plan --yolo --trust` | `auto-smart[optimize_for=cost]` |
-| Hard architecture / bugs | `--yolo --trust --approve-mcps` | named — e.g. `gpt-5.6-sol-high` |
+| Write code | `--yolo --trust --approve-mcps` | `cursor-grok-4.6-high` |
+| Read-only judgement | `--mode plan --yolo --trust` | `cursor-grok-4.6-high` |
+| Read-only mechanical | `--mode plan --yolo --trust` | `composer-2.5-fast` |
+| Hard architecture / bugs | `--yolo --trust --approve-mcps` | `auto-smart[optimize_for=intelligence]` |
 
 `--yolo` covers shell allowlist (needed even in plan mode); `--mode plan` locks edits — also
 state read-only in the prompt. Quote models with brackets:
-`--model 'auto-smart[optimize_for=cost]'`. Unknown ids → `cursor-agent --list-models`.
+`--model 'auto-smart[optimize_for=intelligence]'`. Unknown ids → `cursor-agent --list-models`.
 
-**Tier:** cost when you will re-check the answer; `balanced`+ when you will act on it.
-Shallow cost result → escalate **once** one tier, then stop thrashing. Owner preference when
-naming models: GPT/Grok first (`gpt-5.6-sol-*`, `gpt-5.6-terra-*`, `cursor-grok-4.5-*`);
-`claude-opus-5-thinking-*` when the task needs it. User-named model → pass through verbatim.
+**Tier:** three tiers — patrol/survey → `composer-2.5-fast`; code + review →
+`cursor-grok-4.6-high` (owner has plan headroom there); hard problems →
+`auto-smart[optimize_for=intelligence]`. Shallow result on a hard task → escalate **once**,
+then stop thrashing. User-named model → pass through verbatim.
 
 Narrow channel (IM/cron) without diff review → survey / read-only / prepare only; hand write
 work back to a reviewable channel.
@@ -189,7 +195,8 @@ long output usually means alternate screen → use the report file.
 
 - Prompt agents in `idle` or `done`. Already `working` + `--wait` can return when the *current*
   turn ends, not when your ask finishes. Non-working prompt with no lifecycle change in ~5s →
-  `agent_prompt_stalled`.
+  `agent_prompt_stalled`. Stalled does not prove the prompt never landed — check `agent get` /
+  `agent read` first; if it landed, wait on state instead of resending, else retry once.
 - Skip the `focused: true` pane from outside (often the user’s own line). If that is the real
   target, say so and let the user act. In `idle` vs `done`: `done` is the same busy-idle state
   after unseen background work; `blocked` means an approval/question UI; `unknown` is a
@@ -221,8 +228,9 @@ transcripts only on request or as failure evidence.
 ## Cleanup
 
 Close only tabs/spaces/worktrees created in this conversation, and ask first.
-`worktree remove` can drop uncommitted work. Leave the user’s own layout and the Herdr server
-running.
+Closing a primary workspace with open worktree workspaces requires explicit intent:
+`workspace close --group`. `worktree remove` can drop uncommitted work. Leave the user's
+own layout and the Herdr server running.
 
 ## Setup
 
