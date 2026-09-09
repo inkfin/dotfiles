@@ -86,7 +86,7 @@ def main() -> int:
     if mode:
         parts.append(f"{BOLD}{bg(24)}{fg(15)} {mode} {RESET}")
 
-    parts.append(f"{fg(111)}{project}{RESET}")
+    parts.append(f"{fg(111)}📁 {project}{RESET}")
 
     branch = git(cwd, "branch", "--show-current")
     if not branch:
@@ -94,15 +94,15 @@ def main() -> int:
     if branch:
         dirty = git(cwd, "status", "--porcelain")
         mark = f"{fg(203)}*{RESET}" if dirty else ""
-        parts.append(f"{fg(176)}{branch}{RESET}{mark}")
+        parts.append(f"{fg(176)}🌿 {branch}{RESET}{mark}")
 
     name = model.get("display_name") or model.get("id") or "model"
-    bits = [f"{fg(80)}{name}{RESET}"]
+    bits = [f"{fg(80)}✨ {name}{RESET}"]
     summary = model.get("param_summary")
     if summary:
         bits.append(f"{DIM}{summary}{RESET}")
     if model.get("max_mode"):
-        bits.append(f"{BOLD}{fg(215)}MAX{RESET}")
+        bits.append(f"{BOLD}{fg(215)}★ MAX{RESET}")
     parts.append(" ".join(bits))
 
     used = ctx.get("used_percentage")
@@ -114,7 +114,7 @@ def main() -> int:
 
     wt = worktree.get("name")
     if wt:
-        parts.append(f"{fg(180)}wt:{wt}{RESET}")
+        parts.append(f"{fg(180)}🪵 {wt}{RESET}")
 
     session = payload.get("session_name")
     if session:
@@ -123,13 +123,12 @@ def main() -> int:
     if payload.get("autorun"):
         parts.append(f"{fg(114)}auto{RESET}")
 
-    line = f" {fg(238)}│{RESET} ".join(parts)
+    line = f" {fg(238)}\u2502{RESET} ".join(parts)
     width = payload.get("render_width_chars")
     if isinstance(width, int) and width > 8 and vis(line) > width:
-        # Keep the rightmost (model / ctx) bits; drop session then path extras.
         while vis(line) > width and len(parts) > 2:
             parts.pop()
-            line = f" {fg(238)}│{RESET} ".join(parts)
+            line = f" {fg(238)}\u2502{RESET} ".join(parts)
 
     sys.stdout.write(line)
     return 0
