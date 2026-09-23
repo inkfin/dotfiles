@@ -61,6 +61,7 @@ install-packages.ps1
 
 # Unix specific settings
 {{ if eq .chezmoi.os "windows" }}
+.config/zed/
 install-packages.sh
 .tmux/
 .tmux.conf
@@ -91,6 +92,7 @@ install-packages.sh
 .config/ghostty/
 .config/kitty/
 .config/zed/
+AppData/Roaming/Zed/
 .config/neovide/
 .config/sioyek/
 .config/i3/

@@ -1,0 +1,8 @@
+{{- $current := fromJsonc (default "{}" .chezmoi.stdin) -}}
+{{- $managed := fromJsonc (includeTemplate "dot_config/zed/.templates/settings.json.tmpl" .) -}}
+{{- $merged := mergeOverwrite (deepCopy $current) $managed -}}
+{{- if deepEqual $current $merged -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $merged | toPrettyJson -}}
+{{- end -}}

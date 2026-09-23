@@ -1,0 +1,9 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $current := fromJsonc (default "{}" .chezmoi.stdin) -}}
+{{- $managed := fromJsonc (includeTemplate "dot_config/opencode/.templates/tui.jsonc" .) -}}
+{{- $merged := mergeOverwrite (deepCopy $current) $managed -}}
+{{- if deepEqual $current $merged -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $merged | toPrettyJson -}}
+{{- end -}}

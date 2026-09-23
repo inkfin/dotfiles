@@ -17,7 +17,7 @@ dot_config/          # Canonical config root (~/.config)
   symlink_nvim.tmpl  #   → symlink ~/.config/nvim → selected config
   alacritty/
   lazygit/           #   → OS-aware template, uses symlink on Windows
-  opencode/          #   → create_ prefix: generated once, never overwritten
+  opencode/          #   → global config plus partially managed TUI settings
   ...
 AppData/             # Windows-specific (%APPDATA%)
   Roaming/
@@ -73,6 +73,10 @@ Server profiles deploy no GUI config: `.chezmoi.toml.tmpl` skips the whole
    AppData/Roaming/symlink_lazygit.tmpl          # symlink on Windows only
    ```
 
+   Zed is an exception: on Windows it cannot reliably read a junction. Keep
+   the shared configuration under `dot_config/zed/` and manage
+   `AppData/Roaming/Zed/` as real files through the same merge template.
+
 3. **OS filtering**: `.chezmoiignore` uses `{{ if eq/ne .chezmoi.os "xxx" }}` blocks to exclude per-platform files.
 
 ## File Naming Conventions
@@ -82,7 +86,8 @@ Server profiles deploy no GUI config: `.chezmoi.toml.tmpl` skips the whole
 | `dot_config/` | Maps to `~/.config/` — use for all app configs |
 | `dot_local/` | Maps to `~/.local/` — use for scripts, state, executables |
 | `executable_` | Marks file as executable (`chmod +x` on Unix) |
-| `create_` | Only create once, never overwrite existing (e.g. opencode config) |
+| `create_` | Only create once, never overwrite existing |
+| `modify_` | Update selected settings while preserving other file contents |
 | `symlink_` | Target becomes a symlink; source content = link destination |
 | `private_` | Sensitive / OS-specific dirs (e.g. `private_karabiner/`) |
 | `.tmpl` | Go template, rendered before writing |
