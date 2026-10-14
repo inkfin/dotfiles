@@ -1,0 +1,13 @@
+[wsl2]
+guiApplications = true
+dnsTunneling = true
+firewall = true
+{{- if hasSuffix "work" .profile }}
+# Work network breaks mirrored mode (VPN tun takes over mirrored traffic)
+networkingMode = nat
+{{- else }}
+networkingMode = mirrored
+
+[experimental]
+hostAddressLoopback = true
+{{- end }}

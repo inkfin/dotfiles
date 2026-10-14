@@ -1,8 +1,0 @@
-[wsl2]
-guiApplications = true
-networkingMode = mirrored
-dnsTunneling = true
-firewall = true
-
-[experimental]
-hostAddressLoopback = true
