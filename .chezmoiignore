@@ -10,6 +10,10 @@ changelogs/
 
 .config/nvim/symlink
 
+# Cursor MCP servers are machine-local and must not be synced with chezmoi.
+.config/cursor/mcp.json
+.cursor/mcp.json
+
 {{- /* work: work + server-work */}}
 {{- if not (hasSuffix "work" .profile) }}
 .work
