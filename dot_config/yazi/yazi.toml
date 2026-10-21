@@ -10,7 +10,8 @@ title_format = "yazi: {cwd}"
 
 [opener]
 edit = [
-    { run = '${EDITOR:-nvim} %s', desc = "$EDITOR", block = true, for = "unix" },
+    # Yazi may start outside zsh; select mini even when NVIM_APPNAME is absent.
+    { run = 'NVIM_APPNAME="${NVIM_APPNAME:-nvim.mini}" nvim %s', desc = "nvim", block = true, for = "unix" },
     { run = 'nvim %s', block = true, desc = "nvim", for = "windows" },
     { run = 'code %s', orphan = true, desc = "code", for = "windows" },
     { run = 'code -w %s', block = true, desc = "code (block)", for = "windows" },
