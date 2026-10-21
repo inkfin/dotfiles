@@ -218,7 +218,9 @@ alias MACSecureInput "ioreg -l -d 1 -w 0 | grep SecureInput"
 
 test -e {$HOME}/.iterm2_shell_integration.fish; and source {$HOME}/.iterm2_shell_integration.fish
 
-set -gx EDITOR /opt/homebrew/bin/nvim
+set -gx EDITOR nvim
+set -gx VISUAL $EDITOR
+set -gx SUDO_EDITOR $EDITOR
 
 
 # ----------- Applications ---------------

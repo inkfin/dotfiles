@@ -23,13 +23,9 @@ if [[ -n "${MINGW_PREFIX:-}" ]]; then
 fi
 
 # ==== Editor ====
-if [[ -n "$SSH_CONNECTION" ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='vim'
-fi
+export EDITOR='nvim'
 export VISUAL="$EDITOR"
-export SUDO_EDITOR='vim'
+export SUDO_EDITOR="$EDITOR"
 
 # ==== Completion ====
 autoload -Uz compinit
