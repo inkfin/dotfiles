@@ -77,6 +77,13 @@ if [[ -d "$BUN_HOME" ]]; then
     prepend_to_path PATH "$BUN_HOME/bin"
 fi
 
+## ---- npm global prefix ----
+# ~/.npmrc sets prefix=$HOME/.npm-global; make its bin discoverable.
+# (bash 侧的 ~/.bashrc 已手动同步同一行。)
+if [[ -d "$HOME/.npm-global/bin" ]]; then
+    prepend_to_path PATH "$HOME/.npm-global/bin"
+fi
+
 ## ---- emsdk ----
 
 export_if_undefined EMSDK_HOME "$HOME/dev/emsdk"
