@@ -97,8 +97,8 @@
         //    tool_call = supportTool；attachment = supportMultimodalTypes 非空。
         // 4. 价格：联网搜索公开价，单位 $/1M tokens，来源官方定价页 / LiteLLM。
         // 5. 分组注释注明厂商、定位、价格出处。
-        // 6. gpt-5.x 系拒收 max_tokens、只收 max_completion_tokens：由
-        //    plugins/venus-max-tokens.js 在 chat.params 里改写，无需在此配置。
+        // 6. gpt-5.x 系拒收 max_tokens、只收 max_completion_tokens（V2 插件
+        //    加载要求 default export，旧 chat.params 插件已删除，暂无替代）。
         // 7. gpt-5.6-sol/terra 在 chat/completions 带工具时拒收 reasoning_effort，
         //    已移入 venus-responses（Responses API），此列表不包含它们。
         // 8. 域名固定 woa.com（官方文档），勿改回 oa.com。
