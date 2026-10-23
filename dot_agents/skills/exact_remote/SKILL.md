@@ -1,25 +1,29 @@
 ---
 name: remote
 description: >-
-  Run commands and transfer files on remote machines via the local `remote`
-  SSH wrapper (run/get/put, BatchMode, Host aliases). Use when the user asks to
-  check another host, pull logs, journalctl, scp/rsync-style file moves, SSH into
-  a box for investigation, or do work on a machine that has no Herdr session.
-  Prefer this over hand-rolled ssh/scp. Do not use for herdr --remote TUI attach.
+  Work on remote machines using available MCP tools or SSH: inspect and edit
+  files, run scripts and builds, collect logs, and transfer files. Use when the
+  user asks to operate on another host, including win-workstation from devcloud.
+  Do not use for herdr --remote TUI attach.
 ---
 
 # Remote
 
-Drive other machines through the local `remote` CLI (`~/.local/scripts/remote`).
-It wraps SSH/SCP with BatchMode, ControlMaster reuse, and safe quoting so agents
-can run non-interactively.
+Choose tools for the target host; SSH is not required when a suitable remote
+MCP is callable. Local file and shell tools still operate on this machine:
+they do not become remote tools just because an MCP is configured.
 
-```bash
-remote --help
-remote run --help
-```
+- **Windows workstation:** prefer the `windows` MCP for file development,
+  searches, scripts, and command-line builds. Use native SSH/SFTP as a fallback
+  or for file transfers between machines.
+- **Other hosts:** use a suitable MCP if available; otherwise use the local
+  `remote` CLI (`~/.local/scripts/remote`) for hosts with `bash`.
+- **Windows client/editor/GPU work:** also read `windows-joint-debug` when that
+  skill is available.
 
-Host names are OpenSSH targets — prefer `Host` aliases from `~/.ssh/config`.
+Confirm an MCP's target before operating on it. A config entry alone does not
+make its tools available in the current session. Discover tools when supported;
+if they are unavailable, use the appropriate SSH fallback.
 
 ## When to use
 
@@ -36,7 +40,56 @@ Do **not** use this skill for:
   there (or a Herdr control path) and use agents-supervisor / `herdr` locally on
   that host. `herdr --remote` is attach-only and must not be used for automation.
 
-## Commands
+## Windows MCP
+
+The machine-local MCP named `windows` connects devcloud to `win-workstation`.
+Client tool names may have a server prefix; use the actual exposed schemas.
+Start with `get_config` to check `systemInfo`, the shell, and allowed directories.
+Use `start_process` with `hostname` if the target identity is unclear.
+
+| Task | Tools |
+|---|---|
+| Inspect files | `list_directory`, `read_file`, `read_multiple_files`, `get_file_info` |
+| Edit files | `write_file`, `edit_block`, `create_directory`, `move_file` |
+| Search | `start_search`, `get_more_search_results`, `stop_search` |
+| Run scripts/builds | `start_process`, `read_process_output` |
+| Process interaction | `interact_with_process`, `list_sessions`, `force_terminate` |
+
+Use absolute Windows paths, such as `D:\Code\project`; in JSON they become
+`"D:\\Code\\project"`. Select the user-named project rather than assuming a game
+or engine root. `start_process` has no `cwd` argument: set the working directory
+inside the command. The installed default shell is non-interactive PowerShell 7.
+
+```json
+{
+  "command": "Set-Location 'D:\\Code\\project' -ErrorAction Stop; python .\\scripts\\check.py; exit $LASTEXITCODE",
+  "timeout_ms": 1000
+}
+```
+
+A process call can return before completion. Keep its PID and poll
+`read_process_output` until completion and exit status; one output chunk is
+not proof of completion. Save long build logs on Windows. Sessions are held
+by the MCP server and are not guaranteed to survive a disconnect or client
+restart. After uncertain completion, inspect processes, logs, and artifacts
+before retrying a build or another mutating operation.
+
+Commands run with the SSH user's Windows permissions in Session 0, not the
+interactive desktop session. GUI launch, screenshots, and input require a
+desktop-session runner; MCP process execution alone does not provide that.
+Directory allowlists are guardrails, not a sandbox for shell commands.
+
+Connection settings are machine-local. The devcloud clients share
+`~/.local/scripts/windows-agent-mcp`; the Windows launcher is
+`~/.config/windows-agent/start-mcp.cmd`, with settings in
+`~/.claude-server-commander/config.json` and maintenance notes in
+`~/.config/windows-agent/README.md`. Do not install or reconfigure an MCP merely
+to perform an unrelated remote task.
+
+## SSH Fallback
+
+The `remote` CLI wraps SSH/SCP with BatchMode, ControlMaster reuse, and safe
+quoting. Host names are OpenSSH targets; prefer aliases from `~/.ssh/config`.
 
 ```bash
 remote run <host> -- <cmd...>
@@ -57,7 +110,16 @@ remote put workbox ./fix.sh /tmp/fix.sh
 ```
 
 `run` executes under remote `bash -lc` so login `PATH` matches an interactive
-SSH session. Exit codes propagate from the remote command.
+SSH session. Exit codes propagate from the remote command. Do not use
+`remote run` or stdout-mode `remote get` on native Windows: both assume Unix
+commands. Windows OpenSSH on `win-workstation` defaults to `cmd.exe`; use
+native SSH with explicit PowerShell, and SCP/SFTP for transfers.
+
+```bash
+ssh -T -o BatchMode=yes -o ConnectTimeout=10 win-workstation hostname
+ssh -T -o BatchMode=yes win-workstation powershell -NoProfile -NonInteractive -Command "Get-ChildItem 'D:\Code'"
+scp -o BatchMode=yes win-workstation:C:/path/to/log.txt /tmp/log.txt
+```
 
 ## Auth and failure modes
 
@@ -70,13 +132,14 @@ SSH session. Exit codes propagate from the remote command.
 
 ## Reporting
 
-Capture command output or `remote get` results into whatever deliverable the
-caller asked for (often `~/.cache/agents-supervisor/<date>/<name>.md` when a
-supervisor dispatched you). Prefer summarizing on this machine; do not assume
-remote home paths are readable locally without `get`.
+Capture MCP results, command output, or fetched files into the requested
+deliverable (often `~/.cache/agents-supervisor/<date>/<name>.md` when a supervisor
+dispatched you). Prefer summarizing on this machine; remote paths are not local
+paths. Fetch artifacts when the deliverable requires local files.
 
 ## Prompting a sub-agent
 
-If you dispatch another agent to do the remote work, the prompt must name the
-SSH Host alias, the exact `remote` commands or investigation goal, constraints
-(e.g. read-only), and where to write the report on **this** host.
+If you dispatch another agent, name the target MCP server or SSH alias, the
+remote paths, the investigation goal, constraints (e.g. read-only), and where to
+write the report on **this** host. For MCP work, confirm the subagent can access
+those tools rather than assuming inheritance.
