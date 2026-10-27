@@ -1,0 +1,10 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $current := fromJson (default "{}" .chezmoi.stdin) -}}
+{{- /* SSH carries pixels inline; patch changed regions and cap remote rendering. */ -}}
+{{- $managed := dict "render.fps" "15" "render.presenter" "patched" "render.transport" "inline" -}}
+{{- $merged := mergeOverwrite (deepCopy $current) $managed -}}
+{{- if deepEqual $current $merged -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $merged | toPrettyJson -}}
+{{- end -}}

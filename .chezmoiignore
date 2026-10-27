@@ -89,6 +89,11 @@ install-packages.sh
 .local/bin/xclip
 {{- end }}
 
+# Remote browser rendering defaults only apply to headless profiles.
+{{- if not (hasPrefix "server" .profile) }}
+.config/terminal-browser/
+{{- end }}
+
 # Headless profiles (server-personal / server-work): skip GUI/desktop configs
 {{- if hasPrefix "server" .profile }}
 .config/alacritty/
