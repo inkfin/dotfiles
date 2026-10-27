@@ -1,0 +1,18 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+  Managed keys live in .templates/opencode.jsonc.tmpl. On work profiles,
+  venus/venus-responses are replaced exactly; all other providers stay local.
+*/ -}}
+{{- $current := fromJsonc (default "{}" .chezmoi.stdin) -}}
+{{- $managed := fromJsonc (includeTemplate "dot_config/opencode/.templates/opencode.jsonc.tmpl" .) -}}
+{{- $merged := mergeOverwrite (deepCopy $current) $managed -}}
+{{- if hasSuffix "work" .profile -}}
+{{- range $key, $value := (default dict (get $managed "provider")) -}}
+{{- $merged = setValueAtPath (list "provider" $key) $value $merged -}}
+{{- end -}}
+{{- end -}}
+{{- if deepEqual $current $merged -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $merged | toPrettyJson -}}
+{{- end -}}
