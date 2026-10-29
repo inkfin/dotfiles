@@ -28,6 +28,7 @@ pack.load({
     "plugins.codecompanion",
     "plugins.wakatime",
     "plugins.blink",
+    "plugins.jieba",
     "plugins.trouble",
     "plugins.colorscheme",
     "plugins.pack_ext",

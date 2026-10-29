@@ -59,7 +59,8 @@ blink.setup({
         list = {
             selection = {
                 preselect = false,
-                auto_insert = true,
+                -- Browsing Chinese candidates must leave the input code intact.
+                auto_insert = function() return not (ok_rime and rime.active()) end,
             },
         },
         -- Show documentation popup alongside the menu
@@ -93,6 +94,16 @@ blink.setup({
     -- Fuzzy matching
     --------------------------
     fuzzy = {
+        -- Rime labels carry candidate numbers. Usage scores must not reorder
+        -- them, or pressing a digit would disagree with the displayed label.
+        sorts = {
+            function(a, b)
+                if a.client_name == "rime_ls" and b.client_name == "rime_ls" then
+                    return (a.sortText or "") < (b.sortText or "")
+                end
+            end,
+            "score", "sort_text",
+        },
         -- Force prebuilt binary download even when not exactly on a release tag
         prebuilt_binaries = {
             force_version = "v1.*",

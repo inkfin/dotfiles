@@ -7,7 +7,8 @@
 --
 -- Spec shapes accepted by pack.add():
 --   "https://..."
---   { src = "https://...", version = ">=1", build = "make" }
+--   { src = "https://...", version = ">=1", build = "make", defer = true }
+--   defer installs/registers now; the consumer calls :packadd on first use.
 --   { "https://...", { src = "...", build = "make" }, ... }
 --
 -- How two-phase loading works:
@@ -39,6 +40,7 @@ end
 -- ─── Build-hook infrastructure ───────────────────────────────────────────────
 
 local _hooks     = {}   -- plugin-name → build command or function
+local _deferred = {}   -- names installed now, explicitly packadd'd on first use
 local _all_specs = {}   -- accumulated vim.pack specs (flushed once)
 
 -- PackChanged is registered NOW, before any vim.pack.add() call, so it is
@@ -81,6 +83,14 @@ vim.api.nvim_create_autocmd("PackChanged", {
 -- a sentinel error so the caller knows it must be re-run in Phase 2.
 M._collecting = false
 
+-- A custom loader is needed for true lazy loading: load=false still adds the
+-- plugin to runtimepath, so startup would source its plugin/ scripts later.
+local function load_plugin(plug)
+    if not _deferred[plug.spec.name] then
+        vim.cmd.packadd({ plug.spec.name, bang = vim.v.vim_did_enter == 0 })
+    end
+end
+
 -- ─── pack.add (internal) ─────────────────────────────────────────────────────
 
 local function add_one(spec)
@@ -99,6 +109,8 @@ local function add_one(spec)
     -- Named spec table ─────────────────────────────────────────────────────
     local name = plugin_name(spec.src)
     if name then M._registered[name] = true end
+
+    if spec.defer and name then _deferred[name] = true end
 
     -- Register hook pre-emptively so PackChanged can find it even before the
     -- individual add_one() for this plugin runs.
@@ -124,7 +136,7 @@ local function add_one(spec)
     if M._collecting then
         table.insert(_all_specs, pack_spec)
     else
-        vim.pack.add({ pack_spec })
+        vim.pack.add({ pack_spec }, { load = load_plugin })
     end
 end
 
@@ -173,7 +185,7 @@ function M.load(modules)
     -- All _hooks entries are populated now, so PackChanged (fired for any
     -- lockfile-based install) will find the correct build command.
     if #_all_specs > 0 then
-        vim.pack.add(_all_specs)
+        vim.pack.add(_all_specs, { load = load_plugin })
     end
 
     -- ── Phase 2: configure ───────────────────────────────────────────────────
