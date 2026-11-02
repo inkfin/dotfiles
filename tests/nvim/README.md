@@ -1,4 +1,18 @@
-# nvim.mini Rime regression checks
+# nvim.mini regression checks
+
+## PackUpdate recovery
+
+```sh
+NVIM_LOG_FILE=/tmp/nvim-pack-test.log nvim --headless -u NONE -l tests/nvim/pack_update.lua
+```
+
+Uses a disposable local Git plugin and deliberately leaves native revision
+collection incomplete to reproduce the `sha_target` report crash. Checks one
+recovery attempt, the resulting native confirmation report, persistent and
+unrelated failures, and reentrant invocation. This validates recovery from the
+incomplete state; it does not identify what originally caused that state.
+
+## Rime
 
 Run from the chezmoi source root:
 

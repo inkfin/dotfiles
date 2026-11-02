@@ -157,9 +157,28 @@ end, {
 })
 
 
+local updating = false
 vim.api.nvim_create_user_command("PackUpdate", function()
+    -- Native updates yield while fetching; another command can run during that wait.
+    if updating then
+        vim.notify("PackUpdate: update already in progress", vim.log.levels.WARN)
+        return
+    end
+    updating = true
     vim.notify("vim.pack: updating all plugins…", vim.log.levels.INFO)
-    vim.pack.update()
+    local ok, err = pcall(vim.pack.update)
+    -- Some vim.pack versions can reach the report with incomplete revision info.
+    -- A fresh update reconstructs that info and retries fetching too, so failed
+    -- downloads are not silently presented as successful offline checks. Keep
+    -- native confirmation (no force), retry only this error, and only once.
+    if not ok and tostring(err):find("attempt to concatenate field 'sha_target' (a nil value)", 1, true) then
+        vim.notify("PackUpdate: incomplete vim.pack revision info; retrying…", vim.log.levels.WARN)
+        ok, err = pcall(vim.pack.update)
+    end
+    updating = false
+    if not ok then
+        vim.notify("PackUpdate: " .. tostring(err), vim.log.levels.ERROR)
+    end
 end, { desc = "Update all vim.pack plugins" })
 
 vim.api.nvim_create_user_command("PackDoctor", function()
