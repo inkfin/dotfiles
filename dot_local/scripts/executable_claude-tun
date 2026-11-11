@@ -1,0 +1,478 @@
+#!/usr/bin/env python3
+"""Run Claude with an isolated, fail-closed Mihomo TUN gateway."""
+
+import argparse
+from contextlib import ExitStack, contextmanager
+import fcntl
+import ipaddress
+import json
+import os
+from pathlib import Path
+import select
+import shutil
+import signal
+import socket
+import socketserver
+import stat
+import struct
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+
+LAN = "198.18.42.1"
+CLIENT = "198.18.42.2"
+RELAY_PORT = 1080
+CANARY = "203.0.113.7"
+DNS_CANARY = "203.0.113.53"
+SAFE_PATH = "/usr/sbin:/usr/bin:/sbin:/bin"
+SCRIPT = Path(__file__).resolve()
+
+FIREWALL = """
+table inet claude_tun {
+  chain input {
+    type filter hook input priority filter; policy drop;
+    iifname "lo" accept
+  }
+  chain forward {
+    type filter hook forward priority filter; policy drop;
+    iifname "client" oifname "claudetun" meta nfproto ipv4 accept
+    iifname "claudetun" oifname "client" meta nfproto ipv4 accept
+  }
+  chain output {
+    type filter hook output priority filter; policy drop;
+    oifname "lo" accept
+  }
+}
+"""
+
+
+def xdg(variable, default):
+    return Path(os.environ.get(variable) or Path.home() / default)
+
+
+def binary(name):
+    found = shutil.which(name)
+    if not found:
+        raise ValueError(f"Missing executable: {name}")
+    return str(Path(found).resolve())
+
+
+def run(*args, **kwargs):
+    return subprocess.run(args, check=True, **kwargs)
+
+
+def relay(left, right):
+    """Copy bytes in both directions, preserving TCP half-closes."""
+    peers = {left: right, right: left}
+    while peers:
+        ready, _, _ = select.select(list(peers), [], [], 300)
+        if not ready:
+            return
+        for source in ready:
+            target = peers[source]
+            data = source.recv(65536)
+            if data:
+                target.sendall(data)
+            else:
+                target.shutdown(socket.SHUT_WR)
+                del peers[source]
+
+
+class Threaded:
+    daemon_threads = True
+
+
+class HostRelay(Threaded, socketserver.ThreadingUnixStreamServer):
+    def __init__(self, path, endpoint):
+        self.endpoint = endpoint
+        super().__init__(str(path), HostConnection)
+
+
+class HostConnection(socketserver.BaseRequestHandler):
+    def handle(self):
+        try:
+            with socket.create_connection(self.server.endpoint, timeout=5) as upstream:
+                upstream.settimeout(None)
+                relay(self.request, upstream)
+        except OSError:
+            # Closing the Unix stream makes Mihomo fail the request.
+            pass
+
+
+class GatewayRelay(Threaded, socketserver.ThreadingTCPServer):
+    def __init__(self, path):
+        self.path = path
+        super().__init__(("127.0.0.1", RELAY_PORT), GatewayConnection)
+
+
+class GatewayConnection(socketserver.BaseRequestHandler):
+    def handle(self):
+        try:
+            with socket.socket(socket.AF_UNIX) as upstream:
+                upstream.connect(str(self.server.path))
+                relay(self.request, upstream)
+        except OSError:
+            pass
+
+
+@contextmanager
+def serving(server):
+    with server:
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            yield server
+        finally:
+            server.shutdown()
+            thread.join()
+
+
+def terminate(process):
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+
+
+def read_upstream(path):
+    with path.open() as config_file:
+        metadata = os.fstat(config_file.fileno())
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid() or metadata.st_mode & 0o077:
+            raise ValueError("Upstream config must be a user-owned regular file with mode 600")
+        config = json.load(config_file)
+    config["address"] = str(ipaddress.ip_address(config["address"]))
+    dns_address = ipaddress.IPv4Address(config["dns_address"])
+    lan = ipaddress.ip_network(f"{LAN}/30", strict=False)
+    if dns_address.is_loopback or dns_address.is_unspecified or dns_address in lan:
+        raise ValueError("DNS address must be reachable through the SOCKS5 upstream")
+    config["dns_address"] = str(dns_address)
+    if type(config["port"]) is not int or not 1 <= config["port"] <= 65535:
+        raise ValueError("Invalid SOCKS5 port")
+    for field in ("username", "password"):
+        value = config.get(field, "")
+        if not isinstance(value, str) or len(value.encode()) > 255:
+            raise ValueError(f"Invalid SOCKS5 {field}")
+        config[field] = value
+    if bool(config["username"]) != bool(config["password"]):
+        raise ValueError("Set both SOCKS5 username and password, or leave both empty")
+    return config
+
+
+def mihomo_config(upstream, check):
+    proxy = {"name": "UPSTREAM", "type": "socks5", "server": "127.0.0.1", "port": RELAY_PORT}
+    if upstream["username"]:
+        proxy.update(username=upstream["username"], password=upstream["password"])
+    config = {
+        "mode": "rule", "ipv6": False, "log-level": "warning",
+        "tun": {
+            "enable": True, "device": "claudetun", "stack": "gvisor",
+            "auto-route": False, "auto-redirect": False, "dns-mode": "disabled",
+            "dns-hijack": ["any:53", "tcp://any:53"],
+        },
+        "dns": {
+            "enable": True, "ipv6": False, "enhanced-mode": "redir-host",
+            "nameserver": [f'tcp://{upstream["dns_address"]}#UPSTREAM'],
+        },
+        "proxies": [proxy],
+        "rules": ["MATCH,UPSTREAM"],
+    }
+    if check:
+        config["rules"] = [f"IP-CIDR,{CANARY}/32,UPSTREAM,no-resolve", "MATCH,REJECT"]
+    return config
+
+
+def sandbox(bwrap, workspace, home, runtime, command, claude):
+    args = [
+        bwrap, "--unshare-user", "--uid", "1000", "--gid", "1000",
+        "--disable-userns", "--cap-drop", "ALL", "--unshare-pid", "--unshare-ipc",
+        "--unshare-uts", "--die-with-parent", "--new-session", "--clearenv",
+        "--setenv", "HOME", "/home/claude", "--setenv", "PATH", "/opt/claude:" + SAFE_PATH,
+        "--setenv", "LANG", "C.UTF-8", "--ro-bind", "/usr", "/usr",
+        "--proc", "/proc", "--dev", "/dev", "--tmpfs", "/tmp",
+        "--bind", str(workspace), "/workspace", "--bind", str(home), "/home/claude",
+        "--ro-bind", str(runtime / "resolv.conf"), "/etc/resolv.conf",
+        "--ro-bind", str(runtime / "passwd"), "/etc/passwd",
+        "--ro-bind", str(runtime / "group"), "/etc/group",
+        "--chdir", "/workspace",
+    ]
+    for path in ("/bin", "/sbin", "/lib", "/lib64", "/etc/ssl", "/etc/pki", "/etc/alternatives"):
+        source = Path(path)
+        if source.is_symlink():
+            args += ["--symlink", os.readlink(source), path]
+        elif source.exists():
+            args += ["--ro-bind", path, path]
+    for name in ("TERM", "COLORTERM"):
+        if name in os.environ:
+            args += ["--setenv", name, os.environ[name]]
+    if claude:
+        args += ["--ro-bind", claude, "/opt/claude/claude"]
+    else:
+        args += ["--ro-bind", str(SCRIPT), "/opt/claude/check"]
+    return [*args, "--", *command]
+
+
+def wait_ready(process, ready, description):
+    for _ in range(100):
+        if process.poll() is not None:
+            break
+        if ready():
+            return
+        time.sleep(0.05)
+    raise RuntimeError(f"{description} failed to start")
+
+
+def in_gateway(runtime):
+    # The host starts this worker in fresh user, network and PID namespaces.
+    spec = json.loads((runtime / "worker.json").read_text())
+    if os.getpid() != 1 or Path("/proc/self/ns/net").readlink().name == spec["host_netns"]:
+        raise RuntimeError("Refusing network setup outside the private gateway namespace")
+    check = spec["check"]
+    with ExitStack() as stack:
+        client = subprocess.Popen(["unshare", "--net", "sleep", "infinity"])
+        stack.callback(terminate, client)
+        netns = Path(f"/proc/{client.pid}/ns/net")
+        current = Path("/proc/self/ns/net").readlink()
+        wait_ready(client, lambda: netns.readlink() != current, "client namespace")
+        enter = ["nsenter", "-t", str(client.pid), "-n", "--"]
+        run("ip", "link", "set", "lo", "up")
+        run("ip", "link", "add", "client", "type", "veth", "peer", "name", "gateway", "netns", str(client.pid))
+        run("ip", "addr", "add", f"{LAN}/30", "dev", "client")
+        run("ip", "link", "set", "client", "up")
+        run(*enter, "ip", "link", "set", "lo", "up")
+        run(*enter, "sysctl", "-qw", "net.ipv6.conf.all.disable_ipv6=1", "net.ipv6.conf.default.disable_ipv6=1")
+        run(*enter, "ip", "addr", "add", f"{CLIENT}/30", "dev", "gateway")
+        run(*enter, "ip", "link", "set", "gateway", "up")
+        run(*enter, "ip", "route", "add", "default", "via", LAN)
+        run("sysctl", "-qw", "net.ipv4.ip_forward=1", "net.ipv6.conf.all.forwarding=0")
+        run("nft", "-f", "-", input=FIREWALL, text=True)
+        stack.enter_context(serving(GatewayRelay(runtime / "relay.sock")))
+        gateway = subprocess.Popen([spec["mihomo"], "-d", str(runtime), "-f", str(runtime / "mihomo.json")])
+        stack.callback(terminate, gateway)
+        wait_ready(gateway, lambda: subprocess.run(
+            ["ip", "link", "show", "claudetun"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        ).returncode == 0, "Mihomo TUN")
+        run("ip", "route", "add", "default", "dev", "claudetun", "table", "100")
+        run("ip", "rule", "add", "iif", "client", "lookup", "100", "priority", "100")
+        command = sandbox(spec["bwrap"], Path(spec["workspace"]), Path(spec["home"]), runtime,
+                          spec["command"], spec["claude"])
+        if not check:
+            return subprocess.call([*enter, *command])
+        run(*enter, *command, "on")
+        terminate(gateway)
+        run(*enter, *command, "off")
+        return 0
+
+
+def exact(stream, size):
+    data = stream.read(size)
+    if len(data) != size:
+        raise EOFError("Incomplete response")
+    return data
+
+
+class MockServer(Threaded, socketserver.ThreadingTCPServer):
+    pass
+
+
+class MockUpstream(socketserver.StreamRequestHandler):
+    def handle(self):
+        assert exact(self.rfile, 1) == b"\x05"
+        assert b"\x00" in exact(self.rfile, exact(self.rfile, 1)[0])
+        self.wfile.write(b"\x05\x00")
+        assert exact(self.rfile, 4) == b"\x05\x01\x00\x01"
+        target = socket.inet_ntoa(exact(self.rfile, 4))
+        port = int.from_bytes(exact(self.rfile, 2), "big")
+        assert (target, port) in ((CANARY, 8080), (DNS_CANARY, 53))
+        self.wfile.write(b"\x05\x00\x00\x01" + bytes(6))
+        if port == 53:
+            query = exact(self.rfile, int.from_bytes(exact(self.rfile, 2), "big"))
+            answer = (query[:2] + bytes.fromhex("81800001000100000000") + query[12:]
+                      + bytes.fromhex("c00c000100010000003c0004") + socket.inet_aton(CANARY))
+            self.wfile.write(struct.pack("!H", len(answer)) + answer)
+        else:
+            assert exact(self.rfile, 4) == b"PING"
+            self.wfile.write(b"PONG")
+
+
+def probe(mode):
+    assert all("proxy" not in key.lower() for key in os.environ)
+
+    def tcp(address, port):
+        return socket.create_connection((address, port), 2)
+
+    def exchange(tcp_dns):
+        label = b"tcp" if tcp_dns else b"udp"
+        query = (bytes.fromhex("123401000001000000000000") + b"\x03" + label
+                 + b"\x07example\0\0\x01\0\x01")
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM if tcp_dns else socket.SOCK_DGRAM) as sock:
+            sock.settimeout(2)
+            sock.connect((DNS_CANARY, 53))
+            sock.sendall(struct.pack("!H", len(query)) + query if tcp_dns else query)
+            if tcp_dns:
+                with sock.makefile("rb") as stream:
+                    response = exact(stream, int.from_bytes(exact(stream, 2), "big"))
+            else:
+                response = sock.recv(4096)
+            assert response[:2] == query[:2] and response[-4:] == socket.inet_aton(CANARY)
+
+    def blocked(label, operation):
+        try:
+            operation()
+        except (OSError, EOFError):
+            print(f"Blocked: {label}", flush=True)
+            return
+        raise RuntimeError(f"Unexpected connection: {label}")
+
+    blocked("IPv6 direct", lambda: tcp("2001:db8::1", 8080).close())
+    blocked("gateway relay access", lambda: tcp(LAN, RELAY_PORT).close())
+    if mode == "on":
+        with tcp(CANARY, 8080) as sock, sock.makefile("rb") as stream:
+            sock.sendall(b"PING")
+            assert exact(stream, 4) == b"PONG"
+        print("IPv4 TCP via SOCKS5, without proxy variables", flush=True)
+        for tcp_dns in (False, True):
+            exchange(tcp_dns)
+            print(f"{'TCP' if tcp_dns else 'UDP'} DNS via SOCKS5", flush=True)
+        answers = socket.getaddrinfo("libc.example", 8080, socket.AF_INET, socket.SOCK_STREAM)
+        assert answers[0][4][0] == CANARY
+        print("System resolver via TUN and SOCKS5", flush=True)
+    else:
+        blocked("IPv4 after Mihomo exit", lambda: tcp(CANARY, 8080).close())
+        for tcp_dns in (False, True):
+            blocked(f"{'TCP' if tcp_dns else 'UDP'} DNS after Mihomo exit", lambda: exchange(tcp_dns))
+    return 0
+
+
+def launch(args):
+    if os.geteuid() == 0:
+        raise ValueError("Run as a regular user without sudo")
+    check = args.action == "self-check"
+    state = xdg("XDG_STATE_HOME", ".local/state") / "claude-tun"
+    config = xdg("XDG_CONFIG_HOME", ".config") / "claude-tun" / "upstream.json"
+    state.mkdir(mode=0o700, parents=True, exist_ok=True)
+    state = state.resolve()
+    metadata = state.stat()
+    if metadata.st_uid != os.getuid() or metadata.st_mode & 0o077:
+        raise ValueError("State directory must be user-owned with mode 700")
+    control = state / "control.sock"
+    with (state / "lock").open("a") as lock, ExitStack() as stack:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError("A claude-tun session is already running") from None
+        control.unlink(missing_ok=True)
+        listener = stack.enter_context(socket.socket(socket.AF_UNIX))
+        listener.bind(str(control))
+        stack.callback(control.unlink, missing_ok=True)
+        listener.listen(1)
+        runtime = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="claude-tun-", dir="/tmp")))
+        if check:
+            mock = stack.enter_context(serving(MockServer(("127.0.0.1", 0), MockUpstream)))
+            address, port = mock.server_address
+            upstream = dict(address=address, port=port, username="", password="", dns_address=DNS_CANARY)
+            workspace = runtime / "workspace"
+            home = runtime / "home"
+            workspace.mkdir()
+            claude = None
+            command = ["/usr/bin/python3", "/opt/claude/check", "_probe"]
+        else:
+            upstream = read_upstream(config)
+            workspace = Path(args.workspace).resolve(strict=True)
+            if not workspace.is_dir():
+                raise ValueError("Workspace must be a directory")
+            for protected in (Path.home().resolve(), state, config.resolve(), runtime):
+                if protected.is_relative_to(workspace) or (protected != Path.home().resolve()
+                                                          and workspace.is_relative_to(protected)):
+                    raise ValueError("Choose a project directory outside the gateway state and config")
+            home = state / "home"
+            claude = binary(args.claude)
+            command = ["/opt/claude/claude", *args.claude_args]
+        home.mkdir(mode=0o700, exist_ok=True)
+        (runtime / "resolv.conf").write_text(f'nameserver {upstream["dns_address"]}\noptions timeout:2 attempts:1\n')
+        (runtime / "passwd").write_text("claude:x:1000:1000:Claude:/home/claude:/bin/bash\n")
+        (runtime / "group").write_text("claude:x:1000:\n")
+        (runtime / "mihomo.json").write_text(json.dumps(mihomo_config(upstream, check)))
+        (runtime / "worker.json").write_text(json.dumps({
+            "host_netns": Path("/proc/self/ns/net").readlink().name,
+            "check": check, "mihomo": binary(args.mihomo), "bwrap": binary("bwrap"),
+            "workspace": str(workspace), "home": str(home), "claude": claude, "command": command,
+        }))
+        stack.enter_context(serving(HostRelay(runtime / "relay.sock", (upstream["address"], upstream["port"]))))
+        env = {"PATH": os.environ["PATH"], "HOME": str(runtime)}
+        env.update({key: os.environ[key] for key in ("TERM", "COLORTERM") if key in os.environ})
+        worker = subprocess.Popen([
+            binary("unshare"), "--user", "--map-root-user", "--net", "--pid", "--mount-proc",
+            "--fork", "--kill-child", sys.executable, str(SCRIPT), "_gateway", str(runtime),
+        ], env=env)
+        stack.callback(terminate, worker)
+        while worker.poll() is None:
+            ready, _, _ = select.select([listener], [], [], 0.2)
+            if ready:
+                with listener.accept()[0] as request:
+                    request.settimeout(1)
+                    try:
+                        if request.recv(16) == b"stop":
+                            terminate(worker)
+                            request.sendall(b"stopped")
+                            return 0
+                    except OSError:
+                        continue
+        return worker.returncode if worker.returncode >= 0 else 128 - worker.returncode
+
+
+def stop():
+    control = xdg("XDG_STATE_HOME", ".local/state") / "claude-tun" / "control.sock"
+    with socket.socket(socket.AF_UNIX) as request:
+        request.settimeout(8)
+        try:
+            request.connect(str(control))
+        except (FileNotFoundError, ConnectionRefusedError):
+            print("No claude-tun session is running")
+            return 0
+        request.sendall(b"stop")
+        if request.recv(16) != b"stopped":
+            raise RuntimeError("Gateway did not acknowledge shutdown")
+    print("Claude container and gateway stopped")
+    return 0
+
+
+def main():
+    if sys.argv[1:2] == ["_gateway"]:
+        return in_gateway(Path(sys.argv[2]))
+    if sys.argv[1:2] == ["_probe"]:
+        return probe(sys.argv[2])
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    sub = parser.add_subparsers(dest="action", required=True)
+    start = sub.add_parser("start", help="run Claude in the foreground")
+    start.add_argument("--mihomo", default="mihomo")
+    start.add_argument("--claude", default="claude")
+    start.add_argument("workspace")
+    start.add_argument("claude_args", nargs=argparse.REMAINDER)
+    sub.add_parser("stop", help="stop the foreground session")
+    check = sub.add_parser("self-check", help="verify isolation with a local SOCKS5 stub")
+    check.add_argument("--mihomo", default="mihomo")
+    args = parser.parse_args()
+    os.umask(0o077)
+    if args.action == "stop":
+        return stop()
+
+    def interrupted(_signal, _frame):
+        raise KeyboardInterrupt
+
+    signal.signal(signal.SIGTERM, interrupted)
+    return launch(args)
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except (OSError, ValueError, RuntimeError, KeyError, subprocess.CalledProcessError) as error:
+        sys.exit(f"claude-tun: {error}")

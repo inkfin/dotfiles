@@ -44,6 +44,8 @@ scripts/env_init/macos*
 
 # Linux specific settings
 {{ if ne .chezmoi.os "linux" }}
+.config/claude-tun/
+.local/scripts/claude-tun
 modikeys.sh
 scripts/linux/
 .config/ibus/
