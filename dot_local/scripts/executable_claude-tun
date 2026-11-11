@@ -432,7 +432,8 @@ def launch(args):
         listener.listen(1)
         runtime = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="claude-tun-", dir="/tmp")))
         training_helper = None
-        training_fixture = None
+        training_config = None
+        training_repo = None
         if check:
             mock = stack.enter_context(serving(MockServer(("127.0.0.1", 0), MockUpstream)))
             address, port = mock.server_address
@@ -455,13 +456,19 @@ def launch(args):
             home = state / "home"
             claude = binary(args.claude)
             command = ["/opt/claude/claude", *args.claude_args]
-            if args.training_fixture:
-                training_fixture = args.training_fixture.resolve(strict=True)
-                if training_fixture.is_relative_to(workspace) or not training_fixture.is_file():
-                    raise ValueError("Keep the mock training fixture outside the writable project")
+            if args.training_fixture or args.training_gameair:
+                training_config = (args.training_fixture or args.training_gameair).resolve(strict=True)
+                if training_config.is_relative_to(workspace) or not training_config.is_file():
+                    raise ValueError("Keep the training broker config outside the writable project")
                 training_helper = SCRIPT.with_name("claude-training-readonly")
                 if not training_helper.is_file():
                     raise ValueError("Apply the claude-training-readonly chezmoi script first")
+                if args.training_gameair:
+                    training_repo = Path(json.loads(training_config.read_text())["avatar_repo"]).resolve(strict=True)
+                    credentials = (Path.home() / ".gameair").resolve()
+                    for host_only in (training_repo, credentials, training_helper.resolve(), SCRIPT):
+                        if host_only.is_relative_to(workspace) or workspace.is_relative_to(host_only):
+                            raise ValueError("Keep the host training client and credentials outside the writable project")
                 flag_at = command.index("--") if "--" in command else len(command)
                 command[flag_at:flag_at] = ["--mcp-config", "/etc/claude-training-mcp.json"]
             environment_path = args.environment
@@ -474,8 +481,10 @@ def launch(args):
         protected = [state, config.parent.resolve(), runtime]
         if environment_path:
             protected.append(environment_path)
-        if training_fixture:
-            protected.append(training_fixture)
+        if training_config:
+            protected.append(training_config)
+        if training_repo:
+            protected.append(credentials)
         environment = read_environment(environment_path, workspace, protected)
         home.mkdir(mode=0o700, exist_ok=True)
         (runtime / "resolv.conf").write_text(f'nameserver {upstream["dns_address"]}\noptions timeout:2 attempts:1\n')
@@ -496,9 +505,19 @@ def launch(args):
                 }},
             }))
             training_socket = runtime / "training.sock"
+            interpreter = sys.executable
+            backend = "serve"
+            broker_env = {"PATH": SAFE_PATH}
+            if training_repo:
+                interpreter = str(training_repo / ".venv/bin/python3")
+                backend = "serve-gameair"
+                broker_env["HOME"] = str(Path.home())
+                for key in ("GAMEAIR_TOKEN", "GAMEAIR_USER_EN_NAME", "GAMEAIR_USER"):
+                    if key in os.environ:
+                        broker_env[key] = os.environ[key]
             broker = subprocess.Popen([
-                sys.executable, str(training_helper), "serve", str(training_socket), str(training_fixture),
-            ], env={"PATH": SAFE_PATH})
+                interpreter, "-I", str(training_helper), backend, str(training_socket), str(training_config),
+            ], cwd=training_repo, env=broker_env)
             stack.callback(terminate, broker)
             wait_ready(broker, training_socket.is_socket, "Training query broker")
         (runtime / "worker.json").write_text(json.dumps({
@@ -559,7 +578,9 @@ def main():
     start.add_argument("--mihomo", default="mihomo")
     start.add_argument("--claude", default="claude")
     start.add_argument("--environment", type=Path, help="trusted host JSON for locale, timezone and read-only mounts")
-    start.add_argument("--training-fixture", type=Path, help="enable the mock read-only training MCP server")
+    training = start.add_mutually_exclusive_group()
+    training.add_argument("--training-fixture", type=Path, help="enable the mock read-only training MCP server")
+    training.add_argument("--training-gameair", type=Path, help="enable the read-only GameAIR training MCP server")
     start.add_argument("workspace")
     start.add_argument("claude_args", nargs=argparse.REMAINDER)
     sub.add_parser("stop", help="stop the foreground session")

@@ -124,3 +124,31 @@ job visibility and log filtering enforced there.
 
 The socket is a deliberate local exception to the TUN boundary. It can
 answer while Mihomo is down, and closes with the launcher session.
+
+## Read-only training queries with GameAIR
+
+Copy `training-gameair.example.json` to the local
+`training-gameair.json` and set the project, workspace, and exact allowed
+job IDs. Use a trusted host Avatar checkout with its existing
+`.venv`. Keep that checkout outside the writable project mounted into
+Claude. For changes to the same repository, use a separate working copy.
+
+```sh
+~/.local/scripts/claude-tun start \
+  --training-gameair ~/.config/claude-tun/training-gameair.json \
+  /absolute/path/to/project-copy
+```
+
+The broker uses Avatar's existing host authentication
+(`~/.gameair/config.json` or `GAMEAIR_TOKEN` and the GameAIR user
+environment variables). The mounted socket accepts only the two MCP
+queries. The GameAIR client permits only the GET endpoints for job
+metadata, pods, and log content. The broker checks the exact job ID,
+project, and workspace before returning data.
+
+Logs come from pod index 0 for the configured role and stream. The
+response is a live tail bounded by the requested line count and 8 KiB of
+text. The host bearer value is removed if it appears in log text. Only
+allow jobs whose logs may be shared with the Claude session. The broker
+does not persist log text. A terminated job may still report status even
+after its live pod logs are unavailable.

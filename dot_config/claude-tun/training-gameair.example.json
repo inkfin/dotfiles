@@ -1,0 +1,8 @@
+{
+  "avatar_repo": "/data/workspace/soul/training",
+  "project_en_name": "sea",
+  "workspace_id": 225,
+  "allowed_job_ids": ["replace-with-full-job-id"],
+  "log_role": "agent",
+  "log_file": "stderr0"
+}

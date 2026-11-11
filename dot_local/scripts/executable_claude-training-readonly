@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Host fixture broker and sandbox-side stdio MCP adapter."""
+"""Host training query broker and sandbox-side stdio MCP adapter."""
 
 import json
 from pathlib import Path
@@ -32,7 +32,7 @@ def read_message(stream, limit):
     return message
 
 
-def query(jobs, request):
+def query(backend, request):
     method = request.get("method")
     if method not in (STATUS, LOGS):
         raise ValueError("Unknown operation")
@@ -46,13 +46,89 @@ def query(jobs, request):
     limit = arguments.get("limit", 20)
     if type(limit) is not int or not 1 <= limit <= MAX_LINES:
         raise ValueError(f"Limit must be an integer from 1 to {MAX_LINES}")
-    if job_id not in jobs:
-        raise ValueError("Job not found")
-    job = jobs[job_id]
-    if method == STATUS:
-        return {"job_id": job_id, "status": job["status"]}
-    lines = job["logs"]
-    return {"job_id": job_id, "lines": lines[-limit:], "truncated": len(lines) > limit}
+    return backend(method, job_id, limit)
+
+
+def fixture_backend(fixture):
+    jobs = json.loads(Path(fixture).read_text())
+    if not isinstance(jobs, dict):
+        raise ValueError("Expected a job ID to record mapping")
+    for job_id, job in jobs.items():
+        if (not JOB_ID.fullmatch(job_id) or not isinstance(job, dict)
+                or not isinstance(job.get("status"), str) or len(job["status"]) > 128
+                or not isinstance(job.get("logs"), list)
+                or not all(isinstance(line, str) and len(line.encode()) <= 2048 for line in job["logs"])):
+            raise ValueError("Invalid mock job record")
+
+    def fetch(method, job_id, limit):
+        if job_id not in jobs:
+            raise ValueError("Job not found")
+        job = jobs[job_id]
+        if method == STATUS:
+            return {"job_id": job_id, "status": job["status"]}
+        lines = job["logs"]
+        return {"job_id": job_id, "lines": lines[-limit:], "truncated": len(lines) > limit}
+
+    return fetch
+
+
+def gameair_backend(config_path):
+    config = json.loads(Path(config_path).read_text())
+    repo = Path(config["avatar_repo"]).resolve(strict=True)
+    project = config["project_en_name"]
+    workspace = config["workspace_id"]
+    allowed_jobs = config["allowed_job_ids"]
+    role = config.get("log_role", "agent")
+    log_file = config.get("log_file", "stderr0")
+    if not isinstance(project, str) or not JOB_ID.fullmatch(project) or type(workspace) is not int or workspace < 1:
+        raise ValueError("Invalid GameAIR project or workspace")
+    if not isinstance(allowed_jobs, list) or not allowed_jobs or not all(
+        isinstance(job, str) and JOB_ID.fullmatch(job) for job in allowed_jobs
+    ):
+        raise ValueError("Configure at least one exact GameAIR job ID")
+    if role not in ("agent", "actor", "learner", "selfplay", "job_master") or log_file not in ("stderr0", "stdout0"):
+        raise ValueError("Invalid GameAIR log source")
+
+    sys.path.insert(0, str(repo / ".agents/skills/avatar-core/scripts"))
+    from avatar_core.auth import PlatformAuthError, resolve_auth
+    from avatar_core.client import AvatarApiError, AvatarPlatformClient
+    from avatar_core.job_logs import (
+        JOB_QUERY_API, K8S_POD_API, LOG_CONTENT_API,
+        bounded_log_preview, fetch_job_log, query_job_row,
+    )
+
+    class ReadOnlyClient(AvatarPlatformClient):
+        def request(self, method, api, **kwargs):
+            if method != "GET" or api not in (JOB_QUERY_API, K8S_POD_API, LOG_CONTENT_API):
+                raise ValueError("Unapproved GameAIR API operation")
+            return super().request(method, api, **kwargs)
+
+    def fetch(method, job_id, limit):
+        if job_id not in allowed_jobs:
+            raise ValueError("Job ID is not allowed for this session")
+        try:
+            auth = resolve_auth()
+            client = ReadOnlyClient(auth, project_en_name=project, workspace_id=workspace, timeout=5)
+            with client.session:
+                row = query_job_row(client, job_id)
+                if (row.get("job_id") != job_id or row.get("project_en_name") != project
+                        or str(row.get("workspace_id")) != str(workspace)):
+                    raise ValueError("Job identity or workspace mismatch")
+                if method == STATUS:
+                    return {"job_id": job_id, "status": row["status"]}
+                result = fetch_job_log(client, job_id, role, job_row=row, pod_index="0",
+                                       log_file=log_file, command="tail", content_num=limit + 1)
+        except PlatformAuthError:
+            raise ValueError("GameAIR credentials are missing or rejected on the host") from None
+        except (AvatarApiError, KeyError, ValueError):
+            raise ValueError("GameAIR read failed for this job or log source") from None
+        token = auth.bearer.split(" ", 1)[1]
+        lines = (str(line).replace(token, "[REDACTED]") for line in result["lines"])
+        preview = bounded_log_preview(lines, max_lines=limit, max_bytes=8192)
+        return {"job_id": job_id, "lines": preview["lines"], "truncated": preview["truncated"],
+                "source": {"role": role, "pod_index": 0, "log_file": log_file}}
+
+    return fetch
 
 
 class QueryHandler(socketserver.StreamRequestHandler):
@@ -60,7 +136,7 @@ class QueryHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         try:
-            result = query(self.server.jobs, read_message(self.rfile, MAX_REQUEST))
+            result = query(self.server.backend, read_message(self.rfile, MAX_REQUEST))
             response = encode({"result": result})
             if len(response) > MAX_RESPONSE:
                 raise ValueError("Response exceeds byte limit; request fewer lines")
@@ -74,18 +150,9 @@ class QueryHandler(socketserver.StreamRequestHandler):
             pass
 
 
-def serve(socket_path, fixture):
-    jobs = json.loads(Path(fixture).read_text())
-    if not isinstance(jobs, dict):
-        raise ValueError("Expected a job ID to record mapping")
-    for job_id, job in jobs.items():
-        if (not JOB_ID.fullmatch(job_id) or not isinstance(job, dict)
-                or not isinstance(job.get("status"), str) or len(job["status"]) > 128
-                or not isinstance(job.get("logs"), list)
-                or not all(isinstance(line, str) and len(line.encode()) <= 2048 for line in job["logs"])):
-            raise ValueError("Invalid mock job record")
+def serve(socket_path, backend):
     with socketserver.UnixStreamServer(socket_path, QueryHandler) as server:
-        server.jobs = jobs
+        server.backend = backend
         server.serve_forever()
 
 
@@ -103,7 +170,7 @@ def tool(name, description, properties):
 
 def call_host(name, arguments):
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as conn:
-        conn.settimeout(3)
+        conn.settimeout(25)
         conn.connect(SOCKET)
         conn.sendall(encode({"method": name, "arguments": arguments}))
         with conn.makefile("rb") as stream:
@@ -116,8 +183,8 @@ def call_host(name, arguments):
 def mcp():
     job_id = {"type": "string", "pattern": "^" + JOB_ID.pattern + "$"}
     tools = [
-        tool(STATUS, "Read the status of one mock training job by job ID.", {"job_id": job_id}),
-        tool(LOGS, "Read the latest log lines for one mock training job by job ID.",
+        tool(STATUS, "Read the status of one training job by job ID.", {"job_id": job_id}),
+        tool(LOGS, "Read the latest log lines for one training job by job ID.",
              {"job_id": job_id, "limit": {"type": "integer", "minimum": 1, "maximum": MAX_LINES, "default": 20}}),
     ]
     for line in sys.stdin:
@@ -155,6 +222,8 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["mcp"]:
         mcp()
     elif len(sys.argv) == 4 and sys.argv[1] == "serve":
-        serve(sys.argv[2], sys.argv[3])
+        serve(sys.argv[2], fixture_backend(sys.argv[3]))
+    elif len(sys.argv) == 4 and sys.argv[1] == "serve-gameair":
+        serve(sys.argv[2], gameair_backend(sys.argv[3]))
     else:
-        sys.exit("Usage: claude-training-readonly mcp | serve SOCKET FIXTURE")
+        sys.exit("Usage: claude-training-readonly mcp | serve SOCKET FIXTURE | serve-gameair SOCKET CONFIG")
