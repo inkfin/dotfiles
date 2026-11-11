@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""Host fixture broker and sandbox-side stdio MCP adapter."""
+
+import json
+from pathlib import Path
+import re
+import socket
+import socketserver
+import sys
+
+SOCKET = "/run/claude-training/query.sock"
+MAX_REQUEST = 4096
+MAX_LINES = 100
+MAX_RESPONSE = 256 * 1024
+JOB_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}")
+STATUS = "get_job_status"
+LOGS = "get_recent_logs"
+VERSIONS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
+
+
+def encode(value):
+    return json.dumps(value, ensure_ascii=False).encode("utf-8") + b"\n"
+
+
+def read_message(stream, limit):
+    data = stream.readline(limit + 1)
+    if len(data) > limit or not data.endswith(b"\n"):
+        raise ValueError("Invalid message framing")
+    message = json.loads(data)
+    if not isinstance(message, dict):
+        raise ValueError("Expected a JSON object")
+    return message
+
+
+def query(jobs, request):
+    method = request.get("method")
+    if method not in (STATUS, LOGS):
+        raise ValueError("Unknown operation")
+    arguments = request.get("arguments")
+    allowed = {"job_id", "limit"} if method == LOGS else {"job_id"}
+    if not isinstance(arguments, dict) or arguments.keys() - allowed:
+        raise ValueError("Unexpected arguments")
+    job_id = arguments.get("job_id")
+    if not isinstance(job_id, str) or not JOB_ID.fullmatch(job_id):
+        raise ValueError("Invalid job ID")
+    limit = arguments.get("limit", 20)
+    if type(limit) is not int or not 1 <= limit <= MAX_LINES:
+        raise ValueError(f"Limit must be an integer from 1 to {MAX_LINES}")
+    if job_id not in jobs:
+        raise ValueError("Job not found")
+    job = jobs[job_id]
+    if method == STATUS:
+        return {"job_id": job_id, "status": job["status"]}
+    lines = job["logs"]
+    return {"job_id": job_id, "lines": lines[-limit:], "truncated": len(lines) > limit}
+
+
+class QueryHandler(socketserver.StreamRequestHandler):
+    timeout = 2
+
+    def handle(self):
+        try:
+            result = query(self.server.jobs, read_message(self.rfile, MAX_REQUEST))
+            response = encode({"result": result})
+            if len(response) > MAX_RESPONSE:
+                raise ValueError("Response exceeds byte limit; request fewer lines")
+        except ValueError as error:
+            response = encode({"error": str(error)})
+        except OSError:
+            return
+        try:
+            self.wfile.write(response)
+        except OSError:
+            pass
+
+
+def serve(socket_path, fixture):
+    jobs = json.loads(Path(fixture).read_text())
+    if not isinstance(jobs, dict):
+        raise ValueError("Expected a job ID to record mapping")
+    for job_id, job in jobs.items():
+        if (not JOB_ID.fullmatch(job_id) or not isinstance(job, dict)
+                or not isinstance(job.get("status"), str) or len(job["status"]) > 128
+                or not isinstance(job.get("logs"), list)
+                or not all(isinstance(line, str) and len(line.encode()) <= 2048 for line in job["logs"])):
+            raise ValueError("Invalid mock job record")
+    with socketserver.UnixStreamServer(socket_path, QueryHandler) as server:
+        server.jobs = jobs
+        server.serve_forever()
+
+
+def tool(name, description, properties):
+    return {
+        "name": name,
+        "description": description,
+        "annotations": {"readOnlyHint": True, "openWorldHint": False},
+        "inputSchema": {
+            "type": "object", "properties": properties,
+            "required": ["job_id"], "additionalProperties": False,
+        },
+    }
+
+
+def call_host(name, arguments):
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as conn:
+        conn.settimeout(3)
+        conn.connect(SOCKET)
+        conn.sendall(encode({"method": name, "arguments": arguments}))
+        with conn.makefile("rb") as stream:
+            response = read_message(stream, MAX_RESPONSE)
+    if "error" in response:
+        raise ValueError(response["error"])
+    return response["result"]
+
+
+def mcp():
+    job_id = {"type": "string", "pattern": "^" + JOB_ID.pattern + "$"}
+    tools = [
+        tool(STATUS, "Read the status of one mock training job by job ID.", {"job_id": job_id}),
+        tool(LOGS, "Read the latest log lines for one mock training job by job ID.",
+             {"job_id": job_id, "limit": {"type": "integer", "minimum": 1, "maximum": MAX_LINES, "default": 20}}),
+    ]
+    for line in sys.stdin:
+        request = json.loads(line)
+        if "id" not in request:
+            continue
+        method = request.get("method")
+        params = request.get("params", {})
+        response = {"jsonrpc": "2.0", "id": request["id"]}
+        if method == "initialize":
+            requested = params.get("protocolVersion")
+            response["result"] = {
+                "protocolVersion": requested if requested in VERSIONS else VERSIONS[0],
+                "capabilities": {"tools": {}},
+                "serverInfo": {"name": "training-readonly", "version": "1.0.0"},
+            }
+        elif method == "ping":
+            response["result"] = {}
+        elif method == "tools/list":
+            response["result"] = {"tools": tools}
+        elif method == "tools/call":
+            try:
+                result = call_host(params.get("name"), params.get("arguments", {}))
+                response["result"] = {"content": [{"type": "text", "text": json.dumps(result, ensure_ascii=False)}]}
+            except (OSError, ValueError) as error:
+                message = str(error) if isinstance(error, ValueError) else "Training query broker unavailable"
+                response["result"] = {"isError": True, "content": [{"type": "text", "text": message}]}
+        else:
+            response["error"] = {"code": -32601, "message": "Method not found"}
+        sys.stdout.buffer.write(encode(response))
+        sys.stdout.buffer.flush()
+
+
+if __name__ == "__main__":
+    if sys.argv[1:] == ["mcp"]:
+        mcp()
+    elif len(sys.argv) == 4 and sys.argv[1] == "serve":
+        serve(sys.argv[2], sys.argv[3])
+    else:
+        sys.exit("Usage: claude-training-readonly mcp | serve SOCKET FIXTURE")

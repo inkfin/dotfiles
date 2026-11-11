@@ -229,7 +229,7 @@ def read_environment(path, workspace, protected):
     return dict(locale=locale, timezone=timezone, zone=str(zone), fonts=fonts, toolchains=toolchains)
 
 
-def sandbox(bwrap, workspace, home, runtime, command, claude, environment):
+def sandbox(bwrap, workspace, home, runtime, command, claude, environment, training_helper):
     toolchains = {f"/opt/toolchains/{name}": source for name, source in environment["toolchains"].items()}
     path = ":".join(["/opt/claude", *(f"{target}/bin" for target in toolchains), SAFE_PATH])
     args = [
@@ -266,6 +266,12 @@ def sandbox(bwrap, workspace, home, runtime, command, claude, environment):
         args += ["--ro-bind", claude, "/opt/claude/claude"]
     else:
         args += ["--ro-bind", str(SCRIPT), "/opt/claude/check"]
+    if training_helper:
+        args += [
+            "--ro-bind", training_helper, "/opt/claude/training-readonly.py",
+            "--ro-bind", str(runtime / "training.sock"), "/run/claude-training/query.sock",
+            "--ro-bind", str(runtime / "training-mcp.json"), "/etc/claude-training-mcp.json",
+        ]
     return [*args, "--", *command]
 
 
@@ -312,7 +318,7 @@ def in_gateway(runtime):
         run("ip", "route", "add", "default", "dev", "claudetun", "table", "100")
         run("ip", "rule", "add", "iif", "client", "lookup", "100", "priority", "100")
         command = sandbox(spec["bwrap"], Path(spec["workspace"]), Path(spec["home"]), runtime,
-                          spec["command"], spec["claude"], spec["environment"])
+                          spec["command"], spec["claude"], spec["environment"], spec["training_helper"])
         if not check:
             return subprocess.call([*enter, *command])
         run(*enter, *command, "on")
@@ -425,6 +431,8 @@ def launch(args):
         stack.callback(control.unlink, missing_ok=True)
         listener.listen(1)
         runtime = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="claude-tun-", dir="/tmp")))
+        training_helper = None
+        training_fixture = None
         if check:
             mock = stack.enter_context(serving(MockServer(("127.0.0.1", 0), MockUpstream)))
             address, port = mock.server_address
@@ -447,6 +455,15 @@ def launch(args):
             home = state / "home"
             claude = binary(args.claude)
             command = ["/opt/claude/claude", *args.claude_args]
+            if args.training_fixture:
+                training_fixture = args.training_fixture.resolve(strict=True)
+                if training_fixture.is_relative_to(workspace) or not training_fixture.is_file():
+                    raise ValueError("Keep the mock training fixture outside the writable project")
+                training_helper = SCRIPT.with_name("claude-training-readonly")
+                if not training_helper.is_file():
+                    raise ValueError("Apply the claude-training-readonly chezmoi script first")
+                flag_at = command.index("--") if "--" in command else len(command)
+                command[flag_at:flag_at] = ["--mcp-config", "/etc/claude-training-mcp.json"]
             environment_path = args.environment
             if environment_path is None and default_environment.exists():
                 environment_path = default_environment
@@ -457,6 +474,8 @@ def launch(args):
         protected = [state, config.parent.resolve(), runtime]
         if environment_path:
             protected.append(environment_path)
+        if training_fixture:
+            protected.append(training_fixture)
         environment = read_environment(environment_path, workspace, protected)
         home.mkdir(mode=0o700, exist_ok=True)
         (runtime / "resolv.conf").write_text(f'nameserver {upstream["dns_address"]}\noptions timeout:2 attempts:1\n')
@@ -469,11 +488,25 @@ def launch(args):
                 ET.SubElement(fonts, "dir").text = f"/opt/fonts/{index}"
             ET.ElementTree(fonts).write(runtime / "fonts.conf", encoding="utf-8", xml_declaration=True)
         (runtime / "mihomo.json").write_text(json.dumps(mihomo_config(upstream, check)))
+        if training_helper:
+            (runtime / "training-mcp.json").write_text(json.dumps({
+                "mcpServers": {"training-readonly": {
+                    "command": "/usr/bin/python3",
+                    "args": ["/opt/claude/training-readonly.py", "mcp"],
+                }},
+            }))
+            training_socket = runtime / "training.sock"
+            broker = subprocess.Popen([
+                sys.executable, str(training_helper), "serve", str(training_socket), str(training_fixture),
+            ], env={"PATH": SAFE_PATH})
+            stack.callback(terminate, broker)
+            wait_ready(broker, training_socket.is_socket, "Training query broker")
         (runtime / "worker.json").write_text(json.dumps({
             "host_netns": Path("/proc/self/ns/net").readlink().name,
             "check": check, "mihomo": binary(args.mihomo), "bwrap": binary("bwrap"),
             "workspace": str(workspace), "home": str(home), "claude": claude, "command": command,
             "environment": environment,
+            "training_helper": str(training_helper) if training_helper else None,
         }))
         stack.enter_context(serving(HostRelay(runtime / "relay.sock", (upstream["address"], upstream["port"]))))
         env = {"PATH": os.environ["PATH"], "HOME": str(runtime)}
@@ -526,6 +559,7 @@ def main():
     start.add_argument("--mihomo", default="mihomo")
     start.add_argument("--claude", default="claude")
     start.add_argument("--environment", type=Path, help="trusted host JSON for locale, timezone and read-only mounts")
+    start.add_argument("--training-fixture", type=Path, help="enable the mock read-only training MCP server")
     start.add_argument("workspace")
     start.add_argument("claude_args", nargs=argparse.REMAINDER)
     sub.add_parser("stop", help="stop the foreground session")

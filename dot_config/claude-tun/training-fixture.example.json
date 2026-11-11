@@ -1,0 +1,17 @@
+{
+  "mock-123": {
+    "status": "running",
+    "logs": [
+      "step=100 loss=0.42",
+      "step=200 loss=0.39",
+      "step=300 loss=0.36"
+    ]
+  },
+  "mock-456": {
+    "status": "completed",
+    "logs": [
+      "step=100 loss=0.45",
+      "training finished"
+    ]
+  }
+}

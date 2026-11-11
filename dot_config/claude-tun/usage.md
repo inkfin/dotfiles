@@ -99,3 +99,28 @@ expose file contents and can expose Unix sockets, so keep credentials
 and sockets out of the directories. Asset directories must not overlap
 the writable project or private launcher files. Locale and mount options
 do not alter the network namespace or firewall rules.
+
+## Read-only training queries with mock data
+
+Enable the training MCP server for one session:
+
+```sh
+~/.local/scripts/claude-tun start \
+  --training-fixture ~/.config/claude-tun/training-fixture.example.json \
+  /absolute/path/to/project
+```
+
+Ask Claude to call `get_job_status` or `get_recent_logs` for job
+`mock-123`. The log tool defaults to 20 lines and accepts 1–100.
+The broker returns the tail in chronological order. Unknown operations,
+unexpected arguments and invalid job IDs are rejected by the host broker.
+
+The launcher passes a stdio MCP adapter to Claude and mounts only the
+broker's private Unix socket. The broker loads the fixture on the host.
+It has no command execution, job mutation or live training backend.
+Use synthetic data in the fixture and keep it outside the writable
+project. A future real backend can keep credentials on the host, with
+job visibility and log filtering enforced there.
+
+The socket is a deliberate local exception to the TUN boundary. It can
+answer while Mihomo is down, and closes with the launcher session.
