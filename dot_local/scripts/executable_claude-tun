@@ -8,6 +8,7 @@ import ipaddress
 import json
 import os
 from pathlib import Path
+import re
 import select
 import shutil
 import signal
@@ -20,6 +21,7 @@ import sys
 import tempfile
 import threading
 import time
+import xml.etree.ElementTree as ET
 
 LAN = "198.18.42.1"
 CLIENT = "198.18.42.2"
@@ -186,13 +188,57 @@ def mihomo_config(upstream, check):
     return config
 
 
-def sandbox(bwrap, workspace, home, runtime, command, claude):
+def read_environment(path, workspace, protected):
+    config = json.loads(path.read_text()) if path else {}
+    locale = config.get("locale", "C.UTF-8")
+    if not isinstance(locale, str) or not re.fullmatch(r"[A-Za-z0-9_.@-]+", locale):
+        raise ValueError("Invalid locale")
+    result = run("locale", "charmap", env={"LANG": locale}, capture_output=True, text=True)
+    if result.stderr:
+        raise ValueError(f"Locale is not installed: {locale}")
+
+    timezone = config.get("timezone", "UTC")
+    if not isinstance(timezone, str) or not re.fullmatch(r"[A-Za-z0-9_+/-]+", timezone):
+        raise ValueError("Invalid timezone")
+    zoneinfo = Path("/usr/share/zoneinfo")
+    zone = (zoneinfo / timezone).resolve(strict=True)
+    if not zone.is_relative_to(zoneinfo) or not zone.is_file():
+        raise ValueError("Timezone must name an installed IANA zone")
+    with zone.open("rb") as zone_file:
+        if zone_file.read(4) != b"TZif":
+            raise ValueError("Timezone must name an installed IANA zone")
+
+    def asset_directory(value):
+        source = Path(value).expanduser()
+        if not source.is_absolute():
+            raise ValueError("Font and toolchain directories must use absolute host paths")
+        source = source.resolve(strict=True)
+        if not source.is_dir() or source in (Path.home().resolve(), Path("/")):
+            raise ValueError(f"Expected a dedicated font or toolchain directory: {source}")
+        for other in (*protected, workspace):
+            if other.is_relative_to(source) or source.is_relative_to(other):
+                raise ValueError(f"Mount overlaps the project or private launcher files: {source}")
+        return str(source)
+
+    fonts = [asset_directory(source) for source in config.get("font_dirs", [])]
+    toolchains = {}
+    for name, source in config.get("toolchains", {}).items():
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", name):
+            raise ValueError(f"Invalid toolchain name: {name}")
+        toolchains[name] = asset_directory(source)
+    return dict(locale=locale, timezone=timezone, zone=str(zone), fonts=fonts, toolchains=toolchains)
+
+
+def sandbox(bwrap, workspace, home, runtime, command, claude, environment):
+    toolchains = {f"/opt/toolchains/{name}": source for name, source in environment["toolchains"].items()}
+    path = ":".join(["/opt/claude", *(f"{target}/bin" for target in toolchains), SAFE_PATH])
     args = [
         bwrap, "--unshare-user", "--uid", "1000", "--gid", "1000",
         "--disable-userns", "--cap-drop", "ALL", "--unshare-pid", "--unshare-ipc",
         "--unshare-uts", "--die-with-parent", "--new-session", "--clearenv",
-        "--setenv", "HOME", "/home/claude", "--setenv", "PATH", "/opt/claude:" + SAFE_PATH,
-        "--setenv", "LANG", "C.UTF-8", "--ro-bind", "/usr", "/usr",
+        "--setenv", "HOME", "/home/claude", "--setenv", "PATH", path,
+        "--setenv", "LANG", environment["locale"], "--setenv", "TZ", environment["timezone"],
+        "--ro-bind", environment["zone"], "/etc/localtime", "--ro-bind", "/usr", "/usr",
         "--proc", "/proc", "--dev", "/dev", "--tmpfs", "/tmp",
         "--bind", str(workspace), "/workspace", "--bind", str(home), "/home/claude",
         "--ro-bind", str(runtime / "resolv.conf"), "/etc/resolv.conf",
@@ -200,12 +246,19 @@ def sandbox(bwrap, workspace, home, runtime, command, claude):
         "--ro-bind", str(runtime / "group"), "/etc/group",
         "--chdir", "/workspace",
     ]
-    for path in ("/bin", "/sbin", "/lib", "/lib64", "/etc/ssl", "/etc/pki", "/etc/alternatives"):
+    for path in ("/bin", "/sbin", "/lib", "/lib64", "/etc/ssl", "/etc/pki", "/etc/alternatives", "/etc/fonts"):
         source = Path(path)
         if source.is_symlink():
             args += ["--symlink", os.readlink(source), path]
         elif source.exists():
             args += ["--ro-bind", path, path]
+    for target, source in toolchains.items():
+        args += ["--ro-bind", source, target]
+    if environment["fonts"]:
+        args += ["--ro-bind", str(runtime / "fonts.conf"), "/etc/claude-fonts.conf",
+                 "--setenv", "FONTCONFIG_FILE", "/etc/claude-fonts.conf"]
+        for index, source in enumerate(environment["fonts"]):
+            args += ["--ro-bind", source, f"/opt/fonts/{index}"]
     for name in ("TERM", "COLORTERM"):
         if name in os.environ:
             args += ["--setenv", name, os.environ[name]]
@@ -259,7 +312,7 @@ def in_gateway(runtime):
         run("ip", "route", "add", "default", "dev", "claudetun", "table", "100")
         run("ip", "rule", "add", "iif", "client", "lookup", "100", "priority", "100")
         command = sandbox(spec["bwrap"], Path(spec["workspace"]), Path(spec["home"]), runtime,
-                          spec["command"], spec["claude"])
+                          spec["command"], spec["claude"], spec["environment"])
         if not check:
             return subprocess.call([*enter, *command])
         run(*enter, *command, "on")
@@ -354,6 +407,7 @@ def launch(args):
     check = args.action == "self-check"
     state = xdg("XDG_STATE_HOME", ".local/state") / "claude-tun"
     config = xdg("XDG_CONFIG_HOME", ".config") / "claude-tun" / "upstream.json"
+    default_environment = config.with_name("environment.json")
     state.mkdir(mode=0o700, parents=True, exist_ok=True)
     state = state.resolve()
     metadata = state.stat()
@@ -380,6 +434,7 @@ def launch(args):
             workspace.mkdir()
             claude = None
             command = ["/usr/bin/python3", "/opt/claude/check", "_probe"]
+            environment_path = None
         else:
             upstream = read_upstream(config)
             workspace = Path(args.workspace).resolve(strict=True)
@@ -392,15 +447,33 @@ def launch(args):
             home = state / "home"
             claude = binary(args.claude)
             command = ["/opt/claude/claude", *args.claude_args]
+            environment_path = args.environment
+            if environment_path is None and default_environment.exists():
+                environment_path = default_environment
+            if environment_path is not None:
+                environment_path = environment_path.resolve(strict=True)
+                if environment_path.is_relative_to(workspace):
+                    raise ValueError("Keep the environment config outside the writable project")
+        protected = [state, config.parent.resolve(), runtime]
+        if environment_path:
+            protected.append(environment_path)
+        environment = read_environment(environment_path, workspace, protected)
         home.mkdir(mode=0o700, exist_ok=True)
         (runtime / "resolv.conf").write_text(f'nameserver {upstream["dns_address"]}\noptions timeout:2 attempts:1\n')
         (runtime / "passwd").write_text("claude:x:1000:1000:Claude:/home/claude:/bin/bash\n")
         (runtime / "group").write_text("claude:x:1000:\n")
+        if environment["fonts"]:
+            fonts = ET.Element("fontconfig")
+            ET.SubElement(fonts, "include", ignore_missing="yes").text = "/etc/fonts/fonts.conf"
+            for index in range(len(environment["fonts"])):
+                ET.SubElement(fonts, "dir").text = f"/opt/fonts/{index}"
+            ET.ElementTree(fonts).write(runtime / "fonts.conf", encoding="utf-8", xml_declaration=True)
         (runtime / "mihomo.json").write_text(json.dumps(mihomo_config(upstream, check)))
         (runtime / "worker.json").write_text(json.dumps({
             "host_netns": Path("/proc/self/ns/net").readlink().name,
             "check": check, "mihomo": binary(args.mihomo), "bwrap": binary("bwrap"),
             "workspace": str(workspace), "home": str(home), "claude": claude, "command": command,
+            "environment": environment,
         }))
         stack.enter_context(serving(HostRelay(runtime / "relay.sock", (upstream["address"], upstream["port"]))))
         env = {"PATH": os.environ["PATH"], "HOME": str(runtime)}
@@ -452,6 +525,7 @@ def main():
     start = sub.add_parser("start", help="run Claude in the foreground")
     start.add_argument("--mihomo", default="mihomo")
     start.add_argument("--claude", default="claude")
+    start.add_argument("--environment", type=Path, help="trusted host JSON for locale, timezone and read-only mounts")
     start.add_argument("workspace")
     start.add_argument("claude_args", nargs=argparse.REMAINDER)
     sub.add_parser("stop", help="stop the foreground session")
@@ -474,5 +548,5 @@ if __name__ == "__main__":
         sys.exit(main())
     except KeyboardInterrupt:
         sys.exit(130)
-    except (OSError, ValueError, RuntimeError, KeyError, subprocess.CalledProcessError) as error:
+    except (OSError, ValueError, RuntimeError, KeyError, TypeError, subprocess.CalledProcessError) as error:
         sys.exit(f"claude-tun: {error}")

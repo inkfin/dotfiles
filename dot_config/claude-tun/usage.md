@@ -69,3 +69,33 @@ The outer container disables nested user namespaces, so Claude's optional
 Linux Bash sandbox cannot start inside it. Keep Claude's permission prompts
 enabled. The test stub validates the network path. A real Claude session and
 the configured SOCKS5 server need their own smoke test.
+
+## Locale, timezone, fonts and project tools
+
+Defaults are `C.UTF-8`, `UTC` and system fonts. Copy
+`environment.example.json` to the local `environment.json` to change the
+defaults. For project-specific settings, keep a separate trusted host
+file outside the writable project and pass it before the workspace:
+
+```sh
+~/.local/scripts/claude-tun start --environment /absolute/path/to/environment.json /absolute/path/to/project
+```
+
+- `locale` selects an installed locale such as `en_US.UTF-8` or
+  `zh_CN.UTF-8`. Use `locale -a` on the host to list what's installed.
+- `timezone` selects an installed IANA zone such as `Asia/Shanghai`.
+  The container gets both `TZ` and its own read-only `/etc/localtime`.
+- `font_dirs` adds read-only host font directories to Fontconfig.
+  They appear under `/opt/fonts`. Fonts displayed by the outer terminal
+  are still controlled by that terminal.
+- `toolchains` maps each name to a dedicated host directory. For example,
+  `{"llvm": "/opt/llvm-20"}` mounts it at `/opt/toolchains/llvm` and adds
+  `/opt/toolchains/llvm/bin` before system tools in the container PATH.
+  Use relocatable toolchains or configure their container paths explicitly.
+  Build outputs belong in the writable project or sandbox home.
+
+Use dedicated asset directories you control. Read-only mounts still
+expose file contents and can expose Unix sockets, so keep credentials
+and sockets out of the directories. Asset directories must not overlap
+the writable project or private launcher files. Locale and mount options
+do not alter the network namespace or firewall rules.
