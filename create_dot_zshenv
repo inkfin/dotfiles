@@ -45,6 +45,6 @@ export HISTFILE="$ZSHCONF_HOME/.histfile"
 # machine owner. Put host-specific variables, tokens, and paths here.
 
 # Machine-specific defaults migrated from the former env.zsh.
-export AI_COMMIT_CMD='claude-internal -p "$1"'
+export AI_COMMIT_CMD='claude -p "$1"'
 export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
 export NVIM_APPNAME="nvim.mini"
