@@ -1,5 +1,5 @@
 {
-  "zoom": 1,
+  "zoom": {{ if eq .chezmoi.os "windows" }}1.2{{ else }}1{{ end }},
   "sounds": {
     "enabled": true
   },
@@ -8,13 +8,13 @@
   "terminal_cell_width": 1,
   "terminal_scroll_speed": 1,
   "minimum_contrast": 1,
-  "theme": "atom-one-dark",
   "appearance": "dark",
+  "font": {{ .font.term_font | toJson }}{{ if eq .chezmoi.os "darwin" }},
+  "theme": "atom-one-dark",
   "worktrees": {
     "directory": "~/.agents/worktrees"
   },
-  "font": {{ ((get .font "herdr_term_font") | default .font.term_font) | toJson }},
   "font_size": 15,
   "font_weight": 500,
-  "option_as_alt": "left"
+  "option_as_alt": "left"{{ end }}
 }

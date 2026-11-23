@@ -2,6 +2,7 @@
 guiApplications = true
 dnsTunneling = true
 firewall = true
+maxCrashDumpCount = 2
 {{- if hasSuffix "work" .profile }}
 # Work network breaks mirrored mode (VPN tun takes over mirrored traffic)
 networkingMode = nat

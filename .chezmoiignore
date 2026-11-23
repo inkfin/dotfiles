@@ -37,10 +37,13 @@ tests/
 {{ end }}
 {{ if ne .chezmoi.os "darwin" }}
 .config/private_karabiner/
-.config/herdr-app/
+.config/herdr-app/mods/
 .Brewfile
 scripts/env_init/macos*
 .local/bin/rime_ls
+{{ end }}
+{{ if not (has .chezmoi.os (list "darwin" "windows")) }}
+.config/herdr-app/
 {{ end }}
 
 # Linux specific settings
