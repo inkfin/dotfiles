@@ -37,6 +37,7 @@ tests/
 {{ end }}
 {{ if ne .chezmoi.os "darwin" }}
 .config/private_karabiner/
+.config/herdr-app/
 .Brewfile
 scripts/env_init/macos*
 .local/bin/rime_ls
@@ -100,6 +101,7 @@ install-packages.sh
 
 # Headless profiles (server-personal / server-work): skip GUI/desktop configs
 {{- if hasPrefix "server" .profile }}
+.config/herdr-app/
 .config/alacritty/
 .config/wezterm/
 .config/ghostty/

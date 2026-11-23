@@ -1,0 +1,48 @@
+# -*- mode: toml; -*-
+# vim: set filetype=toml:
+# herdr-core (hc) configuration
+# Uncomment an option below to override its built-in default.
+
+# Executable and arguments for new interactive shells and kept-terminal recovery.
+# With no override, hc uses the machine's default shell. Changes apply on the next launch.
+{{- if eq .chezmoi.os "windows" }}
+shell = ["pwsh"]
+{{- else if eq .chezmoi.os "darwin" }}
+shell = ["zsh", "-l"]
+{{- else }}
+shell = ["zsh"]
+{{- end }}
+
+# Ctrl chord that returns from hc attach. Use a single-quoted TOML string for backslashes.
+# detach_key = 'ctrl+\'
+
+# Seconds before hc wait or a waiting hc run checks in. The terminal keeps running.
+# wait_timeout = 180
+
+# Enable automatic notes to parent agents and <hc> tags on inter-agent messages.
+# notes = true
+
+# Seconds of idle input before a parent note is delivered. Enter or clearing the line
+# ends the quiet wait early. Changes apply on the next delivery.
+# notes_quiet = 3
+
+# Maximum seconds an unfinished draft holds sends and notes after the last key.
+# Set to 0 to keep only the quiet pause. Changes apply on the next delivery.
+# draft_wait = 60
+
+# Terminal size when nobody is attached, in columns x rows.
+# headless = "200x120"
+
+# Scrollback budget per live terminal, in MiB. Set to 0 to disable history.
+# history_mb = 5
+
+# Show the last saved screen after a kept terminal recovers with a new shell.
+# restore_screen = false
+
+# Override the core's listening socket path. The default is platform-dependent.
+# HC_SOCKET takes precedence over this setting.
+# socket = "/absolute/path/to/herdr-core.sock"
+
+# Seconds allowed for a remote machine to answer a call, plus any wait-specific timeout.
+# This also controls when a silent remote connection is redialed.
+# machine_timeout = 30
