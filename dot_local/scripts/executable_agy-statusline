@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Render Antigravity CLI's status-line payload without extra API calls."""
+
+import json
+import math
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+
+def color(code, text):
+    return f"\x1b[{code}m{text}\x1b[0m"
+
+
+def short(text, limit):
+    text = "".join(char for char in text if char.isprintable())
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
+def folder_label(cwd):
+    folder = Path(os.path.normpath(cwd))
+    home = Path.home()
+    if folder == home:
+        return "~"
+    if not folder.name:
+        return str(folder)
+    parent = folder.parent
+    prefix = "~/" if parent == home else short(parent.name, 16) + "/" if parent.name else parent.anchor
+    return prefix + short(folder.name, 16)
+
+
+def git_branch(cwd):
+    for args in [("symbolic-ref", "--short", "-q", "HEAD"), ("rev-parse", "--short", "HEAD")]:
+        try:
+            result = subprocess.run(
+                ["git", "--no-optional-locks", "-C", cwd, *args],
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, timeout=0.4,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return ""
+        if result.returncode == 0:
+            return result.stdout.strip()
+    return ""
+
+
+def number(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def render(data):
+    model = data.get("model") or {}
+    name = model.get("display_name") or model.get("id") or "AGY"
+    effort = model.get("effort")
+    if effort and name.lower().endswith(f" ({effort})"):
+        name = name[:-(len(effort) + 3)]
+    efforts = {"low": "lo", "medium": "med", "high": "hi", "xhigh": "xhi", "max": "max"}
+    cwd = (data.get("workspace") or {}).get("current_dir") or data.get("cwd") or os.getcwd()
+    parts = [color(96, short(name, 24))]
+    if effort in efforts:
+        parts[-1] += color(95, "/" + efforts[effort])
+    parts.append(color(94, folder_label(cwd)))
+    if (data.get("vcs") or {}).get("type") == "git":
+        branch = git_branch(cwd)
+        if branch:
+            parts.append(color(92, "@" + short(branch, 18)))
+
+    ctx = (data.get("context_window") or {}).get("used_percentage")
+    if number(ctx):
+        parts.append(color(91 if ctx >= 80 else 93 if ctx >= 50 else 92, f"Ctx:{ctx:.0f}%"))
+    quotas = data.get("quota") or {}
+    for key, label in (("gemini-5h", "Gemini"), ("3p-5h", "Other models")):
+        bucket = quotas.get(key) or {}
+        remaining = bucket.get("remaining_fraction")
+        if not bucket.get("disabled") and number(remaining) and 0 <= remaining <= 1:
+            severity = 91 if remaining <= 0.15 else 93 if remaining <= 0.40 else 92
+            parts.append(color(severity, f"{label} 5h:{remaining:.0%} left"))
+    return " · ".join(parts)
+
+
+if __name__ == "__main__":
+    try:
+        data = json.load(sys.stdin)
+    except ValueError:
+        data = {}
+    sys.stdout.buffer.write((render(data) + "\n").encode("utf-8"))

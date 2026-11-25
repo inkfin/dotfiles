@@ -1,0 +1,9 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $current := fromJson (default "{}" .chezmoi.stdin) -}}
+{{- $statusLine := dict "type" "command" "enabled" true "command" `python3 -I "$HOME/.local/scripts/agy-statusline"` -}}
+{{- $merged := mergeOverwrite (deepCopy $current) (dict "statusLine" $statusLine) -}}
+{{- if deepEqual $current $merged -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $merged | toPrettyJson -}}
+{{- end -}}

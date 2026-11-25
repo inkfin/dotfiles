@@ -73,6 +73,7 @@ install-packages.ps1
 
 # Unix specific settings
 {{ if eq .chezmoi.os "windows" }}
+.gemini/antigravity-cli/
 .config/zed/
 install-packages.sh
 .tmux/
